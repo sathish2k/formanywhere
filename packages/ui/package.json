@@ -23,6 +23,7 @@
         "lint": "echo 'No linter configured'"
     },
     "dependencies": {
+        "@floating-ui/dom": "^1.6.12",
         "date-fns": "4.1.0",
         "solid-js": "^1.9.11"
     },

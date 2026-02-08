@@ -28,6 +28,14 @@
         "./constants": {
             "import": "./src/constants/index.ts",
             "types": "./src/constants/index.ts"
+        },
+        "./header": {
+            "import": "./src/components/header/index.tsx",
+            "types": "./src/components/header/index.tsx"
+        },
+        "./footer": {
+            "import": "./src/components/footer/index.tsx",
+            "types": "./src/components/footer/index.tsx"
         }
     },
     "scripts": {

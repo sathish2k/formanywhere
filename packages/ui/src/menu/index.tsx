@@ -1,9 +1,11 @@
 /**
  * Material 3 Menu Component for SolidJS
  * Based on https://github.com/material-components/material-web
+ * Uses Floating UI for robust positioning
  */
 import { JSX, Component, Show, createEffect, onCleanup, ParentComponent } from 'solid-js';
 import { Portal } from 'solid-js/web';
+import { computePosition, flip, shift, offset, autoUpdate, Placement } from '@floating-ui/dom';
 import { Ripple } from '../ripple';
 
 export interface MenuProps {
@@ -22,7 +24,7 @@ export interface MenuProps {
 }
 
 const menuStyles = (open: boolean): JSX.CSSProperties => ({
-    position: 'absolute',
+    position: 'fixed',
     'min-width': '112px',
     'max-width': '280px',
     'max-height': '256px',
@@ -38,49 +40,76 @@ const menuStyles = (open: boolean): JSX.CSSProperties => ({
     'z-index': '1000',
 });
 
+// Convert our position prop to Floating UI placement
+const getPlacement = (position?: string): Placement => {
+    switch (position) {
+        case 'bottom-start': return 'bottom-start';
+        case 'bottom-end': return 'bottom-end';
+        case 'top-start': return 'top-start';
+        case 'top-end': return 'top-end';
+        default: return 'bottom-end';
+    }
+};
+
 export const Menu: ParentComponent<MenuProps> = (props) => {
     let menuRef: HTMLDivElement | undefined;
 
     createEffect(() => {
-        if (!props.open) return;
+        if (!props.open || !props.anchorEl || !menuRef) return;
 
+        // Use Floating UI's autoUpdate to handle all position recalculations
+        // This automatically updates position on scroll, resize, and layout changes
+        const cleanup = autoUpdate(
+            props.anchorEl,
+            menuRef,
+            () => {
+                computePosition(props.anchorEl!, menuRef!, {
+                    strategy: 'fixed', // CRITICAL: Tell Floating UI we're using position: fixed
+                    placement: getPlacement(props.position),
+                    middleware: [
+                        offset(4), // 4px gap from anchor
+                        flip(), // Flip if would overflow viewport
+                        shift({ padding: 8 }), // Shift to stay within viewport
+                    ],
+                }).then(({ x, y }) => {
+                    if (menuRef) {
+                        Object.assign(menuRef.style, {
+                            left: `${x}px`,
+                            top: `${y}px`,
+                        });
+                    }
+                });
+            }
+        );
+
+        // Click outside to close - delay registration to avoid race condition
         const handleClick = (e: MouseEvent) => {
-            if (!menuRef?.contains(e.target as Node)) {
+            if (!menuRef?.contains(e.target as Node) && !props.anchorEl?.contains(e.target as Node)) {
                 props.onClose();
             }
         };
 
+        // Escape key to close
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 props.onClose();
             }
         };
 
-        document.addEventListener('click', handleClick);
+        // Delay adding click listener to avoid catching the opening click
+        const clickTimeoutId = setTimeout(() => {
+            document.addEventListener('click', handleClick);
+        }, 100);
+
         document.addEventListener('keydown', handleEscape);
 
         onCleanup(() => {
+            clearTimeout(clickTimeoutId);
+            cleanup(); // Stop auto-updating
             document.removeEventListener('click', handleClick);
             document.removeEventListener('keydown', handleEscape);
         });
     });
-
-    const getPosition = () => {
-        if (!props.anchorEl) return {};
-        const rect = props.anchorEl.getBoundingClientRect();
-        const pos = props.position ?? 'bottom-start';
-
-        switch (pos) {
-            case 'bottom-start':
-                return { top: `${rect.bottom + 4}px`, left: `${rect.left}px` };
-            case 'bottom-end':
-                return { top: `${rect.bottom + 4}px`, right: `${window.innerWidth - rect.right}px` };
-            case 'top-start':
-                return { bottom: `${window.innerHeight - rect.top + 4}px`, left: `${rect.left}px` };
-            case 'top-end':
-                return { bottom: `${window.innerHeight - rect.top + 4}px`, right: `${window.innerWidth - rect.right}px` };
-        }
-    };
 
     return (
         <Show when={props.open}>
@@ -88,7 +117,7 @@ export const Menu: ParentComponent<MenuProps> = (props) => {
                 <div
                     ref={menuRef}
                     role="menu"
-                    style={{ ...menuStyles(props.open), ...getPosition(), position: 'fixed', ...props.style }}
+                    style={{ ...menuStyles(props.open), ...props.style }}
                 >
                     {props.children}
                 </div>

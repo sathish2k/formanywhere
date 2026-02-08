@@ -8,3 +8,5 @@ export * from './use-cases-grid';
 export * from './components/template-card';
 export * from './components/category-filter';
 export * from './components/template-browser';
+export * from './components/header';
+export * from './components/footer';
