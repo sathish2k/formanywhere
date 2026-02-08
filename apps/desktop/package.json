@@ -1,0 +1,23 @@
+{
+    "name": "@formanywhere/desktop",
+    "type": "module",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "dev": "tauri dev",
+        "build": "tauri build",
+        "lint": "echo 'No linter configured'"
+    },
+    "dependencies": {
+        "@tauri-apps/api": "^2.9.1",
+        "@formanywhere/form-editor": "workspace:*",
+        "@formanywhere/form-runtime": "workspace:*",
+        "@formanywhere/ui": "workspace:*",
+        "@formanywhere/data": "workspace:*",
+        "@formanywhere/shared": "workspace:*",
+        "solid-js": "^1.9.11"
+    },
+    "devDependencies": {
+        "@tauri-apps/cli": "^2.9.6"
+    }
+}

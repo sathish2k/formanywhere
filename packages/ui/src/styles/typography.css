@@ -1,0 +1,188 @@
+/* ===============================================
+   MATERIAL 3 TYPOGRAPHY STYLES
+   Utility classes for typography scale
+   Use Typography component from @formanywhere/ui for SolidJS
+   =============================================== */
+
+/* === TYPOGRAPHY SCALE (M3-aligned) === */
+
+/* Display - Hero headlines, major page titles */
+.display-large {
+    font-family: var(--m3-font-display, Inter, system-ui, sans-serif);
+    font-size: var(--m3-display-large-size, 57px);
+    line-height: 1.12;
+    font-weight: 400;
+    letter-spacing: -0.25px;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+.display-medium {
+    font-family: var(--m3-font-display, Inter, system-ui, sans-serif);
+    font-size: var(--m3-display-medium-size, 45px);
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+.display-small {
+    font-family: var(--m3-font-display, Inter, system-ui, sans-serif);
+    font-size: var(--m3-display-small-size, 36px);
+    line-height: 1.22;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+/* Headline - Section headers */
+.headline-large {
+    font-family: var(--m3-font-display, Inter, system-ui, sans-serif);
+    font-size: var(--m3-headline-large-size, 32px);
+    line-height: 1.25;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+.headline-medium {
+    font-family: var(--m3-font-display, Inter, system-ui, sans-serif);
+    font-size: var(--m3-headline-medium-size, 28px);
+    line-height: 1.28;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+.headline-small {
+    font-family: var(--m3-font-display, Inter, system-ui, sans-serif);
+    font-size: var(--m3-headline-small-size, 24px);
+    line-height: 1.33;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+/* Title - Card headers, list titles */
+.title-large {
+    font-family: var(--m3-font-body, Inter, system-ui, sans-serif);
+    font-size: var(--m3-title-large-size, 22px);
+    line-height: 1.27;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+.title-medium {
+    font-family: var(--m3-font-body, Inter, system-ui, sans-serif);
+    font-size: var(--m3-title-medium-size, 16px);
+    line-height: 1.5;
+    font-weight: 500;
+    letter-spacing: 0.15px;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+.title-small {
+    font-family: var(--m3-font-body, Inter, system-ui, sans-serif);
+    font-size: 14px;
+    line-height: 1.43;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+/* Body - Main content text */
+.body-large {
+    font-family: var(--m3-font-body, Inter, system-ui, sans-serif);
+    font-size: var(--m3-body-large-size, 16px);
+    line-height: 1.5;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+.body-medium {
+    font-family: var(--m3-font-body, Inter, system-ui, sans-serif);
+    font-size: var(--m3-body-medium-size, 14px);
+    line-height: 1.43;
+    font-weight: 400;
+    letter-spacing: 0.25px;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+.body-small {
+    font-family: var(--m3-font-body, Inter, system-ui, sans-serif);
+    font-size: 12px;
+    line-height: 1.33;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+    color: var(--m3-color-on-surface-variant, #49454E);
+}
+
+/* Label - Buttons, form labels, chips */
+.label-large {
+    font-family: var(--m3-font-body, Inter, system-ui, sans-serif);
+    font-size: var(--m3-label-large-size, 14px);
+    line-height: 1.43;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+.label-medium {
+    font-family: var(--m3-font-body, Inter, system-ui, sans-serif);
+    font-size: var(--m3-label-medium-size, 12px);
+    line-height: 1.33;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+.label-small {
+    font-family: var(--m3-font-body, Inter, system-ui, sans-serif);
+    font-size: 11px;
+    line-height: 1.45;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--m3-color-on-surface-variant, #49454E);
+}
+
+/* === COLOR VARIATIONS === */
+.text-primary {
+    color: var(--m3-color-primary, #6366f1);
+}
+
+.text-secondary {
+    color: var(--m3-color-secondary, #14b8a6);
+}
+
+.text-on-surface {
+    color: var(--m3-color-on-surface, #1f1f1f);
+}
+
+.text-on-surface-variant {
+    color: var(--m3-color-on-surface-variant, #49454E);
+}
+
+.text-error {
+    color: var(--m3-color-error, #FF5630);
+}
+
+/* === ALIGNMENT === */
+.text-left {
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* === TRUNCATION === */
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

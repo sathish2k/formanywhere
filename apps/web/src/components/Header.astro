@@ -1,0 +1,990 @@
+---
+/**
+ * Header Component - Using @formanywhere/ui
+ * Pill-style sticky navbar with scroll animation
+ */
+import { Button } from "@formanywhere/ui/button";
+---
+
+<header id="header" class="fixed top-0 left-0 right-0 z-50">
+  <div
+    id="header-inner"
+    class="w-full border-b border-white/10 transition-all duration-500 ease-out"
+  >
+    <div
+      id="header-container"
+      class="max-w-7xl mx-auto px-6 transition-all duration-500 ease-out"
+    >
+      <nav
+        id="header-nav"
+        class="flex flex-nowrap justify-between md:grid md:grid-cols-[1fr_auto_1fr] items-center py-3 transition-all duration-500 ease-out"
+      >
+        <!-- Logo -->
+        <a
+          href="/"
+          id="logo-container"
+          class="flex items-center gap-3 transition-all duration-300"
+        >
+          <div
+            class="w-8 h-8 rounded bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center"
+          >
+            <svg
+              class="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+              ></path>
+            </svg>
+          </div>
+          <span
+            id="logo-text"
+            class="text-on-surface font-semibold text-sm sm:text-base"
+            >FormAnywhere</span
+          >
+        </a>
+
+        <!-- Center Navigation -->
+        <div
+          id="nav-links"
+          class="hidden md:flex items-center justify-center gap-8 transition-all duration-300"
+        >
+          <a
+            href="/#features"
+            class="text-on-surface-variant hover:text-on-surface font-medium text-[15px] transition-colors whitespace-nowrap"
+            >Features</a
+          >
+          <a
+            href="/pricing"
+            class="text-on-surface-variant hover:text-on-surface font-medium text-[15px] transition-colors whitespace-nowrap"
+            >Pricing</a
+          >
+          <a
+            href="/about"
+            class="text-on-surface-variant hover:text-on-surface font-medium text-[15px] transition-colors whitespace-nowrap"
+            >About</a
+          >
+          <a
+            href="/templates"
+            class="text-on-surface-variant hover:text-on-surface font-medium text-[15px] transition-colors whitespace-nowrap"
+            >Templates</a
+          >
+          <a
+            href="/blog"
+            class="text-on-surface-variant hover:text-on-surface font-medium text-[15px] transition-colors whitespace-nowrap"
+            >Blog</a
+          >
+        </div>
+
+        <!-- Right Actions -->
+        <div
+          id="auth-buttons"
+          class="flex items-center justify-end gap-2 md:gap-4 ml-auto flex-shrink-0 transition-all duration-300"
+        >
+          <a
+            href="/signin"
+            id="signin-btn"
+            class="hidden md:inline-flex text-on-surface-variant hover:text-on-surface font-medium text-[15px] transition-colors whitespace-nowrap"
+          >
+            Sign in
+          </a>
+          <Button
+            href="/signup"
+            variant="filled"
+            class="!hidden md:!inline-flex"
+            style={{
+              "font-size": "15px",
+              padding: "10px 24px",
+              "border-radius": "12px",
+              "white-space": "nowrap",
+            }}
+          >
+            Get Started Free
+          </Button>
+
+          <!-- Theme Toggle -->
+          <button
+            id="theme-toggle-btn"
+            class="p-2 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
+            title="Toggle Theme"
+            aria-label="Toggle light or dark theme"
+            aria-haspopup="dialog"
+          >
+            <!-- Sun icon (light mode) -->
+            <svg
+              id="theme-icon-sun"
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              ></path>
+            </svg>
+          </button>
+
+          <!-- Mobile menu button -->
+          <button
+            id="mobile-menu-btn"
+            class="md:hidden p-2 text-on-surface-variant hover:text-on-surface"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Spacer for fixed header -->
+  <div class="h-16"></div>
+
+  <!-- Mobile Menu Overlay -->
+  <div
+    id="mobile-menu"
+    class="fixed inset-0 z-[60] bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300"
+  >
+    <div
+      id="mobile-menu-panel"
+      class="absolute right-0 top-0 bottom-0 w-80 lg-glass-subtle shadow-2xl border-l border-outline-variant transform translate-x-full transition-transform duration-300"
+    >
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-8">
+          <span class="text-lg font-semibold text-on-surface">Menu</span>
+          <button
+            id="close-menu-btn"
+            class="p-2 text-on-surface-variant hover:text-on-surface"
+            aria-label="Close navigation menu"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <nav class="flex flex-col gap-4">
+          <a
+            href="/#features"
+            class="text-on-surface hover:text-primary font-medium py-2 border-b border-outline-variant"
+            >Features</a
+          >
+          <a
+            href="/pricing"
+            class="text-on-surface hover:text-primary font-medium py-2 border-b border-outline-variant"
+            >Pricing</a
+          >
+          <a
+            href="/about"
+            class="text-on-surface hover:text-primary font-medium py-2 border-b border-outline-variant"
+            >About</a
+          >
+          <a
+            href="/templates"
+            class="text-on-surface hover:text-primary font-medium py-2 border-b border-outline-variant"
+            >Templates</a
+          >
+          <a
+            href="/blog"
+            class="text-on-surface hover:text-primary font-medium py-2 border-b border-outline-variant"
+            >Blog</a
+          >
+
+          <div class="pt-4 flex flex-col gap-3">
+            <a
+              href="/signin"
+              class="text-center text-on-surface font-medium py-2.5 border border-outline-variant rounded-xl hover:bg-surface-container-low"
+              >Sign in</a
+            >
+            <a
+              href="/signup"
+              class="text-center bg-gradient-to-r from-primary to-primary-dark text-white font-medium py-2.5 rounded-xl"
+              >Get Started Free</a
+            >
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme Selector Popup -->
+  <div id="theme-popup" class="fixed z-[70] hidden">
+    <div id="theme-popup-overlay" class="fixed inset-0"></div>
+    <div
+      id="theme-popup-content"
+      class="fixed lg-glass-strong rounded-2xl shadow-2xl p-5"
+    >
+      <h3 class="font-bold text-on-surface mb-4 text-sm tracking-tight">
+        Choose Your Theme
+      </h3>
+      <div class="grid grid-cols-3 gap-4">
+        <!-- Green Theme (Default) - MUI Minimal -->
+        <button
+          class="theme-option group flex flex-col items-center gap-2 cursor-pointer transition-transform duration-300 hover:-translate-y-1"
+          data-theme="green"
+          data-primary="#00A76F"
+          data-primary-dark="#007867"
+          data-secondary="#212B36"
+          data-secondary-dark="#161C24"
+          data-tertiary="#00B8D9"
+          data-tertiary-dark="#006C9C"
+        >
+          <div
+            class="relative w-[70px] h-[50px] flex items-center justify-center"
+          >
+            <div
+              class="absolute left-0 w-12 h-12 rounded-full bg-gradient-to-br from-[#00A76F] to-[#5BE49B] border-[3px] border-white shadow-lg z-[2] transition-all duration-300 theme-primary-circle"
+            >
+            </div>
+            <div
+              class="absolute right-0 w-12 h-12 rounded-full bg-[#1A1A1A] border-[3px] border-white shadow-lg z-[1] transition-all duration-300 theme-secondary-circle"
+            >
+            </div>
+            <div
+              class="check-indicator hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-md z-10 items-center justify-center"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-[#00A76F]"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M5 13l4 4L19 7"></path></svg
+              >
+            </div>
+          </div>
+          <span
+            class="text-xs font-semibold text-on-surface-variant transition-colors theme-label"
+            >Green</span
+          >
+        </button>
+
+        <!-- Purple Theme -->
+        <button
+          class="theme-option group flex flex-col items-center gap-2 cursor-pointer transition-transform duration-300 hover:-translate-y-1"
+          data-theme="purple"
+          data-primary="#7635DC"
+          data-primary-dark="#4319A5"
+          data-secondary="#00A76F"
+          data-secondary-dark="#007867"
+          data-tertiary="#00B8D9"
+          data-tertiary-dark="#006C9C"
+        >
+          <div
+            class="relative w-[70px] h-[50px] flex items-center justify-center"
+          >
+            <div
+              class="absolute left-0 w-12 h-12 rounded-full bg-gradient-to-br from-[#7635DC] to-[#B985F4] border-[3px] border-white shadow-lg z-[2] transition-all duration-300 theme-primary-circle"
+            >
+            </div>
+            <div
+              class="absolute right-0 w-12 h-12 rounded-full bg-[#1A1A1A] border-[3px] border-white shadow-lg z-[1] transition-all duration-300 theme-secondary-circle"
+            >
+            </div>
+            <div
+              class="check-indicator hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-md z-10 items-center justify-center"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-[#7635DC]"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M5 13l4 4L19 7"></path></svg
+              >
+            </div>
+          </div>
+          <span
+            class="text-xs font-semibold text-on-surface-variant transition-colors theme-label"
+            >Purple</span
+          >
+        </button>
+
+        <!-- Blue Theme -->
+        <button
+          class="theme-option group flex flex-col items-center gap-2 cursor-pointer transition-transform duration-300 hover:-translate-y-1"
+          data-theme="blue"
+          data-primary="#078DEE"
+          data-primary-dark="#0351AB"
+          data-secondary="#FF5630"
+          data-secondary-dark="#B71833"
+          data-tertiary="#00A76F"
+          data-tertiary-dark="#007867"
+        >
+          <div
+            class="relative w-[70px] h-[50px] flex items-center justify-center"
+          >
+            <div
+              class="absolute left-0 w-12 h-12 rounded-full bg-gradient-to-br from-[#078DEE] to-[#68CDF9] border-[3px] border-white shadow-lg z-[2] transition-all duration-300 theme-primary-circle"
+            >
+            </div>
+            <div
+              class="absolute right-0 w-12 h-12 rounded-full bg-[#1A1A1A] border-[3px] border-white shadow-lg z-[1] transition-all duration-300 theme-secondary-circle"
+            >
+            </div>
+            <div
+              class="check-indicator hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-md z-10 items-center justify-center"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-[#078DEE]"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M5 13l4 4L19 7"></path></svg
+              >
+            </div>
+          </div>
+          <span
+            class="text-xs font-semibold text-on-surface-variant transition-colors theme-label"
+            >Blue</span
+          >
+        </button>
+
+        <!-- Cyan Theme -->
+        <button
+          class="theme-option group flex flex-col items-center gap-2 cursor-pointer transition-transform duration-300 hover:-translate-y-1"
+          data-theme="pink"
+          data-primary="#2065D1"
+          data-primary-dark="#103996"
+          data-secondary="#FF6B6B"
+          data-secondary-dark="#C92A2A"
+          data-tertiary="#00A76F"
+          data-tertiary-dark="#007867"
+        >
+          <div
+            class="relative w-[70px] h-[50px] flex items-center justify-center"
+          >
+            <div
+              class="absolute left-0 w-12 h-12 rounded-full bg-gradient-to-br from-[#2065D1] to-[#76B0F1] border-[3px] border-white shadow-lg z-[2] transition-all duration-300 theme-primary-circle"
+            >
+            </div>
+            <div
+              class="absolute right-0 w-12 h-12 rounded-full bg-[#1A1A1A] border-[3px] border-white shadow-lg z-[1] transition-all duration-300 theme-secondary-circle"
+            >
+            </div>
+            <div
+              class="check-indicator hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-md z-10 items-center justify-center"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-[#2065D1]"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M5 13l4 4L19 7"></path></svg
+              >
+            </div>
+          </div>
+          <span
+            class="text-xs font-semibold text-on-surface-variant transition-colors theme-label"
+            >Cyan</span
+          >
+        </button>
+
+        <!-- Orange Theme -->
+        <button
+          class="theme-option group flex flex-col items-center gap-2 cursor-pointer transition-transform duration-300 hover:-translate-y-1"
+          data-theme="orange"
+          data-primary="#FDA92D"
+          data-primary-dark="#B66816"
+          data-secondary="#5D4037"
+          data-secondary-dark="#3E2723"
+          data-tertiary="#8E33FF"
+          data-tertiary-dark="#5119B7"
+        >
+          <div
+            class="relative w-[70px] h-[50px] flex items-center justify-center"
+          >
+            <div
+              class="absolute left-0 w-12 h-12 rounded-full bg-gradient-to-br from-[#FDA92D] to-[#FED680] border-[3px] border-white shadow-lg z-[2] transition-all duration-300 theme-primary-circle"
+            >
+            </div>
+            <div
+              class="absolute right-0 w-12 h-12 rounded-full bg-[#1A1A1A] border-[3px] border-white shadow-lg z-[1] transition-all duration-300 theme-secondary-circle"
+            >
+            </div>
+            <div
+              class="check-indicator hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-md z-10 items-center justify-center"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-[#FDA92D]"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M5 13l4 4L19 7"></path></svg
+              >
+            </div>
+          </div>
+          <span
+            class="text-xs font-semibold text-on-surface-variant transition-colors theme-label"
+            >Orange</span
+          >
+        </button>
+
+        <!-- Red Theme -->
+        <button
+          class="theme-option group flex flex-col items-center gap-2 cursor-pointer transition-transform duration-300 hover:-translate-y-1"
+          data-theme="red"
+          data-primary="#FF3030"
+          data-primary-dark="#B71833"
+          data-secondary="#FDA92D"
+          data-secondary-dark="#B66816"
+          data-tertiary="#00A76F"
+          data-tertiary-dark="#007867"
+        >
+          <div
+            class="relative w-[70px] h-[50px] flex items-center justify-center"
+          >
+            <div
+              class="absolute left-0 w-12 h-12 rounded-full bg-gradient-to-br from-[#FF3030] to-[#FF8983] border-[3px] border-white shadow-lg z-[2] transition-all duration-300 theme-primary-circle"
+            >
+            </div>
+            <div
+              class="absolute right-0 w-12 h-12 rounded-full bg-[#1A1A1A] border-[3px] border-white shadow-lg z-[1] transition-all duration-300 theme-secondary-circle"
+            >
+            </div>
+            <div
+              class="check-indicator hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-md z-10 items-center justify-center"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-[#FF3030]"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M5 13l4 4L19 7"></path></svg
+              >
+            </div>
+          </div>
+          <span
+            class="text-xs font-semibold text-on-surface-variant transition-colors theme-label"
+            >Red</span
+          >
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const headerInner = document.getElementById("header-inner");
+    const headerContainer = document.getElementById("header-container");
+    const headerNav = document.getElementById("header-nav");
+    const logoContainer = document.getElementById("logo-container");
+    const navLinks = document.getElementById("nav-links");
+    const signinBtn = document.getElementById("signin-btn");
+    const getstartedBtn = document.getElementById("getstarted-btn");
+    const authButtons = document.getElementById("auth-buttons");
+
+    function updateHeader() {
+      const scrolled = window.scrollY > 20;
+      const isDesktop = window.innerWidth >= 900;
+
+      if (scrolled && isDesktop) {
+        // Scrolled state - pill navbar
+        if (headerInner) {
+          headerInner.style.background = "transparent";
+          headerInner.style.backdropFilter = "none";
+          (headerInner.style as any)["-webkit-backdrop-filter"] = "none";
+          headerInner.style.borderBottom = "none";
+          headerInner.style.paddingLeft = "24px";
+          headerInner.style.paddingRight = "24px";
+          headerInner.style.paddingTop = "16px";
+        }
+
+        if (headerContainer) {
+          headerContainer.style.maxWidth = "fit-content";
+          headerContainer.style.width = "auto";
+          headerContainer.style.paddingLeft = "0";
+          headerContainer.style.paddingRight = "0";
+        }
+
+        if (headerNav) {
+          headerNav.style.display = "flex";
+          headerNav.style.backgroundColor = "var(--glass-tint-light)";
+          headerNav.style.backdropFilter = "blur(var(--glass-blur-strong))";
+          (headerNav.style as any)["-webkit-backdrop-filter"] =
+            "blur(var(--glass-blur-strong))";
+          headerNav.style.borderRadius = "9999px";
+          headerNav.style.boxShadow = "var(--glass-shadow-elevated)";
+          headerNav.style.border = "1px solid var(--glass-border-light)";
+          headerNav.style.padding = "8px 32px";
+          headerNav.style.justifyContent = "center";
+          headerNav.style.gap = "24px";
+        }
+
+        // Hide logo
+        if (logoContainer) logoContainer.style.display = "none";
+
+        // Reduce nav gap
+        if (navLinks) {
+          navLinks.classList.remove("gap-8");
+          navLinks.classList.add("gap-6");
+        }
+
+        // Hide sign in
+        if (signinBtn) signinBtn.style.display = "none";
+
+        // Shrink button
+        if (getstartedBtn) {
+          getstartedBtn.classList.remove("px-6", "py-2.5", "rounded-xl");
+          getstartedBtn.classList.add(
+            "px-4",
+            "py-1.5",
+            "rounded-full",
+            "text-sm",
+          );
+        }
+
+        if (authButtons) {
+          authButtons.classList.remove("gap-4");
+          authButtons.classList.add("gap-2");
+        }
+      } else {
+        // Default state
+        if (headerInner) {
+          headerInner.style.background = "var(--glass-tint-light)";
+          headerInner.style.backdropFilter = "blur(var(--glass-blur))";
+          (headerInner.style as any)["-webkit-backdrop-filter"] =
+            "blur(var(--glass-blur))";
+          headerInner.style.borderBottom =
+            "1px solid var(--glass-border-subtle)";
+          headerInner.style.paddingLeft = "0";
+          headerInner.style.paddingRight = "0";
+          headerInner.style.paddingTop = "0";
+        }
+
+        if (headerContainer) {
+          headerContainer.style.maxWidth = "80rem";
+          headerContainer.style.width = "";
+          headerContainer.style.paddingLeft = "1.5rem";
+          headerContainer.style.paddingRight = "1.5rem";
+        }
+
+        if (headerNav) {
+          // Use flex on mobile, grid on desktop for proper alignment
+          const isMobile = window.innerWidth < 768;
+          headerNav.style.display = isMobile ? "flex" : "grid";
+          headerNav.style.backgroundColor = "transparent";
+          headerNav.style.backdropFilter = "none";
+          headerNav.style.borderRadius = "0";
+          headerNav.style.boxShadow = "none";
+          headerNav.style.border = "none";
+          headerNav.style.padding = "12px 0";
+          headerNav.style.justifyContent = isMobile ? "space-between" : "";
+          headerNav.style.gap = "";
+        }
+
+        // Show logo
+        if (logoContainer) logoContainer.style.display = "flex";
+
+        // Default nav gap
+        if (navLinks) {
+          navLinks.classList.add("gap-8");
+          navLinks.classList.remove("gap-6");
+        }
+
+        // Show sign in
+        if (signinBtn) signinBtn.style.display = "";
+
+        // Default button
+        if (getstartedBtn) {
+          getstartedBtn.classList.add("px-6", "py-2.5", "rounded-xl");
+          getstartedBtn.classList.remove(
+            "px-4",
+            "py-1.5",
+            "rounded-full",
+            "text-sm",
+          );
+        }
+
+        if (authButtons) {
+          authButtons.classList.add("gap-4");
+          authButtons.classList.remove("gap-2");
+        }
+      }
+    }
+
+    // Initial call
+    updateHeader();
+
+    window.addEventListener("scroll", updateHeader);
+    window.addEventListener("resize", updateHeader);
+
+    // Mobile menu
+    const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+    const closeMenuBtn = document.getElementById("close-menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const mobileMenuPanel = document.getElementById("mobile-menu-panel");
+
+    // Focus trapping for mobile menu (Accessibility: WCAG 2.4.3)
+    function trapFocus(element: HTMLElement) {
+      const focusableElements = element.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      const firstFocusable = focusableElements[0];
+      const lastFocusable = focusableElements[focusableElements.length - 1];
+
+      function handleTabKey(e: KeyboardEvent) {
+        if (e.key !== "Tab") return;
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstFocusable) {
+            e.preventDefault();
+            lastFocusable?.focus();
+          }
+        } else {
+          if (document.activeElement === lastFocusable) {
+            e.preventDefault();
+            firstFocusable?.focus();
+          }
+        }
+      }
+
+      element.addEventListener("keydown", handleTabKey);
+      firstFocusable?.focus();
+
+      return () => element.removeEventListener("keydown", handleTabKey);
+    }
+
+    let cleanupFocusTrap: (() => void) | null = null;
+
+    mobileMenuBtn?.addEventListener("click", () => {
+      mobileMenu?.classList.remove("opacity-0", "pointer-events-none");
+      mobileMenu?.classList.add("opacity-100", "pointer-events-auto");
+      mobileMenuPanel?.classList.remove("translate-x-full");
+      mobileMenuPanel?.classList.add("translate-x-0");
+      document.body.style.overflow = "hidden";
+
+      // Update aria-expanded state
+      mobileMenuBtn?.setAttribute("aria-expanded", "true");
+
+      // Trap focus inside menu
+      if (mobileMenuPanel) {
+        cleanupFocusTrap = trapFocus(mobileMenuPanel);
+      }
+    });
+
+    function closeMenu() {
+      mobileMenu?.classList.add("opacity-0", "pointer-events-none");
+      mobileMenu?.classList.remove("opacity-100", "pointer-events-auto");
+      mobileMenuPanel?.classList.add("translate-x-full");
+      mobileMenuPanel?.classList.remove("translate-x-0");
+      document.body.style.overflow = "";
+
+      // Update aria-expanded state
+      mobileMenuBtn?.setAttribute("aria-expanded", "false");
+
+      // Cleanup focus trap and return focus to trigger
+      cleanupFocusTrap?.();
+      cleanupFocusTrap = null;
+      mobileMenuBtn?.focus();
+    }
+
+    // Close on Escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && mobileMenu?.classList.contains("opacity-100")) {
+        closeMenu();
+      }
+    });
+
+    closeMenuBtn?.addEventListener("click", closeMenu);
+    mobileMenu?.addEventListener("click", (e) => {
+      if (e.target === mobileMenu) closeMenu();
+    });
+
+    // Theme popup
+    const themeToggleBtn = document.getElementById("theme-toggle-btn");
+    const themePopup = document.getElementById("theme-popup");
+    const themePopupOverlay = document.getElementById("theme-popup-overlay");
+    const themePopupContent = document.getElementById("theme-popup-content");
+    const themeOptions = document.querySelectorAll(".theme-option");
+
+    // Load saved theme on page load
+    let currentTheme = localStorage.getItem("formanywhere-theme") || "green";
+
+    function applyTheme(themeName: string) {
+      const themeBtn = document.querySelector(
+        `.theme-option[data-theme="${themeName}"]`,
+      ) as HTMLElement | null;
+      if (!themeBtn) return;
+
+      const primary = themeBtn.getAttribute("data-primary") || "#00A76F";
+      const primaryDark =
+        themeBtn.getAttribute("data-primary-dark") || "#007867";
+      const secondary = themeBtn.getAttribute("data-secondary") || "#212B36";
+      const secondaryDark =
+        themeBtn.getAttribute("data-secondary-dark") || secondary;
+      const tertiary = themeBtn.getAttribute("data-tertiary") || "#00B8D9";
+      const tertiaryDark =
+        themeBtn.getAttribute("data-tertiary-dark") || tertiary;
+
+      // =====================================================
+      // LEGACY TAILWIND CSS TOKENS
+      // =====================================================
+      document.documentElement.style.setProperty("--color-primary", primary);
+      document.documentElement.style.setProperty(
+        "--color-primary-dark",
+        primaryDark,
+      );
+      document.documentElement.style.setProperty(
+        "--color-primary-light",
+        `${primary}1A`,
+      );
+      document.documentElement.style.setProperty(
+        "--color-primary-container",
+        `${primary}1F`,
+      );
+      document.documentElement.style.setProperty(
+        "--color-on-primary-container",
+        primaryDark,
+      );
+      document.documentElement.style.setProperty(
+        "--color-secondary",
+        secondary,
+      );
+      document.documentElement.style.setProperty(
+        "--color-secondary-dark",
+        secondaryDark,
+      );
+      document.documentElement.style.setProperty(
+        "--color-secondary-light",
+        `${secondary}1A`,
+      );
+      document.documentElement.style.setProperty(
+        "--color-secondary-container",
+        `${secondary}1F`,
+      );
+      document.documentElement.style.setProperty(
+        "--color-on-secondary-container",
+        secondaryDark,
+      );
+      document.documentElement.style.setProperty("--color-tertiary", tertiary);
+      document.documentElement.style.setProperty(
+        "--color-tertiary-dark",
+        tertiaryDark,
+      );
+      document.documentElement.style.setProperty(
+        "--color-tertiary-light",
+        `${tertiary}1A`,
+      );
+      document.documentElement.style.setProperty(
+        "--color-tertiary-container",
+        `${tertiary}1F`,
+      );
+      document.documentElement.style.setProperty(
+        "--color-on-tertiary-container",
+        tertiaryDark,
+      );
+
+      // =====================================================
+      // M3 DESIGN SYSTEM TOKENS - Figma UX Contrast Principle
+      // Primary: Bold CTAs | Secondary: Muted actions | Tertiary: Accents
+      // =====================================================
+
+      // Primary color tokens
+      document.documentElement.style.setProperty("--m3-color-primary", primary);
+      document.documentElement.style.setProperty(
+        "--m3-color-primary-dark",
+        primaryDark,
+      );
+      document.documentElement.style.setProperty(
+        "--m3-color-on-primary",
+        "#ffffff",
+      );
+      document.documentElement.style.setProperty(
+        "--m3-color-primary-container",
+        `${primary}1F`,
+      );
+      document.documentElement.style.setProperty(
+        "--m3-color-on-primary-container",
+        primaryDark,
+      );
+
+      // Secondary color tokens
+      document.documentElement.style.setProperty(
+        "--m3-color-secondary",
+        secondary,
+      );
+      document.documentElement.style.setProperty(
+        "--m3-color-secondary-dark",
+        secondaryDark,
+      );
+      document.documentElement.style.setProperty(
+        "--m3-color-on-secondary",
+        "#ffffff",
+      );
+      document.documentElement.style.setProperty(
+        "--m3-color-secondary-container",
+        `${secondary}1F`,
+      );
+      document.documentElement.style.setProperty(
+        "--m3-color-on-secondary-container",
+        secondaryDark,
+      );
+
+      // Tertiary color tokens
+      document.documentElement.style.setProperty(
+        "--m3-color-tertiary",
+        tertiary,
+      );
+      document.documentElement.style.setProperty(
+        "--m3-color-tertiary-dark",
+        tertiaryDark,
+      );
+      document.documentElement.style.setProperty(
+        "--m3-color-on-tertiary",
+        "#ffffff",
+      );
+      document.documentElement.style.setProperty(
+        "--m3-color-tertiary-container",
+        `${tertiary}1F`,
+      );
+      document.documentElement.style.setProperty(
+        "--m3-color-on-tertiary-container",
+        tertiaryDark,
+      );
+
+      // Also set the data-theme attribute for CSS-based overrides
+      document.documentElement.setAttribute("data-theme", themeName);
+
+      // Update selection state
+      themeOptions.forEach((opt) => {
+        const checkIndicator = opt.querySelector(".check-indicator");
+        const label = opt.querySelector(".theme-label");
+        const primaryCircle = opt.querySelector(
+          ".theme-primary-circle",
+        ) as HTMLElement;
+        const secondaryCircle = opt.querySelector(
+          ".theme-secondary-circle",
+        ) as HTMLElement;
+        const optTheme = opt.getAttribute("data-theme");
+        const isSelected = optTheme === themeName;
+
+        if (checkIndicator) {
+          if (isSelected) {
+            checkIndicator.classList.remove("hidden");
+            checkIndicator.classList.add("flex");
+          } else {
+            checkIndicator.classList.add("hidden");
+            checkIndicator.classList.remove("flex");
+          }
+        }
+
+        if (label) {
+          const optPrimary = opt.getAttribute("data-primary") || "#00A76F";
+          if (isSelected) {
+            label.classList.remove("text-on-surface-variant");
+            (label as HTMLElement).style.color = optPrimary;
+            (label as HTMLElement).style.fontWeight = "700";
+          } else {
+            label.classList.add("text-on-surface-variant");
+            (label as HTMLElement).style.color = "";
+            (label as HTMLElement).style.fontWeight = "600";
+          }
+        }
+
+        // Update circle borders for selected state
+        if (primaryCircle && secondaryCircle) {
+          const optPrimary = opt.getAttribute("data-primary") || "#00A76F";
+          if (isSelected) {
+            primaryCircle.style.borderColor = optPrimary;
+            primaryCircle.style.boxShadow = `0 8px 24px ${optPrimary}40, 0 0 0 4px ${optPrimary}15`;
+            secondaryCircle.style.borderColor = optPrimary;
+          } else {
+            primaryCircle.style.borderColor = "white";
+            primaryCircle.style.boxShadow = `0 4px 12px ${optPrimary}25`;
+            secondaryCircle.style.borderColor = "white";
+          }
+        }
+      });
+
+      localStorage.setItem("formanywhere-theme", themeName);
+      currentTheme = themeName;
+    }
+
+    // Apply saved theme on load
+    applyTheme(currentTheme);
+
+    function showThemePopup() {
+      if (!themeToggleBtn || !themePopup || !themePopupContent) return;
+      const rect = themeToggleBtn.getBoundingClientRect();
+      themePopup.classList.remove("hidden");
+      themePopupContent.style.top = `${rect.bottom + 12}px`;
+      // Position popup aligned to button's right edge
+      const popupWidth = 304; // Updated for new design
+      themePopupContent.style.left = `${Math.max(16, rect.right - popupWidth)}px`;
+    }
+
+    function hideThemePopup() {
+      themePopup?.classList.add("hidden");
+    }
+
+    themeToggleBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showThemePopup();
+    });
+    themePopupOverlay?.addEventListener("click", hideThemePopup);
+
+    themeOptions.forEach((option) => {
+      option.addEventListener("click", () => {
+        const theme = option.getAttribute("data-theme");
+        if (theme) {
+          applyTheme(theme);
+        }
+        hideThemePopup();
+      });
+    });
+  </script>
+</header>

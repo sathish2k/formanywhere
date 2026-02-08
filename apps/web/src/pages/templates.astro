@@ -1,0 +1,321 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { Typography } from "@formanywhere/ui/typography";
+import { Button } from "@formanywhere/ui/button";
+import { Chip } from "@formanywhere/ui/chip";
+import { SearchBar } from "@formanywhere/ui/search";
+import { TemplateBrowser, TemplateCard } from "@formanywhere/shared";
+
+const categories = [
+  { id: "all", label: "All Templates", icon: "file" },
+  { id: "contact", label: "Contact Forms", icon: "message" },
+  { id: "registration", label: "Registration", icon: "clipboard" },
+  { id: "survey", label: "Surveys", icon: "users" },
+  { id: "booking", label: "Booking", icon: "calendar" },
+  { id: "order", label: "Order Forms", icon: "cart" },
+  { id: "feedback", label: "Feedback", icon: "heart" },
+  { id: "lead", label: "Lead Generation", icon: "trending" },
+];
+
+const templates = [
+  {
+    id: "t1",
+    name: "Contact Form",
+    description: "Simple contact form with name, email, and message",
+    category: "contact",
+    popular: true,
+    uses: "12.5k",
+    fields: ["Name", "Email", "Message", "Phone"],
+  },
+  {
+    id: "t2",
+    name: "Customer Survey",
+    description: "Gather valuable feedback from your customers",
+    category: "survey",
+    popular: true,
+    uses: "8.2k",
+    fields: ["Rating", "Comments", "Suggestions"],
+  },
+  {
+    id: "t3",
+    name: "Event Registration",
+    description: "Collect attendee information for events",
+    category: "registration",
+    popular: true,
+    uses: "6.8k",
+    fields: ["Name", "Email", "Attendees", "Dietary"],
+  },
+  {
+    id: "t4",
+    name: "Job Application",
+    description: "Professional job application with resume upload",
+    category: "registration",
+    popular: true,
+    uses: "5.4k",
+    fields: ["Resume", "Cover Letter", "Experience"],
+  },
+  {
+    id: "t5",
+    name: "Product Feedback",
+    description: "Collect detailed product feedback and suggestions",
+    category: "feedback",
+    popular: false,
+    uses: "4.1k",
+    fields: ["Product", "Rating", "Feedback"],
+  },
+  {
+    id: "t6",
+    name: "Order Form",
+    description: "Accept orders with product selection and payment",
+    category: "order",
+    popular: false,
+    uses: "3.8k",
+    fields: ["Product", "Quantity", "Address"],
+  },
+  {
+    id: "t7",
+    name: "Newsletter Signup",
+    description: "Build your email list with a simple signup form",
+    category: "lead",
+    popular: false,
+    uses: "9.2k",
+    fields: ["Email", "Name", "Preferences"],
+  },
+  {
+    id: "t8",
+    name: "Appointment Booking",
+    description: "Let customers schedule appointments online",
+    category: "booking",
+    popular: false,
+    uses: "4.5k",
+    fields: ["Date", "Time", "Service", "Contact"],
+  },
+  {
+    id: "t9",
+    name: "NPS Survey",
+    description: "Net Promoter Score survey to measure loyalty",
+    category: "survey",
+    popular: false,
+    uses: "3.2k",
+    fields: ["Score", "Reason", "Follow-up"],
+  },
+  {
+    id: "t10",
+    name: "Support Request",
+    description: "Collect support tickets and bug reports",
+    category: "feedback",
+    popular: false,
+    uses: "2.9k",
+    fields: ["Issue", "Priority", "Screenshot"],
+  },
+  {
+    id: "t11",
+    name: "Quote Request",
+    description: "Let customers request quotes for services",
+    category: "lead",
+    popular: false,
+    uses: "2.4k",
+    fields: ["Service", "Budget", "Timeline"],
+  },
+  {
+    id: "t12",
+    name: "Course Enrollment",
+    description: "Accept applications for courses or programs",
+    category: "registration",
+    popular: false,
+    uses: "2.1k",
+    fields: ["Course", "Payment", "Background"],
+  },
+];
+
+const popularTemplates = templates.filter((t) => t.popular);
+
+const iconPaths: Record<string, string> = {
+  file: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8",
+  message: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
+  clipboard:
+    "M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2 M9 2h6v4H9V2z M12 11v6 M9 14h6",
+  users:
+    "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z",
+  calendar:
+    "M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zM16 2v4M8 2v4M3 10h18",
+  cart: "M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6 M9 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2z M20 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2z",
+  heart:
+    "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z",
+  trending: "M23 6l-9.5 9.5-5-5L1 18 M17 6h6v6",
+};
+---
+
+<BaseLayout title="Templates | FormAnywhere">
+  <Header />
+  <main class="min-h-screen bg-background-neutral">
+    <!-- Hero Section - Gradient background like original -->
+    <section
+      class="relative overflow-hidden bg-gradient-to-br from-primary to-primary-dark text-white py-16 md:py-20"
+    >
+      <!-- Decorative circle -->
+      <div
+        class="absolute -top-12 -right-12 w-72 h-72 rounded-full border border-white/10"
+      >
+      </div>
+
+      <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
+        <Chip
+          variant="label"
+          label="Form Templates"
+          client:load
+          class="mb-6"
+          style={{
+            background: "rgba(255, 255, 255, 0.2)",
+            color: "white",
+            "backdrop-filter": "blur(8px)",
+            border: "none",
+          }}
+        />
+        <Typography
+          variant="display-medium"
+          as="h1"
+          align="center"
+          class="mb-4 text-3xl sm:text-4xl md:text-5xl"
+          style={{ color: "white" }}
+        >
+          Start with a template
+        </Typography>
+        <Typography
+          variant="body-large"
+          align="center"
+          class="mb-8 max-w-xl mx-auto"
+          style={{ color: "rgba(255,255,255,0.9)" }}
+        >
+          Choose from our library of professionally designed form templates.
+          Customize and deploy in minutes.
+        </Typography>
+
+        <!-- Search Bar -->
+        <div class="relative max-w-xl mx-auto">
+          <SearchBar
+            id="search-input"
+            placeholder="Search templates..."
+            client:load
+            class="w-full"
+            style={{
+              "border-radius": "16px",
+              background: "rgba(255, 255, 255, 0.1)",
+              "backdrop-filter": "blur(12px)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              color: "white",
+            }}
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Popular Templates Section -->
+    <section class="py-12 md:py-16 bg-surface border-b border-outline-variant">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex items-center gap-2 mb-8">
+          <svg class="w-6 h-6 text-primary fill-primary" viewBox="0 0 24 24">
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+            ></polygon>
+          </svg>
+          <Typography variant="title-large" as="h2" color="on-surface">
+            Popular Templates
+          </Typography>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {
+            popularTemplates.map((template) => (
+              <TemplateCard template={template} client:load />
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- All Templates Browser with Category Filters -->
+    <section class="py-12">
+      <div class="max-w-6xl mx-auto px-4">
+        <TemplateBrowser
+          client:load
+          initialTemplates={templates}
+          categories={categories}
+          iconPaths={iconPaths}
+        />
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 relative overflow-hidden">
+      <!-- Background Gradients -->
+      <div class="absolute inset-0 bg-surface"></div>
+      <div
+        class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full"
+      >
+        <div
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] opacity-50"
+        >
+        </div>
+        <div
+          class="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-tertiary/20 rounded-full blur-[100px] opacity-40"
+        >
+        </div>
+      </div>
+
+      <div class="relative z-10 max-w-6xl mx-auto px-4">
+        <div
+          class="relative overflow-hidden rounded-[2.5rem] p-12 text-center border border-white/40 shadow-2xl backdrop-blur-xl bg-white/10 dark:bg-white/5"
+        >
+          <!-- Glass Shine Effect -->
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none"
+          >
+          </div>
+
+          <div class="relative z-10 max-w-3xl mx-auto">
+            <Typography
+              variant="display-small"
+              as="h2"
+              align="center"
+              class="mb-6 font-bold"
+              style={{ color: "var(--m3-color-on-surface)" }}
+            >
+              Can't find what you need?
+            </Typography>
+
+            <Typography
+              variant="body-large"
+              align="center"
+              class="mb-10 max-w-xl mx-auto text-lg"
+              style={{ color: "var(--m3-color-on-surface-variant)" }}
+            >
+              Create your own custom form from scratch with our powerful form
+              builder. No coding required.
+            </Typography>
+
+            <Button
+              href="/form-builder/new"
+              variant="filled"
+              client:load
+              class="shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              style={{
+                padding: "16px 40px",
+                "border-radius": "100px",
+                "font-size": "1.1rem",
+                "font-weight": "600",
+                background: "var(--m3-color-primary)",
+                color: "var(--m3-color-on-primary)",
+              }}
+            >
+              Create Custom Form
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

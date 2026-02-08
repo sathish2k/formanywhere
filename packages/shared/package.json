@@ -1,0 +1,48 @@
+{
+    "name": "@formanywhere/shared",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        ".": {
+            "import": "./src/index.ts",
+            "types": "./src/index.ts"
+        },
+        "./feature-tabs": {
+            "import": "./src/feature-tabs/index.tsx",
+            "types": "./src/feature-tabs/index.tsx"
+        },
+        "./use-cases-grid": {
+            "import": "./src/use-cases-grid/index.tsx",
+            "types": "./src/use-cases-grid/index.tsx"
+        },
+        "./types": {
+            "import": "./src/types/index.ts",
+            "types": "./src/types/index.ts"
+        },
+        "./utils": {
+            "import": "./src/utils/index.ts",
+            "types": "./src/utils/index.ts"
+        },
+        "./constants": {
+            "import": "./src/constants/index.ts",
+            "types": "./src/constants/index.ts"
+        }
+    },
+    "scripts": {
+        "dev": "tsc --watch",
+        "build": "tsc",
+        "lint": "echo 'No linter configured'"
+    },
+    "dependencies": {
+        "@formanywhere/ui": "workspace:*",
+        "solid-js": "^1.9.11"
+    },
+    "peerDependencies": {
+        "solid-js": "^1.9.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.7.0"
+    }
+}

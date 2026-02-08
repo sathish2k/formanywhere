@@ -1,0 +1,164 @@
+/* ===============================================
+   ACCESSIBILITY STYLES
+   Focus indicators, reduced motion, and a11y utilities
+   =============================================== */
+
+/* === FOCUS VISIBLE RING === */
+/* Uses :focus-visible for keyboard-only focus ring (not mouse clicks) */
+
+/* Buttons */
+button:focus-visible,
+a[role="button"]:focus-visible,
+[role="button"]:focus-visible {
+    outline: 2px solid var(--m3-color-primary, #5B5FED);
+    outline-offset: 2px;
+}
+
+/* Links */
+a:focus-visible {
+    outline: 2px solid var(--m3-color-primary, #5B5FED);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Form inputs */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--m3-color-primary, #5B5FED);
+    outline-offset: 0;
+}
+
+/* Interactive cards and chips */
+[role="option"]:focus-visible,
+[role="tab"]:focus-visible,
+[role="checkbox"]:focus-visible,
+[role="radio"]:focus-visible,
+[role="switch"]:focus-visible,
+[role="menuitem"]:focus-visible,
+[role="listitem"]:focus-visible {
+    outline: 2px solid var(--m3-color-primary, #5B5FED);
+    outline-offset: 2px;
+}
+
+/* Chip focus */
+[data-component="chip"]:focus-visible {
+    outline: 2px solid var(--m3-color-primary, #5B5FED);
+    outline-offset: 2px;
+}
+
+/* Card focus (for interactive cards) */
+[data-component="card"][tabindex]:focus-visible {
+    outline: 2px solid var(--m3-color-primary, #5B5FED);
+    outline-offset: 2px;
+}
+
+/* === REDUCED MOTION === */
+/* Respects user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* === SKIP LINK === */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--m3-color-primary, #5B5FED);
+    color: var(--m3-color-on-primary, #fff);
+    padding: 8px 16px;
+    z-index: 9999;
+    transition: top 0.3s;
+    border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* === SCREEN READER ONLY === */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* === HIGH CONTRAST MODE === */
+@media (forced-colors: active) {
+
+    button,
+    [role="button"] {
+        border: 2px solid currentColor;
+    }
+
+    input,
+    textarea,
+    select {
+        border: 2px solid currentColor;
+    }
+}
+
+/* === TOUCH TARGETS === */
+/* Note: Touch target sizing is handled by individual components via padding */
+/* Form controls still get minimum sizing for accessibility */
+input[type="checkbox"],
+input[type="radio"] {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* === ENHANCED CONTRAST UTILITIES === */
+/* High contrast focus for important elements */
+.focus-high-contrast:focus-visible {
+    outline: 3px solid var(--m3-color-primary, #5B5FED);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px rgba(91, 95, 237, 0.15);
+}
+
+/* Focus visible on dark backgrounds */
+.focus-on-dark:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.25);
+}
+
+/* Interactive card hover enhancement */
+[data-component="card"][tabindex]:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--m3-elevation-2, 0 4px 12px rgba(0, 0, 0, 0.15));
+}
+
+/* Button hover states for better visual feedback */
+[data-component="button"]:hover:not(:disabled) {
+    filter: brightness(1.05);
+}
+
+[data-component="button"][data-variant="filled"]:hover:not(:disabled),
+[data-component="button"][data-variant="secondary"]:hover:not(:disabled) {
+    box-shadow: var(--m3-elevation-2, 0 4px 12px rgba(0, 0, 0, 0.2));
+}
+
+/* Chip hover enhancement */
+[data-component="chip"]:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Link hover underline for better affordance */
+a:hover:not([role="button"]):not([data-component]) {
+    text-decoration-color: currentColor;
+}

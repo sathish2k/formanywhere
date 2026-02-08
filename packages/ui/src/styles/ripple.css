@@ -1,0 +1,82 @@
+/* ===============================================
+   MATERIAL 3 RIPPLE STYLES
+   CSS styles for the M3 Ripple component
+   =============================================== */
+
+/* Ripple surface container */
+.m3-ripple-surface {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: inherit;
+}
+
+/* Hover state overlay */
+.m3-ripple-surface::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--ripple-color, currentColor);
+    opacity: 0;
+    transition: opacity 150ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.m3-ripple-surface.hovered::before {
+    opacity: 0.08;
+}
+
+/* Ripple effect (press animation) */
+.m3-ripple-surface::after {
+    content: '';
+    position: absolute;
+    top: var(--ripple-top, 50%);
+    left: var(--ripple-left, 50%);
+    width: var(--ripple-size, 0);
+    height: var(--ripple-size, 0);
+    background: radial-gradient(closest-side,
+            var(--ripple-color, currentColor) max(calc(100% - 70px), 65%),
+            transparent 100%);
+    opacity: 0;
+    border-radius: 50%;
+    transform-origin: center center;
+}
+
+.m3-ripple-surface.pressed::after {
+    opacity: 0.12;
+}
+
+/* Spinner animation for loading buttons */
+.m3-spinner {
+    animation: m3-spin 1s linear infinite;
+}
+
+@keyframes m3-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Enhanced ripple for high contrast */
+@media (prefers-contrast: more) {
+    .m3-ripple-surface.hovered::before {
+        opacity: 0.16;
+    }
+
+    .m3-ripple-surface.pressed::after {
+        opacity: 0.24;
+    }
+}
+
+/* Reduced motion - instant feedback */
+@media (prefers-reduced-motion: reduce) {
+
+    .m3-ripple-surface::before,
+    .m3-ripple-surface::after {
+        transition-duration: 0.01ms !important;
+    }
+}

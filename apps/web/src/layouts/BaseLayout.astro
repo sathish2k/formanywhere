@@ -1,0 +1,48 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "FormAnywhere | Build Powerful Forms That Work Offline",
+  description = "Create multi-step forms, surveys, and questionnaires with drag-and-drop simplicity. Works offline, syncs when connected.",
+} = Astro.props;
+
+import "../styles/global.css";
+import "@formanywhere/ui/styles/theme.css";
+import "@formanywhere/ui/styles/glass.css";
+import "@formanywhere/ui/styles/accessibility.css";
+import "@formanywhere/ui/styles/typography.css";
+import "@formanywhere/ui/styles/ripple.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+    <!-- Theme initialization script - runs before page render to prevent flash -->
+    <script is:inline>
+      (function () {
+        const savedTheme =
+          localStorage.getItem("formanywhere-theme") || "green";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      })();
+    </script>
+  </head>
+  <body class="bg-background-default font-sans antialiased">
+    <!-- Skip link for keyboard navigation (Accessibility: WCAG 2.4.1) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <slot />
+  </body>
+</html>

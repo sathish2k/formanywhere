@@ -1,0 +1,96 @@
+---
+/**
+ * CTA Section - Authentic Call to Action
+ * Focus on value proposition without inflated claims
+ */
+import { Button } from "@formanywhere/ui/button";
+import { Typography } from "@formanywhere/ui/typography";
+---
+
+<section class="relative py-20 overflow-hidden" aria-labelledby="cta-heading">
+  <!-- Gradient background -->
+  <div class="absolute inset-0 bg-gradient-to-br from-primary to-primary-dark">
+  </div>
+  <!-- Glass overlay for depth -->
+  <div class="absolute inset-0 lg-glass-subtle opacity-30"></div>
+
+  <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <Typography
+      variant="headline-large"
+      as="h2"
+      align="center"
+      class="mb-4"
+      style={{ color: "var(--m3-color-on-primary)" }}
+    >
+      Ready to Collect Data Anywhere?
+    </Typography>
+    <Typography
+      variant="body-large"
+      align="center"
+      class="mb-10"
+      style={{ color: "var(--m3-color-on-primary)" }}
+    >
+      Start building forms that work offline. No credit card required.
+    </Typography>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <!-- Primary CTA: White background, bold, stands out on gradient -->
+      <Button
+        href="/signup"
+        variant="tonal"
+        size="lg"
+        style={{
+          background: "var(--m3-color-surface)",
+          color: "var(--m3-color-primary)",
+          "font-weight": "700",
+          "box-shadow": "0 8px 24px rgba(0, 0, 0, 0.15)",
+        }}
+      >
+        Get Started Free
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+      </Button>
+      <!-- Secondary CTA: Outlined for lower emphasis -->
+      <Button
+        href="#demo"
+        variant="outlined"
+        size="lg"
+        style={{
+          "border-color":
+            "color-mix(in srgb, var(--m3-color-on-primary) 50%, transparent)",
+          color: "var(--m3-color-on-primary)",
+          background:
+            "color-mix(in srgb, var(--m3-color-on-primary) 10%, transparent)",
+        }}
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+          ></path>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        Watch Demo
+      </Button>
+    </div>
+  </div>
+</section>

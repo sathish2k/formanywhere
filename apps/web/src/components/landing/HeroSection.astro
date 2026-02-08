@@ -1,0 +1,162 @@
+---
+/**
+ * Hero Section - Using @formanywhere/ui components
+ * Title, subtitle, CTAs with Typography and Button components
+ */
+import { Button } from "@formanywhere/ui/button";
+import { Typography } from "@formanywhere/ui/typography";
+import { Chip } from "@formanywhere/ui/chip";
+import { Card } from "@formanywhere/ui/card";
+---
+
+<section
+  class="relative py-16 md:py-24 overflow-hidden"
+  aria-labelledby="hero-heading"
+>
+  <!-- Glass tinted background -->
+  <div
+    class="absolute inset-0 bg-gradient-to-br from-background-default via-background-neutral to-primary-light"
+  >
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <!-- Content -->
+      <div>
+        <Chip
+          variant="label"
+          label="AI-POWERED AUTOMATION"
+          style={{ "margin-bottom": "1.5rem" }}
+        />
+
+        <Typography
+          variant="display-large"
+          as="h1"
+          color="on-surface"
+          class="leading-tight mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+        >
+          Build AI-Powered Forms
+          <span
+            class="font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+            >That Work Offline</span
+          >
+        </Typography>
+
+        <Typography
+          variant="body-large"
+          color="on-surface-variant"
+          class="leading-relaxed mb-8 text-base md:text-lg"
+        >
+          The offline-first form builder for Web and Desktop. Generate forms,
+          rules, and workflows instantly with AI. Deploy anywhere, collect data
+          securely without internet.
+        </Typography>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <!-- Primary CTA: Bold filled button with gradient -->
+          <Button
+            href="/signup"
+            variant="filled"
+            size="lg"
+            style={{
+              background:
+                "linear-gradient(135deg, var(--color-primary), var(--color-secondary))",
+              "font-weight": "600",
+            }}
+          >
+            Get started for free
+          </Button>
+          <!-- Secondary CTA: Outlined button for lower emphasis -->
+          <Button href="#demo" variant="outlined" size="lg">
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Watch a demo
+          </Button>
+        </div>
+      </div>
+
+      <!-- Form Preview Card with Liquid Glass Effect -->
+      <Card
+        variant="glass-strong"
+        style={{ padding: "32px", "border-radius": "24px" }}
+      >
+        <div class="lg-glass-subtle rounded-xl p-6 mb-4">
+          <!-- Window dots -->
+          <div class="flex gap-2 mb-6">
+            <div class="w-3 h-3 rounded-full bg-error"></div>
+            <div class="w-3 h-3 rounded-full bg-warning"></div>
+            <div class="w-3 h-3 rounded-full bg-success"></div>
+          </div>
+
+          <!-- Mock Form Builder Interface -->
+          <div class="space-y-4">
+            <div class="p-4 rounded-lg border border-dashed border-primary">
+              <label class="text-sm text-text-secondary mb-2 block"
+                >Full Name *</label
+              >
+              <div class="h-10 bg-surface-dim rounded border border-outline">
+              </div>
+            </div>
+            <div class="lg-glass-subtle p-4 rounded-lg border border-outline">
+              <label class="text-sm text-text-secondary mb-2 block"
+                >Email Address *</label
+              >
+              <div class="h-10 bg-surface-dim rounded border border-outline">
+              </div>
+            </div>
+            <div class="lg-glass-subtle p-4 rounded-lg border border-outline">
+              <label class="text-sm text-text-secondary mb-2 block"
+                >Phone Number</label
+              >
+              <div class="h-10 bg-surface-dim rounded border border-outline">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature chips - using primary, secondary, tertiary for variety -->
+        <div class="flex justify-center gap-2 flex-wrap">
+          <Chip
+            variant="label"
+            label="Drag & Drop"
+            style={{
+              background: "var(--m3-color-primary-container)",
+              color: "var(--m3-color-on-primary-container)",
+            }}
+          />
+          <Chip
+            variant="label"
+            label="AI Powered"
+            style={{
+              background: "var(--m3-color-secondary-container)",
+              color: "var(--m3-color-on-secondary-container)",
+            }}
+          />
+          <Chip
+            variant="label"
+            label="Multi-Step"
+            style={{
+              background: "var(--m3-color-tertiary-container)",
+              color: "var(--m3-color-on-tertiary-container)",
+            }}
+          />
+        </div>
+      </Card>
+    </div>
+  </div>
+</section>

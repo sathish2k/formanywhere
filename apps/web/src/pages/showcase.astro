@@ -1,0 +1,1011 @@
+---
+import {
+    Button,
+    Card,
+    Chip,
+    Typography,
+    Slider,
+    DatePicker,
+} from "@formanywhere/ui";
+import OverlayDemo from "../components/showcase/OverlayDemo";
+import NavigationDemo from "../components/showcase/NavigationDemo";
+import "@formanywhere/ui/styles/theme.css";
+import "@formanywhere/ui/styles/typography.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="UI Showcase - FormAnywhere">
+    <div
+        class="min-h-screen bg-gradient-to-br from-surface via-surface-container to-surface-dim"
+    >
+        <!-- Hero Section -->
+        <section class="section">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <Chip
+                        variant="label"
+                        label="Design System v1.0"
+                        client:load
+                    />
+                    <Typography
+                        variant="display-medium"
+                        color="on-surface"
+                        align="center"
+                        client:load
+                        class="mb-4"
+                    >
+                        UI Component Showcase
+                    </Typography>
+                    <Typography
+                        variant="body-large"
+                        color="on-surface-variant"
+                        align="center"
+                        client:load
+                        class="max-w-2xl mx-auto"
+                    >
+                        Explore all components from the @formanywhere/ui design
+                        system built with Liquid Glass Material 3 principles
+                    </Typography>
+                </div>
+            </div>
+        </section>
+
+        <!-- Typography Section -->
+        <section class="section" id="typography">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Typography
+                    </Typography>
+
+                    <!-- Display Variants -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Display
+                        </Typography>
+                        <div class="space-y-4">
+                            <Typography
+                                variant="display-large"
+                                color="on-surface"
+                                client:load
+                            >
+                                Display Large - The quick brown fox
+                            </Typography>
+                            <Typography
+                                variant="display-medium"
+                                color="on-surface"
+                                client:load
+                            >
+                                Display Medium - The quick brown fox
+                            </Typography>
+                            <Typography
+                                variant="display-small"
+                                color="on-surface"
+                                client:load
+                            >
+                                Display Small - The quick brown fox
+                            </Typography>
+                        </div>
+                    </div>
+
+                    <!-- Headline Variants -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Headlines
+                        </Typography>
+                        <div class="space-y-4">
+                            <Typography
+                                variant="headline-large"
+                                color="on-surface"
+                                client:load
+                            >
+                                Headline Large - The quick brown fox jumps
+                            </Typography>
+                            <Typography
+                                variant="headline-medium"
+                                color="on-surface"
+                                client:load
+                            >
+                                Headline Medium - The quick brown fox jumps
+                            </Typography>
+                            <Typography
+                                variant="headline-small"
+                                color="on-surface"
+                                client:load
+                            >
+                                Headline Small - The quick brown fox jumps over
+                            </Typography>
+                        </div>
+                    </div>
+
+                    <!-- Title Variants -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Titles
+                        </Typography>
+                        <div class="space-y-4">
+                            <Typography
+                                variant="title-large"
+                                color="on-surface"
+                                client:load
+                            >
+                                Title Large - The quick brown fox jumps over the
+                                lazy
+                            </Typography>
+                            <Typography
+                                variant="title-medium"
+                                color="on-surface"
+                                client:load
+                            >
+                                Title Medium - The quick brown fox jumps over
+                                the lazy dog
+                            </Typography>
+                            <Typography
+                                variant="title-small"
+                                color="on-surface"
+                                client:load
+                            >
+                                Title Small - The quick brown fox jumps over the
+                                lazy dog
+                            </Typography>
+                        </div>
+                    </div>
+
+                    <!-- Body Variants -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Body
+                        </Typography>
+                        <div class="space-y-4">
+                            <Typography
+                                variant="body-large"
+                                color="on-surface"
+                                client:load
+                            >
+                                Body Large - The quick brown fox jumps over the
+                                lazy dog. Pack my box with five dozen liquor
+                                jugs.
+                            </Typography>
+                            <Typography
+                                variant="body-medium"
+                                color="on-surface"
+                                client:load
+                            >
+                                Body Medium - The quick brown fox jumps over the
+                                lazy dog. Pack my box with five dozen liquor
+                                jugs. How vexingly quick daft zebras jump!
+                            </Typography>
+                            <Typography
+                                variant="body-small"
+                                color="on-surface"
+                                client:load
+                            >
+                                Body Small - The quick brown fox jumps over the
+                                lazy dog. Pack my box with five dozen liquor
+                                jugs. How vexingly quick daft zebras jump! The
+                                five boxing wizards jump quickly.
+                            </Typography>
+                        </div>
+                    </div>
+
+                    <!-- Colors -->
+                    <div>
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Colors
+                        </Typography>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                        >
+                            <Typography
+                                variant="body-large"
+                                color="on-surface"
+                                client:load
+                            >
+                                On Surface
+                            </Typography>
+                            <Typography
+                                variant="body-large"
+                                color="on-surface-variant"
+                                client:load
+                            >
+                                On Surface Variant
+                            </Typography>
+                            <Typography
+                                variant="body-large"
+                                color="primary"
+                                client:load
+                            >
+                                Primary
+                            </Typography>
+                            <Typography
+                                variant="body-large"
+                                color="secondary"
+                                client:load
+                            >
+                                Secondary
+                            </Typography>
+                            <Typography
+                                variant="body-large"
+                                color="tertiary"
+                                client:load
+                            >
+                                Tertiary
+                            </Typography>
+                            <Typography
+                                variant="body-large"
+                                color="error"
+                                client:load
+                            >
+                                Error
+                            </Typography>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Buttons Section -->
+        <section class="section" id="buttons">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Buttons
+                    </Typography>
+
+                    <!-- Variants -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Variants
+                        </Typography>
+                        <div class="flex flex-wrap gap-4">
+                            <Button variant="filled" client:load
+                                >Filled Button</Button
+                            >
+                            <Button variant="outlined" client:load
+                                >Outlined Button</Button
+                            >
+                            <Button variant="text" client:load
+                                >Text Button</Button
+                            >
+                            <Button variant="tonal" client:load
+                                >Tonal Button</Button
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Sizes -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Sizes
+                        </Typography>
+                        <div class="flex flex-wrap items-center gap-4">
+                            <Button variant="filled" size="sm" client:load
+                                >Small</Button
+                            >
+                            <Button variant="filled" size="md" client:load
+                                >Medium</Button
+                            >
+                            <Button variant="filled" size="lg" client:load
+                                >Large</Button
+                            >
+                        </div>
+                    </div>
+
+                    <!-- With Icons -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            With Icons
+                        </Typography>
+                        <div class="flex flex-wrap gap-4">
+                            <Button variant="filled" client:load>
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Add Item
+                            </Button>
+                            <Button variant="outlined" client:load>
+                                Download
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                    ></path>
+                                </svg>
+                            </Button>
+                        </div>
+                    </div>
+
+                    <!-- States -->
+                    <div>
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            States
+                        </Typography>
+                        <div class="flex flex-wrap gap-4">
+                            <Button variant="filled" disabled client:load
+                                >Disabled</Button
+                            >
+                            <Button variant="outlined" disabled client:load
+                                >Disabled Outlined</Button
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards Section -->
+        <section class="section" id="cards">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Cards
+                    </Typography>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Elevated Card -->
+                        <Card variant="elevated" client:load>
+                            <div class="p-6">
+                                <Typography
+                                    variant="title-large"
+                                    color="on-surface"
+                                    client:load
+                                    class="mb-2"
+                                >
+                                    Elevated Card
+                                </Typography>
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface-variant"
+                                    client:load
+                                    class="mb-4"
+                                >
+                                    This card has an elevated appearance with
+                                    shadow and depth.
+                                </Typography>
+                                <Button variant="filled" size="sm" client:load
+                                    >Action</Button
+                                >
+                            </div>
+                        </Card>
+
+                        <!-- Filled Card -->
+                        <Card variant="filled" client:load>
+                            <div class="p-6">
+                                <Typography
+                                    variant="title-large"
+                                    color="on-surface"
+                                    client:load
+                                    class="mb-2"
+                                >
+                                    Filled Card
+                                </Typography>
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface-variant"
+                                    client:load
+                                    class="mb-4"
+                                >
+                                    This card has a filled background with
+                                    subtle elevation.
+                                </Typography>
+                                <Button variant="tonal" size="sm" client:load
+                                    >Action</Button
+                                >
+                            </div>
+                        </Card>
+
+                        <!-- Outlined Card -->
+                        <Card variant="outlined" client:load>
+                            <div class="p-6">
+                                <Typography
+                                    variant="title-large"
+                                    color="on-surface"
+                                    client:load
+                                    class="mb-2"
+                                >
+                                    Outlined Card
+                                </Typography>
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface-variant"
+                                    client:load
+                                    class="mb-4"
+                                >
+                                    This card has a border outline with minimal
+                                    elevation.
+                                </Typography>
+                                <Button variant="outlined" size="sm" client:load
+                                    >Action</Button
+                                >
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chips Section -->
+        <section class="section" id="chips">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Chips
+                    </Typography>
+
+                    <!-- Variants -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Variants
+                        </Typography>
+                        <div class="flex flex-wrap gap-3">
+                            <Chip label="Filled Chip" client:load />
+                            <Chip label="Outlined Chip" client:load />
+                        </div>
+                    </div>
+
+                    <!-- Selected State -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Selected State
+                        </Typography>
+                        <div class="flex flex-wrap gap-3">
+                            <Chip label="Selected" selected client:load />
+                            <Chip label="Not Selected" client:load />
+                        </div>
+                    </div>
+
+                    <!-- With Icons -->
+                    <div>
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Label Variant with Colors
+                        </Typography>
+                        <div class="flex flex-wrap gap-3">
+                            <Chip
+                                variant="label"
+                                label="Primary Chip"
+                                client:load
+                            />
+                            <Chip
+                                variant="label"
+                                color="secondary"
+                                label="Secondary"
+                                client:load
+                            />
+                            <Chip
+                                variant="label"
+                                color="info"
+                                label="Info"
+                                client:load
+                            />
+                            <Chip
+                                variant="label"
+                                color="success"
+                                label="Success"
+                                client:load
+                            />
+                            <Chip
+                                variant="label"
+                                color="warning"
+                                label="Warning"
+                                client:load
+                            />
+                            <Chip
+                                variant="label"
+                                color="error"
+                                label="Error"
+                                client:load
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sliders Section -->
+        <section class="section" id="sliders">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Sliders
+                    </Typography>
+
+                    <div class="space-y-8 max-w-md">
+                        <div>
+                            <Typography
+                                variant="title-medium"
+                                color="on-surface-variant"
+                                client:load
+                                class="mb-4"
+                            >
+                                Continuous
+                            </Typography>
+                            <Slider
+                                client:load
+                                defaultValue={30}
+                                label="Volume"
+                            />
+                        </div>
+
+                        <div>
+                            <Typography
+                                variant="title-medium"
+                                color="on-surface-variant"
+                                client:load
+                                class="mb-4"
+                            >
+                                Discrete (Steps)
+                            </Typography>
+                            <Slider
+                                client:load
+                                min={0}
+                                max={10}
+                                step={1}
+                                defaultValue={5}
+                                label="Rating"
+                                showValue
+                            />
+                        </div>
+
+                        <div>
+                            <Typography
+                                variant="title-medium"
+                                color="on-surface-variant"
+                                client:load
+                                class="mb-4"
+                            >
+                                Secondary Color
+                            </Typography>
+                            <Slider
+                                client:load
+                                color="secondary"
+                                defaultValue={70}
+                            />
+                        </div>
+
+                        <div>
+                            <Typography
+                                variant="title-medium"
+                                color="on-surface-variant"
+                                client:load
+                                class="mb-4"
+                            >
+                                Disabled
+                            </Typography>
+                            <Slider
+                                client:load
+                                disabled
+                                defaultValue={50}
+                                label="Disabled"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pickers Section -->
+        <section class="section" id="pickers">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Pickers
+                    </Typography>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <Typography
+                                variant="title-medium"
+                                color="on-surface-variant"
+                                client:load
+                                class="mb-4"
+                            >
+                                Date Picker
+                            </Typography>
+                            <div class="space-y-4">
+                                <DatePicker client:load label="Select Date" />
+                                <DatePicker
+                                    client:load
+                                    label="With Value"
+                                    value={new Date()}
+                                />
+                                <DatePicker
+                                    client:load
+                                    label="Disabled"
+                                    disabled
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Overlays Section -->
+        <section class="section" id="overlays">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Overlays (Drawer / Sheet)
+                    </Typography>
+
+                    <div>
+                        <OverlayDemo client:load />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Section -->
+        <section class="section" id="navigation">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Navigation & Inputs
+                    </Typography>
+
+                    <div>
+                        <NavigationDemo client:load />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Glass Effects Section -->
+        <section class="section" id="glass">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Liquid Glass Effects
+                    </Typography>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Subtle Glass -->
+                        <div
+                            class="lg-glass-subtle rounded-2xl p-6 text-center"
+                        >
+                            <Typography
+                                variant="title-medium"
+                                color="on-surface"
+                                client:load
+                                class="mb-2"
+                            >
+                                Subtle Glass
+                            </Typography>
+                            <Typography
+                                variant="body-small"
+                                color="on-surface-variant"
+                                client:load
+                            >
+                                12px blur - For backgrounds and secondary
+                                surfaces
+                            </Typography>
+                        </div>
+
+                        <!-- Standard Glass -->
+                        <div class="lg-glass rounded-2xl p-6 text-center">
+                            <Typography
+                                variant="title-medium"
+                                color="on-surface"
+                                client:load
+                                class="mb-2"
+                            >
+                                Standard Glass
+                            </Typography>
+                            <Typography
+                                variant="body-small"
+                                color="on-surface-variant"
+                                client:load
+                            >
+                                20px blur - For cards and panels
+                            </Typography>
+                        </div>
+
+                        <!-- Strong Glass -->
+                        <div
+                            class="lg-glass-strong rounded-2xl p-6 text-center"
+                        >
+                            <Typography
+                                variant="title-medium"
+                                color="on-surface"
+                                client:load
+                                class="mb-2"
+                            >
+                                Strong Glass
+                            </Typography>
+                            <Typography
+                                variant="body-small"
+                                color="on-surface-variant"
+                                client:load
+                            >
+                                40px blur - For modals and dialogs
+                            </Typography>
+                        </div>
+                    </div>
+
+                    <!-- Elevated Card -->
+                    <div class="mt-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Elevated Card with Hover
+                        </Typography>
+                        <Card
+                            variant="elevated"
+                            client:load
+                            class="text-center"
+                        >
+                            <div class="p-6">
+                                <Typography
+                                    variant="title-large"
+                                    color="on-surface"
+                                    client:load
+                                    class="mb-2"
+                                >
+                                    Hover Me!
+                                </Typography>
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface-variant"
+                                    client:load
+                                >
+                                    This card lifts up with enhanced shadow on
+                                    hover
+                                </Typography>
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theme Colors Section -->
+        <section class="section pb-20" id="themes">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Theme Colors
+                    </Typography>
+
+                    <Typography
+                        variant="body-large"
+                        color="on-surface-variant"
+                        client:load
+                        class="mb-6"
+                    >
+                        Use the theme switcher in the header to see how all
+                        components adapt to different color schemes.
+                    </Typography>
+
+                    <div
+                        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+                    >
+                        <!-- Primary -->
+                        <div class="text-center">
+                            <div
+                                class="w-full h-24 rounded-xl mb-3"
+                                style="background: var(--color-primary);"
+                            >
+                            </div>
+                            <Typography
+                                variant="label-small"
+                                color="on-surface-variant"
+                                client:load
+                            >
+                                Primary
+                            </Typography>
+                        </div>
+
+                        <!-- Secondary -->
+                        <div class="text-center">
+                            <div
+                                class="w-full h-24 rounded-xl mb-3"
+                                style="background: var(--color-secondary);"
+                            >
+                            </div>
+                            <Typography
+                                variant="label-small"
+                                color="on-surface-variant"
+                                client:load
+                            >
+                                Secondary
+                            </Typography>
+                        </div>
+
+                        <!-- Tertiary -->
+                        <div class="text-center">
+                            <div
+                                class="w-full h-24 rounded-xl mb-3"
+                                style="background: var(--color-tertiary);"
+                            >
+                            </div>
+                            <Typography
+                                variant="label-small"
+                                color="on-surface-variant"
+                                client:load
+                            >
+                                Tertiary
+                            </Typography>
+                        </div>
+
+                        <!-- Success -->
+                        <div class="text-center">
+                            <div
+                                class="w-full h-24 rounded-xl mb-3"
+                                style="background: var(--color-success);"
+                            >
+                            </div>
+                            <Typography
+                                variant="label-small"
+                                color="on-surface-variant"
+                                client:load
+                            >
+                                Success
+                            </Typography>
+                        </div>
+
+                        <!-- Warning -->
+                        <div class="text-center">
+                            <div
+                                class="w-full h-24 rounded-xl mb-3"
+                                style="background: var(--color-warning);"
+                            >
+                            </div>
+                            <Typography
+                                variant="label-small"
+                                color="on-surface-variant"
+                                client:load
+                            >
+                                Warning
+                            </Typography>
+                        </div>
+
+                        <!-- Error -->
+                        <div class="text-center">
+                            <div
+                                class="w-full h-24 rounded-xl mb-3"
+                                style="background: var(--color-error);"
+                            >
+                            </div>
+                            <Typography
+                                variant="label-small"
+                                color="on-surface-variant"
+                                client:load
+                            >
+                                Error
+                            </Typography>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</BaseLayout>

@@ -1,0 +1,130 @@
+---
+/**
+ * Stats Section - Product Capabilities
+ * Highlighting offline-first features with professional metrics
+ */
+import { Card } from "@formanywhere/ui/card";
+import { Typography } from "@formanywhere/ui/typography";
+
+const stats = [
+  { 
+    id: "offline",
+    number: "100%", 
+    label: "Offline Capable", 
+    desc: "Works without internet",
+    icon: "wifi-off"
+  },
+  { 
+    id: "sync",
+    number: "Auto", 
+    label: "Background Sync", 
+    desc: "When you reconnect",
+    icon: "refresh"
+  },
+  { 
+    id: "platforms",
+    number: "3+", 
+    label: "Platforms", 
+    desc: "Web, Desktop, PWA",
+    icon: "devices"
+  },
+  { 
+    id: "privacy",
+    number: "Zero", 
+    label: "Data Tracking", 
+    desc: "Privacy by design",
+    icon: "shield"
+  },
+];
+---
+
+<section
+  class="relative py-32 overflow-hidden"
+  id="stats-section"
+>
+  <!-- Atmospheric Background -->
+  <div class="absolute inset-0 pointer-events-none">
+     <div class="absolute top-1/2 left-1/4 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[120px] mix-blend-multiply animate-pulse"></div>
+     <div class="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] mix-blend-multiply"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {stats.map((stat, i) => {
+        const iconColors = {
+          offline: "text-tertiary",
+          sync: "text-secondary",
+          platforms: "text-primary",
+          privacy: "text-tertiary"
+        };
+        const colorClass = (iconColors as any)[stat.id] || "text-primary";
+        
+        return (
+        <div class={`group relative transform transition-all duration-700 hover:-translate-y-2 ${i % 2 === 0 ? 'lg:translate-y-8' : 'lg:-translate-y-4'}`}>
+          <!-- Glass Card -->
+          <div class="relative overflow-hidden rounded-[32px] p-8 bg-surface-container/40 backdrop-blur-xl border border-white/20 shadow-xl hover:shadow-2xl transition-shadow duration-500">
+             
+             <!-- Inner Glow -->
+             <div class="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+             
+             <!-- Icon Layer -->
+             <div class={`absolute bottom-4 right-4 ${colorClass} opacity-[0.08] transform scale-[2] group-hover:scale-[2.2] group-hover:rotate-12 transition-all duration-700 pointer-events-none`}>
+                {stat.icon === 'wifi-off' && <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0112 10c-1.68 0-3.28.37-4.72 1.06M5 12.55a10.94 10.94 0 015.17-2.39M10.71 5.05A16 16 0 0022.58 9M1.42 9a15.91 15.91 0 014.7-3.03M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>}
+                {stat.icon === 'refresh' && <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>}
+                {stat.icon === 'devices' && <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>}
+                {stat.icon === 'shield' && <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>}
+             </div>
+
+             <div class="relative z-10 flex flex-col items-center text-center">
+                <!-- Data Value -->
+                <div class="mb-2">
+                    <Typography 
+                        variant="display-large"
+                        as="span"
+                        class="font-black bg-clip-text text-transparent bg-gradient-to-br from-on-surface to-on-surface-variant drop-shadow-sm tracking-tight stats-value" 
+                        data-value={stat.number}
+                    >
+                        {stat.number}
+                    </Typography>
+                </div>
+                
+                <!-- Label -->
+                <Typography variant="title-medium" color="on-surface" class="mb-1 flex items-center gap-2 font-bold">
+                    {stat.label}
+                </Typography>
+                
+                <!-- Desc -->
+                <div class="inline-block px-3 py-1 rounded-full bg-surface-container-high/50 text-xs font-medium text-on-surface-variant backdrop-blur-sm border border-white/5">
+                    {stat.desc}
+                </div>
+             </div>
+          </div>
+        </div>
+      );})}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Simple intersection observer animation for stats
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.stats-value').forEach((el) => {
+    observer.observe(el);
+  });
+</script>
+
+<style>
+  .stats-value {
+    /* Ensuring gradient text works cross-browser */
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+</style>

@@ -1,0 +1,456 @@
+---
+/**
+ * Pricing Page - Offline-first form builder pricing
+ * Free, Pro, Lifetime, and Enterprise tiers
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { Button } from '@formanywhere/ui/button';
+import { Typography } from '@formanywhere/ui/typography';
+import { Chip } from '@formanywhere/ui/chip';
+import { Card } from '@formanywhere/ui/card';
+
+const pricingPlans = [
+  {
+    name: 'Free',
+    description: 'Perfect for trying out FormAnywhere',
+    monthlyPrice: 0,
+    annualPrice: 0,
+    popular: false,
+    gradient: false,
+    cta: 'Get Started Free',
+    features: [
+      { name: 'Up to 3 forms', included: true },
+      { name: '100 responses/month', included: true },
+      { name: 'Basic field types', included: true },
+      { name: 'Offline form filling', included: true },
+      { name: 'Email notifications', included: true },
+      { name: 'Community support', included: true },
+      { name: 'Photo capture', included: false },
+      { name: 'Signature collection', included: false },
+      { name: 'GPS tagging', included: false },
+      { name: 'Background sync', included: false },
+    ],
+  },
+  {
+    name: 'Pro',
+    description: 'For professionals and growing teams',
+    monthlyPrice: 19,
+    annualPrice: 190,
+    popular: true,
+    gradient: true,
+    cta: 'Start Free Trial',
+    features: [
+      { name: 'Unlimited forms', included: true },
+      { name: '10,000 responses/month', included: true },
+      { name: 'All field types', included: true },
+      { name: 'Full offline capabilities', included: true },
+      { name: 'Photo capture & compression', included: true },
+      { name: 'Signature collection', included: true },
+      { name: 'GPS location tagging', included: true },
+      { name: 'Background sync', included: true },
+      { name: 'Conditional logic', included: true },
+      { name: 'PDF report generation', included: true },
+    ],
+  },
+  {
+    name: 'Lifetime',
+    description: 'One payment, yours forever',
+    monthlyPrice: 249,
+    annualPrice: 249,
+    isLifetime: true,
+    popular: false,
+    gradient: false,
+    cta: 'Buy Once, Own Forever',
+    features: [
+      { name: 'Everything in Pro', included: true },
+      { name: 'Unlimited responses', included: true },
+      { name: 'No recurring fees', included: true },
+      { name: 'Priority support', included: true },
+      { name: 'Desktop app access', included: true },
+      { name: 'Future updates included', included: true },
+      { name: 'API access', included: true },
+      { name: 'Webhooks', included: true },
+      { name: 'Custom branding', included: true },
+      { name: 'Export to CSV/Excel', included: true },
+    ],
+  },
+];
+
+const enterprisePlan = {
+  name: 'Enterprise',
+  description: 'For organizations with custom requirements',
+  features: [
+    'Self-hosted deployment',
+    'SSO / SAML integration',
+    'Custom data retention',
+    'Dedicated support SLA',
+    'HIPAA compliance ready',
+    'Custom integrations',
+    'Audit logs',
+    'Role-based access control',
+  ],
+};
+
+const faqs = [
+  {
+    q: 'What does offline-first mean?',
+    a: 'FormAnywhere works 100% without internet. All form data is saved locally on your device first, then automatically syncs to the cloud when you reconnect. No data loss, ever.',
+  },
+  {
+    q: 'Why offer a lifetime plan?',
+    a: "We believe in straightforward pricing. Many professionals are tired of recurring subscriptions. Pay once, own it forever—no strings attached.",
+  },
+  {
+    q: 'Can I capture photos and signatures offline?',
+    a: 'Yes! Pro and Lifetime plans include full offline capabilities including photo capture, signature collection, and GPS tagging—all work without internet.',
+  },
+  {
+    q: 'Is my data secure?',
+    a: 'Absolutely. Data is encrypted both on your device and in transit. Enterprise customers can self-host for complete data control.',
+  },
+  {
+    q: 'What happens if I exceed my response limit?',
+    a: "You'll receive a notification when approaching your limit. You can upgrade anytime, and local data is never lost.",
+  },
+  {
+    q: 'Do you offer refunds?',
+    a: "Yes, we offer a 30-day money-back guarantee on all paid plans. If you're not satisfied, contact us for a full refund.",
+  },
+];
+---
+
+<BaseLayout title="Pricing | FormAnywhere">
+  <Header />
+  <main class="min-h-screen bg-background-default">
+    <!-- Hero Section -->
+    <section class="pt-16 md:pt-24 pb-6 text-center">
+      <div class="max-w-4xl mx-auto px-4">
+        <Chip 
+          variant="label" 
+          label="Simple Pricing" 
+          client:load
+          class="mb-6"
+          style={{ 
+            background: 'var(--m3-color-secondary-container)', 
+            color: 'var(--m3-color-on-secondary-container)',
+            border: 'none'
+          }}
+        />
+        <Typography 
+          variant="display-medium" 
+          as="h1" 
+          color="on-surface"
+          align="center"
+          class="mb-4 text-3xl sm:text-4xl md:text-5xl"
+        >
+          Plans that work for you
+        </Typography>
+        <Typography 
+          variant="body-large" 
+          color="on-surface-variant"
+          align="center"
+          class="mb-8 max-w-xl mx-auto"
+        >
+          Start free, upgrade when you need more. Pay monthly, annually, or once.
+        </Typography>
+        
+        <!-- Billing Toggle -->
+        <div class="flex items-center justify-center gap-4 mb-12">
+          <span id="monthly-label" class="text-base font-semibold text-primary">Monthly</span>
+          <button 
+            id="billing-toggle" 
+            class="relative w-14 h-7 bg-surface-container-high rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            aria-pressed="false"
+          >
+            <span id="toggle-dot" class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300"></span>
+          </button>
+          <div class="flex items-center gap-2">
+            <span id="annual-label" class="text-base font-medium text-on-surface-variant">Annual</span>
+            <Chip 
+              variant="label" 
+              label="Save 17%" 
+              client:load
+              style={{ 
+                background: 'var(--m3-color-secondary-container)', 
+                color: 'var(--m3-color-on-secondary-container)', 
+                'font-size': '12px',
+                border: 'none'
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Cards -->
+    <section class="pb-16">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {pricingPlans.map((plan) => (
+            <div class={`relative ${plan.popular ? 'pt-4' : ''}`}>
+              {plan.popular && (
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 z-10">
+                  <span class="px-4 py-1.5 bg-white text-primary text-sm font-bold rounded-full shadow-lg">
+                    Most Popular
+                  </span>
+                </div>
+              )}
+              <div 
+                class={`h-full rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 ${
+                  plan.gradient 
+                    ? 'bg-gradient-to-br from-primary to-primary-dark text-white shadow-xl' 
+                    : 'bg-surface border border-outline-variant hover:shadow-lg'
+                } ${plan.popular ? 'border-2 border-primary shadow-xl' : ''}`}
+              >
+                <!-- Icon -->
+                <div class={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${
+                  plan.gradient ? 'bg-white/20' : 'bg-primary/10'
+                }`}>
+                  <svg class={`w-6 h-6 ${plan.gradient ? 'text-white' : 'text-primary'}`} fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    {plan.name === 'Free' && (
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                    )}
+                    {plan.name === 'Pro' && (
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    )}
+                    {plan.name === 'Lifetime' && (
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    )}
+                  </svg>
+                </div>
+
+                <h3 class="text-xl font-bold mb-1">{plan.name}</h3>
+                <p class={`text-sm mb-4 ${plan.gradient ? 'text-white/90' : 'text-on-surface-variant'}`}>
+                  {plan.description}
+                </p>
+
+                <!-- Price -->
+                <div class="flex items-baseline mb-4">
+                  <span class={`text-4xl font-extrabold price-display ${plan.isLifetime ? 'lifetime-price' : ''}`} data-monthly={plan.monthlyPrice} data-annual={plan.annualPrice} data-lifetime={plan.isLifetime || false}>
+                    {plan.monthlyPrice === 0 ? 'Free' : `$${plan.monthlyPrice}`}
+                  </span>
+                  {plan.monthlyPrice > 0 && !plan.isLifetime && (
+                    <span class={`ml-2 text-sm ${plan.gradient ? 'text-white/80' : 'text-on-surface-variant'} price-period`}>
+                      /month
+                    </span>
+                  )}
+                  {plan.monthlyPrice === 0 && (
+                    <span class={`ml-2 text-sm ${plan.gradient ? 'text-white/80' : 'text-on-surface-variant'}`}>
+                      Forever free
+                    </span>
+                  )}
+                  {plan.isLifetime && (
+                    <span class={`ml-2 text-sm ${plan.gradient ? 'text-white/80' : 'text-on-surface-variant'}`}>
+                      one time
+                    </span>
+                  )}
+                </div>
+
+                <!-- CTA Button -->
+                <a 
+                  href="/signup" 
+                  class={`block w-full py-3 px-6 text-center font-semibold rounded-xl mb-6 transition-all duration-300 ${
+                    plan.gradient 
+                      ? 'border-2 border-white text-white hover:bg-white/10' 
+                      : 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-md hover:shadow-lg'
+                  }`}
+                >
+                  {plan.cta}
+                  <svg class="inline-block ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                  </svg>
+                </a>
+
+                <!-- Features -->
+                <div class="space-y-3">
+                  {plan.features.map((feature) => (
+                    <div class="flex items-start gap-3">
+                      <div class={`w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5 ${
+                        feature.included 
+                          ? plan.gradient ? 'bg-white/20' : 'bg-primary/10'
+                          : 'bg-transparent'
+                      }`}>
+                        {feature.included ? (
+                          <svg class={`w-3.5 h-3.5 ${plan.gradient ? 'text-white' : 'text-primary'}`} fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                          </svg>
+                        ) : (
+                          <svg class={`w-3 h-3 ${plan.gradient ? 'text-white/40' : 'text-on-surface-variant/70'}`} fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                          </svg>
+                        )}
+                      </div>
+                      <span class={`text-sm ${
+                        feature.included 
+                          ? plan.gradient ? 'text-white' : 'text-on-surface'
+                          : plan.gradient ? 'text-white/50 line-through' : 'text-on-surface-variant/60 line-through'
+                      }`}>
+                        {feature.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Enterprise Section -->
+    <section class="py-16 bg-surface">
+      <div class="max-w-4xl mx-auto px-4">
+        <div class="bg-gradient-to-br from-tertiary/5 to-secondary/5 rounded-3xl p-8 md:p-12 border border-outline-variant">
+          <div class="flex flex-col md:flex-row items-center gap-8">
+            <div class="flex-1">
+              <span class="inline-block px-3 py-1 bg-tertiary/10 text-tertiary text-sm font-bold rounded-full mb-4">
+                Enterprise
+              </span>
+              <h2 class="text-2xl md:text-3xl font-extrabold text-on-surface mb-4">
+                {enterprisePlan.description}
+              </h2>
+              <div class="grid grid-cols-2 gap-3 mb-6">
+                {enterprisePlan.features.map((feature) => (
+                  <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-tertiary flex-shrink-0" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-sm text-on-surface-variant">{feature}</span>
+                  </div>
+                ))}
+              </div>
+              <a href="mailto:enterprise@formanywhere.com" class="inline-flex items-center gap-2 px-6 py-3 bg-tertiary text-white font-semibold rounded-xl hover:bg-tertiary-dark transition-colors">
+                Contact Sales
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+              </a>
+            </div>
+            <div class="w-32 h-32 rounded-2xl bg-tertiary/10 flex items-center justify-center">
+              <svg class="w-16 h-16 text-tertiary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 bg-background-default">
+      <div class="max-w-3xl mx-auto px-4">
+        <h2 class="text-3xl font-extrabold text-on-surface text-center mb-12">
+          Frequently Asked Questions
+        </h2>
+        <div class="space-y-4">
+          {faqs.map((faq, index) => (
+            <div class="border border-outline-variant rounded-xl overflow-hidden">
+              <button 
+                class="faq-toggle w-full flex items-center justify-between p-5 text-left bg-surface hover:bg-surface-container-low transition-colors"
+                data-index={index}
+              >
+                <span class="font-semibold text-on-surface">{faq.q}</span>
+                <svg class="faq-icon w-5 h-5 text-on-surface-variant transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="faq-content hidden px-5 pb-5">
+                <p class="text-on-surface-variant">{faq.a}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-gradient-to-r from-primary to-primary-dark">
+      <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-extrabold text-on-primary mb-4">
+          Ready to build offline-first forms?
+        </h2>
+        <p class="text-lg text-on-primary/90 mb-8 max-w-xl mx-auto">
+          Start collecting data anywhere. No credit card required.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button href="/signup" variant="filled" client:load style={{ padding: '12px 32px', 'background': 'var(--m3-color-surface)', 'color': 'var(--m3-color-primary)', 'font-weight': '600', 'border-radius': '12px' }}>
+            Start Free Trial
+          </Button>
+          <Button href="mailto:hello@formanywhere.com" variant="outlined" client:load style={{ padding: '12px 32px', 'border-color': 'var(--m3-color-on-primary)', 'color': 'var(--m3-color-on-primary)', 'font-weight': '600', 'border-radius': '12px' }}>
+            Contact Us
+          </Button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Billing toggle
+  const toggle = document.getElementById('billing-toggle');
+  const toggleDot = document.getElementById('toggle-dot');
+  const monthlyLabel = document.getElementById('monthly-label');
+  const annualLabel = document.getElementById('annual-label');
+  const priceDisplays = document.querySelectorAll('.price-display');
+  const pricePeriods = document.querySelectorAll('.price-period');
+  
+  let isAnnual = false;
+  
+  toggle?.addEventListener('click', () => {
+    isAnnual = !isAnnual;
+    toggle.setAttribute('aria-pressed', String(isAnnual));
+    
+    if (isAnnual) {
+      toggle.classList.add('bg-primary');
+      toggle.classList.remove('bg-surface-container-high');
+      toggleDot?.classList.add('translate-x-7');
+      monthlyLabel?.classList.remove('text-primary', 'font-semibold', 'text-on-surface-variant');
+      monthlyLabel?.classList.add('text-on-surface-variant', 'font-medium');
+      annualLabel?.classList.add('text-primary', 'font-semibold');
+      annualLabel?.classList.remove('text-on-surface-variant', 'font-medium');
+    } else {
+      toggle.classList.remove('bg-primary');
+      toggle.classList.add('bg-surface-container-high');
+      toggleDot?.classList.remove('translate-x-7');
+      monthlyLabel?.classList.add('text-primary', 'font-semibold');
+      monthlyLabel?.classList.remove('text-on-surface-variant', 'font-medium');
+      annualLabel?.classList.remove('text-primary', 'font-semibold');
+      annualLabel?.classList.add('text-on-surface-variant', 'font-medium');
+    }
+    
+    // Update prices
+    priceDisplays.forEach((el) => {
+      const monthly = el.getAttribute('data-monthly');
+      const annual = el.getAttribute('data-annual');
+      const isLifetime = el.getAttribute('data-lifetime') === 'true';
+      
+      if (isLifetime) {
+        el.textContent = `$${monthly}`;
+      } else if (monthly === '0') {
+        el.textContent = 'Free';
+      } else {
+        el.textContent = isAnnual ? `$${annual}` : `$${monthly}`;
+      }
+    });
+    
+    pricePeriods.forEach((el) => {
+      el.textContent = isAnnual ? '/year' : '/month';
+    });
+  });
+  
+  // FAQ accordion
+  const faqToggles = document.querySelectorAll('.faq-toggle');
+  
+  faqToggles.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const content = btn.nextElementSibling;
+      const icon = btn.querySelector('.faq-icon');
+      
+      content?.classList.toggle('hidden');
+      icon?.classList.toggle('rotate-180');
+    });
+  });
+</script>

@@ -1,0 +1,31 @@
+{
+    "name": "@formanywhere/form-editor",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "./src/index.tsx",
+    "types": "./src/index.tsx",
+    "exports": {
+        ".": {
+            "solid": "./src/index.tsx",
+            "import": "./src/index.tsx",
+            "types": "./src/index.tsx"
+        },
+        "./styles.css": "./src/styles.css"
+    },
+    "scripts": {
+        "dev": "tsc --watch",
+        "build": "tsc",
+        "lint": "echo 'No linter configured'"
+    },
+    "dependencies": {
+        "@formanywhere/ui": "workspace:*",
+        "@formanywhere/shared": "workspace:*",
+        "solid-js": "^1.9.11"
+    },
+    "devDependencies": {
+        "typescript": "^5.7.0"
+    },
+    "peerDependencies": {
+        "solid-js": "^1.9.0"
+    }
+}

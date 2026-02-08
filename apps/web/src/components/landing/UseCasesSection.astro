@@ -1,0 +1,64 @@
+---
+/**
+ * Use Cases Section - Clean Bento Grid
+ * Premium feature showcase with centered layout.
+ */
+import { Typography } from "@formanywhere/ui/typography";
+import { Tag } from "@formanywhere/ui/tag";
+import { UseCasesGrid } from "@formanywhere/shared/use-cases-grid";
+---
+
+<section
+  class="relative py-20 sm:py-28 overflow-hidden bg-background-default"
+  id="use-cases"
+  aria-labelledby="use-cases-heading"
+>
+  <!-- Subtle Background Gradient -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div
+      class="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full"
+    >
+    </div>
+    <div
+      class="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-secondary/5 blur-[100px] rounded-full"
+    >
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <!-- Header -->
+    <div class="text-center max-w-3xl mx-auto mb-14">
+      <Tag
+        label="USE CASES"
+        tone="secondary"
+        class="mb-5 font-medium tracking-wider"
+      />
+
+      <Typography
+        variant="display-small"
+        color="on-surface"
+        class="mb-5 font-bold tracking-tight text-3xl sm:text-4xl lg:text-5xl text-on-surface"
+        as="h2"
+        id="use-cases-heading"
+      >
+        Built for{" "}
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary"
+        >
+          real-world conditions
+        </span>
+      </Typography>
+
+      <Typography
+        variant="body-large"
+        class="text-on-surface-variant leading-relaxed text-base sm:text-lg max-w-2xl mx-auto"
+      >
+        From construction sites to healthcare clinics, FormAnywhere works
+        wherever you need to collect data — online or offline.
+      </Typography>
+    </div>
+
+    <!-- Bento Grid -->
+    <UseCasesGrid client:only="solid-js" />
+  </div>
+</section>

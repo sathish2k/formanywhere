@@ -1,0 +1,166 @@
+---
+/**
+ * Features Section - M3 Liquid Glass + Performance-first layout
+ */
+import { Typography } from "@formanywhere/ui/typography";
+import { Card } from "@formanywhere/ui/card";
+import { Tag } from "@formanywhere/ui/tag";
+import { FeatureTabs } from "@formanywhere/shared/feature-tabs";
+
+const secondaryFeatures = [
+  {
+    icon: "shield",
+    title: "Enterprise Security",
+    desc: "SOC2 Compliance, End-to-end encryption, and custom data retention policies.",
+  },
+  {
+    icon: "chart",
+    title: "Advanced Analytics",
+    desc: "Real-time dashboards, export to BI tools, and automated scheduled reports.",
+  },
+  {
+    icon: "users",
+    title: "Team Management",
+    desc: "Granular RBAC, SSO integration (Okta, Azure AD), and audit logs.",
+  },
+  {
+    icon: "code",
+    title: "Developer API",
+    desc: "Full REST API access, webhooks, and client SDKs for custom integrations.",
+  },
+] as const;
+
+const iconPaths = {
+  shield:
+    "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
+  chart:
+    "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z",
+  users:
+    "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z",
+  code: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4",
+} as const;
+---
+
+<section
+  id="features"
+  class="section bg-background-default relative overflow-hidden"
+  aria-labelledby="features-heading"
+  aria-describedby="features-summary"
+>
+  <!-- Background Decor -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div
+      class="absolute -top-40 right-[-120px] w-[520px] h-[520px] bg-secondary/10 rounded-full blur-[140px]"
+    >
+    </div>
+    <div
+      class="absolute -bottom-40 left-[-140px] w-[620px] h-[620px] bg-tertiary/10 rounded-full blur-[160px]"
+    >
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <!-- Header -->
+    <div class="text-center mb-16">
+      <Tag label="POWERFUL CAPABILITIES" tone="secondary">
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="w-4 h-4"
+          aria-hidden="true"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+          ></path>
+        </svg>
+      </Tag>
+      <Typography
+        variant="display-medium"
+        color="on-surface"
+        align="center"
+        as="h2"
+        class="mt-6 mb-5 max-w-3xl mx-auto"
+        id="features-heading"
+      >
+        Everything You Need to Build
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-tertiary"
+          >Complex Forms</span
+        >
+      </Typography>
+
+      <Typography
+        variant="body-large"
+        color="on-surface-variant"
+        align="center"
+        class="max-w-2xl mx-auto opacity-80"
+        id="features-summary"
+      >
+        From simple surveys to complex enterprise workflows, FormAnywhere scales
+        with your needs.
+      </Typography>
+    </div>
+
+    <!-- Main Interactive Tabs -->
+    <div class="mb-20">
+      <FeatureTabs client:only="solid-js" />
+    </div>
+
+    <!-- Secondary Features Grid (Bento Style with Proper Cards) -->
+    <ul
+      class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6"
+      role="list"
+    >
+      {
+        secondaryFeatures.map((feat) => (
+          <li>
+            <Card
+              variant="glass-subtle"
+              direction="column"
+              padding="xl"
+              gap="md"
+              align="start"
+              class="group h-full transition-transform duration-300 hover:-translate-y-1"
+            >
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center">
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d={iconPaths[feat.icon]}
+                    />
+                  </svg>
+                </div>
+                <Typography
+                  variant="title-large"
+                  color="on-surface"
+                  as="h3"
+                  class="group-hover:text-secondary transition-colors"
+                >
+                  {feat.title}
+                </Typography>
+              </div>
+
+              <Typography
+                variant="body-medium"
+                color="on-surface-variant"
+                class="leading-relaxed opacity-90"
+              >
+                {feat.desc}
+              </Typography>
+            </Card>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
