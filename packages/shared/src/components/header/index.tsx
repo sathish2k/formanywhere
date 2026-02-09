@@ -77,7 +77,7 @@ export const Header: Component<HeaderProps> = (props) => {
             };
         }
         return {
-            background: 'var(--glass-tint-light)',
+            background: 'var(--m3-sys-color-surface)',
             'backdrop-filter': 'blur(var(--glass-blur))',
             '-webkit-backdrop-filter': 'blur(var(--glass-blur))',
             'border-bottom': '1px solid var(--glass-border-subtle)',
@@ -110,7 +110,7 @@ export const Header: Component<HeaderProps> = (props) => {
         if (isScrolled() && isDesktop()) {
             return {
                 display: 'flex',
-                'background-color': 'var(--glass-tint-light)',
+                'background-color': 'var(--glass-tint-medium)',
                 'backdrop-filter': 'blur(var(--glass-blur-strong))',
                 '-webkit-backdrop-filter': 'blur(var(--glass-blur-strong))',
                 'border-radius': '9999px',

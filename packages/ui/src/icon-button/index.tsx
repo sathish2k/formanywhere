@@ -13,7 +13,7 @@ import { Ripple } from '../ripple';
 
 export interface IconButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
     /** Icon button variant */
-    variant?: 'standard' | 'filled' | 'filled-tonal' | 'outlined';
+    variant?: 'standard' | 'filled' | 'filled-tonal' | 'outlined' | 'text';
     /** Icon element */
     icon: JSX.Element;
     /** Size */
@@ -93,6 +93,7 @@ const iconButtonStyles = (
                     ? 'none'
                     : '1px solid var(--m3-color-outline, rgba(120, 117, 121, 0.4))',
             };
+        case 'text':
         default: // standard
             return {
                 ...baseStyle,

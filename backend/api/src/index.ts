@@ -1,25 +1,21 @@
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
-import { formsRoutes } from './routes/forms';
-import { submissionsRoutes } from './routes/submissions';
+import { Elysia } from 'elysia';
+import { cors } from '@elysiajs/cors';
+import { swagger } from '@elysiajs/swagger';
 import { authRoutes } from './routes/auth';
-import { syncRoutes } from './routes/sync';
 
-const app = new Hono();
+const app = new Elysia()
+    .use(cors())
+    .use(swagger())
+    .get('/', () => ({ status: 'ok', name: 'FormAnywhere API' }))
+    .group('/api', (app) =>
+        app
+            .use(authRoutes)
+        // .use(formsRoutes) // TODO: Migrate forms routes
+        // .use(submissionsRoutes) // TODO: Migrate submissions routes
+        // .use(syncRoutes) // TODO: Migrate sync routes
+    )
+    .listen(process.env.PORT || 3001);
 
-// Middleware
-app.use('*', cors());
+console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`);
 
-// Health check
-app.get('/', (c) => c.json({ status: 'ok', name: 'FormAnywhere API' }));
-
-// Routes
-app.route('/api/auth', authRoutes);
-app.route('/api/forms', formsRoutes);
-app.route('/api/submissions', submissionsRoutes);
-app.route('/api/sync', syncRoutes);
-
-export default {
-    port: process.env.PORT || 3001,
-    fetch: app.fetch,
-};
+export type App = typeof app;

@@ -11,8 +11,8 @@ import { TextField } from '@formanywhere/ui/input';
 import { Divider } from '@formanywhere/ui/divider';
 import { Typography } from '@formanywhere/ui/typography';
 import { Checkbox } from '@formanywhere/ui/checkbox';
-import GoogleIcon from '/icons/google.svg';
-import GithubIcon from '/icons/github.svg';
+import GoogleIcon from '../../icons/google.svg';
+import GithubIcon from '../../icons/github.svg';
 
 // Validation schema
 const SignInSchema = z.object({
@@ -39,9 +39,10 @@ export function SignInForm(props: SignInFormProps) {
 
     const handleSubmit = async (values: SignInFormData) => {
         try {
-            const response = await fetch('/api/auth/login', {
+            const response = await fetch('http://localhost:3001/api/auth/sign-in', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify(values),
             });
 

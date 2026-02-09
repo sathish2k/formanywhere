@@ -21,10 +21,7 @@ const ICON_PATHS: Record<string, { path: string; viewBox?: string; fill?: boolea
         path: 'M4 6h16M4 12h16M4 18h16',
         viewBox: '0 0 24 24',
     },
-    'menu-close': {
-        path: 'M6 18L18 6M6 6l12 12',
-        viewBox: '0 0 24 24',
-    },
+
 
     // Status
     'check': {
@@ -61,21 +58,6 @@ const ICON_PATHS: Record<string, { path: string; viewBox?: string; fill?: boolea
         path: 'M12 2a2 2 0 012 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 017 7h1.27c.34-.6.99-1 1.73-1a2 2 0 010 4c-.74 0-1.39-.4-1.73-1H20a7 7 0 01-7 7v1.27c.6.34 1 .99 1 1.73a2 2 0 01-4 0c0-.74.4-1.39 1-1.73V17a7 7 0 01-7-7H2.73c-.34.6-.99 1-1.73 1a2 2 0 010-4c.74 0 1.39.4 1.73 1H4a7 7 0 017-7V5.73c-.6-.34-1-.99-1-1.73a2 2 0 012-2z',
         viewBox: '0 0 24 24',
     },
-    'shield': {
-        path: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
-        viewBox: '0 0 24 24',
-    },
-
-    // Branding & Social
-    'building': {
-        path: 'M6 22V4a2 2 0 012-2h8a2 2 0 012 2v18zM6 12H4a2 2 0 00-2 2v6a2 2 0 002 2h2M18 9h2a2 2 0 012 2v9a2 2 0 01-2 2h-2M10 6h4M10 10h4M10 14h4M10 18h4',
-        viewBox: '0 0 24 24',
-    },
-    'play-circle': {
-        path: 'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM10 8l6 4-6 4V8z',
-        viewBox: '0 0 24 24',
-    },
-
     // Theme
     'theme-sun': {
         path: 'M12 17a5 5 0 100-10 5 5 0 000 10zM12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42',

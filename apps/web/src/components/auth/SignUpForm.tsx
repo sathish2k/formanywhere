@@ -11,8 +11,8 @@ import { TextField } from '@formanywhere/ui/input';
 import { Divider } from '@formanywhere/ui/divider';
 import { Typography } from '@formanywhere/ui/typography';
 import { Checkbox } from '@formanywhere/ui/checkbox';
-import GoogleIcon from '/icons/google.svg';
-import GithubIcon from '/icons/github.svg';
+import GoogleIcon from '../../icons/google.svg';
+import GithubIcon from '../../icons/github.svg';
 
 // Validation schema with password confirmation
 const SignUpSchema = z.object({
@@ -49,9 +49,10 @@ export function SignUpForm(props: SignUpFormProps) {
 
     const handleSubmit = async (values: SignUpFormData) => {
         try {
-            const response = await fetch('/api/auth/register', {
+            const response = await fetch('http://localhost:3001/api/auth/sign-up', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({
                     name: values.fullName,
                     email: values.email,

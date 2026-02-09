@@ -106,7 +106,7 @@ export const ThemeToggle: Component = () => {
     return (
         <>
             <IconButton
-                variant="filled-tonal"
+                variant="text"
                 icon={<ThemeIcon />}
                 onClick={toggleOpen}
                 aria-label="Toggle light or dark theme"
@@ -155,8 +155,9 @@ export const ThemeToggle: Component = () => {
                                         }}
                                     />
                                     <div
-                                        class="absolute right-0 w-12 h-12 rounded-full bg-[#1A1A1A] border-[3px] shadow-lg z-[1] transition-all duration-300"
+                                        class="absolute right-0 w-12 h-12 rounded-full border-[3px] shadow-lg z-[1] transition-all duration-300"
                                         style={{
+                                            background: `linear-gradient(135deg, ${option.secondary}, ${option.secondary}99)`,
                                             'border-color': currentTheme() === option.theme ? option.primary : 'white',
                                         }}
                                     />

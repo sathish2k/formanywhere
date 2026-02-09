@@ -1,0 +1,44 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Dashboard - FormAnywhere">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
+        <p>Welcome to your dashboard!</p>
+        <div id="user-info" class="mt-4 p-4 border rounded hidden">
+            <h2 class="text-xl font-semibold">User Profile</h2>
+            <pre id="profile-data" class="bg-gray-100 p-2 mt-2 rounded"></pre>
+        </div>
+        <div id="loading" class="mt-4">Loading user profile...</div>
+    </div>
+</Layout>
+
+<script>
+    async function checkAuth() {
+        try {
+            const res = await fetch("http://localhost:3001/api/auth/me", {
+                credentials: "include",
+            });
+            if (res.ok) {
+                const user = await res.json();
+                const userInfo = document.getElementById("user-info");
+                const profileData = document.getElementById("profile-data");
+                const loading = document.getElementById("loading");
+
+                if (userInfo && profileData && loading) {
+                    userInfo.classList.remove("hidden");
+                    loading.classList.add("hidden");
+                    profileData.textContent = JSON.stringify(user, null, 2);
+                }
+            } else {
+                window.location.href = "/signin";
+            }
+        } catch (e) {
+            console.error(e);
+            window.location.href = "/signin";
+        }
+    }
+
+    checkAuth();
+</script>
