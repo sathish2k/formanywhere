@@ -93,20 +93,12 @@ export const ThemeToggle: Component = () => {
     };
 
     const ThemeIcon = () => (
-        <svg
+        <img
+            src="/icons/theme-sun.svg"
+            alt="Theme Toggle"
             class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
             aria-hidden="true"
-        >
-            <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-            />
-        </svg>
+        />
     );
 
     return (
@@ -168,16 +160,12 @@ export const ThemeToggle: Component = () => {
                                     />
                                     <Show when={currentTheme() === option.theme}>
                                         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-md z-10 flex items-center justify-center">
-                                            <svg
+                                            <img
+                                                src="/icons/checkmark.svg"
+                                                alt="Selected"
                                                 class="w-3.5 h-3.5"
                                                 style={{ color: option.primary }}
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="3"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                            </svg>
+                                            />
                                         </div>
                                     </Show>
                                 </div>

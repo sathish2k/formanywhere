@@ -4,6 +4,10 @@
  */
 import { Component, createSignal, onMount, onCleanup, Show, For } from 'solid-js';
 import { Button } from '@formanywhere/ui/button';
+import { Drawer } from '@formanywhere/ui/drawer';
+import { IconButton } from '@formanywhere/ui/icon-button';
+import { List, ListItem } from '@formanywhere/ui/list';
+import { Divider } from '@formanywhere/ui/divider';
 
 // Import subcomponents from their folders
 import { Logo } from './logo';
@@ -33,9 +37,6 @@ export interface HeaderProps {
     class?: string;
 }
 
-// Remove TopAppBar import
-// import { TopAppBar } from '@formanywhere/ui';
-
 export const Header: Component<HeaderProps> = (props) => {
     const [isScrolled, setIsScrolled] = createSignal(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = createSignal(false);
@@ -57,15 +58,8 @@ export const Header: Component<HeaderProps> = (props) => {
         });
     });
 
-    const openMobileMenu = () => {
-        setIsMobileMenuOpen(true);
-        document.body.style.overflow = 'hidden';
-    };
-
-    const closeMobileMenu = () => {
-        setIsMobileMenuOpen(false);
-        document.body.style.overflow = '';
-    };
+    const openMobileMenu = () => setIsMobileMenuOpen(true);
+    const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
     // Header inner styles based on scroll state
     const headerInnerStyle = () => {
@@ -217,12 +211,18 @@ export const Header: Component<HeaderProps> = (props) => {
                         >
                             {/* Sign in - hidden when scrolled */}
                             <Show when={!(isScrolled() && isDesktop())}>
-                                <a
+                                <Button
                                     href="/signin"
-                                    class="hidden md:inline-flex text-on-surface-variant hover:text-on-surface font-medium text-[15px] transition-colors whitespace-nowrap"
+                                    variant="text"
+                                    style={{
+                                        display: 'none',
+                                        'font-size': '15px',
+                                        'white-space': 'nowrap',
+                                    }}
+                                    class="md:inline-flex"
                                 >
                                     Sign in
-                                </a>
+                                </Button>
                             </Show>
 
                             <Button
@@ -243,33 +243,22 @@ export const Header: Component<HeaderProps> = (props) => {
                             <ThemeToggle />
 
                             {/* Mobile menu button */}
-                            <button
-                                id="mobile-menu-btn"
+                            <IconButton
                                 aria-label="Open navigation menu"
                                 aria-expanded={isMobileMenuOpen()}
                                 aria-controls="mobile-menu"
+                                icon={
+                                    <img
+                                        src="/icons/menu-hamburger.svg"
+                                        alt=""
+                                        style={{ width: '24px', height: '24px' }}
+                                    />
+                                }
                                 style={{
-                                    display: isDesktop() ? 'none' : 'block',
-                                    padding: '8px',
-                                    color: 'var(--m3-color-on-surface-variant, #49454F)',
+                                    display: isDesktop() ? 'none' : 'inline-flex',
                                 }}
                                 onClick={openMobileMenu}
-                            >
-                                <svg
-                                    class="w-6 h-6"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    viewBox="0 0 24 24"
-                                    aria-hidden="true"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                </svg>
-                            </button>
+                            />
                         </div>
                     </nav>
                 </div>
@@ -278,79 +267,94 @@ export const Header: Component<HeaderProps> = (props) => {
             {/* Spacer for fixed header */}
             <div class="h-16" />
 
-            {/* Mobile Menu Overlay */}
-            <div
-                id="mobile-menu"
-                class="fixed inset-0 z-[60] bg-black/40 transition-opacity duration-300"
-                classList={{
-                    'opacity-0 pointer-events-none': !isMobileMenuOpen(),
-                    'opacity-100 pointer-events-auto': isMobileMenuOpen(),
-                }}
-                onClick={(e) => { if (e.target === e.currentTarget) closeMobileMenu(); }}
+            {/* Mobile Navigation Drawer */}
+            <Drawer
+                open={isMobileMenuOpen()}
+                onClose={closeMobileMenu}
+                anchor="right"
+                width="320px"
             >
+                {/* Drawer Header with Logo and Close */}
                 <div
-                    id="mobile-menu-panel"
-                    class="absolute right-0 top-0 bottom-0 w-80 lg-glass-subtle shadow-2xl border-l border-outline-variant transition-transform duration-300"
-                    classList={{
-                        'translate-x-full': !isMobileMenuOpen(),
-                        'translate-x-0': isMobileMenuOpen(),
+                    style={{
+                        display: 'flex',
+                        'align-items': 'center',
+                        'justify-content': 'space-between',
+                        padding: '16px 16px 16px 24px',
                     }}
                 >
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-8">
-                            <span class="text-lg font-semibold text-on-surface">Menu</span>
-                            <button
-                                id="close-menu-btn"
-                                class="p-2 text-on-surface-variant hover:text-on-surface"
-                                aria-label="Close navigation menu"
-                                onClick={closeMobileMenu}
-                            >
-                                <svg
-                                    class="w-6 h-6"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    viewBox="0 0 24 24"
-                                    aria-hidden="true"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                        <nav class="flex flex-col gap-4">
-                            <For each={navLinks}>
-                                {(link) => (
-                                    <a
-                                        href={link.href}
-                                        class="text-on-surface hover:text-primary font-medium py-2 border-b border-outline-variant"
-                                        onClick={closeMobileMenu}
-                                    >
-                                        {link.label}
-                                    </a>
-                                )}
-                            </For>
-                            <div class="pt-4 flex flex-col gap-3">
-                                <a
-                                    href="/signin"
-                                    class="text-center text-on-surface font-medium py-2.5 border border-outline-variant rounded-xl hover:bg-surface-container-low"
-                                >
-                                    Sign in
-                                </a>
-                                <a
-                                    href="/signup"
-                                    class="text-center bg-gradient-to-r from-primary to-primary-dark text-white font-medium py-2.5 rounded-xl"
-                                >
-                                    Get Started Free
-                                </a>
-                            </div>
-                        </nav>
-                    </div>
+                    <Logo showText={true} />
+                    <IconButton
+                        aria-label="Close navigation menu"
+                        onClick={closeMobileMenu}
+                        icon={
+                            <img
+                                src="/icons/menu-close.svg"
+                                alt=""
+                                style={{ width: '24px', height: '24px' }}
+                            />
+                        }
+                    />
                 </div>
-            </div>
+                <Divider />
+
+                {/* Navigation Links */}
+                <nav
+                    style={{
+                        flex: '1',
+                        'overflow-y': 'auto',
+                    }}
+                >
+                    <List>
+                        <For each={navLinks}>
+                            {(link) => (
+                                <ListItem
+                                    headline={link.label}
+                                    href={link.href}
+                                    interactive
+                                    onClick={closeMobileMenu}
+                                    style={{
+                                        'border-radius': 'var(--m3-shape-medium, 12px)',
+                                        margin: '4px 12px',
+                                    }}
+                                />
+                            )}
+                        </For>
+                    </List>
+                </nav>
+
+                <Divider />
+                {/* Auth Actions Footer */}
+                <div
+                    style={{
+                        padding: '16px 24px 24px',
+                        display: 'flex',
+                        'flex-direction': 'column',
+                        gap: '12px',
+                    }}
+                >
+                    <Button
+                        href="/signin"
+                        variant="outlined"
+                        style={{
+                            width: '100%',
+                            'justify-content': 'center',
+                        }}
+                    >
+                        Sign in
+                    </Button>
+                    <Button
+                        href="/signup"
+                        variant="filled"
+                        style={{
+                            width: '100%',
+                            'justify-content': 'center',
+                        }}
+                    >
+                        Get Started Free
+                    </Button>
+                </div>
+            </Drawer>
         </header>
     );
 };

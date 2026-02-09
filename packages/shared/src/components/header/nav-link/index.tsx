@@ -3,6 +3,7 @@
  * Navigation link with hover effects for header
  */
 import { Component } from 'solid-js';
+import { Button } from '@formanywhere/ui/button';
 
 export interface NavLinkProps {
     href: string;
@@ -12,30 +13,23 @@ export interface NavLinkProps {
 }
 
 export const NavLink: Component<NavLinkProps> = (props) => {
-    const baseColor = () => props.variant === 'on-dark'
-        ? 'rgba(255, 255, 255, 0.7)'
-        : 'var(--m3-color-on-surface-variant, #49454F)';
-    const hoverColor = () => props.variant === 'on-dark'
-        ? 'var(--m3-color-on-primary, #FFFFFF)'
-        : 'var(--m3-color-on-surface, #1C1B1F)';
-
     return (
-        <a
+        <Button
             href={props.href}
-            class={`text-on-surface-variant hover:text-on-surface font-medium text-[15px] transition-colors whitespace-nowrap ${props.class || ''}`}
+            variant="text"
+            class={props.class}
             style={{
-                color: baseColor(),
+                color: props.variant === 'on-dark'
+                    ? 'rgba(255, 255, 255, 0.8)'
+                    : 'var(--m3-color-on-surface-variant, #49454F)',
                 'font-weight': '500',
-                'text-decoration': 'none',
                 'font-size': '15px',
-                transition: 'color 150ms ease',
-                'white-space': 'nowrap',
+                padding: '8px 12px',
+                'min-height': 'auto',
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = hoverColor(); }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = baseColor(); }}
         >
             {props.children}
-        </a>
+        </Button>
     );
 };
 
