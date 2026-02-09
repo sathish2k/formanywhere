@@ -6,7 +6,7 @@ import { Component, Show } from 'solid-js';
 import { HStack } from '@formanywhere/ui/stack';
 import { Typography } from '@formanywhere/ui/typography';
 import { Box } from '@formanywhere/ui/box';
-import LogoIcon from '/icons/logo-icon.svg';
+import LogoIcon from '../../../icons/svg/logo-icon.svg';
 
 export interface LogoProps {
     showText?: boolean;

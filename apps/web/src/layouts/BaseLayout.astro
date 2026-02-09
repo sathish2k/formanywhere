@@ -1,4 +1,6 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
+
 interface Props {
   title?: string;
   description?: string;
@@ -31,6 +33,7 @@ import "@formanywhere/ui/styles/ripple.css";
       rel="stylesheet"
     />
     <title>{title}</title>
+    <ViewTransitions />
     <!-- Theme initialization script - runs before page render to prevent flash -->
     <script is:inline>
       (function () {

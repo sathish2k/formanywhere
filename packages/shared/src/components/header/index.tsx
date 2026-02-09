@@ -8,8 +8,8 @@ import { Drawer } from '@formanywhere/ui/drawer';
 import { IconButton } from '@formanywhere/ui/icon-button';
 import { List, ListItem } from '@formanywhere/ui/list';
 import { Divider } from '@formanywhere/ui/divider';
-import MenuHamburgerIcon from '/icons/menu-hamburger.svg';
-import MenuCloseIcon from '/icons/menu-close.svg';
+import MenuHamburgerIcon from '../../icons/svg/menu-hamburger.svg';
+import MenuCloseIcon from '../../icons/svg/menu-close.svg';
 
 // Import subcomponents from their folders
 import { Logo } from './logo';

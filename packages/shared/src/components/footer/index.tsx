@@ -9,9 +9,9 @@ import { Button } from '@formanywhere/ui/button';
 import { IconButton } from '@formanywhere/ui/icon-button';
 import { Divider } from '@formanywhere/ui/divider';
 import { HStack, VStack } from '@formanywhere/ui/stack';
-import SparkleIcon from '/icons/sparkle.svg';
-import TwitterIcon from '/icons/twitter.svg';
-import GithubIcon from '/icons/github.svg';
+import SparkleIcon from '../../icons/svg/sparkle.svg';
+import TwitterIcon from '../../icons/svg/twitter.svg';
+import GithubIcon from '../../icons/svg/github.svg';
 
 interface FooterSection {
     title: string;

@@ -4,8 +4,8 @@
  */
 import { Component, createSignal, onMount, onCleanup, Show, For } from 'solid-js';
 import { IconButton, Menu } from '@formanywhere/ui';
-import ThemeSunIcon from '/icons/theme-sun.svg';
-import CheckmarkIcon from '/icons/checkmark.svg';
+import ThemeSunIcon from '../../../icons/svg/theme-sun.svg';
+import CheckmarkIcon from '../../../icons/svg/checkmark.svg';
 
 // Theme Options
 export interface ThemeOption {
