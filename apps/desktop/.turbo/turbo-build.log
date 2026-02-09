@@ -1,5 +1,5 @@
-$ tauri build
-        Info Looking up installed tauri packages to check mismatched versions...
-You must change the bundle identifier in `{bundle_identifier_source} identifier`. The default value `com.tauri.dev` is not allowed as it must be unique across applications.
-       Error You must change the bundle identifier in `{bundle_identifier_source} identifier`. The default value `com.tauri.dev` is not allowed as it must be unique across applications.
-error: script "build" exited with code 1
+
+[0m[2m[35m$[0m [2m[1mtauri build[0m
+failed to run 'cargo metadata' command to get workspace directory: failed to run command cargo metadata --no-deps --format-version 1: No such file or directory (os error 2)
+[1m[31m       Error[0m failed to run 'cargo metadata' command to get workspace directory: failed to run command cargo metadata --no-deps --format-version 1: No such file or directory (os error 2)
+[0m[31merror[0m[2m:[0m script [1m"build"[0m exited with code 1[0m

@@ -1,12 +1,10 @@
 import { createSignal, For, onMount, onCleanup } from 'solid-js';
-import {
-    Typography,
-    Chip,
-    Button,
-    Box,
-    Card,
-    Avatar
-} from '@formanywhere/ui';
+import { Typography } from '@formanywhere/ui/typography';
+import { Chip } from '@formanywhere/ui/chip';
+import { Button } from '@formanywhere/ui/button';
+import { Box } from '@formanywhere/ui/box';
+import { Card } from '@formanywhere/ui/card';
+import { Avatar } from '@formanywhere/ui/avatar';
 
 const features = [
     {

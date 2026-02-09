@@ -13,7 +13,6 @@
         "@formanywhere/form-editor": "workspace:*",
         "@formanywhere/form-runtime": "workspace:*",
         "@formanywhere/ui": "workspace:*",
-        "@formanywhere/data": "workspace:*",
         "@formanywhere/shared": "workspace:*",
         "solid-js": "^1.9.11"
     },

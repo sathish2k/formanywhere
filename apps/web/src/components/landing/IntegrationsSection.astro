@@ -9,35 +9,35 @@ import { Button } from "@formanywhere/ui/button";
 const integrations1 = [
   {
     name: "Google Sheets",
-    icon: "https://cdn.svgporn.com/logos/google-sheets.svg",
+    icon: "/logos/google-sheets.svg",
   },
   {
     name: "Slack",
-    icon: "https://cdn.svgporn.com/logos/slack-icon.svg",
+    icon: "/logos/slack-icon.svg",
   },
   {
     name: "Notion",
-    icon: "https://cdn.svgporn.com/logos/notion-icon.svg",
+    icon: "/logos/notion-icon.svg",
   },
   {
     name: "Airtable",
-    icon: "https://cdn.svgporn.com/logos/airtable-icon.svg",
+    icon: "/logos/airtable-icon.svg",
   },
   {
     name: "Zapier",
-    icon: "https://cdn.svgporn.com/logos/zapier-icon.svg",
+    icon: "/logos/zapier-icon.svg",
   },
   {
     name: "Microsoft Teams",
-    icon: "https://cdn.svgporn.com/logos/microsoft-teams.svg",
+    icon: "/logos/microsoft-teams.svg",
   },
   {
     name: "Webhook",
-    icon: "https://cdn.svgporn.com/logos/webhooks.svg",
+    icon: "/logos/webhooks.svg",
   },
   {
     name: "REST API",
-    icon: "https://cdn.svgporn.com/logos/openapi-icon.svg",
+    icon: "/logos/openapi-icon.svg",
   },
 ];
 
@@ -123,7 +123,11 @@ const row2 = [
               <img
                 src={item.icon}
                 alt={item.name}
+                width="48"
+                height="48"
                 class="w-full h-full object-contain"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -150,7 +154,11 @@ const row2 = [
               <img
                 src={item.icon}
                 alt={item.name}
+                width="48"
+                height="48"
                 class="w-full h-full object-contain"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 

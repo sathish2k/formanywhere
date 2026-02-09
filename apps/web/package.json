@@ -12,8 +12,6 @@
     },
     "dependencies": {
         "@astrojs/solid-js": "^5.1.3",
-        "@formanywhere/data": "workspace:*",
-        "@formanywhere/form-editor": "workspace:*",
         "@formanywhere/form-runtime": "workspace:*",
         "@formanywhere/shared": "workspace:*",
         "@formanywhere/ui": "workspace:*",

@@ -3,7 +3,8 @@
  * Theme selector popup with color theme options
  */
 import { Component, createSignal, onMount, onCleanup, Show, For } from 'solid-js';
-import { IconButton, Menu } from '@formanywhere/ui';
+import { IconButton } from '@formanywhere/ui/icon-button';
+import { Menu } from '@formanywhere/ui/menu';
 import ThemeSunIcon from '../../../icons/svg/theme-sun.svg';
 import CheckmarkIcon from '../../../icons/svg/checkmark.svg';
 
