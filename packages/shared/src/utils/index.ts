@@ -41,3 +41,7 @@ export function isBrowser(): boolean {
 export function isTauri(): boolean {
     return isBrowser() && '__TAURI__' in window;
 }
+
+// Asset utilities for SVG/Image rendering
+export * from './assets';
+

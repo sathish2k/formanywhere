@@ -67,3 +67,72 @@ Enforce packages/ui as the single source of UI elements while applying Material 
 - `packages/ui/src/styles/theme.css` for color, elevation, shape, and motion tokens.
 - `packages/ui/src/styles/typography.css` for typography scales and defaults.
 - `packages/ui/src/theme/index.tsx` for ThemeProvider usage.
+
+## Shared Components (packages/shared)
+
+Composite UI sections reused across pages live in `packages/shared/src/components/`. These components compose base primitives from `@formanywhere/ui`.
+
+### Available Shared Components
+
+- **Header** - Sticky header with nav, logo, theme toggle
+- **Footer** - Footer with links and social icons
+- **PricingTable** - Complete pricing section with cards and billing toggle
+- **FAQSection** - Accordion FAQ list
+- **ContactSalesCard** - Enterprise contact card
+- **CTASection** - Call-to-action banner with gradient background
+- **TemplateBrowser** - Template browsing with filters
+- **TemplateCard** - Individual template card
+
+### Sub-Component Folder Structure
+
+Complex components follow a sub-component folder pattern:
+
+```
+packages/shared/src/components/
+└── pricing-table/
+    ├── index.tsx           # Main component, re-exports sub-components
+    ├── pricing-card/
+    │   └── index.tsx       # Price card sub-component
+    ├── billing-toggle/
+    │   └── index.tsx       # Billing period toggle
+    └── feature-list/
+        └── index.tsx       # Feature list with icons
+```
+
+**Pattern rules:**
+- Main `index.tsx` imports and re-exports all sub-components
+- Sub-components in their own folders for co-location of styles/tests
+- Import sub-components from main index in consuming apps
+
+## Asset Utilities
+
+Use the asset utilities from `@formanywhere/shared` for optimized SVG/image loading:
+
+```tsx
+import { getIconPath, getAssetPath, ICON_NAMES, ICON_FILTERS } from '@formanywhere/shared';
+
+// Get icon path
+<img src={getIconPath('arrow-right')} alt="" />
+
+// Type-safe icon names
+<img src={getIconPath(ICON_NAMES.arrowRight)} alt="" />
+
+// Icon filters for dark backgrounds
+<img src={getIconPath('check')} style={{ filter: ICON_FILTERS.invert }} />
+```
+
+### SVG Icons (public/icons/)
+
+All icon SVGs live in `apps/web/public/icons/`. Common icons:
+- Navigation: `arrow-right`, `chevron-down`, `menu-hamburger`, `menu-close`
+- Status: `check`, `check-circle`, `cross`
+- Features: `ai`, `lightning`, `rocket`, `sparkle`, `heart`
+- Branding: `logo-icon`, `github`, `twitter`
+
+### Best Practices for Assets
+
+- Use `loading="lazy"` and `decoding="async"` for images
+- Store all SVGs in `public/icons/` for consistent paths
+- Use `filter: brightness(0) invert(1)` for white icons on dark backgrounds
+- Prefer SVG icons over inline SVG for better caching
+

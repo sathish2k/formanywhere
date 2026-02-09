@@ -1,0 +1,17 @@
+$ astro build
+09:11:16 [vite] Re-optimizing dependencies because vite config has changed
+09:11:16 [content] Syncing content
+09:11:16 [content] Synced content
+09:11:16 [types] Generated 267ms
+09:11:16 [build] output: "static"
+09:11:16 [build] mode: "static"
+09:11:16 [build] directory: /Users/chithrasathish/Development/formanywhere/apps/web/dist/
+09:11:16 [build] Collecting build info...
+09:11:16 [build] ✓ Completed in 282ms.
+09:11:16 [build] Building static entrypoints...
+09:11:17 [vite] ✓ built in 845ms
+09:11:17 [build] ✓ Completed in 872ms.
+
+ building client (vite) 
+09:11:17 [vite] transforming...
+09:11:17 [vite] ✓ 383 modules transformed.
