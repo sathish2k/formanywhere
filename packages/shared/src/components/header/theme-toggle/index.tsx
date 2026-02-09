@@ -4,6 +4,8 @@
  */
 import { Component, createSignal, onMount, onCleanup, Show, For } from 'solid-js';
 import { IconButton, Menu } from '@formanywhere/ui';
+import ThemeSunIcon from '/icons/theme-sun.svg';
+import CheckmarkIcon from '/icons/checkmark.svg';
 
 // Theme Options
 export interface ThemeOption {
@@ -93,10 +95,9 @@ export const ThemeToggle: Component = () => {
     };
 
     const ThemeIcon = () => (
-        <img
-            src="/icons/theme-sun.svg"
-            alt="Theme Toggle"
-            class="w-5 h-5"
+        <ThemeSunIcon
+            width={20}
+            height={20}
             aria-hidden="true"
         />
     );
@@ -160,10 +161,9 @@ export const ThemeToggle: Component = () => {
                                     />
                                     <Show when={currentTheme() === option.theme}>
                                         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-md z-10 flex items-center justify-center">
-                                            <img
-                                                src="/icons/checkmark.svg"
-                                                alt="Selected"
-                                                class="w-3.5 h-3.5"
+                                            <CheckmarkIcon
+                                                width={14}
+                                                height={14}
                                                 style={{ color: option.primary }}
                                             />
                                         </div>

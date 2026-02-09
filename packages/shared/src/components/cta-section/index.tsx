@@ -1,17 +1,17 @@
 /**
  * CTA Section Component
  * Reusable call-to-action banner with gradient background
+ * Uses Icon component for theme-aware coloring
  */
 import { Component, Show } from 'solid-js';
 import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
-import { HStack, VStack } from '@formanywhere/ui/stack';
-import { getIconPath } from '../../utils/assets';
+import { Icon } from '@formanywhere/ui/icon';
 
 export interface CTAButton {
     label: string;
     href: string;
-    /** Icon name to show after label */
+    /** Icon name to show */
     icon?: string;
 }
 
@@ -105,81 +105,49 @@ export const CTASection: Component<CTASectionProps> = (props) => {
                 >
                     {/* Primary CTA */}
                     <Show when={props.primaryCta}>
-                        <a
+                        <Button
                             href={props.primaryCta!.href}
+                            variant="tonal"
+                            size="lg"
                             style={{
-                                display: 'inline-flex',
-                                'align-items': 'center',
-                                gap: '8px',
-                                padding: '12px 32px',
                                 background: 'var(--m3-color-surface)',
                                 color: 'var(--m3-color-primary)',
                                 'font-weight': '600',
-                                'border-radius': '12px',
-                                'text-decoration': 'none',
                                 'box-shadow': '0 8px 24px rgba(0, 0, 0, 0.15)',
-                                transition: 'all 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.2)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.15)';
                             }}
                         >
                             {props.primaryCta!.label}
                             <Show when={props.primaryCta!.icon}>
-                                <img
-                                    src={getIconPath(props.primaryCta!.icon!)}
-                                    alt=""
-                                    style={{
-                                        width: '20px',
-                                        height: '20px',
-                                    }}
+                                <Icon
+                                    name={props.primaryCta!.icon!}
+                                    size={20}
+                                    color="var(--m3-color-primary)"
                                 />
                             </Show>
-                        </a>
+                        </Button>
                     </Show>
 
                     {/* Secondary CTA */}
                     <Show when={props.secondaryCta}>
-                        <a
+                        <Button
                             href={props.secondaryCta!.href}
+                            variant="outlined"
+                            size="lg"
                             style={{
-                                display: 'inline-flex',
-                                'align-items': 'center',
-                                gap: '8px',
-                                padding: '12px 32px',
                                 background: 'rgba(255, 255, 255, 0.1)',
                                 color: 'white',
-                                'font-weight': '600',
-                                'border-radius': '12px',
-                                'text-decoration': 'none',
-                                border: '1px solid rgba(255, 255, 255, 0.5)',
-                                transition: 'all 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                                'border-color': 'rgba(255, 255, 255, 0.5)',
                             }}
                         >
                             <Show when={props.secondaryCta!.icon}>
-                                <img
-                                    src={getIconPath(props.secondaryCta!.icon!)}
-                                    alt=""
-                                    style={{
-                                        width: '20px',
-                                        height: '20px',
-                                        filter: 'brightness(0) invert(1)',
-                                    }}
+                                <Icon
+                                    name={props.secondaryCta!.icon!}
+                                    size={20}
+                                    color="white"
                                 />
                             </Show>
                             {props.secondaryCta!.label}
-                        </a>
+                        </Button>
                     </Show>
                 </div>
             </div>

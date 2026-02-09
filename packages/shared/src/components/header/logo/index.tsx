@@ -6,6 +6,7 @@ import { Component, Show } from 'solid-js';
 import { HStack } from '@formanywhere/ui/stack';
 import { Typography } from '@formanywhere/ui/typography';
 import { Box } from '@formanywhere/ui/box';
+import LogoIcon from '/icons/logo-icon.svg';
 
 export interface LogoProps {
     showText?: boolean;
@@ -36,10 +37,10 @@ export const Logo: Component<LogoProps> = (props) => {
                     'justify-content': 'center',
                 }}
             >
-                <img
-                    src="/icons/logo-icon.svg"
-                    alt="FormAnywhere Logo"
-                    style={{ width: '20px', height: '20px', color: 'white' }}
+                <LogoIcon
+                    width={20}
+                    height={20}
+                    style={{ color: 'white' }}
                 />
             </Box>
             <Show when={props.showText !== false}>

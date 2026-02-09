@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import solidJs from '@astrojs/solid-js';
+import solidSvg from 'vite-plugin-solid-svg';
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,6 +15,11 @@ export default defineConfig({
     })
   ],
   vite: {
+    plugins: [
+      solidSvg({
+        defaultAsComponent: true,
+      })
+    ],
     ssr: {
       // Ensure workspace packages are bundled and transformed properly
       // See: https://docs.astro.build/en/guides/troubleshooting/#adding-dependencies-to-astro-in-a-monorepo

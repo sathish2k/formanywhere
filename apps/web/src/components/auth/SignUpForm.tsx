@@ -11,6 +11,8 @@ import { TextField } from '@formanywhere/ui/input';
 import { Divider } from '@formanywhere/ui/divider';
 import { Typography } from '@formanywhere/ui/typography';
 import { Checkbox } from '@formanywhere/ui/checkbox';
+import GoogleIcon from '/icons/google.svg';
+import GithubIcon from '/icons/github.svg';
 
 // Validation schema with password confirmation
 const SignUpSchema = z.object({
@@ -86,7 +88,7 @@ export function SignUpForm(props: SignUpFormProps) {
                     onClick={handleGoogleSignUp}
                     style={{ width: '100%', padding: '14px 16px', 'justify-content': 'center', gap: '12px' }}
                 >
-                    <img src="/icons/google.svg" alt="" class="w-5 h-5" aria-hidden="true" />
+                    <GoogleIcon width={20} height={20} aria-hidden="true" />
                     Continue with Google
                 </Button>
 
@@ -95,7 +97,7 @@ export function SignUpForm(props: SignUpFormProps) {
                     onClick={handleGithubSignUp}
                     style={{ width: '100%', padding: '14px 16px', 'justify-content': 'center', gap: '12px' }}
                 >
-                    <img src="/icons/github.svg" alt="" class="w-5 h-5" aria-hidden="true" />
+                    <GithubIcon width={20} height={20} aria-hidden="true" />
                     Continue with GitHub
                 </Button>
             </div>

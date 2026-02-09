@@ -1,11 +1,12 @@
 /**
  * Feature List Component
  * Displays a list of features with check/cross icons
+ * Uses Icon component for theme-aware coloring
  */
 import { Component, For } from 'solid-js';
 import { VStack } from '@formanywhere/ui/stack';
 import { Typography } from '@formanywhere/ui/typography';
-import { getIconPath } from '../../../utils/assets';
+import { Icon } from '@formanywhere/ui/icon';
 
 export interface Feature {
     name: string;
@@ -48,20 +49,18 @@ export const FeatureList: Component<FeatureListProps> = (props) => {
                                     : 'transparent',
                             }}
                         >
-                            <img
-                                src={getIconPath(feature.included ? 'check' : 'cross')}
-                                alt=""
-                                style={{
-                                    width: feature.included ? '14px' : '12px',
-                                    height: feature.included ? '14px' : '12px',
-                                    filter: feature.included
+                            <Icon
+                                name={feature.included ? 'check' : 'cross'}
+                                size={feature.included ? 14 : 12}
+                                color={
+                                    feature.included
                                         ? props.gradient
-                                            ? 'brightness(0) invert(1)'
-                                            : 'none'
+                                            ? 'white'
+                                            : 'var(--m3-color-primary)'
                                         : props.gradient
-                                            ? 'brightness(0) invert(1) opacity(0.4)'
-                                            : 'opacity(0.5)',
-                                }}
+                                            ? 'rgba(255, 255, 255, 0.4)'
+                                            : 'var(--m3-color-on-surface-variant)'
+                                }
                             />
                         </div>
                         <Typography

@@ -1,13 +1,14 @@
 /**
  * Pricing Card Component
  * Individual pricing plan card with price, features, and CTA
+ * Uses Button component from @formanywhere/ui
  */
 import { Component, Show, createMemo } from 'solid-js';
-import { Card } from '@formanywhere/ui/card';
 import { Button } from '@formanywhere/ui/button';
 import { Typography } from '@formanywhere/ui/typography';
 import { Box } from '@formanywhere/ui/box';
 import { VStack } from '@formanywhere/ui/stack';
+import { Icon } from '@formanywhere/ui/icon';
 import { FeatureList, Feature } from '../feature-list';
 import { getIconPath } from '../../../utils/assets';
 
@@ -188,52 +189,27 @@ export const PricingCard: Component<PricingCardProps> = (props) => {
                     </div>
 
                     {/* CTA Button */}
-                    <a
+                    <Button
                         href={props.plan.ctaHref || '/signup'}
+                        variant={props.plan.gradient ? 'outlined' : 'filled'}
+                        size="lg"
                         style={{
-                            display: 'flex',
                             width: '100%',
-                            padding: '12px 24px',
-                            'justify-content': 'center',
-                            'align-items': 'center',
-                            gap: '8px',
-                            'text-decoration': 'none',
-                            'font-weight': '600',
-                            'border-radius': '12px',
-                            transition: 'all 0.2s ease',
                             background: props.plan.gradient
                                 ? 'transparent'
                                 : 'linear-gradient(135deg, var(--m3-color-primary), var(--m3-color-primary-dark, #007867))',
-                            color: props.plan.gradient ? 'white' : 'white',
+                            color: 'white',
                             border: props.plan.gradient ? '2px solid white' : 'none',
-                            'box-shadow': props.plan.gradient ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.15)',
-                        }}
-                        onMouseEnter={(e) => {
-                            if (props.plan.gradient) {
-                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                            } else {
-                                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.2)';
-                            }
-                        }}
-                        onMouseLeave={(e) => {
-                            if (props.plan.gradient) {
-                                e.currentTarget.style.background = 'transparent';
-                            } else {
-                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-                            }
+                            'font-weight': '600',
                         }}
                     >
                         {props.plan.cta}
-                        <img
-                            src={getIconPath('arrow-right')}
-                            alt=""
-                            style={{
-                                width: '16px',
-                                height: '16px',
-                                filter: 'brightness(0) invert(1)',
-                            }}
+                        <Icon
+                            name="arrow-right"
+                            size={16}
+                            color="white"
                         />
-                    </a>
+                    </Button>
 
                     {/* Features */}
                     <FeatureList

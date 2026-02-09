@@ -9,6 +9,9 @@ import { Button } from '@formanywhere/ui/button';
 import { IconButton } from '@formanywhere/ui/icon-button';
 import { Divider } from '@formanywhere/ui/divider';
 import { HStack, VStack } from '@formanywhere/ui/stack';
+import SparkleIcon from '/icons/sparkle.svg';
+import TwitterIcon from '/icons/twitter.svg';
+import GithubIcon from '/icons/github.svg';
 
 interface FooterSection {
     title: string;
@@ -106,10 +109,10 @@ export const Footer: Component<FooterProps> = (props) => {
                                     'justify-content': 'center',
                                 }}
                             >
-                                <img
-                                    src="/icons/sparkle.svg"
-                                    alt=""
-                                    style={{ width: '20px', height: '20px', filter: 'brightness(0) invert(1)' }}
+                                <SparkleIcon
+                                    width={20}
+                                    height={20}
+                                    style={{ filter: 'brightness(0) invert(1)' }}
                                     aria-hidden="true"
                                 />
                             </Box>
@@ -190,10 +193,10 @@ export const Footer: Component<FooterProps> = (props) => {
                             href="https://twitter.com"
                             aria-label="Twitter"
                             icon={
-                                <img
-                                    src="/icons/twitter.svg"
-                                    alt=""
-                                    style={{ width: '20px', height: '20px', filter: 'brightness(0) invert(0.7)' }}
+                                <TwitterIcon
+                                    width={20}
+                                    height={20}
+                                    style={{ filter: 'brightness(0) invert(0.7)' }}
                                 />
                             }
                             style={{ color: 'rgba(255, 255, 255, 0.7)' }}
@@ -202,10 +205,10 @@ export const Footer: Component<FooterProps> = (props) => {
                             href="https://github.com"
                             aria-label="GitHub"
                             icon={
-                                <img
-                                    src="/icons/github.svg"
-                                    alt=""
-                                    style={{ width: '20px', height: '20px', filter: 'brightness(0) invert(0.7)' }}
+                                <GithubIcon
+                                    width={20}
+                                    height={20}
+                                    style={{ filter: 'brightness(0) invert(0.7)' }}
                                 />
                             }
                             style={{ color: 'rgba(255, 255, 255, 0.7)' }}

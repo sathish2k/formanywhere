@@ -8,6 +8,8 @@ import { Drawer } from '@formanywhere/ui/drawer';
 import { IconButton } from '@formanywhere/ui/icon-button';
 import { List, ListItem } from '@formanywhere/ui/list';
 import { Divider } from '@formanywhere/ui/divider';
+import MenuHamburgerIcon from '/icons/menu-hamburger.svg';
+import MenuCloseIcon from '/icons/menu-close.svg';
 
 // Import subcomponents from their folders
 import { Logo } from './logo';
@@ -248,10 +250,9 @@ export const Header: Component<HeaderProps> = (props) => {
                                 aria-expanded={isMobileMenuOpen()}
                                 aria-controls="mobile-menu"
                                 icon={
-                                    <img
-                                        src="/icons/menu-hamburger.svg"
-                                        alt=""
-                                        style={{ width: '24px', height: '24px' }}
+                                    <MenuHamburgerIcon
+                                        width={24}
+                                        height={24}
                                     />
                                 }
                                 style={{
@@ -288,10 +289,9 @@ export const Header: Component<HeaderProps> = (props) => {
                         aria-label="Close navigation menu"
                         onClick={closeMobileMenu}
                         icon={
-                            <img
-                                src="/icons/menu-close.svg"
-                                alt=""
-                                style={{ width: '24px', height: '24px' }}
+                            <MenuCloseIcon
+                                width={24}
+                                height={24}
                             />
                         }
                     />

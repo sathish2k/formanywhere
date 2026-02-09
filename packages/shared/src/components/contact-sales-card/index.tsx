@@ -1,14 +1,14 @@
 /**
  * Contact Sales Card Component
  * Enterprise contact/sales section with features list
+ * Uses Icon component for theme-aware coloring
  */
 import { Component, For, Show } from 'solid-js';
 import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
-import { Chip } from '@formanywhere/ui/chip';
-import { HStack, VStack } from '@formanywhere/ui/stack';
+import { HStack } from '@formanywhere/ui/stack';
 import { Box } from '@formanywhere/ui/box';
-import { getIconPath } from '../../utils/assets';
+import { Icon } from '@formanywhere/ui/icon';
 
 export interface ContactSalesCardProps {
     /** Badge text (e.g., "Enterprise") */
@@ -90,14 +90,11 @@ export const ContactSalesCard: Component<ContactSalesCardProps> = (props) => {
                         <For each={props.features}>
                             {(feature) => (
                                 <HStack gap="sm" align="center">
-                                    <img
-                                        src={getIconPath('check')}
-                                        alt=""
-                                        style={{
-                                            width: '16px',
-                                            height: '16px',
-                                            'flex-shrink': '0',
-                                        }}
+                                    <Icon
+                                        name="check"
+                                        size={16}
+                                        color="var(--m3-color-primary)"
+                                        style={{ 'flex-shrink': '0' }}
                                     />
                                     <Typography
                                         variant="body-small"
@@ -111,40 +108,22 @@ export const ContactSalesCard: Component<ContactSalesCardProps> = (props) => {
                     </div>
 
                     {/* CTA Button */}
-                    <a
+                    <Button
                         href={props.ctaHref || 'mailto:enterprise@formanywhere.com'}
+                        variant="filled"
+                        size="md"
                         style={{
-                            display: 'inline-flex',
-                            'align-items': 'center',
-                            gap: '8px',
-                            padding: '12px 24px',
                             background: 'var(--m3-color-tertiary, #8b5cf6)',
                             color: 'white',
-                            'font-weight': '600',
-                            'border-radius': '12px',
-                            'text-decoration': 'none',
-                            transition: 'all 0.2s ease',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.opacity = '0.9';
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.opacity = '1';
-                            e.currentTarget.style.transform = 'translateY(0)';
                         }}
                     >
                         {props.ctaLabel || 'Contact Sales'}
-                        <img
-                            src={getIconPath('arrow-right')}
-                            alt=""
-                            style={{
-                                width: '16px',
-                                height: '16px',
-                                filter: 'brightness(0) invert(1)',
-                            }}
+                        <Icon
+                            name="arrow-right"
+                            size={16}
+                            color="white"
                         />
-                    </a>
+                    </Button>
                 </div>
 
                 {/* Icon */}
@@ -160,14 +139,11 @@ export const ContactSalesCard: Component<ContactSalesCardProps> = (props) => {
                         'flex-shrink': '0',
                     }}
                 >
-                    <img
-                        src={getIconPath(props.iconName || 'building')}
-                        alt=""
-                        style={{
-                            width: '64px',
-                            height: '64px',
-                            opacity: '0.9',
-                        }}
+                    <Icon
+                        name={props.iconName || 'building'}
+                        size={64}
+                        color="var(--m3-color-tertiary, #8b5cf6)"
+                        style={{ opacity: '0.9' }}
                     />
                 </Box>
             </div>
