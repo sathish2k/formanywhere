@@ -16,4 +16,6 @@ export * from './components/pricing-table';
 export * from './components/faq-section';
 export * from './components/contact-sales-card';
 export * from './components/cta-section';
+export * from './components/auth/SignInForm';
+export * from './components/auth/SignUpForm';
 

@@ -26,7 +26,8 @@ export default defineConfig({
       include: [
         '**/packages/ui/**',
         '**/packages/shared/**',
-        '**/node_modules/@formanywhere/**'
+        '**/node_modules/@formanywhere/**',
+        '**/node_modules/@modular-forms/solid/**'
       ]
     })
   ],

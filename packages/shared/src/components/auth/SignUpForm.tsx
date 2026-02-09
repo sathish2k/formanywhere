@@ -11,8 +11,8 @@ import { TextField } from '@formanywhere/ui/input';
 import { Divider } from '@formanywhere/ui/divider';
 import { Typography } from '@formanywhere/ui/typography';
 import { Checkbox } from '@formanywhere/ui/checkbox';
-import GoogleIcon from '../../icons/google.svg';
-import GithubIcon from '../../icons/github.svg';
+import GoogleIcon from '../../icons/svg/google.svg?component-solid';
+import GithubIcon from '../../icons/svg/github.svg?component-solid';
 
 // Validation schema with password confirmation
 const SignUpSchema = z.object({

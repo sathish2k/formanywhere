@@ -11,8 +11,8 @@ import { TextField } from '@formanywhere/ui/input';
 import { Divider } from '@formanywhere/ui/divider';
 import { Typography } from '@formanywhere/ui/typography';
 import { Checkbox } from '@formanywhere/ui/checkbox';
-import GoogleIcon from '../../icons/google.svg';
-import GithubIcon from '../../icons/github.svg';
+import GoogleIcon from '../../icons/svg/google.svg?component-solid';
+import GithubIcon from '../../icons/svg/github.svg?component-solid';
 
 // Validation schema
 const SignInSchema = z.object({
@@ -126,7 +126,7 @@ export function SignInForm(props: SignInFormProps) {
                     <Button
                         type="submit"
                         variant="filled"
-                        color="secondary"
+                        color="primary"
                         disabled={form.submitting}
                         loading={form.submitting}
                         style={{ width: '100%', padding: '14px 24px' }}
