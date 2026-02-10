@@ -1,8 +1,144 @@
 /**
  * Material 3 Navigation Rail Component for SolidJS
+ * Based on M3 navigation rail spec
+ *
+ * Implements the M3 spec with:
+ * - Vertical navigation with active indicator pill
+ * - Icon + label layout
+ * - Header slot (e.g. FAB)
+ * - Active/inactive states with transitions
+ * - Ripple on items
+ * - CSS class-based styling with M3 design tokens
  */
-import { JSX, Component } from 'solid-js';
+import { JSX, Component, Show } from 'solid-js';
 import { Ripple } from '../ripple';
+
+// ─── Styles (injected once) ─────────────────────────────────────────────────────
+
+let stylesInjected = false;
+
+function injectStyles() {
+    if (stylesInjected || typeof document === 'undefined') return;
+    stylesInjected = true;
+
+    const css = `
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 NAVIGATION RAIL - Vertical navigation
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.md-nav-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    height: 100%;
+    background: var(--m3-color-surface, #FDF8FD);
+    padding: 12px 0;
+    box-sizing: border-box;
+    gap: 12px;
+    border-right: 1px solid var(--m3-color-outline-variant, #CAC4D0);
+}
+
+/* Alignment modifiers */
+.md-nav-rail.align-center .md-nav-rail__items {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.md-nav-rail.align-end .md-nav-rail__items {
+    margin-top: auto;
+}
+
+/* ─── HEADER ───────────────────────────────────────────────────────────────── */
+
+.md-nav-rail__header {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ─── ITEMS CONTAINER ──────────────────────────────────────────────────────── */
+
+.md-nav-rail__items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+/* ─── ITEM ─────────────────────────────────────────────────────────────────── */
+
+.md-nav-rail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    gap: 4px;
+    width: 100%;
+    padding: 4px 0;
+    background: none;
+    border: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.md-nav-rail-item:focus-visible {
+    outline: 2px solid var(--m3-color-primary, #6750A4);
+    outline-offset: -2px;
+    border-radius: var(--m3-shape-small, 8px);
+}
+
+.md-nav-rail-item.selected {
+    color: var(--m3-color-on-surface, #1D1B20);
+}
+
+/* ─── INDICATOR ────────────────────────────────────────────────────────────── */
+
+.md-nav-rail-item__indicator {
+    width: 56px;
+    height: 32px;
+    border-radius: var(--m3-shape-full, 9999px);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: background var(--m3-motion-duration-medium, 300ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.md-nav-rail-item.selected .md-nav-rail-item__indicator {
+    background: var(--m3-color-secondary-container, #E8DEF8);
+}
+
+/* ─── LABEL ────────────────────────────────────────────────────────────────── */
+
+.md-nav-rail-item__label {
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    font-size: var(--m3-label-medium-size, 12px);
+    line-height: var(--m3-label-medium-line-height, 16px);
+    font-weight: 500;
+    text-align: center;
+    height: 16px;
+    transition: font-weight var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.md-nav-rail-item.selected .md-nav-rail-item__label {
+    font-weight: 700;
+}
+`;
+
+    const style = document.createElement('style');
+    style.setAttribute('data-md-nav-rail', '');
+    style.textContent = css;
+    document.head.appendChild(style);
+}
+
+// ─── Types ──────────────────────────────────────────────────────────────────────
 
 export interface NavigationRailProps {
     /** Header slot (e.g. FAB) */
@@ -11,44 +147,11 @@ export interface NavigationRailProps {
     children: JSX.Element;
     /** Custom style */
     style?: JSX.CSSProperties;
+    /** Custom class */
+    class?: string;
     /** Alignment of items */
     align?: 'start' | 'center' | 'end';
 }
-
-export const NavigationRail: Component<NavigationRailProps> = (props) => {
-    const railStyles: JSX.CSSProperties = {
-        display: 'flex',
-        'flex-direction': 'column',
-        'align-items': 'center',
-        width: '80px',
-        height: '100%',
-        background: 'var(--m3-color-surface, #fdf8fd)', // Rail is usually surface
-        padding: '12px 0',
-        'box-sizing': 'border-box',
-        gap: '12px',
-        'border-right': '1px solid var(--m3-color-outline-variant, #cac4d0)', // Optional divider
-        ...props.style
-    };
-
-    const itemsContainerStyles: JSX.CSSProperties = {
-        display: 'flex',
-        'flex-direction': 'column',
-        'align-items': 'center',
-        gap: '12px',
-        width: '100%',
-        'margin-top': props.align === 'center' || props.align === 'end' ? 'auto' : undefined,
-        'margin-bottom': props.align === 'center' ? 'auto' : undefined,
-    };
-
-    return (
-        <div style={railStyles} role="navigation">
-            {props.header && <div style={{ 'margin-bottom': '20px' }}>{props.header}</div>}
-            <div style={itemsContainerStyles}>
-                {props.children}
-            </div>
-        </div>
-    );
-};
 
 export interface NavigationRailItemProps {
     /** Value of this item */
@@ -65,52 +168,53 @@ export interface NavigationRailItemProps {
     onClick?: () => void;
 }
 
+// ─── Components ─────────────────────────────────────────────────────────────────
+
+export const NavigationRail: Component<NavigationRailProps> = (props) => {
+    injectStyles();
+
+    const rootClass = () => {
+        const classes = ['md-nav-rail'];
+        if (props.align === 'center') classes.push('align-center');
+        if (props.align === 'end') classes.push('align-end');
+        if (props.class) classes.push(props.class);
+        return classes.join(' ');
+    };
+
+    return (
+        <div class={rootClass()} style={props.style} role="navigation">
+            <Show when={props.header}>
+                <div class="md-nav-rail__header">{props.header}</div>
+            </Show>
+            <div class="md-nav-rail__items">
+                {props.children}
+            </div>
+        </div>
+    );
+};
+
 export const NavigationRailItem: Component<NavigationRailItemProps> = (props) => {
-    const itemStyles = (selected: boolean): JSX.CSSProperties => ({
-        display: 'flex',
-        'flex-direction': 'column',
-        'align-items': 'center',
-        cursor: 'pointer',
-        position: 'relative',
-        color: selected ? 'var(--m3-color-on-surface, #1d1b20)' : 'var(--m3-color-on-surface-variant, #49454f)',
-        gap: '4px',
-        width: '100%',
-        padding: '4px 0',
-    });
+    injectStyles();
 
-    const indicatorStyles = (selected: boolean): JSX.CSSProperties => ({
-        width: '56px',
-        height: '32px',
-        'border-radius': '16px',
-        background: selected ? 'var(--m3-color-secondary-container, #e8def8)' : 'transparent',
-        display: 'flex',
-        'align-items': 'center',
-        'justify-content': 'center',
-        transition: 'background 200ms cubic-bezier(0.2, 0, 0, 1)',
-    });
-
-    const labelStyles = (selected: boolean): JSX.CSSProperties => ({
-        'font-family': 'var(--m3-font-body, Roboto, sans-serif)',
-        'font-size': '12px',
-        'font-weight': selected ? '700' : '500',
-        'text-align': 'center',
-        height: '16px', // fixed height to prevent jump
-        'line-height': '16px',
-    });
+    const rootClass = () => {
+        const classes = ['md-nav-rail-item'];
+        if (props.selected) classes.push('selected');
+        return classes.join(' ');
+    };
 
     return (
         <div
-            style={itemStyles(!!props.selected)}
+            class={rootClass()}
             onClick={props.onClick}
             role="button"
             tabindex="0"
         >
-            <div style={indicatorStyles(!!props.selected)}>
+            <div class="md-nav-rail-item__indicator">
                 {props.selected && props.activeIcon ? props.activeIcon : props.icon}
                 <Ripple />
             </div>
             {props.label && (
-                <span style={labelStyles(!!props.selected)}>
+                <span class="md-nav-rail-item__label">
                     {props.label}
                 </span>
             )}

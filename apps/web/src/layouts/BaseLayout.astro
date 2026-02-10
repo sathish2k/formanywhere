@@ -62,6 +62,32 @@ import "@formanywhere/ui/styles/ripple.css";
         
         // Re-apply after View Transitions swap content
         document.addEventListener("astro:after-swap", applyTheme);
+
+        // Preserve dynamically injected component styles during View Transitions
+        // UI components use runtime CSS injection with module-level flags that persist
+        // across navigations, but the <style> tags get removed during page swap.
+        document.addEventListener("astro:before-swap", function (e) {
+          var injected = document.head.querySelectorAll(
+            'style[data-md-button],' +
+            'style[data-md-card],' +
+            'style[data-md-chip],' +
+            'style[data-md-checkbox],' +
+            'style[data-md-dialog],' +
+            'style[data-md-fab],' +
+            'style[data-md-icon-button],' +
+            'style[data-md-menu],' +
+            'style[data-md-progress],' +
+            'style[data-md-radio],' +
+            'style[data-md-select],' +
+            'style[data-md-snackbar],' +
+            'style[data-md-switch],' +
+            'style[data-md-tabs],' +
+            'style[data-md-textfield]'
+          );
+          injected.forEach(function (style) {
+            e.newDocument.head.appendChild(style.cloneNode(true));
+          });
+        });
       })();
     </script>
     <!-- Page Transition Loader Styles -->

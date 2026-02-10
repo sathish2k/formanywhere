@@ -1,18 +1,34 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 ---
 
-<Layout title="Dashboard - FormAnywhere">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
-        <p>Welcome to your dashboard!</p>
-        <div id="user-info" class="mt-4 p-4 border rounded hidden">
-            <h2 class="text-xl font-semibold">User Profile</h2>
-            <pre id="profile-data" class="bg-gray-100 p-2 mt-2 rounded"></pre>
+<BaseLayout title="Dashboard - FormAnywhere">
+    <Header />
+    <main id="main-content" class="min-h-screen bg-background-default">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold mb-4 text-on-surface">Dashboard</h1>
+            <p class="text-on-surface-variant">Welcome to your dashboard!</p>
+            <div
+                id="user-info"
+                class="mt-4 p-4 border border-outline-variant rounded-2xl hidden"
+            >
+                <h2 class="text-xl font-semibold text-on-surface">
+                    User Profile
+                </h2>
+                <pre
+                    id="profile-data"
+                    class="bg-surface-container p-2 mt-2 rounded-lg text-on-surface">
+                </pre>
+            </div>
+            <div id="loading" class="mt-4 text-on-surface-variant">
+                Loading user profile...
+            </div>
         </div>
-        <div id="loading" class="mt-4">Loading user profile...</div>
-    </div>
-</Layout>
+    </main>
+    <Footer />
+</BaseLayout>
 
 <script>
     async function checkAuth() {

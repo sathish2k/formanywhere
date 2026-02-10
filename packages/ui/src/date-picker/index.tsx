@@ -1,7 +1,16 @@
 /**
  * Material 3 Date Picker Component for SolidJS
+ * Based on M3 date picker spec
+ *
+ * Implements the M3 spec with:
+ * - TextField trigger with calendar icon
+ * - Modal dialog with month/year navigation
+ * - Calendar grid with day selection
+ * - Today indicator, selected state
+ * - Liquid Glass enhanced dialog
+ * - CSS class-based styling with M3 design tokens
  */
-import { JSX, createSignal, Show, For, mergeProps, splitProps } from 'solid-js';
+import { JSX, createSignal, Show, For, splitProps } from 'solid-js';
 import { TextField } from '../input';
 import { Dialog } from '../dialog';
 import { Button } from '../button';
@@ -21,6 +30,184 @@ import {
     isSameMonth
 } from 'date-fns';
 
+// ─── Styles (injected once) ─────────────────────────────────────────────────────
+
+let stylesInjected = false;
+
+function injectStyles() {
+    if (stylesInjected || typeof document === 'undefined') return;
+    stylesInjected = true;
+
+    const css = `
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 DATE PICKER - Calendar dialog
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.md-date-picker {
+    display: inline-flex;
+    width: 100%;
+}
+
+.md-date-picker__trigger {
+    width: 100%;
+    cursor: pointer;
+}
+
+/* ─── DIALOG OVERRIDE ──────────────────────────────────────────────────────── */
+
+.md-date-picker__dialog {
+    max-width: 360px;
+    min-width: 320px;
+    border-radius: var(--m3-shape-extra-large, 28px) !important;
+    padding: 0 !important;
+}
+
+/* ─── HEADER ───────────────────────────────────────────────────────────────── */
+
+.md-date-picker__header {
+    padding: 24px 24px 12px;
+}
+
+.md-date-picker__header-date {
+    margin-top: 8px;
+}
+
+/* ─── CALENDAR BODY ────────────────────────────────────────────────────────── */
+
+.md-date-picker__body {
+    padding: 0 12px 12px;
+}
+
+/* ─── MONTH NAVIGATION ─────────────────────────────────────────────────────── */
+
+.md-date-picker__month-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px 12px;
+}
+
+.md-date-picker__month-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.md-date-picker__month-controls {
+    display: flex;
+}
+
+.md-date-picker__today-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    margin-left: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    border-radius: var(--m3-shape-small, 8px);
+    transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.md-date-picker__today-btn:hover {
+    background: rgba(var(--m3-color-on-surface-rgb, 29, 27, 32), 0.08);
+}
+
+/* ─── WEEKDAY HEADER ───────────────────────────────────────────────────────── */
+
+.md-date-picker__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.md-date-picker__weekday {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    font-size: var(--m3-body-small-size, 12px);
+    color: var(--m3-color-on-surface-variant, #49454E);
+}
+
+/* ─── DAY GRID ─────────────────────────────────────────────────────────────── */
+
+.md-date-picker__days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    row-gap: 4px;
+}
+
+.md-date-picker__day-cell {
+    display: flex;
+    justify-content: center;
+}
+
+/* ─── DAY BUTTON ───────────────────────────────────────────────────────────── */
+
+.md-date-picker__day {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--m3-color-on-surface, #1D1B20);
+    cursor: pointer;
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    font-size: var(--m3-body-medium-size, 14px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.md-date-picker__day:hover {
+    background: rgba(var(--m3-color-on-surface-rgb, 29, 27, 32), 0.08);
+}
+
+/* Other month (dimmed) */
+.md-date-picker__day.other-month {
+    color: var(--m3-color-on-surface-variant, #999);
+    opacity: 0.38;
+}
+
+/* Today indicator */
+.md-date-picker__day.today {
+    border: 1px solid var(--m3-color-primary, #6750A4);
+}
+
+/* Selected */
+.md-date-picker__day.selected {
+    background: var(--m3-color-primary, #6750A4);
+    color: var(--m3-color-on-primary, #FFFFFF);
+    border: none;
+}
+
+.md-date-picker__day.selected:hover {
+    background: var(--m3-color-primary, #6750A4);
+    opacity: 0.92;
+}
+
+/* ─── ACTIONS ──────────────────────────────────────────────────────────────── */
+
+.md-date-picker__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 24px 24px;
+}
+`;
+
+    const style = document.createElement('style');
+    style.setAttribute('data-md-date-picker', '');
+    style.textContent = css;
+    document.head.appendChild(style);
+}
+
+// ─── Types ──────────────────────────────────────────────────────────────────────
+
 export interface DatePickerProps {
     /** Current value (Date object) */
     value?: Date;
@@ -36,12 +223,18 @@ export interface DatePickerProps {
     helperText?: string;
     /** Custom style */
     style?: JSX.CSSProperties;
+    /** Custom class */
+    class?: string;
 }
+
+// ─── Component ──────────────────────────────────────────────────────────────────
 
 export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
     const [local, others] = splitProps(props, [
-        'value', 'onChange', 'label', 'disabled', 'error', 'helperText', 'style'
+        'value', 'onChange', 'label', 'disabled', 'error', 'helperText', 'style', 'class'
     ]);
+
+    injectStyles();
 
     const [open, setOpen] = createSignal(false);
     const [viewDate, setViewDate] = createSignal(props.value || new Date());
@@ -77,22 +270,34 @@ export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
         return eachDayOfInterval({ start, end });
     };
 
+    const getDayClass = (day: Date) => {
+        const classes = ['md-date-picker__day'];
+        const isSelected = tempSelectedDate() && isSameDay(day, tempSelectedDate());
+        const isCurrentMonth = isSameMonth(day, viewDate());
+        const isTodayDate = isToday(day);
+
+        if (isSelected) classes.push('selected');
+        if (!isCurrentMonth) classes.push('other-month');
+        if (isTodayDate && !isSelected) classes.push('today');
+
+        return classes.join(' ');
+    };
+
     return (
-        <div class="date-picker-container" style={{ display: 'inline-flex', width: '100%', ...local.style }}>
-            <div onClick={handleOpen} style={{ width: '100%' }}>
+        <div class={`md-date-picker ${local.class || ''}`} style={local.style}>
+            <div class="md-date-picker__trigger" onClick={handleOpen}>
                 <TextField
                     label={local.label || "Select Date"}
                     value={local.value ? format(local.value, 'MMM d, yyyy') : ''}
                     disabled={local.disabled}
                     error={local.error}
                     supportingText={local.helperText}
-                    readonly
+                    readOnly
                     trailingIcon={
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .09-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
                         </svg>
                     }
-                    style={{ cursor: 'pointer' }}
                 />
             </div>
 
@@ -100,35 +305,32 @@ export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
                 open={open()}
                 onClose={handleClose}
                 closeOnBackdropClick
-                style={{
-                    'max-width': '360px',
-                    'min-width': '320px',
-                    'border-radius': '28px',
-                    padding: '0'
-                }}
+                class="md-date-picker__dialog"
             >
-                {/* Custom Header Area within Dialog content structure */}
-                <div style={{ padding: '24px 24px 12px' }}>
+                {/* Header */}
+                <div class="md-date-picker__header">
                     <Typography variant="label-medium" color="on-surface-variant">Select Date</Typography>
-                    <Typography variant="headline-large" color="on-surface" style={{ 'margin-top': '8px' }}>
-                        {tempSelectedDate() ? format(tempSelectedDate(), 'EEE, MMM d') : 'Select date'}
-                    </Typography>
+                    <div class="md-date-picker__header-date">
+                        <Typography variant="headline-large" color="on-surface">
+                            {tempSelectedDate() ? format(tempSelectedDate(), 'EEE, MMM d') : 'Select date'}
+                        </Typography>
+                    </div>
                 </div>
 
-                <div style={{ padding: '0 12px 12px' }}>
+                <div class="md-date-picker__body">
                     {/* Month Navigation */}
-                    <div style={{ display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'padding': '0 12px 12px' }}>
-                        <div style={{ display: 'flex', 'align-items': 'center', gap: '4px' }}>
+                    <div class="md-date-picker__month-nav">
+                        <div class="md-date-picker__month-label">
                             <Typography variant="title-small" color="on-surface">
                                 {format(viewDate(), 'MMMM yyyy')}
                             </Typography>
-                            <button onClick={() => setViewDate(new Date())} style={{ border: 'none', background: 'transparent', cursor: 'pointer', 'margin-left': '4px' }}>
+                            <button class="md-date-picker__today-btn" onClick={() => setViewDate(new Date())}>
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--m3-color-on-surface-variant)">
                                     <path d="M7 10l5 5 5-5z" />
                                 </svg>
                             </button>
                         </div>
-                        <div style={{ display: 'flex' }}>
+                        <div class="md-date-picker__month-controls">
                             <IconButton
                                 onClick={handlePrevMonth}
                                 icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" /></svg>}
@@ -140,57 +342,33 @@ export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
                         </div>
                     </div>
 
-                    {/* Calendar Grid */}
-                    <div style={{ display: 'grid', 'grid-template-columns': 'repeat(7, 1fr)', 'text-align': 'center', 'margin-bottom': '8px' }}>
+                    {/* Weekday Header */}
+                    <div class="md-date-picker__weekdays">
                         <For each={weekDays}>
                             {(day) => (
-                                <Typography variant="body-small" color="on-surface-variant" style={{ width: '40px', height: '40px', 'line-height': '40px' }}>
-                                    {day}
-                                </Typography>
+                                <span class="md-date-picker__weekday">{day}</span>
                             )}
                         </For>
                     </div>
 
-                    <div style={{ display: 'grid', 'grid-template-columns': 'repeat(7, 1fr)', 'row-gap': '4px' }}>
+                    {/* Day Grid */}
+                    <div class="md-date-picker__days">
                         <For each={getDays()}>
-                            {(day) => {
-                                const isSelected = tempSelectedDate() && isSameDay(day, tempSelectedDate());
-                                const isCurrentMonth = isSameMonth(day, viewDate());
-                                const isTodayDate = isToday(day);
-
-                                return (
-                                    <div style={{ display: 'flex', 'justify-content': 'center' }}>
-                                        <button
-                                            onClick={() => handleDayClick(day)}
-                                            style={{
-                                                width: '40px',
-                                                height: '40px',
-                                                'border-radius': '50%',
-                                                border: isTodayDate && !isSelected ? '1px solid var(--m3-color-primary)' : 'none',
-                                                background: isSelected ? 'var(--m3-color-primary)' : 'transparent',
-                                                color: isSelected
-                                                    ? 'var(--m3-color-on-primary)'
-                                                    : isCurrentMonth
-                                                        ? 'var(--m3-color-on-surface)'
-                                                        : 'var(--m3-color-on-surface-variant, #999)',
-                                                cursor: 'pointer',
-                                                'font-size': '14px',
-                                                display: 'flex',
-                                                'align-items': 'center',
-                                                'justify-content': 'center',
-                                                opacity: isCurrentMonth ? 1 : 0.38
-                                            }}
-                                        >
-                                            {format(day, 'd')}
-                                        </button>
-                                    </div>
-                                )
-                            }}
+                            {(day) => (
+                                <div class="md-date-picker__day-cell">
+                                    <button
+                                        class={getDayClass(day)}
+                                        onClick={() => handleDayClick(day)}
+                                    >
+                                        {format(day, 'd')}
+                                    </button>
+                                </div>
+                            )}
                         </For>
                     </div>
                 </div>
 
-                <div style={{ display: 'flex', 'justify-content': 'flex-end', gap: '8px', padding: '16px 24px 24px' }}>
+                <div class="md-date-picker__actions">
                     <Button variant="text" onClick={handleClose}>Cancel</Button>
                     <Button variant="text" onClick={handleConfirm}>OK</Button>
                 </div>

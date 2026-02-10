@@ -84,7 +84,7 @@ export function SignInForm(props: SignInFormProps) {
                     onClick={handleGithubSignIn}
                     style={{ width: '100%', padding: '14px 16px', 'justify-content': 'center', gap: '12px' }}
                 >
-                    <GithubIcon width={20} height={20} aria-hidden="true" />
+                    <GithubIcon width={20} height={20} aria-hidden="true" style={{ color: 'black' }} />
                     Continue with GitHub
                 </Button>
             </div>
@@ -110,7 +110,7 @@ export function SignInForm(props: SignInFormProps) {
                     <div>
                         <div class="flex justify-between items-center mb-2">
                             <Typography variant="label-large" color="on-surface">Password</Typography>
-                            <a href="/forgot-password" class="text-sm text-primary hover:underline">Forgot?</a>
+                            <a href="/forgot-password" class="text-sm text-tertiary hover:underline">Forgot?</a>
                         </div>
                         <TextField
                             name="password"
@@ -147,9 +147,9 @@ export function SignInForm(props: SignInFormProps) {
             {/* Terms */}
             <Typography variant="body-small" color="on-surface-variant" align="center" class="mt-6">
                 By signing in, you agree to our{' '}
-                <span class="text-on-surface cursor-pointer hover:underline">Terms of Service</span>{' '}
+                <span class="text-tertiary cursor-pointer hover:underline">Terms of Service</span>{' '}
                 and{' '}
-                <span class="text-on-surface cursor-pointer hover:underline">Privacy Policy</span>
+                <span class="text-tertiary cursor-pointer hover:underline">Privacy Policy</span>
             </Typography>
         </div>
     );

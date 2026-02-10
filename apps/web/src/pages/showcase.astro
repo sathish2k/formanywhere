@@ -6,11 +6,22 @@ import {
     Typography,
     Slider,
     DatePicker,
+    TextField,
+    Select,
+    Checkbox,
+    RadioGroup,
+    Radio,
+    Switch,
+    CircularProgress,
+    LinearProgress,
+    Tabs,
+    TabList,
+    Tab,
+    TabPanel,
+    IconButton,
+    NavigationBar,
+    NavigationBarItem,
 } from "@formanywhere/ui";
-import OverlayDemo from "../components/showcase/OverlayDemo";
-import NavigationDemo from "../components/showcase/NavigationDemo";
-import "@formanywhere/ui/styles/theme.css";
-import "@formanywhere/ui/styles/typography.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
@@ -726,8 +737,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             </div>
         </section>
 
-        <!-- Overlays Section -->
-        <section class="section" id="overlays">
+        <!-- Text Fields Section -->
+        <section class="section" id="textfields">
             <div class="container mx-auto px-6">
                 <div class="lg-glass-strong rounded-3xl p-8 mb-12">
                     <Typography
@@ -736,15 +747,760 @@ import BaseLayout from "../layouts/BaseLayout.astro";
                         client:load
                         class="mb-8"
                     >
-                        Overlays (Drawer / Sheet)
+                        Text Fields
                     </Typography>
 
-                    <div>
-                        {/* <OverlayDemo client:load /> */}
-                        <div
-                            class="p-4 text-center text-on-surface-variant bg-surface-container-high rounded-lg"
+                    <!-- Variants -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
                         >
-                            Demo temporarily disabled
+                            Variants
+                        </Typography>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl"
+                        >
+                            <TextField
+                                client:load
+                                variant="filled"
+                                label="Filled"
+                                placeholder="Enter text"
+                            />
+                            <TextField
+                                client:load
+                                variant="outlined"
+                                label="Outlined"
+                                placeholder="Enter text"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Glass Variant -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Glass Variant
+                        </Typography>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl"
+                        >
+                            <TextField
+                                client:load
+                                variant="outlined"
+                                label="Glass Outlined"
+                                placeholder="Translucent field"
+                                class="glass"
+                            />
+                            <TextField
+                                client:load
+                                variant="filled"
+                                label="Glass Filled"
+                                placeholder="Translucent field"
+                                class="glass"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- States -->
+                    <div>
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            States
+                        </Typography>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl"
+                        >
+                            <TextField
+                                client:load
+                                variant="outlined"
+                                label="With Helper"
+                                supportingText="Supporting text goes here"
+                            />
+                            <TextField
+                                client:load
+                                variant="outlined"
+                                label="Error State"
+                                error
+                                errorText="This field is required"
+                            />
+                            <TextField
+                                client:load
+                                variant="outlined"
+                                label="Disabled"
+                                disabled
+                                value="Cannot edit"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Select Section -->
+        <section class="section" id="selects">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Select
+                    </Typography>
+
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl"
+                    >
+                        <Select
+                            client:load
+                            label="Framework"
+                            options={[
+                                { value: "solid", label: "SolidJS" },
+                                { value: "react", label: "React" },
+                                { value: "vue", label: "Vue" },
+                                { value: "svelte", label: "Svelte" },
+                            ]}
+                        />
+                        <Select
+                            client:load
+                            label="Glass Select"
+                            class="glass"
+                            options={[
+                                { value: "astro", label: "Astro" },
+                                { value: "next", label: "Next.js" },
+                                { value: "nuxt", label: "Nuxt" },
+                            ]}
+                        />
+                        <Select
+                            client:load
+                            label="Disabled"
+                            disabled
+                            options={[{ value: "a", label: "Option A" }]}
+                        />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Checkboxes Section -->
+        <section class="section" id="checkboxes">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Checkboxes
+                    </Typography>
+
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            States
+                        </Typography>
+                        <div class="flex flex-wrap gap-6">
+                            <Checkbox client:load label="Unchecked" />
+                            <Checkbox
+                                client:load
+                                label="Checked"
+                                defaultChecked
+                            />
+                            <Checkbox
+                                client:load
+                                label="Indeterminate"
+                                indeterminate
+                            />
+                            <Checkbox client:load label="Error" error />
+                            <Checkbox client:load label="Disabled" disabled />
+                        </div>
+                    </div>
+
+                    <div>
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Glass Variant
+                        </Typography>
+                        <div class="flex flex-wrap gap-6">
+                            <Checkbox client:load label="Glass" class="glass" />
+                            <Checkbox
+                                client:load
+                                label="Glass Checked"
+                                class="glass"
+                                defaultChecked
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Radios Section -->
+        <section class="section" id="radios">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Radio Buttons
+                    </Typography>
+
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl"
+                    >
+                        <div>
+                            <Typography
+                                variant="title-medium"
+                                color="on-surface-variant"
+                                client:load
+                                class="mb-4"
+                            >
+                                Standard
+                            </Typography>
+                            <RadioGroup
+                                client:load
+                                name="demo"
+                                defaultValue="solid"
+                            >
+                                <Radio value="solid" label="SolidJS" />
+                                <Radio value="react" label="React" />
+                                <Radio value="vue" label="Vue" />
+                                <Radio
+                                    value="disabled"
+                                    label="Disabled"
+                                    disabled
+                                />
+                            </RadioGroup>
+                        </div>
+                        <div>
+                            <Typography
+                                variant="title-medium"
+                                color="on-surface-variant"
+                                client:load
+                                class="mb-4"
+                            >
+                                Glass Variant
+                            </Typography>
+                            <RadioGroup
+                                client:load
+                                name="demo-glass"
+                                defaultValue="astro"
+                                class="glass"
+                            >
+                                <Radio
+                                    value="astro"
+                                    label="Astro"
+                                    class="glass"
+                                />
+                                <Radio
+                                    value="next"
+                                    label="Next.js"
+                                    class="glass"
+                                />
+                                <Radio
+                                    value="nuxt"
+                                    label="Nuxt"
+                                    class="glass"
+                                />
+                            </RadioGroup>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Switches Section -->
+        <section class="section" id="switches">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Switches
+                    </Typography>
+
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            States
+                        </Typography>
+                        <div class="flex flex-wrap items-center gap-8">
+                            <div class="flex items-center gap-3">
+                                <Switch client:load />
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface"
+                                    client:load>Off</Typography
+                                >
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <Switch client:load defaultChecked />
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface"
+                                    client:load>On</Typography
+                                >
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <Switch client:load disabled />
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface-variant"
+                                    client:load>Disabled</Typography
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Glass Variant
+                        </Typography>
+                        <div class="flex flex-wrap items-center gap-8">
+                            <div class="flex items-center gap-3">
+                                <Switch client:load class="glass" />
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface"
+                                    client:load>Glass Off</Typography
+                                >
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <Switch
+                                    client:load
+                                    class="glass"
+                                    defaultChecked
+                                />
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface"
+                                    client:load>Glass On</Typography
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section class="section" id="progress">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Progress Indicators
+                    </Typography>
+
+                    <!-- Circular -->
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Circular
+                        </Typography>
+                        <div class="flex flex-wrap items-center gap-8">
+                            <CircularProgress client:load indeterminate />
+                            <CircularProgress client:load value={25} />
+                            <CircularProgress client:load value={50} />
+                            <CircularProgress client:load value={75} />
+                            <CircularProgress client:load value={100} />
+                            <CircularProgress
+                                client:load
+                                indeterminate
+                                class="glass"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Linear -->
+                    <div>
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Linear
+                        </Typography>
+                        <div class="space-y-6 max-w-lg">
+                            <div>
+                                <Typography
+                                    variant="body-small"
+                                    color="on-surface-variant"
+                                    client:load
+                                    class="mb-2">Indeterminate</Typography
+                                >
+                                <LinearProgress client:load indeterminate />
+                            </div>
+                            <div>
+                                <Typography
+                                    variant="body-small"
+                                    color="on-surface-variant"
+                                    client:load
+                                    class="mb-2">Determinate (60%)</Typography
+                                >
+                                <LinearProgress client:load value={60} />
+                            </div>
+                            <div>
+                                <Typography
+                                    variant="body-small"
+                                    color="on-surface-variant"
+                                    client:load
+                                    class="mb-2">With Buffer</Typography
+                                >
+                                <LinearProgress
+                                    client:load
+                                    value={40}
+                                    buffer={70}
+                                />
+                            </div>
+                            <div>
+                                <Typography
+                                    variant="body-small"
+                                    color="on-surface-variant"
+                                    client:load
+                                    class="mb-2">Glass Variant</Typography
+                                >
+                                <LinearProgress
+                                    client:load
+                                    value={65}
+                                    class="glass"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabs Section -->
+        <section class="section" id="tabs">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Tabs
+                    </Typography>
+
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Standard
+                        </Typography>
+                        <Tabs client:load defaultActiveTab="tab1">
+                            <TabList>
+                                <Tab id="tab1" label="Overview" />
+                                <Tab id="tab2" label="Features" />
+                                <Tab id="tab3" label="Pricing" />
+                                <Tab id="tab4" label="Disabled" disabled />
+                            </TabList>
+                            <TabPanel tabId="tab1">
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface"
+                                    client:load
+                                >
+                                    Overview panel content — FormAnywhere is an
+                                    offline-first form builder.
+                                </Typography>
+                            </TabPanel>
+                            <TabPanel tabId="tab2">
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface"
+                                    client:load
+                                >
+                                    Features panel — AI-powered, blazing fast,
+                                    works offline.
+                                </Typography>
+                            </TabPanel>
+                            <TabPanel tabId="tab3">
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface"
+                                    client:load
+                                >
+                                    Pricing panel — Free tier, Pro, and Lifetime
+                                    plans available.
+                                </Typography>
+                            </TabPanel>
+                        </Tabs>
+                    </div>
+
+                    <div>
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Glass Variant
+                        </Typography>
+                        <Tabs client:load defaultActiveTab="gt1">
+                            <TabList class="glass">
+                                <Tab id="gt1" label="Design" />
+                                <Tab id="gt2" label="Code" />
+                                <Tab id="gt3" label="Preview" />
+                            </TabList>
+                            <TabPanel tabId="gt1">
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface"
+                                    client:load
+                                >
+                                    Design view with glass tab bar.
+                                </Typography>
+                            </TabPanel>
+                            <TabPanel tabId="gt2">
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface"
+                                    client:load
+                                >
+                                    Code editor view.
+                                </Typography>
+                            </TabPanel>
+                            <TabPanel tabId="gt3">
+                                <Typography
+                                    variant="body-medium"
+                                    color="on-surface"
+                                    client:load
+                                >
+                                    Live preview.
+                                </Typography>
+                            </TabPanel>
+                        </Tabs>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Icon Buttons Section -->
+        <section class="section" id="icon-buttons">
+            <div class="container mx-auto px-6">
+                <div class="lg-glass-strong rounded-3xl p-8 mb-12">
+                    <Typography
+                        variant="headline-large"
+                        color="on-surface"
+                        client:load
+                        class="mb-8"
+                    >
+                        Icon Buttons
+                    </Typography>
+
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Variants
+                        </Typography>
+                        <div class="flex flex-wrap items-center gap-4">
+                            <IconButton
+                                client:load
+                                variant="standard"
+                                icon={(
+                                    <svg
+                                        class="w-6 h-6"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                        />
+                                    </svg>
+                                )}
+                            />
+                            <IconButton
+                                client:load
+                                variant="filled"
+                                icon={(
+                                    <svg
+                                        class="w-6 h-6"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M12 4v16m8-8H4"
+                                        />
+                                    </svg>
+                                )}
+                            />
+                            <IconButton
+                                client:load
+                                variant="filled-tonal"
+                                icon={(
+                                    <svg
+                                        class="w-6 h-6"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                                        />
+                                    </svg>
+                                )}
+                            />
+                            <IconButton
+                                client:load
+                                variant="outlined"
+                                icon={(
+                                    <svg
+                                        class="w-6 h-6"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
+                                    </svg>
+                                )}
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Glass Variant
+                        </Typography>
+                        <div class="flex flex-wrap items-center gap-4">
+                            <IconButton
+                                client:load
+                                class="glass"
+                                icon={(
+                                    <svg
+                                        class="w-6 h-6"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                                        />
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                        />
+                                    </svg>
+                                )}
+                            />
+                            <IconButton
+                                client:load
+                                class="glass"
+                                icon={(
+                                    <svg
+                                        class="w-6 h-6"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                        />
+                                    </svg>
+                                )}
+                            />
+                            <IconButton
+                                client:load
+                                class="glass"
+                                icon={(
+                                    <svg
+                                        class="w-6 h-6"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                                        />
+                                    </svg>
+                                )}
+                            />
                         </div>
                     </div>
                 </div>
@@ -761,15 +1517,187 @@ import BaseLayout from "../layouts/BaseLayout.astro";
                         client:load
                         class="mb-8"
                     >
-                        Navigation & Inputs
+                        Navigation Bar
                     </Typography>
 
-                    <div>
-                        {/* <NavigationDemo client:load /> */}
-                        <div
-                            class="p-4 text-center text-on-surface-variant bg-surface-container-high rounded-lg"
+                    <div class="mb-8">
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
                         >
-                            Demo temporarily disabled
+                            Standard
+                        </Typography>
+                        <div
+                            class="rounded-2xl overflow-hidden border border-outline-variant"
+                        >
+                            <NavigationBar client:load value="home">
+                                <NavigationBarItem
+                                    value="home"
+                                    label="Home"
+                                    selected
+                                    alwaysShowLabel
+                                    icon={(
+                                        <svg
+                                            class="w-6 h-6"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                                            />
+                                        </svg>
+                                    )}
+                                />
+                                <NavigationBarItem
+                                    value="forms"
+                                    label="Forms"
+                                    alwaysShowLabel
+                                    icon={(
+                                        <svg
+                                            class="w-6 h-6"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                            />
+                                        </svg>
+                                    )}
+                                />
+                                <NavigationBarItem
+                                    value="analytics"
+                                    label="Analytics"
+                                    alwaysShowLabel
+                                    icon={(
+                                        <svg
+                                            class="w-6 h-6"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                            />
+                                        </svg>
+                                    )}
+                                />
+                                <NavigationBarItem
+                                    value="settings"
+                                    label="Settings"
+                                    alwaysShowLabel
+                                    icon={(
+                                        <svg
+                                            class="w-6 h-6"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                                            />
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                            />
+                                        </svg>
+                                    )}
+                                />
+                            </NavigationBar>
+                        </div>
+                    </div>
+
+                    <div>
+                        <Typography
+                            variant="title-medium"
+                            color="on-surface-variant"
+                            client:load
+                            class="mb-4"
+                        >
+                            Glass Variant
+                        </Typography>
+                        <div
+                            class="rounded-2xl overflow-hidden border border-outline-variant"
+                        >
+                            <NavigationBar client:load value="home" glass>
+                                <NavigationBarItem
+                                    value="home"
+                                    label="Home"
+                                    selected
+                                    alwaysShowLabel
+                                    icon={(
+                                        <svg
+                                            class="w-6 h-6"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                                            />
+                                        </svg>
+                                    )}
+                                />
+                                <NavigationBarItem
+                                    value="forms"
+                                    label="Forms"
+                                    alwaysShowLabel
+                                    icon={(
+                                        <svg
+                                            class="w-6 h-6"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                            />
+                                        </svg>
+                                    )}
+                                />
+                                <NavigationBarItem
+                                    value="analytics"
+                                    label="Analytics"
+                                    alwaysShowLabel
+                                    icon={(
+                                        <svg
+                                            class="w-6 h-6"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                            />
+                                        </svg>
+                                    )}
+                                />
+                            </NavigationBar>
                         </div>
                     </div>
                 </div>

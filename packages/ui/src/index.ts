@@ -49,9 +49,6 @@ export * from './dialog';
 export * from './snackbar';
 export * from './progress';
 
-// Utilities
-export * from './theme';
-
 // Styles - import these in your app entry:
 // import '@formanywhere/ui/styles/theme.css';
 // import '@formanywhere/ui/styles/glass.css';

@@ -98,7 +98,7 @@ export function SignUpForm(props: SignUpFormProps) {
                     onClick={handleGithubSignUp}
                     style={{ width: '100%', padding: '14px 16px', 'justify-content': 'center', gap: '12px' }}
                 >
-                    <GithubIcon width={20} height={20} aria-hidden="true" />
+                    <GithubIcon width={20} height={20} aria-hidden="true" style={{ color: 'black' }} />
                     Continue with GitHub
                 </Button>
             </div>
@@ -146,7 +146,14 @@ export function SignUpForm(props: SignUpFormProps) {
                     />
 
                     {/* Terms Checkbox */}
-                    <Checkbox label="I agree to the Terms of Service and Privacy Policy" />
+                    <Checkbox
+                        label={
+                            <span>
+                                I agree to the <a href="/terms" class="text-tertiary hover:underline">Terms of Service</a> and <a href="/privacy" class="text-tertiary hover:underline">Privacy Policy</a>
+                            </span>
+                        }
+                        ariaLabel="I agree to the Terms of Service and Privacy Policy"
+                    />
 
                     <Button
                         type="submit"
