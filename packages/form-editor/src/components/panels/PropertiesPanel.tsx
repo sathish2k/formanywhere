@@ -21,12 +21,12 @@ export const PropertiesPanel: Component = () => {
                         <Input
                             label="Label"
                             value={element().label}
-                            onInput={(e) => updateElement(element().id, { label: e.currentTarget.value })}
+                            onInput={(e) => updateElement(element().id, { label: (e.currentTarget as HTMLInputElement)?.value })}
                         />
                         <Input
                             label="Placeholder"
                             value={element().placeholder ?? ''}
-                            onInput={(e) => updateElement(element().id, { placeholder: e.currentTarget.value })}
+                            onInput={(e) => updateElement(element().id, { placeholder: (e.currentTarget as HTMLInputElement)?.value })}
                         />
                         <label>
                             <input

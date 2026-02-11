@@ -65,151 +65,31 @@
     --ease-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
-/* === THEME PRESETS - MUI Minimal Dashboard Inspired === */
-/* Primary: Main color | Secondary: Accent for components | Tertiary: Additional accent */
-
-/* Green Theme (Default) - MUI Minimal Default */
-[data-theme="green"],
-:root:not([data-theme]) {
-    --color-primary: #00A76F;
-    --color-primary-dark: #007867;
-    --color-primary-light: rgba(0, 167, 111, 0.1);
-    --color-secondary: #212B36;
-    --color-secondary-dark: #161C24;
-    --color-secondary-light: rgba(33, 43, 54, 0.1);
-    --color-secondary-container: rgba(33, 43, 54, 0.12);
-    --color-on-secondary-container: #161C24;
-    --color-tertiary: #00B8D9;
-    --color-tertiary-dark: #006C9C;
-    --color-tertiary-light: rgba(0, 184, 217, 0.1);
-    --color-tertiary-container: rgba(0, 184, 217, 0.12);
-    --color-on-tertiary-container: #006C9C;
-}
-
-/* Purple Theme */
-[data-theme="purple"] {
-    --color-primary: #7635DC;
-    --color-primary-dark: #4319A5;
-    --color-primary-light: rgba(118, 53, 220, 0.1);
-    --color-secondary: #00A76F;
-    --color-secondary-dark: #007867;
-    --color-secondary-light: rgba(0, 167, 111, 0.1);
-    --color-secondary-container: rgba(0, 167, 111, 0.12);
-    --color-on-secondary-container: #007867;
-    --color-tertiary: #00B8D9;
-    --color-tertiary-dark: #006C9C;
-    --color-tertiary-light: rgba(0, 184, 217, 0.1);
-    --color-tertiary-container: rgba(0, 184, 217, 0.12);
-    --color-on-tertiary-container: #006C9C;
-}
-
-/* Blue Theme */
-[data-theme="blue"] {
-    --color-primary: #078DEE;
-    --color-primary-dark: #0351AB;
-    --color-primary-light: rgba(7, 141, 238, 0.1);
-    --color-secondary: #FF5630;
-    --color-secondary-dark: #B71833;
-    --color-secondary-light: rgba(255, 86, 48, 0.1);
-    --color-secondary-container: rgba(255, 86, 48, 0.12);
-    --color-on-secondary-container: #B71833;
-    --color-tertiary: #00A76F;
-    --color-tertiary-dark: #007867;
-    --color-tertiary-light: rgba(0, 167, 111, 0.1);
-    --color-tertiary-container: rgba(0, 167, 111, 0.12);
-    --color-on-tertiary-container: #007867;
-}
-
-/* Cyan Theme */
-[data-theme="pink"] {
-    --color-primary: #2065D1;
-    --color-primary-dark: #103996;
-    --color-primary-light: rgba(32, 101, 209, 0.1);
-    --color-secondary: #FF6B6B;
-    --color-secondary-dark: #C92A2A;
-    --color-secondary-light: rgba(255, 107, 107, 0.1);
-    --color-secondary-container: rgba(255, 107, 107, 0.12);
-    --color-on-secondary-container: #C92A2A;
-    --color-tertiary: #00A76F;
-    --color-tertiary-dark: #007867;
-    --color-tertiary-light: rgba(0, 167, 111, 0.1);
-    --color-tertiary-container: rgba(0, 167, 111, 0.12);
-    --color-on-tertiary-container: #007867;
-}
-
-/* Orange Theme */
-[data-theme="orange"] {
-    --color-primary: #FDA92D;
-    --color-primary-dark: #B66816;
-    --color-primary-light: rgba(253, 169, 45, 0.1);
-    --color-secondary: #5D4037;
-    --color-secondary-dark: #3E2723;
-    --color-secondary-light: rgba(93, 64, 55, 0.1);
-    --color-secondary-container: rgba(93, 64, 55, 0.12);
-    --color-on-secondary-container: #3E2723;
-    --color-tertiary: #8E33FF;
-    --color-tertiary-dark: #5119B7;
-    --color-tertiary-light: rgba(142, 51, 255, 0.1);
-    --color-tertiary-container: rgba(142, 51, 255, 0.12);
-    --color-on-tertiary-container: #5119B7;
-}
-
-/* Red Theme */
-[data-theme="red"] {
-    --color-primary: #FF3030;
-    --color-primary-dark: #B71833;
-    --color-primary-light: rgba(255, 48, 48, 0.1);
-    --color-secondary: #FDA92D;
-    --color-secondary-dark: #B66816;
-    --color-secondary-light: rgba(253, 169, 45, 0.1);
-    --color-secondary-container: rgba(253, 169, 45, 0.12);
-    --color-on-secondary-container: #B66816;
-    --color-tertiary: #00A76F;
-    --color-tertiary-dark: #007867;
-    --color-tertiary-light: rgba(0, 167, 111, 0.1);
-    --color-tertiary-container: rgba(0, 167, 111, 0.12);
-    --color-on-tertiary-container: #007867;
-}
-
-/* === M3 VARIABLE MAPPINGS === */
-/* Maps theme colors to M3 variables for UI components */
+/* === TAILWIND ↔ M3 BRIDGE ===
+   Derive --color-* (Tailwind utilities) from --m3-color-* (theme.css tokens).
+   theme.css is the single source of truth for all theme-specific colors. */
 :root,
 [data-theme] {
-    --m3-color-primary: var(--color-primary);
-    --m3-color-primary-dark: var(--color-primary-dark);
-    --m3-color-on-primary: var(--color-on-primary, #fff);
-    --m3-color-primary-container: var(--color-primary-container, rgba(91, 95, 237, 0.12));
-    --m3-color-on-primary-container: var(--color-on-primary-container, #1a1a4a);
-    --m3-color-secondary: var(--color-secondary);
-    --m3-color-secondary-dark: var(--color-secondary-dark);
-    --m3-color-on-secondary: var(--color-on-secondary, #fff);
-    --m3-color-secondary-container: var(--color-secondary-container, #e8def8);
-    --m3-color-on-secondary-container: var(--color-on-secondary-container, var(--color-secondary-dark, #1d192b));
-    --m3-color-tertiary: var(--color-tertiary);
-    --m3-color-tertiary-dark: var(--color-tertiary-dark);
-    --m3-color-on-tertiary: var(--color-on-tertiary, #fff);
-    --m3-color-tertiary-container: var(--color-tertiary-container, rgba(0, 184, 217, 0.12));
-    --m3-color-on-tertiary-container: var(--color-on-tertiary-container, var(--color-tertiary-dark, #006C9C));
-    --m3-color-on-surface: var(--color-on-surface, #1f1f1f);
-    --m3-color-on-surface-variant: var(--color-on-surface-variant, #637381);
-    --m3-color-error: var(--color-error, #FF5630);
-    --m3-color-on-error: #fff;
-    --m3-color-success: var(--color-success, #22C55E);
-    --m3-color-warning: var(--color-warning, #FFAB00);
-    --m3-color-surface: var(--color-surface);
-    --m3-color-outline: var(--color-outline, rgba(145, 158, 171, 0.32));
-    --m3-color-outline-variant: var(--color-outline-variant, rgba(145, 158, 171, 0.2));
-    --m3-color-surface-dim: var(--color-surface-dim, #F9FAFB);
-    --m3-color-surface-variant: var(--color-surface-variant, #F4F6F8);
-    --m3-elevation-1: 0 1px 3px rgba(0, 0, 0, 0.12);
-    /* Surface Containers */
-    --m3-color-surface-container-lowest: var(--color-surface-container-lowest, #FCFDFD);
-    --m3-color-surface-container-low: var(--color-surface-container-low, #F9FAFB);
-    --m3-color-surface-container: var(--color-surface-container, #F4F6F8);
-    --m3-color-surface-container-high: var(--color-surface-container-high, #DFE3E8);
-    --m3-color-surface-container-highest: var(--color-surface-container-highest, #C4CDD5);
-    --m3-color-inverse-surface: #313033;
-    --m3-color-inverse-on-surface: #f4eff4;
+    --color-primary: var(--m3-color-primary);
+    --color-primary-dark: var(--m3-color-primary-dark);
+    --color-primary-light: var(--m3-color-primary-container);
+    --color-on-primary: var(--m3-color-on-primary, #ffffff);
+    --color-primary-container: var(--m3-color-primary-container);
+    --color-on-primary-container: var(--m3-color-on-primary-container);
+
+    --color-secondary: var(--m3-color-secondary);
+    --color-secondary-dark: var(--m3-color-secondary-dark);
+    --color-secondary-light: var(--m3-color-secondary-container);
+    --color-on-secondary: var(--m3-color-on-secondary, #ffffff);
+    --color-secondary-container: var(--m3-color-secondary-container);
+    --color-on-secondary-container: var(--m3-color-on-secondary-container);
+
+    --color-tertiary: var(--m3-color-tertiary);
+    --color-tertiary-dark: var(--m3-color-tertiary-dark);
+    --color-tertiary-light: var(--m3-color-tertiary-container);
+    --color-on-tertiary: var(--m3-color-on-tertiary, #ffffff);
+    --color-tertiary-container: var(--m3-color-tertiary-container);
+    --color-on-tertiary-container: var(--m3-color-on-tertiary-container);
 }
 
 /* === UTILITY CLASSES === */

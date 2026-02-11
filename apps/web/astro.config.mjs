@@ -59,6 +59,18 @@ export default defineConfig({
         }
       })
     ],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            // Isolate heavy vendor libs into their own chunks
+            if (id.includes('node_modules/solid-js')) return 'vendor-solid';
+            if (id.includes('node_modules/@floating-ui')) return 'vendor-floating-ui';
+            if (id.includes('node_modules/@modular-forms')) return 'vendor-modular-forms';
+          }
+        }
+      }
+    },
     ssr: {
       // Ensure workspace packages are bundled and transformed properly
       // See: https://docs.astro.build/en/guides/troubleshooting/#adding-dependencies-to-astro-in-a-monorepo

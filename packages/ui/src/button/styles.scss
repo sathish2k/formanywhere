@@ -252,7 +252,7 @@ $easing-standard: var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
 
     &[data-color="warning"] {
         background: var(--m3-color-warning, #FFAB00);
-        color: #1f1f1f;
+        color: var(--m3-color-on-surface, #1f1f1f);
     }
 
     &[data-color="error"] {

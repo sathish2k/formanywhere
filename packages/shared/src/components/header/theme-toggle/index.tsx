@@ -30,7 +30,7 @@ export const defaultThemes: ThemeOption[] = [
 ];
 
 export function applyTheme(option: ThemeOption) {
-    // ... existing implementation ...
+    if (typeof document === 'undefined') return;
     const root = document.documentElement;
 
     // Legacy Tailwind tokens

@@ -41,7 +41,6 @@
         "@tailwindcss/postcss": "4.1.18",
         "autoprefixer": "10.4.23",
         "postcss": "8.5.6",
-        "sass": "1.97.3",
         "sass-embedded": "1.97.3",
         "tailwindcss": "4.1.18",
         "vite-plugin-solid-svg": "0.8.1",
@@ -116,7 +115,6 @@
         "solid-js": "^1.9.11",
       },
       "devDependencies": {
-        "sass": "1.97.3",
         "sass-embedded": "1.97.3",
         "typescript": "^5.7.0",
       },

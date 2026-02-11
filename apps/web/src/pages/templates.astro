@@ -240,7 +240,7 @@ const iconPaths: Record<string, string> = {
     <section class="py-12">
       <div class="max-w-6xl mx-auto px-4">
         <TemplateBrowser
-          client:load
+          client:idle
           initialTemplates={templates}
           categories={categories}
           iconPaths={iconPaths}
@@ -299,7 +299,7 @@ const iconPaths: Record<string, string> = {
             <Button
               href="/form-builder/new"
               variant="filled"
-              client:load
+              client:visible
               class="shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               style={{
                 padding: "16px 40px",

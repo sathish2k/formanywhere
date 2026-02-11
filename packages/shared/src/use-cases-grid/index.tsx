@@ -42,7 +42,7 @@ const FeatureCard: Component<FeatureCardProps> = (props) => {
                     'align-items': 'center',
                     'justify-content': 'center',
                     overflow: 'hidden',
-                    background: 'linear-gradient(to bottom right, #f8fafc, #f1f5f9)',
+                    background: 'linear-gradient(to bottom right, var(--m3-color-surface-container-lowest, #f8fafc), var(--m3-color-surface-container-low, #f1f5f9))',
                 }}
             >
                 <img
