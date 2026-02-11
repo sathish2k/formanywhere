@@ -10,15 +10,35 @@ export interface FormElement {
 }
 
 export type FormElementType =
+    // Layout elements
+    | 'container'
+    | 'grid'
+    | 'section'
+    | 'card'
+    | 'grid-column'
+    | 'divider'
+    | 'spacer'
+    | 'heading'
+    | 'logo'
+    | 'text-block'
+    // Text inputs
     | 'text'
-    | 'email'
-    | 'number'
     | 'textarea'
+    | 'email'
+    | 'phone'
+    | 'number'
+    | 'url'
+    // Choice
     | 'select'
-    | 'checkbox'
     | 'radio'
+    | 'checkbox'
+    | 'switch'
+    // Date & Time
     | 'date'
+    | 'time'
+    // Advanced
     | 'file'
+    | 'rating'
     | 'signature';
 
 export interface ValidationRule {

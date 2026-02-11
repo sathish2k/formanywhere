@@ -73,6 +73,11 @@
         "./dashboard": {
             "import": "./src/components/dashboard/index.tsx",
             "types": "./src/components/dashboard/index.tsx"
+        },
+        "./form-builder": {
+            "solid": "./src/components/form-builder/index.tsx",
+            "import": "./src/components/form-builder/index.tsx",
+            "types": "./src/components/form-builder/index.tsx"
         }
     },
     "scripts": {
@@ -85,7 +90,9 @@
         "solid-js": "^1.9.11"
     },
     "peerDependencies": {
-        "solid-js": "^1.9.0"
+        "solid-js": "^1.9.0",
+        "@formanywhere/form-editor": "workspace:*",
+        "@formanywhere/form-runtime": "workspace:*"
     },
     "devDependencies": {
         "typescript": "^5.7.0"

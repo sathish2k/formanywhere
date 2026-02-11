@@ -1,0 +1,331 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║                    📚 QUICK REFERENCE GUIDE 📚                            ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+## 🎯 NEW IMPORT PATTERNS
+
+### Form Builder Feature
+```typescript
+// Import the full feature
+import {
+  FormBuilderPage,
+  FormElement,
+  DroppedElement,
+  FORM_ELEMENTS,
+  ELEMENT_CATEGORIES,
+  RulesEngine,
+  createDroppedElement,
+} from '@/features/form-builder';
+
+// Type-only imports
+import type { FormData, ValidationRule } from '@/features/form-builder';
+```
+
+### Shared Resources
+```typescript
+// Utilities
+import {
+  formatDate,
+  generateId,
+  debounce,
+  throttle,
+  isEmpty,
+} from '@/shared/utils';
+
+// Constants
+import {
+  APP_NAME,
+  ROUTES,
+  API_ENDPOINTS,
+  DRAWER_WIDTH,
+} from '@/shared/constants';
+
+// Components
+import { AppBar } from '@/shared/components';
+```
+
+### Core Infrastructure
+```typescript
+// Theme
+import { theme } from '@/core/theme';
+
+// Configuration
+import { appConfig } from '@/core/config/app.config';
+```
+
+================================================================================
+
+## 📁 FILE LOCATIONS
+
+### Where to Add New Code
+
+**New Form Element?**
+→ `/src/features/form-builder/config/index.ts` (add to FORM_ELEMENTS array)
+
+**New Form Type?**
+→ `/src/features/form-builder/types/index.ts` (add interface/type)
+
+**New Utility Function?**
+→ Shared: `/src/shared/utils/index.ts`
+→ Form-specific: `/src/features/form-builder/utils/index.ts`
+
+**New Component?**
+→ Feature-specific: `/src/features/[feature]/components/`
+→ Shared: `/src/shared/components/common/`
+
+**New Page?**
+→ `/src/features/[feature]/pages/`
+
+**New Hook?**
+→ Feature-specific: `/src/features/[feature]/hooks/`
+→ Shared: `/src/shared/hooks/`
+
+**New Constant?**
+→ `/src/shared/constants/index.ts`
+
+**Theme Customization?**
+→ `/src/core/theme/index.ts`
+
+**App Configuration?**
+→ `/src/core/config/app.config.ts`
+
+================================================================================
+
+## 🎨 THEME TOKENS
+
+### Colors
+```typescript
+Primary:    #5B5FED (Indigo)
+Secondary:  #8E33FF (Purple)
+Success:    #22C55E (Green)
+Error:      #FF5630 (Red)
+Warning:    #FFAB00 (Amber)
+Info:       #00B8D9 (Cyan)
+```
+
+### Typography
+```typescript
+Font Family: "Public Sans"
+H1: 4rem, 800 weight
+H2: 3rem, 800 weight
+H3: 2rem, 700 weight
+H4: 1.5rem, 700 weight
+H5: 1.25rem, 700 weight
+H6: 1.125rem, 700 weight
+Body: 1rem, 400 weight
+```
+
+### Spacing
+```typescript
+Grid: 8px
+Border Radius (Card): 16px
+Border Radius (Button): 8px
+Drawer Width: 240px
+Properties Panel: 320px
+```
+
+================================================================================
+
+## 🔧 COMMON TASKS
+
+### 1. Add a New Form Element
+```typescript
+// 1. Add to /src/features/form-builder/config/index.ts
+export const FORM_ELEMENTS: FormElement[] = [
+  // ... existing elements
+  {
+    id: 'new-element',
+    type: 'new-element',
+    label: 'New Element',
+    icon: IconName,
+    color: '#1976D2',
+    category: 'Text Inputs',
+  },
+];
+
+// 2. Add type properties to /src/features/form-builder/types/index.ts
+export interface DroppedElement {
+  // ... existing properties
+  newElementProp?: string; // Add new element-specific property
+}
+
+// 3. Handle in createDroppedElement() in utils/index.ts
+case 'new-element':
+  return {
+    ...baseElement,
+    newElementProp: 'default value',
+  };
+```
+
+### 2. Add a New Feature
+```bash
+# 1. Create feature folder
+mkdir -p src/features/my-feature/{components,types,utils,hooks,pages}
+
+# 2. Create index.ts
+touch src/features/my-feature/index.ts
+
+# 3. Add exports
+# Edit index.ts to export public API
+```
+
+### 3. Add a New Shared Utility
+```typescript
+// In /src/shared/utils/index.ts
+export const myNewUtil = (param: string): string => {
+  // Implementation
+  return result;
+};
+```
+
+### 4. Customize Theme
+```typescript
+// In /src/core/theme/index.ts
+export const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#YOUR_COLOR',
+    },
+  },
+  // ... other customizations
+});
+```
+
+================================================================================
+
+## 🚀 COMMANDS
+
+### Development
+```bash
+npm run dev          # Start dev server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+```
+
+### Type Checking
+```bash
+npx tsc --noEmit     # Check TypeScript errors
+```
+
+================================================================================
+
+## 📊 PROJECT STRUCTURE AT A GLANCE
+
+```
+/src
+├── app/              # Entry point, routing
+├── features/         # Feature modules
+│   ├── form-builder/ # Form builder (main feature)
+│   ├── landing/      # Marketing pages
+│   └── auth/         # Authentication
+├── shared/           # Reusable code
+│   ├── components/   # UI components
+│   ├── utils/        # Helper functions
+│   ├── constants/    # App constants
+│   └── hooks/        # Custom hooks
+├── core/             # Infrastructure
+│   ├── theme/        # MUI theme
+│   ├── config/       # App config
+│   └── services/     # API clients
+└── styles/           # Global styles
+```
+
+================================================================================
+
+## 💡 BEST PRACTICES
+
+### Imports
+✅ DO: Use path aliases
+```typescript
+import { X } from '@/features/form-builder';
+```
+
+❌ DON'T: Use relative paths
+```typescript
+import { X } from '../../../features/form-builder';
+```
+
+### Types
+✅ DO: Use type-only imports when possible
+```typescript
+import type { FormElement } from '@/features/form-builder';
+```
+
+### Components
+✅ DO: Keep components small and focused
+✅ DO: Co-locate related files
+✅ DO: Export through index.ts (public API)
+
+### Features
+✅ DO: Keep features independent
+✅ DO: Use shared/ for cross-feature code
+✅ DON'T: Import between features directly
+
+================================================================================
+
+## 🐛 TROUBLESHOOTING
+
+### "Cannot find module '@/...'"
+→ Check tsconfig.json has path aliases configured
+→ Restart TypeScript server in IDE
+
+### "Module not found"
+→ Check index.ts exports in feature folder
+→ Verify file exists at expected location
+
+### Theme not applying
+→ Check App.tsx wraps app with ThemeProvider
+→ Import theme from '@/core/theme'
+
+### Types not working
+→ Check TypeScript version (should be 5.0+)
+→ Run `npx tsc --noEmit` to see errors
+
+================================================================================
+
+## 📚 DOCUMENTATION FILES
+
+- `README.md` - Project overview & setup
+- `PROJECT_STRUCTURE.txt` - Detailed architecture
+- `MIGRATION_GUIDE.txt` - Migration instructions
+- `PROJECT_OVERVIEW.txt` - Visual structure
+- `RESTRUCTURING_COMPLETE.txt` - Summary & benefits
+- `QUICK_REFERENCE.txt` - This file
+
+================================================================================
+
+## 🎓 LEARNING RESOURCES
+
+**TypeScript Path Aliases:**
+https://www.typescriptlang.org/docs/handbook/module-resolution.html
+
+**Feature-Sliced Design:**
+https://feature-sliced.design/
+
+**Material-UI Theming:**
+https://mui.com/material-ui/customization/theming/
+
+**React Best Practices:**
+https://react.dev/learn
+
+================================================================================
+
+## ✅ CHECKLIST FOR NEW DEVELOPERS
+
+- [ ] Read README.md
+- [ ] Understand folder structure (PROJECT_STRUCTURE.txt)
+- [ ] Review import patterns (this file)
+- [ ] Check out form builder feature code
+- [ ] Review theme configuration
+- [ ] Try creating a new component
+- [ ] Try adding a new utility function
+- [ ] Understand the build process
+
+================================================================================
+
+🎉 You're all set! Happy coding! 🚀
+
+================================================================================

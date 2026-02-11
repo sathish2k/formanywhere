@@ -166,6 +166,164 @@ const ICON_PATHS: Record<string, { path: string; viewBox?: string; fill?: boolea
         path: 'M12 17a5 5 0 100-10 5 5 0 000 10zM12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42',
         viewBox: '0 0 24 24',
     },
+
+    // Navigation extras
+    'arrow-left': {
+        path: 'M19 12H5M12 19l-7-7 7-7',
+        viewBox: '0 0 24 24',
+    },
+    'chevron-right': {
+        path: 'M9 18l6-6-6-6',
+        viewBox: '0 0 24 24',
+    },
+
+    // Editor
+    'pencil': {
+        path: 'M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z',
+        viewBox: '0 0 24 24',
+    },
+    'grip-vertical': {
+        path: 'M9 4h.01M9 8h.01M9 12h.01M9 16h.01M9 20h.01M15 4h.01M15 8h.01M15 12h.01M15 16h.01M15 20h.01',
+        viewBox: '0 0 24 24',
+    },
+    'layers': {
+        path: 'M12 2l10 6.5v7L12 22 2 15.5v-7L12 2zM12 22v-7M22 8.5l-10 7-10-7',
+        viewBox: '0 0 24 24',
+    },
+    'type': {
+        path: 'M4 7V4h16v3M9 20h6M12 4v16',
+        viewBox: '0 0 24 24',
+    },
+    'at-sign': {
+        path: 'M12 16a4 4 0 100-8 4 4 0 000 8zM16 12v1.5A2.5 2.5 0 0021 12a9 9 0 10-5.55 8.32',
+        viewBox: '0 0 24 24',
+    },
+    'hash': {
+        path: 'M4 9h16M4 15h16M10 3l-2 18M16 3l-2 18',
+        viewBox: '0 0 24 24',
+    },
+    'align-left': {
+        path: 'M17 10H3M21 6H3M21 14H3M17 18H3',
+        viewBox: '0 0 24 24',
+    },
+    'list': {
+        path: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
+        viewBox: '0 0 24 24',
+    },
+    'toggle-left': {
+        path: 'M16 5H8a7 7 0 000 14h8a7 7 0 000-14zM8 12a3 3 0 100-6 3 3 0 000 6z',
+        viewBox: '0 0 24 24',
+    },
+    'radio': {
+        path: 'M12 22a10 10 0 100-20 10 10 0 000 20zM12 16a4 4 0 100-8 4 4 0 000 8z',
+        viewBox: '0 0 24 24',
+    },
+    'upload': {
+        path: 'M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12',
+        viewBox: '0 0 24 24',
+    },
+    'pen-tool': {
+        path: 'M12 19l7-7 3 3-7 7-3-3zM18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5zM2 2l7.586 7.586M11 13a2 2 0 100-4 2 2 0 000 4z',
+        viewBox: '0 0 24 24',
+    },
+    'move': {
+        path: 'M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20',
+        viewBox: '0 0 24 24',
+    },
+    'save': {
+        path: 'M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2zM17 21v-8H7v8M7 3v5h8',
+        viewBox: '0 0 24 24',
+    },
+    'play': {
+        path: 'M5 3l14 9-14 9V3z',
+        viewBox: '0 0 24 24',
+    },
+    'undo': {
+        path: 'M3 7v6h6M3 13a9 9 0 0117.94-1.3',
+        viewBox: '0 0 24 24',
+    },
+    'redo': {
+        path: 'M21 7v6h-6M21 13a9 9 0 01-17.94-1.3',
+        viewBox: '0 0 24 24',
+    },
+    'image': {
+        path: 'M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM8.5 10a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM21 15l-5-5L5 21',
+        viewBox: '0 0 24 24',
+    },
+
+    // Additional icons for form builder
+    'phone': {
+        path: 'M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.574 2.81.7A2 2 0 0122 16.92z',
+        viewBox: '0 0 24 24',
+    },
+    'link': {
+        path: 'M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71',
+        viewBox: '0 0 24 24',
+    },
+    'columns': {
+        path: 'M12 3h7a2 2 0 012 2v14a2 2 0 01-2 2h-7m0-18H5a2 2 0 00-2 2v14a2 2 0 002 2h7m0-18v18',
+        viewBox: '0 0 24 24',
+    },
+    'grid-3x3': {
+        path: 'M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18',
+        viewBox: '0 0 24 24',
+    },
+    'square': {
+        path: 'M3 3h18v18H3z',
+        viewBox: '0 0 24 24',
+    },
+    'minus': {
+        path: 'M5 12h14',
+        viewBox: '0 0 24 24',
+    },
+    'heading': {
+        path: 'M6 12h12M6 4v16M18 4v16',
+        viewBox: '0 0 24 24',
+    },
+    'star': {
+        path: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
+        viewBox: '0 0 24 24',
+    },
+    'clock': {
+        path: 'M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2',
+        viewBox: '0 0 24 24',
+    },
+    'mouse-pointer': {
+        path: 'M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z',
+        viewBox: '0 0 24 24',
+    },
+    'search': {
+        path: 'M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35',
+        viewBox: '0 0 24 24',
+    },
+    'git-branch': {
+        path: 'M6 3v12M18 9a3 3 0 100-6 3 3 0 000 6zM6 21a3 3 0 100-6 3 3 0 000 6zM18 9a9 9 0 01-9 9',
+        viewBox: '0 0 24 24',
+    },
+    'workflow': {
+        path: 'M3 3h6v6H3zM15 3h6v6H15zM9 15h6v6H9zM6 9v3a3 3 0 003 3h6a3 3 0 003-3V9',
+        viewBox: '0 0 24 24',
+    },
+    'box': {
+        path: 'M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16zM3.27 6.96L12 12.01l8.73-5.05M12 22.08V12',
+        viewBox: '0 0 24 24',
+    },
+    'credit-card': {
+        path: 'M21 4H3a2 2 0 00-2 2v12a2 2 0 002 2h18a2 2 0 002-2V6a2 2 0 00-2-2zM1 10h22',
+        viewBox: '0 0 24 24',
+    },
+    'move-vertical': {
+        path: 'M12 2v20M8 6l4-4 4 4M8 18l4 4 4-4',
+        viewBox: '0 0 24 24',
+    },
+    'layout': {
+        path: 'M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM3 9h18M9 21V9',
+        viewBox: '0 0 24 24',
+    },
+    'text-cursor': {
+        path: 'M6 4h4a2 2 0 012 2v12a2 2 0 01-2 2H6M18 4h-4a2 2 0 00-2 2v12a2 2 0 002 2h4',
+        viewBox: '0 0 24 24',
+    },
 };
 
 export interface IconProps extends JSX.SvgSVGAttributes<SVGSVGElement> {

@@ -27,6 +27,8 @@ export default defineConfig({
         '**/apps/web/src/**',
         '**/packages/ui/**',
         '**/packages/shared/**',
+        '**/packages/form-editor/**',
+        '**/packages/form-runtime/**',
         '**/node_modules/@formanywhere/**',
         '**/node_modules/@modular-forms/solid/**'
       ]
@@ -76,7 +78,9 @@ export default defineConfig({
       // See: https://docs.astro.build/en/guides/troubleshooting/#adding-dependencies-to-astro-in-a-monorepo
       noExternal: [
         '@formanywhere/ui',
-        '@formanywhere/shared'
+        '@formanywhere/shared',
+        '@formanywhere/form-editor',
+        '@formanywhere/form-runtime'
       ]
     }
   }

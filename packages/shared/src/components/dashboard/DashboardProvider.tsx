@@ -290,9 +290,8 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
             go('/templates');
             return;
         }
-        if (optionId === 'blank') {
-            go('/app');
-        }
+        // blank, ai, import all route to the builder with mode param
+        go(`/app?mode=${optionId}`);
     };
 
     const handleEditForm = (formId: string) => {

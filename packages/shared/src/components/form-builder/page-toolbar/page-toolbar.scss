@@ -1,0 +1,173 @@
+/* PageToolbar — Page navigation bar styles */
+
+.form-builder-page__page-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    padding: 0 16px;
+    background: var(--m3-color-surface-container-lowest, #fff);
+    border-bottom: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    flex-shrink: 0;
+    gap: 8px;
+}
+
+.form-builder-page__page-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    flex: 1;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.form-builder-page__add-page {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1px dashed var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--m3-color-primary, #6750A4);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: border-color 150ms, background-color 150ms;
+
+    &:hover {
+        border-color: var(--m3-color-primary, #6750A4);
+        background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 6%, transparent);
+    }
+}
+
+.form-builder-page__page-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--m3-color-outline-variant, #C4C7C5);
+    flex-shrink: 0;
+}
+
+.form-builder-page__page-tab-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.form-builder-page__page-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 150ms cubic-bezier(0.2, 0, 0, 1);
+
+    &:hover {
+        border-color: var(--m3-color-primary, #6750A4);
+        color: var(--m3-color-primary, #6750A4);
+    }
+
+    &--active {
+        background: var(--m3-color-primary, #6750A4);
+        border-color: var(--m3-color-primary, #6750A4);
+        color: var(--m3-color-on-primary, #fff);
+    }
+}
+
+.form-builder-page__page-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover {
+        background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 8%, transparent);
+    }
+}
+
+.form-builder-page__page-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 10;
+    margin-top: 4px;
+    padding: 4px;
+    background: var(--m3-color-surface-container-lowest, #fff);
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: var(--m3-shape-small, 8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    min-width: 140px;
+
+    button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 8px 12px;
+        border: none;
+        border-radius: var(--m3-shape-extra-small, 4px);
+        background: transparent;
+        color: var(--m3-color-on-surface, #1C1B1F);
+        font-size: 0.8125rem;
+        cursor: pointer;
+        text-align: left;
+
+        &:hover {
+            background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 6%, transparent);
+        }
+
+        &:disabled {
+            opacity: 0.38;
+            cursor: not-allowed;
+        }
+    }
+}
+
+.form-builder-page__page-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.form-builder-page__bar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 150ms, background-color 150ms, color 150ms;
+
+    &:hover {
+        border-color: var(--m3-color-primary, #6750A4);
+        background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 6%, transparent);
+        color: var(--m3-color-primary, #6750A4);
+    }
+}

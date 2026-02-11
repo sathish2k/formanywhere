@@ -1,60 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
+import { FormBuilderWrapper } from "@formanywhere/shared/form-builder";
 ---
 
-<BaseLayout title="Dashboard - FormAnywhere">
-    <Header />
-    <main id="main-content" class="min-h-screen bg-background-default">
-        <div class="container mx-auto px-4 py-8">
-            <h1 class="text-3xl font-bold mb-4 text-on-surface">Dashboard</h1>
-            <p class="text-on-surface-variant">Welcome to your dashboard!</p>
-            <div
-                id="user-info"
-                class="mt-4 p-4 border border-outline-variant rounded-2xl hidden"
-            >
-                <h2 class="text-xl font-semibold text-on-surface">
-                    User Profile
-                </h2>
-                <pre
-                    id="profile-data"
-                    class="bg-surface-container p-2 mt-2 rounded-lg text-on-surface">
-                </pre>
-            </div>
-            <div id="loading" class="mt-4 text-on-surface-variant">
-                Loading user profile...
-            </div>
-        </div>
-    </main>
-    <Footer />
+<BaseLayout title="Form Builder - FormAnywhere">
+    <FormBuilderWrapper client:load />
 </BaseLayout>
-
-<script>
-    async function checkAuth() {
-        try {
-            const res = await fetch("http://localhost:3001/api/auth/me", {
-                credentials: "include",
-            });
-            if (res.ok) {
-                const user = await res.json();
-                const userInfo = document.getElementById("user-info");
-                const profileData = document.getElementById("profile-data");
-                const loading = document.getElementById("loading");
-
-                if (userInfo && profileData && loading) {
-                    userInfo.classList.remove("hidden");
-                    loading.classList.add("hidden");
-                    profileData.textContent = JSON.stringify(user, null, 2);
-                }
-            } else {
-                window.location.href = "/signin";
-            }
-        } catch (e) {
-            console.error(e);
-            window.location.href = "/signin";
-        }
-    }
-
-    checkAuth();
-</script>

@@ -104,6 +104,8 @@
         "typescript": "^5.7.0",
       },
       "peerDependencies": {
+        "@formanywhere/form-editor": "workspace:*",
+        "@formanywhere/form-runtime": "workspace:*",
         "solid-js": "^1.9.0",
       },
     },

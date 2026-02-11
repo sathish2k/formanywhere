@@ -2,7 +2,7 @@
     "name": "@formanywhere/form-runtime",
     "version": "0.0.1",
     "type": "module",
-    "sideEffects": false,
+    "sideEffects": ["**/*.css", "**/*.scss"],
     "main": "./src/index.tsx",
     "types": "./src/index.tsx",
     "exports": {
@@ -10,6 +10,12 @@
             "solid": "./src/index.tsx",
             "import": "./src/index.tsx",
             "types": "./src/index.tsx"
+        },
+        "./styles": "./src/styles.scss",
+        "./preview": {
+            "solid": "./src/renderer/FormPreview.tsx",
+            "import": "./src/renderer/FormPreview.tsx",
+            "types": "./src/renderer/FormPreview.tsx"
         }
     },
     "scripts": {

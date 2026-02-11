@@ -1,0 +1,24 @@
+/* BuilderHeader styles */
+
+.form-builder-page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding: 0 16px;
+    background: var(--m3-color-surface-container-lowest, #fff);
+    border-bottom: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    flex-shrink: 0;
+}
+
+.form-builder-page__header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-builder-page__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

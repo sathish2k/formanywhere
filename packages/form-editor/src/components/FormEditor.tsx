@@ -1,4 +1,5 @@
-import { Component, createSignal, createContext, useContext } from 'solid-js';
+import { createSignal, createContext, useContext } from 'solid-js';
+import type { Component } from 'solid-js';
 import type { FormSchema, FormElement } from '@formanywhere/shared/types';
 import { generateId } from '@formanywhere/shared/utils';
 
@@ -23,7 +24,7 @@ export const useFormEditor = () => {
     return context;
 };
 
-interface FormEditorProps {
+export interface FormEditorProps {
     initialSchema?: FormSchema;
     onChange?: (schema: FormSchema) => void;
     children?: any;

@@ -2,7 +2,7 @@
     "name": "@formanywhere/form-editor",
     "version": "0.0.1",
     "type": "module",
-    "sideEffects": false,
+    "sideEffects": ["**/*.css", "**/*.scss"],
     "main": "./src/index.tsx",
     "types": "./src/index.tsx",
     "exports": {
@@ -11,7 +11,26 @@
             "import": "./src/index.tsx",
             "types": "./src/index.tsx"
         },
-        "./styles.css": "./src/styles.css"
+        "./styles": "./src/styles.scss",
+        "./ai": {
+            "solid": "./src/components/ai/AIFormBuilder.tsx",
+            "import": "./src/components/ai/AIFormBuilder.tsx",
+            "types": "./src/components/ai/AIFormBuilder.tsx"
+        },
+        "./import": {
+            "solid": "./src/components/import/ImportForm.tsx",
+            "import": "./src/components/import/ImportForm.tsx",
+            "types": "./src/components/import/ImportForm.tsx"
+        },
+        "./layout": {
+            "solid": "./src/components/layout/FormEditorLayout.tsx",
+            "import": "./src/components/layout/FormEditorLayout.tsx",
+            "types": "./src/components/layout/FormEditorLayout.tsx"
+        },
+        "./schema": {
+            "import": "./src/engine/schema.ts",
+            "types": "./src/engine/schema.ts"
+        }
     },
     "scripts": {
         "dev": "tsc --watch",
