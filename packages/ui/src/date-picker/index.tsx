@@ -198,6 +198,25 @@ function injectStyles() {
     gap: 8px;
     padding: 16px 24px 24px;
 }
+
+/* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
+
+.md-date-picker.glass .md-date-picker__dialog {
+    background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(var(--glass-blur-strong, 40px));
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong, 40px));
+    border: 1px solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
+    box-shadow: var(--glass-shadow-elevated, 0 16px 48px rgba(0, 0, 0, 0.12));
+}
+
+.md-date-picker.glass .md-date-picker__day.selected {
+    background: var(--m3-color-primary, rgba(103, 80, 164, 0.85));
+    backdrop-filter: blur(8px);
+}
+
+.md-date-picker.glass .md-date-picker__day:hover:not(.selected) {
+    background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
+}
 `;
 
     const style = document.createElement('style');
@@ -221,6 +240,8 @@ export interface DatePickerProps {
     error?: boolean;
     /** Helper text */
     helperText?: string;
+    /** Visual variant */
+    variant?: 'standard' | 'glass';
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -231,7 +252,7 @@ export interface DatePickerProps {
 
 export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
     const [local, others] = splitProps(props, [
-        'value', 'onChange', 'label', 'disabled', 'error', 'helperText', 'style', 'class'
+        'value', 'onChange', 'label', 'disabled', 'error', 'helperText', 'variant', 'style', 'class'
     ]);
 
     injectStyles();
@@ -283,8 +304,15 @@ export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
         return classes.join(' ');
     };
 
+    const rootClass = () => {
+        const classes = ['md-date-picker'];
+        if (local.variant === 'glass') classes.push('glass');
+        if (local.class) classes.push(local.class);
+        return classes.join(' ');
+    };
+
     return (
-        <div class={`md-date-picker ${local.class || ''}`} style={local.style}>
+        <div class={rootClass()} style={local.style}>
             <div class="md-date-picker__trigger" onClick={handleOpen}>
                 <TextField
                     label={local.label || "Select Date"}

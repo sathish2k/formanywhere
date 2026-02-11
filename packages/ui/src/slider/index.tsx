@@ -180,6 +180,34 @@ function injectStyles() {
 .md-slider__track-container:active .md-slider__value {
     opacity: 1;
 }
+
+/* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
+
+.md-slider.glass .md-slider__track {
+    background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
+    backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+    -webkit-backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+    border: 1px solid var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
+}
+
+.md-slider.glass .md-slider__track-fill {
+    background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 70%, transparent);
+    backdrop-filter: blur(4px);
+}
+
+.md-slider.glass .md-slider__thumb {
+    background: var(--m3-color-primary, #6750A4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
+}
+
+.md-slider.glass .md-slider__value {
+    background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(var(--glass-blur, 20px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+    border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
+    color: var(--m3-color-on-surface, #1D1B20);
+    box-shadow: var(--glass-shadow, 0 8px 32px rgba(0, 0, 0, 0.08));
+}
 `;
 
     const style = document.createElement('style');
@@ -213,6 +241,8 @@ export interface SliderProps extends Omit<JSX.InputHTMLAttributes<HTMLInputEleme
     error?: boolean;
     /** Color override */
     color?: 'primary' | 'secondary' | 'inherit';
+    /** Visual variant */
+    variant?: 'standard' | 'glass';
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────────
@@ -231,7 +261,7 @@ export const Slider: Component<SliderProps> = (inputProps) => {
     const [local, others] = splitProps(props, [
         'value', 'defaultValue', 'min', 'max', 'step',
         'disabled', 'label', 'showValue', 'onChange',
-        'error', 'color', 'style', 'class'
+        'error', 'color', 'variant', 'style', 'class'
     ]);
 
     injectStyles();
@@ -261,6 +291,7 @@ export const Slider: Component<SliderProps> = (inputProps) => {
         if (local.disabled) classes.push('disabled');
         if (local.error) classes.push('error');
         if (local.color === 'secondary') classes.push('secondary');
+        if (local.variant === 'glass') classes.push('glass');
         if (local.class) classes.push(local.class);
         return classes.join(' ');
     };

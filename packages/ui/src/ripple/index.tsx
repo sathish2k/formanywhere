@@ -7,6 +7,8 @@
  * - Smooth scale animations with M3 easing
  * - Hover and press states
  * - Support for both mouse and touch interactions
+ *
+ * Uses CSS class-based styling with M3 design tokens
  */
 import { createSignal, onMount, onCleanup, JSX, Component, splitProps } from 'solid-js';
 
@@ -35,6 +37,65 @@ enum State {
     WAITING_FOR_CLICK,
 }
 
+// ─── Styles (injected once) ─────────────────────────────────────────────────────
+
+let stylesInjected = false;
+
+function injectStyles() {
+    if (stylesInjected || typeof document === 'undefined') return;
+    stylesInjected = true;
+
+    const css = `
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 RIPPLE - Based on material-components/material-web
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.m3-ripple-surface {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: inherit;
+}
+
+/* Hover state layer */
+.m3-ripple-surface::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background-color: var(--ripple-color, currentColor);
+    transition: opacity 75ms linear;
+}
+
+.m3-ripple-surface.hovered::before {
+    opacity: 0.08;
+}
+
+.m3-ripple-surface.pressed::before {
+    opacity: 0.1;
+}
+
+/* Ripple circle (animated via Web Animations API) */
+.m3-ripple-surface::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    background: radial-gradient(closest-side, var(--ripple-color, currentColor) max(calc(100% - 70px), 65%), transparent 100%);
+}
+
+.m3-ripple-surface.pressed::after {
+    opacity: 0.1;
+}
+`;
+
+    const style = document.createElement('style');
+    style.setAttribute('data-md-ripple', '');
+    style.textContent = css;
+    document.head.appendChild(style);
+}
+
 export interface RippleProps {
     /** Disables the ripple effect */
     disabled?: boolean;
@@ -58,6 +119,8 @@ export interface RippleProps {
 export const Ripple: Component<RippleProps> = (props) => {
     const [local] = splitProps(props, ['disabled', 'class', 'color']);
 
+    injectStyles();
+
     let surfaceRef: HTMLDivElement | undefined;
     let growAnimation: Animation | undefined;
     let rippleStartEvent: PointerEvent | undefined;
@@ -65,7 +128,6 @@ export const Ripple: Component<RippleProps> = (props) => {
     const [hovered, setHovered] = createSignal(false);
     const [pressed, setPressed] = createSignal(false);
     const [state, setState] = createSignal(State.INACTIVE);
-    const [rippleStyle, setRippleStyle] = createSignal<JSX.CSSProperties>({});
 
     // Ripple sizing
     let initialSize = 0;
@@ -147,15 +209,6 @@ export const Ripple: Component<RippleProps> = (props) => {
         determineRippleSize();
 
         const { startPoint, endPoint } = getTranslationCoordinates(positionEvent);
-
-        // Update ripple style for the pseudo-element
-        setRippleStyle({
-            '--ripple-top': `${startPoint.y}px`,
-            '--ripple-left': `${startPoint.x}px`,
-            '--ripple-size': rippleSize,
-            '--ripple-scale': rippleScale,
-            '--ripple-translate-end': `${endPoint.x - startPoint.x}px, ${endPoint.y - startPoint.y}px`,
-        } as JSX.CSSProperties);
 
         // Animate using Web Animations API for smooth M3 motion
         growAnimation = surfaceRef.animate(
@@ -307,20 +360,20 @@ export const Ripple: Component<RippleProps> = (props) => {
         });
     });
 
+    const rootClass = () => {
+        const classes = ['m3-ripple-surface'];
+        if (hovered()) classes.push('hovered');
+        if (pressed()) classes.push('pressed');
+        if (local.class) classes.push(local.class);
+        return classes.join(' ');
+    };
+
     return (
         <div
             ref={surfaceRef}
             aria-hidden="true"
-            class={`m3-ripple-surface ${hovered() ? 'hovered' : ''} ${pressed() ? 'pressed' : ''} ${local.class || ''}`}
-            style={{
-                position: 'absolute',
-                inset: 0,
-                'pointer-events': 'none',
-                overflow: 'hidden',
-                'border-radius': 'inherit',
-                '--ripple-color': local.color || 'currentColor',
-                ...rippleStyle(),
-            }}
+            class={rootClass()}
+            style={local.color ? { '--ripple-color': local.color } as JSX.CSSProperties : undefined}
         />
     );
 };

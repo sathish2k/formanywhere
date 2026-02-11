@@ -157,6 +157,29 @@ function injectStyles() {
     text-decoration: none;
     color: inherit;
 }
+
+/* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
+
+.md-list.glass {
+    background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(var(--glass-blur, 20px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+    border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
+    border-radius: var(--m3-shape-large, 16px);
+    overflow: hidden;
+}
+
+.md-list.glass .md-list-item.interactive:hover {
+    background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
+}
+
+.md-list.glass .md-list-item.selected {
+    background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 12%, transparent);
+}
+
+.md-list.glass .md-list-divider {
+    background: var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
+}
 `;
 
     const style = document.createElement('style');
@@ -172,6 +195,8 @@ export interface ListProps {
     style?: JSX.CSSProperties;
     /** Custom class */
     class?: string;
+    /** Visual variant */
+    variant?: 'standard' | 'glass';
     /** Children */
     children: JSX.Element;
 }
@@ -210,6 +235,7 @@ export const List: ParentComponent<ListProps> = (props) => {
 
     const rootClass = () => {
         const classes = ['md-list'];
+        if (props.variant === 'glass') classes.push('glass');
         if (props.class) classes.push(props.class);
         return classes.join(' ');
     };

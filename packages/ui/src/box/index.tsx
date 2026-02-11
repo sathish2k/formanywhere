@@ -1,6 +1,9 @@
 /**
  * Box Component for SolidJS
  * A generic container with spacing and styling props
+ *
+ * CSS class-based styling with M3 design tokens
+ * Uses utility CSS classes for common presets with injectStyles pattern
  */
 import { JSX, splitProps, ParentComponent } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
@@ -38,132 +41,134 @@ export interface BoxProps {
     as?: 'div' | 'span' | 'section' | 'article' | 'aside' | 'main' | 'nav' | 'header' | 'footer';
 }
 
-// Spacing presets
-const SPACING: Record<string, string> = {
-    none: '0',
-    xs: '4px',
-    sm: '8px',
-    md: '16px',
-    lg: '24px',
-    xl: '32px',
-};
+// ─── Styles (injected once) ─────────────────────────────────────────────────────
 
-// Border radius presets
-const ROUNDED: Record<string, string> = {
-    none: '0',
-    sm: '4px',
-    md: '8px',
-    lg: '12px',
-    xl: '16px',
-    full: '9999px',
-};
+let stylesInjected = false;
 
-// Background color presets (M3 tokens)
-const BG_COLORS: Record<string, string> = {
-    surface: 'var(--m3-color-surface, #fff)',
-    'surface-variant': 'var(--m3-color-surface-variant, #e0e0e0)',
-    'surface-dim': 'var(--m3-color-surface-dim, #f5f5f5)',
-    primary: 'var(--m3-color-primary, #6200EE)',
-    secondary: 'var(--m3-color-secondary, #8E33FF)',
-    tertiary: 'var(--m3-color-tertiary, #00B8D9)',
-    transparent: 'transparent',
-};
+function injectStyles() {
+    if (stylesInjected || typeof document === 'undefined') return;
+    stylesInjected = true;
 
-// Max width presets
-const MAX_WIDTH: Record<string, string> = {
-    xs: '320px',
-    sm: '640px',
-    md: '768px',
-    lg: '1024px',
-    xl: '1280px',
-    '2xl': '1536px',
-    '7xl': '1280px',
-    full: '100%',
-    none: 'none',
-};
+    const css = `
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 BOX - Layout utility component
+   ═══════════════════════════════════════════════════════════════════════════════ */
 
-// Text color presets (M3 tokens)
-const TEXT_COLORS: Record<string, string> = {
-    'on-surface': 'var(--m3-color-on-surface, #1a1a1a)',
-    'on-surface-variant': 'var(--m3-color-on-surface-variant, #666)',
-    primary: 'var(--m3-color-primary, #6200EE)',
-    secondary: 'var(--m3-color-secondary, #8E33FF)',
-    tertiary: 'var(--m3-color-tertiary, #00B8D9)',
-    'on-primary': 'var(--m3-color-on-primary, #fff)',
-    'on-secondary': 'var(--m3-color-on-secondary, #fff)',
-    'on-tertiary': 'var(--m3-color-on-tertiary, #fff)',
-};
+.md-box { box-sizing: border-box; }
 
-const getSpacing = (value: string | number | undefined): string | undefined => {
-    if (value === undefined) return undefined;
-    return typeof value === 'number' ? `${value}px` : SPACING[value] || value;
-};
+/* ─── PADDING ──────────────────────────────────────────────────────────────── */
 
-const boxStyles = (props: BoxProps): JSX.CSSProperties => {
-    const styles: JSX.CSSProperties = {};
+.md-box.p-none { padding: 0; }
+.md-box.p-xs { padding: 4px; }
+.md-box.p-sm { padding: 8px; }
+.md-box.p-md { padding: 16px; }
+.md-box.p-lg { padding: 24px; }
+.md-box.p-xl { padding: 32px; }
 
-    // Padding
-    if (props.padding !== undefined) {
-        styles.padding = getSpacing(props.padding);
-    }
-    if (props.paddingX !== undefined) {
-        const px = getSpacing(props.paddingX);
-        styles['padding-left'] = px;
-        styles['padding-right'] = px;
-    }
-    if (props.paddingY !== undefined) {
-        const py = getSpacing(props.paddingY);
-        styles['padding-top'] = py;
-        styles['padding-bottom'] = py;
-    }
+.md-box.px-none { padding-left: 0; padding-right: 0; }
+.md-box.px-xs { padding-left: 4px; padding-right: 4px; }
+.md-box.px-sm { padding-left: 8px; padding-right: 8px; }
+.md-box.px-md { padding-left: 16px; padding-right: 16px; }
+.md-box.px-lg { padding-left: 24px; padding-right: 24px; }
+.md-box.px-xl { padding-left: 32px; padding-right: 32px; }
 
-    // Margin
-    if (props.margin !== undefined) {
-        styles.margin = getSpacing(props.margin);
-    }
-    if (props.marginX !== undefined) {
-        const mx = getSpacing(props.marginX);
-        styles['margin-left'] = mx;
-        styles['margin-right'] = mx;
-    }
-    if (props.marginY !== undefined) {
-        const my = getSpacing(props.marginY);
-        styles['margin-top'] = my;
-        styles['margin-bottom'] = my;
-    }
+.md-box.py-none { padding-top: 0; padding-bottom: 0; }
+.md-box.py-xs { padding-top: 4px; padding-bottom: 4px; }
+.md-box.py-sm { padding-top: 8px; padding-bottom: 8px; }
+.md-box.py-md { padding-top: 16px; padding-bottom: 16px; }
+.md-box.py-lg { padding-top: 24px; padding-bottom: 24px; }
+.md-box.py-xl { padding-top: 32px; padding-bottom: 32px; }
 
-    // Border radius
-    if (props.rounded) {
-        styles['border-radius'] = ROUNDED[props.rounded] || props.rounded;
-    }
+/* ─── MARGIN ───────────────────────────────────────────────────────────────── */
 
-    // Background
-    if (props.bg) {
-        styles['background-color'] = BG_COLORS[props.bg] || props.bg;
-    }
+.md-box.m-none { margin: 0; }
+.md-box.m-xs { margin: 4px; }
+.md-box.m-sm { margin: 8px; }
+.md-box.m-md { margin: 16px; }
+.md-box.m-lg { margin: 24px; }
+.md-box.m-xl { margin: 32px; }
+.md-box.m-auto { margin: auto; }
 
-    // Text color
-    if (props.color) {
-        styles.color = TEXT_COLORS[props.color] || props.color;
-    }
+.md-box.mx-none { margin-left: 0; margin-right: 0; }
+.md-box.mx-xs { margin-left: 4px; margin-right: 4px; }
+.md-box.mx-sm { margin-left: 8px; margin-right: 8px; }
+.md-box.mx-md { margin-left: 16px; margin-right: 16px; }
+.md-box.mx-lg { margin-left: 24px; margin-right: 24px; }
+.md-box.mx-xl { margin-left: 32px; margin-right: 32px; }
+.md-box.mx-auto { margin-left: auto; margin-right: auto; }
 
-    // Display
-    if (props.display) {
-        styles.display = props.display;
-    }
+.md-box.my-none { margin-top: 0; margin-bottom: 0; }
+.md-box.my-xs { margin-top: 4px; margin-bottom: 4px; }
+.md-box.my-sm { margin-top: 8px; margin-bottom: 8px; }
+.md-box.my-md { margin-top: 16px; margin-bottom: 16px; }
+.md-box.my-lg { margin-top: 24px; margin-bottom: 24px; }
+.md-box.my-xl { margin-top: 32px; margin-bottom: 32px; }
 
-    // Max width
-    if (props.maxWidth) {
-        styles['max-width'] = MAX_WIDTH[props.maxWidth] || props.maxWidth;
-    }
+/* ─── BORDER RADIUS ────────────────────────────────────────────────────────── */
 
-    // Text align
-    if (props.textAlign) {
-        styles['text-align'] = props.textAlign;
-    }
+.md-box.rounded-none { border-radius: 0; }
+.md-box.rounded-sm { border-radius: var(--m3-shape-extra-small, 4px); }
+.md-box.rounded-md { border-radius: var(--m3-shape-small, 8px); }
+.md-box.rounded-lg { border-radius: var(--m3-shape-medium, 12px); }
+.md-box.rounded-xl { border-radius: var(--m3-shape-large, 16px); }
+.md-box.rounded-full { border-radius: var(--m3-shape-full, 9999px); }
 
-    return styles;
-};
+/* ─── BACKGROUND ───────────────────────────────────────────────────────────── */
+
+.md-box.bg-surface { background-color: var(--m3-color-surface, #fff); }
+.md-box.bg-surface-variant { background-color: var(--m3-color-surface-variant, #e0e0e0); }
+.md-box.bg-surface-dim { background-color: var(--m3-color-surface-dim, #f5f5f5); }
+.md-box.bg-primary { background-color: var(--m3-color-primary, #6200EE); }
+.md-box.bg-secondary { background-color: var(--m3-color-secondary, #8E33FF); }
+.md-box.bg-tertiary { background-color: var(--m3-color-tertiary, #00B8D9); }
+.md-box.bg-transparent { background-color: transparent; }
+
+/* ─── TEXT COLOR ────────────────────────────────────────────────────────────── */
+
+.md-box.text-on-surface { color: var(--m3-color-on-surface, #1a1a1a); }
+.md-box.text-on-surface-variant { color: var(--m3-color-on-surface-variant, #666); }
+.md-box.text-primary { color: var(--m3-color-primary, #6200EE); }
+.md-box.text-secondary { color: var(--m3-color-secondary, #8E33FF); }
+.md-box.text-tertiary { color: var(--m3-color-tertiary, #00B8D9); }
+.md-box.text-on-primary { color: var(--m3-color-on-primary, #fff); }
+.md-box.text-on-secondary { color: var(--m3-color-on-secondary, #fff); }
+.md-box.text-on-tertiary { color: var(--m3-color-on-tertiary, #fff); }
+
+/* ─── DISPLAY ──────────────────────────────────────────────────────────────── */
+
+.md-box.d-block { display: block; }
+.md-box.d-inline-block { display: inline-block; }
+.md-box.d-flex { display: flex; }
+.md-box.d-inline-flex { display: inline-flex; }
+.md-box.d-grid { display: grid; }
+.md-box.d-none { display: none; }
+
+/* ─── MAX WIDTH ────────────────────────────────────────────────────────────── */
+
+.md-box.max-w-xs { max-width: 320px; }
+.md-box.max-w-sm { max-width: 640px; }
+.md-box.max-w-md { max-width: 768px; }
+.md-box.max-w-lg { max-width: 1024px; }
+.md-box.max-w-xl { max-width: 1280px; }
+.md-box.max-w-2xl { max-width: 1536px; }
+.md-box.max-w-7xl { max-width: 1280px; }
+.md-box.max-w-full { max-width: 100%; }
+.md-box.max-w-none { max-width: none; }
+
+/* ─── TEXT ALIGN ────────────────────────────────────────────────────────────── */
+
+.md-box.text-left { text-align: left; }
+.md-box.text-center { text-align: center; }
+.md-box.text-right { text-align: right; }
+`;
+
+    const style = document.createElement('style');
+    style.setAttribute('data-md-box', '');
+    style.textContent = css;
+    document.head.appendChild(style);
+}
+
+// ─── Component ──────────────────────────────────────────────────────────────────
 
 export const Box: ParentComponent<BoxProps> = (props) => {
     const [local, others] = splitProps(props, [
@@ -173,15 +178,66 @@ export const Box: ParentComponent<BoxProps> = (props) => {
         'class', 'style', 'children', 'as'
     ]);
 
-    // Use SolidJS Dynamic component for proper client-side rendering
+    injectStyles();
+
+    const rootClass = () => {
+        const classes = ['md-box'];
+
+        // Padding
+        if (typeof local.padding === 'string') classes.push(`p-${local.padding}`);
+        if (typeof local.paddingX === 'string') classes.push(`px-${local.paddingX}`);
+        if (typeof local.paddingY === 'string') classes.push(`py-${local.paddingY}`);
+
+        // Margin
+        if (typeof local.margin === 'string') classes.push(`m-${local.margin}`);
+        if (typeof local.marginX === 'string') classes.push(`mx-${local.marginX}`);
+        if (typeof local.marginY === 'string') classes.push(`my-${local.marginY}`);
+
+        // Border radius
+        if (local.rounded) classes.push(`rounded-${local.rounded}`);
+
+        // Background
+        if (local.bg) classes.push(`bg-${local.bg}`);
+
+        // Text color
+        if (local.color) classes.push(`text-${local.color}`);
+
+        // Display
+        if (local.display) classes.push(`d-${local.display}`);
+
+        // Max width
+        if (local.maxWidth) classes.push(`max-w-${local.maxWidth}`);
+
+        // Text alignment
+        if (local.textAlign) classes.push(`text-${local.textAlign}`);
+
+        if (local.class) classes.push(local.class);
+        return classes.join(' ');
+    };
+
+    // For numeric values, we still need inline styles
+    const customStyles = (): JSX.CSSProperties | undefined => {
+        const styles: JSX.CSSProperties = {};
+        let hasCustom = false;
+
+        if (typeof local.padding === 'number') { styles.padding = `${local.padding}px`; hasCustom = true; }
+        if (typeof local.paddingX === 'number') { styles['padding-left'] = `${local.paddingX}px`; styles['padding-right'] = `${local.paddingX}px`; hasCustom = true; }
+        if (typeof local.paddingY === 'number') { styles['padding-top'] = `${local.paddingY}px`; styles['padding-bottom'] = `${local.paddingY}px`; hasCustom = true; }
+        if (typeof local.margin === 'number') { styles.margin = `${local.margin}px`; hasCustom = true; }
+        if (typeof local.marginX === 'number') { styles['margin-left'] = `${local.marginX}px`; styles['margin-right'] = `${local.marginX}px`; hasCustom = true; }
+        if (typeof local.marginY === 'number') { styles['margin-top'] = `${local.marginY}px`; styles['margin-bottom'] = `${local.marginY}px`; hasCustom = true; }
+
+        if (hasCustom || local.style) {
+            return { ...styles, ...local.style };
+        }
+        return local.style;
+    };
+
     return (
         <Dynamic
             component={local.as || 'div'}
-            class={local.class || ''}
-            style={{
-                ...boxStyles(local),
-                ...local.style,
-            }}
+            class={rootClass()}
+            style={customStyles()}
             data-component="box"
         >
             {local.children}

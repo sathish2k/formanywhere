@@ -1,7 +1,2 @@
-$ tsc
-src/renderer/FormRenderer.tsx(62,66): error TS18047: 'e.currentTarget' is possibly 'null'.
-src/renderer/FormRenderer.tsx(62,82): error TS2339: Property 'value' does not exist on type 'EventTarget'.
-../shared/src/components/auth/SignInForm.tsx(14,24): error TS2307: Cannot find module '../../icons/svg/google.svg?component-solid' or its corresponding type declarations.
-../shared/src/components/auth/SignInForm.tsx(15,24): error TS2307: Cannot find module '../../icons/svg/github.svg?component-solid' or its corresponding type declarations.
-../shared/src/components/auth/SignUpForm.tsx(14,24): error TS2307: Cannot find module '../../icons/svg/google.svg?component-solid' or its corresponding type declarations.
-../shared/src/components/auth/SignUpForm.tsx(15,24): error TS2307: Cannot find module '../../icons/svg/github.svg?component-solid' or its corresponding type declarations.
+
+[0m[2m[35m$[0m [2m[1mtsc[0m

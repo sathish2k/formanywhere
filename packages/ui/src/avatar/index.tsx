@@ -1,8 +1,104 @@
 /**
  * Material 3 Avatar Component for SolidJS
  * Based on https://github.com/material-components/material-web
+ *
+ * CSS class-based styling with M3 design tokens
  */
 import { JSX, Component, Show } from 'solid-js';
+
+// ─── Styles (injected once) ─────────────────────────────────────────────────────
+
+let stylesInjected = false;
+
+function injectStyles() {
+    if (stylesInjected || typeof document === 'undefined') return;
+    stylesInjected = true;
+
+    const css = `
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 AVATAR
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.md-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    overflow: hidden;
+    user-select: none;
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    background: var(--m3-color-primary-container, rgba(99, 102, 241, 0.12));
+    color: var(--m3-color-on-primary-container, #3730a3);
+    flex-shrink: 0;
+}
+
+/* ─── SIZE MODIFIERS ──────────────────────────────────────────────────────── */
+
+.md-avatar.xs  { width: 24px; height: 24px; font-size: 10px; }
+.md-avatar.sm  { width: 32px; height: 32px; font-size: 12px; }
+.md-avatar.md  { width: 40px; height: 40px; font-size: 16px; }
+.md-avatar.lg  { width: 56px; height: 56px; font-size: 22px; }
+.md-avatar.xl  { width: 80px; height: 80px; font-size: 32px; }
+
+/* ─── SHAPE MODIFIERS ─────────────────────────────────────────────────────── */
+
+.md-avatar.circular { border-radius: var(--m3-shape-full, 9999px); }
+.md-avatar.rounded  { border-radius: var(--m3-shape-small, 8px); }
+.md-avatar.square   { border-radius: 0; }
+
+/* ─── CLICKABLE ───────────────────────────────────────────────────────────── */
+
+.md-avatar.clickable {
+    cursor: pointer;
+    transition: opacity var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.md-avatar.clickable:hover {
+    opacity: 0.88;
+}
+
+/* ─── IMAGE ───────────────────────────────────────────────────────────────── */
+
+.md-avatar__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ─── LIQUID GLASS VARIANT ────────────────────────────────────────────────── */
+
+.md-avatar.glass {
+    background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
+    backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+    -webkit-backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+    border: 1px solid var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
+    color: var(--m3-color-on-surface, #1D1B20);
+}
+
+/* ─── AVATAR GROUP ────────────────────────────────────────────────────────── */
+
+.md-avatar-group {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.md-avatar-group > .md-avatar {
+    margin-left: -8px;
+    border: 2px solid var(--m3-color-surface, #FDF8FD);
+}
+
+.md-avatar-group > .md-avatar:last-child {
+    margin-left: 0;
+}
+`;
+
+    const style = document.createElement('style');
+    style.setAttribute('data-md-avatar', '');
+    style.textContent = css;
+    document.head.appendChild(style);
+}
+
+// ─── Types ──────────────────────────────────────────────────────────────────────
 
 export interface AvatarProps {
     /** Image source */
@@ -15,45 +111,17 @@ export interface AvatarProps {
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     /** Custom icon when no image/initials */
     icon?: JSX.Element;
-    /** Variant */
-    variant?: 'circular' | 'rounded' | 'square';
+    /** Shape variant */
+    variant?: 'circular' | 'rounded' | 'square' | 'glass';
     /** Custom style */
     style?: JSX.CSSProperties;
+    /** Custom class */
+    class?: string;
     /** Click handler */
     onClick?: (e: MouseEvent) => void;
 }
 
-const sizeMap = {
-    xs: 24,
-    sm: 32,
-    md: 40,
-    lg: 56,
-    xl: 80,
-};
-
-const fontSizeMap = {
-    xs: 10,
-    sm: 12,
-    md: 16,
-    lg: 22,
-    xl: 32,
-};
-
-const avatarStyles = (size: keyof typeof sizeMap, variant: string, clickable: boolean): JSX.CSSProperties => ({
-    display: 'inline-flex',
-    'align-items': 'center',
-    'justify-content': 'center',
-    width: `${sizeMap[size]}px`,
-    height: `${sizeMap[size]}px`,
-    'font-size': `${fontSizeMap[size]}px`,
-    'font-weight': '500',
-    'border-radius': variant === 'circular' ? '50%' : variant === 'rounded' ? '8px' : '0',
-    background: 'var(--m3-color-primary-container, rgba(99, 102, 241, 0.12))',
-    color: 'var(--m3-color-on-primary-container, #3730a3)',
-    overflow: 'hidden',
-    cursor: clickable ? 'pointer' : 'default',
-    'user-select': 'none',
-});
+// ─── Component ──────────────────────────────────────────────────────────────────
 
 const defaultIcon = (
     <svg viewBox="0 0 24 24" fill="currentColor" width="60%" height="60%">
@@ -62,12 +130,26 @@ const defaultIcon = (
 );
 
 export const Avatar: Component<AvatarProps> = (props) => {
-    const size = props.size ?? 'md';
-    const variant = props.variant ?? 'circular';
+    injectStyles();
+
+    const rootClass = () => {
+        const classes = ['md-avatar'];
+        classes.push(props.size ?? 'md');
+        // Glass variant is circular by default
+        if (props.variant === 'glass') {
+            classes.push('circular', 'glass');
+        } else {
+            classes.push(props.variant ?? 'circular');
+        }
+        if (props.onClick) classes.push('clickable');
+        if (props.class) classes.push(props.class);
+        return classes.join(' ');
+    };
 
     return (
         <div
-            style={{ ...avatarStyles(size, variant, !!props.onClick), ...props.style }}
+            class={rootClass()}
+            style={props.style}
             onClick={props.onClick}
         >
             <Show when={props.src} fallback={
@@ -76,9 +158,9 @@ export const Avatar: Component<AvatarProps> = (props) => {
                 </Show>
             }>
                 <img
+                    class="md-avatar__image"
                     src={props.src}
                     alt={props.alt || ''}
-                    style={{ width: '100%', height: '100%', 'object-fit': 'cover' }}
                 />
             </Show>
         </div>
@@ -95,15 +177,21 @@ export interface AvatarGroupProps {
     children: JSX.Element;
     /** Custom style */
     style?: JSX.CSSProperties;
+    /** Custom class */
+    class?: string;
 }
 
 export const AvatarGroup: Component<AvatarGroupProps> = (props) => {
+    injectStyles();
+
+    const rootClass = () => {
+        const classes = ['md-avatar-group'];
+        if (props.class) classes.push(props.class);
+        return classes.join(' ');
+    };
+
     return (
-        <div style={{
-            display: 'flex',
-            'flex-direction': 'row-reverse',
-            ...props.style,
-        }}>
+        <div class={rootClass()} style={props.style}>
             {props.children}
         </div>
     );

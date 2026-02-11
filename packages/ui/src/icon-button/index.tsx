@@ -82,7 +82,7 @@ function injectStyles() {
 
 .md-icon-button.standard:hover:not(:disabled),
 .md-icon-button.text:hover:not(:disabled) {
-    background: var(--m3-color-on-surface-variant, rgba(73, 69, 78, 0.08));
+    background: color-mix(in srgb, var(--m3-color-on-surface-variant, #49454E) 8%, transparent);
 }
 
 /* ─── FILLED VARIANT ───────────────────────────────────────────────────────── */
@@ -98,6 +98,7 @@ function injectStyles() {
 }
 
 .md-icon-button.filled:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 8%, var(--m3-color-surface-container-highest, rgba(230, 225, 229, 0.38)));
     box-shadow: var(--m3-elevation-1);
 }
 
@@ -114,6 +115,7 @@ function injectStyles() {
 }
 
 .md-icon-button.filled-tonal:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--m3-color-on-surface-variant, #49454E) 8%, var(--m3-color-surface-container-highest, rgba(230, 225, 229, 0.38)));
     box-shadow: var(--m3-elevation-1);
 }
 
@@ -132,7 +134,7 @@ function injectStyles() {
 }
 
 .md-icon-button.outlined:hover:not(:disabled) {
-    background: var(--m3-color-on-surface-variant, rgba(73, 69, 78, 0.08));
+    background: color-mix(in srgb, var(--m3-color-on-surface-variant, #49454E) 8%, transparent);
 }
 
 /* ─── FOCUS ────────────────────────────────────────────────────────────────── */

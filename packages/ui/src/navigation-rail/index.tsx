@@ -130,6 +130,25 @@ function injectStyles() {
 .md-nav-rail-item.selected .md-nav-rail-item__label {
     font-weight: 700;
 }
+
+/* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
+
+.md-nav-rail.glass {
+    background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(var(--glass-blur, 20px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+    border-right: 1px solid var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.04);
+}
+
+.md-nav-rail.glass .md-nav-rail-item.selected .md-nav-rail-item__indicator {
+    background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 16%, var(--glass-tint-medium, rgba(255, 255, 255, 0.5)));
+    backdrop-filter: blur(8px);
+}
+
+.md-nav-rail.glass .md-nav-rail-item:hover:not(.selected) .md-nav-rail-item__indicator {
+    background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
+}
 `;
 
     const style = document.createElement('style');
@@ -151,6 +170,8 @@ export interface NavigationRailProps {
     class?: string;
     /** Alignment of items */
     align?: 'start' | 'center' | 'end';
+    /** Visual variant */
+    variant?: 'standard' | 'glass';
 }
 
 export interface NavigationRailItemProps {
@@ -177,6 +198,7 @@ export const NavigationRail: Component<NavigationRailProps> = (props) => {
         const classes = ['md-nav-rail'];
         if (props.align === 'center') classes.push('align-center');
         if (props.align === 'end') classes.push('align-end');
+        if (props.variant === 'glass') classes.push('glass');
         if (props.class) classes.push(props.class);
         return classes.join(' ');
     };

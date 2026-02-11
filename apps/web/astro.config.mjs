@@ -24,6 +24,7 @@ export default defineConfig({
   integrations: [
     solidJs({
       include: [
+        '**/apps/web/src/**',
         '**/packages/ui/**',
         '**/packages/shared/**',
         '**/node_modules/@formanywhere/**',

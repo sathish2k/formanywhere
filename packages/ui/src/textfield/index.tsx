@@ -240,7 +240,7 @@ function injectStyles() {
     border-bottom-color: var(--m3-color-primary, #6750A4);
 }
 
-.md-textfield.outlined.populated:not(.focused) .md-tf-outline-notch {
+.md-textfield.outlined.populated .md-tf-outline-notch {
     border-top: none;
 }
 

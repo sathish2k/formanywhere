@@ -59,7 +59,7 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
                         value={value()}
                         error={!!error()}
                         required={element.required}
-                        onInput={(e) => handleChange(element.id, e.currentTarget.value)}
+                        onInput={(e) => handleChange(element.id, (e.target as HTMLInputElement).value)}
                     />
                 );
             case 'select':
@@ -80,7 +80,7 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
                         <textarea
                             placeholder={element.placeholder}
                             value={value()}
-                            onInput={(e) => handleChange(element.id, e.currentTarget.value)}
+                            onInput={(e) => handleChange(element.id, (e.target as HTMLTextAreaElement).value)}
                         />
                         {error() && <span data-error>{error()}</span>}
                     </div>
