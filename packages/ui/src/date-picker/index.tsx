@@ -16,6 +16,7 @@ import { Dialog } from '../dialog';
 import { Button } from '../button';
 import { IconButton } from '../icon-button';
 import { Typography } from '../typography';
+import './styles.scss';
 import {
     format,
     addMonths,
@@ -29,201 +30,6 @@ import {
     endOfWeek,
     isSameMonth
 } from 'date-fns';
-
-// ─── Styles (injected once) ─────────────────────────────────────────────────────
-
-let stylesInjected = false;
-
-function injectStyles() {
-    if (stylesInjected || typeof document === 'undefined') return;
-    stylesInjected = true;
-
-    const css = `
-/* ═══════════════════════════════════════════════════════════════════════════════
-   M3 DATE PICKER - Calendar dialog
-   ═══════════════════════════════════════════════════════════════════════════════ */
-
-.md-date-picker {
-    display: inline-flex;
-    width: 100%;
-}
-
-.md-date-picker__trigger {
-    width: 100%;
-    cursor: pointer;
-}
-
-/* ─── DIALOG OVERRIDE ──────────────────────────────────────────────────────── */
-
-.md-date-picker__dialog {
-    max-width: 360px;
-    min-width: 320px;
-    border-radius: var(--m3-shape-extra-large, 28px) !important;
-    padding: 0 !important;
-}
-
-/* ─── HEADER ───────────────────────────────────────────────────────────────── */
-
-.md-date-picker__header {
-    padding: 24px 24px 12px;
-}
-
-.md-date-picker__header-date {
-    margin-top: 8px;
-}
-
-/* ─── CALENDAR BODY ────────────────────────────────────────────────────────── */
-
-.md-date-picker__body {
-    padding: 0 12px 12px;
-}
-
-/* ─── MONTH NAVIGATION ─────────────────────────────────────────────────────── */
-
-.md-date-picker__month-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 12px 12px;
-}
-
-.md-date-picker__month-label {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.md-date-picker__month-controls {
-    display: flex;
-}
-
-.md-date-picker__today-btn {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    margin-left: 4px;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    border-radius: var(--m3-shape-small, 8px);
-    transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
-}
-
-.md-date-picker__today-btn:hover {
-    background: rgba(var(--m3-color-on-surface-rgb, 29, 27, 32), 0.08);
-}
-
-/* ─── WEEKDAY HEADER ───────────────────────────────────────────────────────── */
-
-.md-date-picker__weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    margin-bottom: 8px;
-}
-
-.md-date-picker__weekday {
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    font-size: var(--m3-body-small-size, 12px);
-    color: var(--m3-color-on-surface-variant, #49454E);
-}
-
-/* ─── DAY GRID ─────────────────────────────────────────────────────────────── */
-
-.md-date-picker__days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    row-gap: 4px;
-}
-
-.md-date-picker__day-cell {
-    display: flex;
-    justify-content: center;
-}
-
-/* ─── DAY BUTTON ───────────────────────────────────────────────────────────── */
-
-.md-date-picker__day {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: transparent;
-    color: var(--m3-color-on-surface, #1D1B20);
-    cursor: pointer;
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    font-size: var(--m3-body-medium-size, 14px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
-}
-
-.md-date-picker__day:hover {
-    background: rgba(var(--m3-color-on-surface-rgb, 29, 27, 32), 0.08);
-}
-
-/* Other month (dimmed) */
-.md-date-picker__day.other-month {
-    color: var(--m3-color-on-surface-variant, #999);
-    opacity: 0.38;
-}
-
-/* Today indicator */
-.md-date-picker__day.today {
-    border: 1px solid var(--m3-color-primary, #6750A4);
-}
-
-/* Selected */
-.md-date-picker__day.selected {
-    background: var(--m3-color-primary, #6750A4);
-    color: var(--m3-color-on-primary, #FFFFFF);
-    border: none;
-}
-
-.md-date-picker__day.selected:hover {
-    background: var(--m3-color-primary, #6750A4);
-    opacity: 0.92;
-}
-
-/* ─── ACTIONS ──────────────────────────────────────────────────────────────── */
-
-.md-date-picker__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    padding: 16px 24px 24px;
-}
-
-/* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
-
-.md-date-picker.glass .md-date-picker__dialog {
-    background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
-    backdrop-filter: blur(var(--glass-blur-strong, 40px));
-    -webkit-backdrop-filter: blur(var(--glass-blur-strong, 40px));
-    border: 1px solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
-    box-shadow: var(--glass-shadow-elevated, 0 16px 48px rgba(0, 0, 0, 0.12));
-}
-
-.md-date-picker.glass .md-date-picker__day.selected {
-    background: var(--m3-color-primary, rgba(103, 80, 164, 0.85));
-    backdrop-filter: blur(8px);
-}
-
-.md-date-picker.glass .md-date-picker__day:hover:not(.selected) {
-    background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
-}
-`;
-
-    const style = document.createElement('style');
-    style.setAttribute('data-md-date-picker', '');
-    style.textContent = css;
-    document.head.appendChild(style);
-}
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
@@ -254,8 +60,6 @@ export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
     const [local, others] = splitProps(props, [
         'value', 'onChange', 'label', 'disabled', 'error', 'helperText', 'variant', 'style', 'class'
     ]);
-
-    injectStyles();
 
     const [open, setOpen] = createSignal(false);
     const [viewDate, setViewDate] = createSignal(props.value || new Date());

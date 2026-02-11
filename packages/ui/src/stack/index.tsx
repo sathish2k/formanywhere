@@ -7,6 +7,7 @@
  */
 import { JSX, splitProps, ParentComponent } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
+import './styles.scss';
 
 export interface StackProps {
     /** Flex direction */
@@ -29,74 +30,6 @@ export interface StackProps {
     as?: 'div' | 'section' | 'article' | 'aside' | 'main' | 'nav' | 'header' | 'footer';
 }
 
-// ─── Styles (injected once) ─────────────────────────────────────────────────────
-
-let stylesInjected = false;
-
-function injectStyles() {
-    if (stylesInjected || typeof document === 'undefined') return;
-    stylesInjected = true;
-
-    const css = `
-/* ═══════════════════════════════════════════════════════════════════════════════
-   M3 STACK - Flex layout utility component
-   ═══════════════════════════════════════════════════════════════════════════════ */
-
-.md-stack {
-    display: flex;
-    box-sizing: border-box;
-}
-
-/* ─── DIRECTION ────────────────────────────────────────────────────────────── */
-
-.md-stack.dir-row { flex-direction: row; }
-.md-stack.dir-column { flex-direction: column; }
-.md-stack.dir-row-reverse { flex-direction: row-reverse; }
-.md-stack.dir-column-reverse { flex-direction: column-reverse; }
-
-/* ─── GAP ──────────────────────────────────────────────────────────────────── */
-
-.md-stack.gap-none { gap: 0; }
-.md-stack.gap-xs { gap: 4px; }
-.md-stack.gap-sm { gap: 8px; }
-.md-stack.gap-md { gap: 16px; }
-.md-stack.gap-lg { gap: 24px; }
-.md-stack.gap-xl { gap: 32px; }
-
-/* ─── ALIGN ITEMS ──────────────────────────────────────────────────────────── */
-
-.md-stack.align-start { align-items: flex-start; }
-.md-stack.align-center { align-items: center; }
-.md-stack.align-end { align-items: flex-end; }
-.md-stack.align-stretch { align-items: stretch; }
-.md-stack.align-baseline { align-items: baseline; }
-
-/* ─── JUSTIFY CONTENT ──────────────────────────────────────────────────────── */
-
-.md-stack.justify-start { justify-content: flex-start; }
-.md-stack.justify-center { justify-content: center; }
-.md-stack.justify-end { justify-content: flex-end; }
-.md-stack.justify-between { justify-content: space-between; }
-.md-stack.justify-around { justify-content: space-around; }
-.md-stack.justify-evenly { justify-content: space-evenly; }
-
-/* ─── WRAP ─────────────────────────────────────────────────────────────────── */
-
-.md-stack.flex-wrap { flex-wrap: wrap; }
-.md-stack.flex-nowrap { flex-wrap: nowrap; }
-.md-stack.flex-wrap-reverse { flex-wrap: wrap-reverse; }
-
-/* ─── MODIFIERS ────────────────────────────────────────────────────────────── */
-
-.md-stack.full-width { width: 100%; }
-`;
-
-    const style = document.createElement('style');
-    style.setAttribute('data-md-stack', '');
-    style.textContent = css;
-    document.head.appendChild(style);
-}
-
 // ─── Component ──────────────────────────────────────────────────────────────────
 
 export const Stack: ParentComponent<StackProps> = (props) => {
@@ -104,8 +37,6 @@ export const Stack: ParentComponent<StackProps> = (props) => {
         'direction', 'gap', 'align', 'justify', 'wrap',
         'class', 'style', 'children', 'fullWidth', 'as'
     ]);
-
-    injectStyles();
 
     const rootClass = () => {
         const classes = ['md-stack'];

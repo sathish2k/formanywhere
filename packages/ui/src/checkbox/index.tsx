@@ -4,6 +4,7 @@
  */
 import { JSX, splitProps, Component, createSignal } from 'solid-js';
 import { Ripple } from '../ripple';
+import './styles.scss';
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
@@ -34,149 +35,6 @@ export interface CheckboxProps {
     class?: string;
 }
 
-// ─── Styles (injected once) ─────────────────────────────────────────────────────
-
-let stylesInjected = false;
-
-function injectStyles() {
-    if (stylesInjected || typeof document === 'undefined') return;
-    stylesInjected = true;
-
-    const css = `
-/* ═══════════════════════════════════════════════════════════════════════════════
-   M3 CHECKBOX - Based on material-components/material-web
-   ═══════════════════════════════════════════════════════════════════════════════ */
-
-@keyframes md-checkbox-check {
-    0% { stroke-dashoffset: 30; }
-    100% { stroke-dashoffset: 0; }
-}
-
-.md-checkbox-wrapper {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-}
-
-.md-checkbox-wrapper.disabled {
-    cursor: not-allowed;
-    opacity: 0.38;
-}
-
-/* Touch target / state layer container */
-.md-checkbox-container {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: inherit;
-    overflow: hidden;
-    border: none;
-    background: transparent;
-    padding: 0;
-}
-
-.md-checkbox-container:hover:not(:disabled)::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: var(--m3-color-on-surface, #1C1B1F);
-    opacity: 0.08;
-}
-
-.md-checkbox-container:focus-visible {
-    outline: 2px solid var(--m3-color-primary, #6750A4);
-    outline-offset: -2px;
-}
-
-/* Checkbox box */
-.md-checkbox-box {
-    width: 18px;
-    height: 18px;
-    border-radius: 2px;
-    border: 2px solid var(--m3-color-on-surface-variant, #49454E);
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                border-color var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
-    position: relative;
-    z-index: 1;
-}
-
-/* Checked state */
-.md-checkbox-box.checked {
-    background: var(--m3-color-primary, #6750A4);
-    border-color: var(--m3-color-primary, #6750A4);
-}
-
-.md-checkbox-container:hover:not(:disabled) .md-checkbox-box.checked::before {
-    background: var(--m3-color-primary, #6750A4);
-    opacity: 0.08;
-}
-
-/* Error state */
-.md-checkbox-box.error {
-    border-color: var(--m3-color-error, #B3261E);
-}
-
-.md-checkbox-box.checked.error {
-    background: var(--m3-color-error, #B3261E);
-    border-color: var(--m3-color-error, #B3261E);
-}
-
-/* Check mark icon */
-.md-checkbox-icon {
-    width: 14px;
-    height: 14px;
-    fill: var(--m3-color-on-primary, #fff);
-}
-
-/* Label */
-.md-checkbox-label {
-    font-size: 14px;
-    line-height: 20px;
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    color: var(--m3-color-on-surface, #1C1B1F);
-    user-select: none;
-}
-
-.md-checkbox-wrapper.disabled .md-checkbox-label {
-    color: var(--m3-color-on-surface-variant, #49454E);
-}
-
-/* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
-
-.md-checkbox-wrapper.glass .md-checkbox-box {
-    background: var(--glass-tint, rgba(255, 255, 255, 0.35));
-    backdrop-filter: blur(var(--glass-blur, 12px));
-    -webkit-backdrop-filter: blur(var(--glass-blur, 12px));
-    border-color: var(--glass-border, rgba(255, 255, 255, 0.4));
-    border-radius: var(--m3-shape-extra-small, 4px);
-}
-
-.md-checkbox-wrapper.glass .md-checkbox-box.checked {
-    background: var(--m3-color-primary, rgba(103, 80, 164, 0.85));
-    border-color: transparent;
-}
-
-.md-checkbox-wrapper.glass .md-checkbox-container:hover:not(:disabled)::before {
-    background: var(--glass-hover, rgba(255, 255, 255, 0.15));
-}
-`;
-
-    const style = document.createElement('style');
-    style.setAttribute('data-md-checkbox', '');
-    style.textContent = css;
-    document.head.appendChild(style);
-}
-
 // ─── Component ──────────────────────────────────────────────────────────────────
 
 export const Checkbox: Component<CheckboxProps> = (props) => {
@@ -184,8 +42,6 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
         'checked', 'defaultChecked', 'indeterminate', 'disabled',
         'name', 'value', 'onChange', 'error', 'label', 'ariaLabel', 'style', 'class'
     ]);
-
-    injectStyles();
 
     const [internalChecked, setInternalChecked] = createSignal(local.defaultChecked ?? false);
     const isChecked = () => local.checked ?? internalChecked();

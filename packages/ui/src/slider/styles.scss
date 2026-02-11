@@ -1,0 +1,191 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 SLIDER - Based on material-components/material-web
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.md-slider {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+
+    &.disabled {
+        opacity: 0.38;
+        pointer-events: none;
+
+        .md-slider__input {
+            cursor: not-allowed;
+        }
+    }
+
+    &.error {
+        .md-slider__track {
+            background-color: var(--m3-color-error-container, #F9DEDC);
+        }
+        .md-slider__track-fill {
+            background-color: var(--m3-color-error, #B3261E);
+        }
+        .md-slider__thumb {
+            background-color: var(--m3-color-error, #B3261E);
+        }
+    }
+
+    &.secondary {
+        .md-slider__track-fill {
+            background-color: var(--m3-color-secondary, #625B71);
+        }
+        .md-slider__thumb {
+            background-color: var(--m3-color-secondary, #625B71);
+        }
+    }
+
+    /* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
+
+    &.glass {
+        .md-slider__track {
+            background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
+            backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+            -webkit-backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+            border: 1px solid var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
+        }
+
+        .md-slider__track-fill {
+            background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 70%, transparent);
+            backdrop-filter: blur(4px);
+        }
+
+        .md-slider__thumb {
+            background: var(--m3-color-primary, #6750A4);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
+        }
+
+        .md-slider__value {
+            background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+            backdrop-filter: blur(var(--glass-blur, 20px));
+            -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+            border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
+            color: var(--m3-color-on-surface, #1D1B20);
+            box-shadow: var(--glass-shadow, 0 8px 32px rgba(0, 0, 0, 0.08));
+        }
+    }
+}
+
+/* ─── LABEL ────────────────────────────────────────────────────────────────── */
+
+.md-slider__label {
+    font-size: var(--m3-body-medium-size, 14px);
+    line-height: var(--m3-body-medium-line-height, 20px);
+    color: var(--m3-color-on-surface-variant, #49454E);
+    font-weight: 500;
+}
+
+/* ─── TRACK CONTAINER ──────────────────────────────────────────────────────── */
+
+.md-slider__track-container {
+    position: relative;
+    height: 40px;
+    display: flex;
+    align-items: center;
+
+    &:hover .md-slider__thumb::before {
+        opacity: 0.08;
+    }
+
+    &:active .md-slider__thumb::before {
+        opacity: 0.12;
+    }
+
+    &:active .md-slider__thumb {
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    &:hover .md-slider__value,
+    &:active .md-slider__value {
+        opacity: 1;
+    }
+}
+
+/* ─── TRACK ────────────────────────────────────────────────────────────────── */
+
+.md-slider__track {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    margin-top: -2px;
+    background-color: var(--m3-color-surface-container-highest, #E7E0EC);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+/* Active fill */
+.md-slider__track-fill {
+    height: 100%;
+    background-color: var(--m3-color-primary, #6750A4);
+    border-radius: inherit;
+    transition: width 50ms linear;
+}
+
+/* ─── NATIVE INPUT ─────────────────────────────────────────────────────────── */
+
+.md-slider__input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+    margin: 0;
+}
+
+/* ─── THUMB ────────────────────────────────────────────────────────────────── */
+
+.md-slider__thumb {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--m3-color-primary, #6750A4);
+    box-shadow: var(--m3-elevation-1, 0 1px 2px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1));
+    pointer-events: none;
+    z-index: 1;
+    transition: transform var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+
+    /* Hover halo */
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--m3-color-primary, #6750A4);
+        opacity: 0;
+        transition: opacity var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    }
+}
+
+/* ─── VALUE TOOLTIP ────────────────────────────────────────────────────────── */
+
+.md-slider__value {
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--m3-color-inverse-surface, #313033);
+    color: var(--m3-color-inverse-on-surface, #F4EFF4);
+    font-size: var(--m3-label-medium-size, 12px);
+    padding: 4px 8px;
+    border-radius: var(--m3-shape-extra-small, 4px);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}

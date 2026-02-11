@@ -5,95 +5,7 @@
  * CSS class-based styling with M3 design tokens
  */
 import { JSX, Component, ParentComponent, Show, createEffect, onCleanup } from 'solid-js';
-
-// ─── Styles (injected once) ─────────────────────────────────────────────────────
-
-let stylesInjected = false;
-
-function injectStyles() {
-    if (stylesInjected || typeof document === 'undefined') return;
-    stylesInjected = true;
-
-    const css = `
-/* ═══════════════════════════════════════════════════════════════════════════════
-   M3 DRAWER
-   ═══════════════════════════════════════════════════════════════════════════════ */
-
-.md-drawer-backdrop {
-    position: fixed;
-    inset: 0;
-    background: var(--m3-color-scrim, rgba(0, 0, 0, 0.32));
-    z-index: 100;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--m3-motion-duration-medium, 300ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
-}
-
-.md-drawer-backdrop.open {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.md-drawer {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 360px;
-    max-width: 80vw;
-    z-index: 101;
-    background: var(--m3-color-surface-container-low, rgba(247, 242, 250, 0.95));
-    box-shadow: var(--m3-elevation-3, 0 4px 8px rgba(0, 0, 0, 0.06), 0 8px 16px rgba(0, 0, 0, 0.1));
-    transform: translateX(-100%);
-    transition: transform var(--m3-motion-duration-medium, 300ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-}
-
-.md-drawer.open {
-    transform: translateX(0);
-}
-
-/* ─── RIGHT ANCHOR ────────────────────────────────────────────────────────── */
-
-.md-drawer.right {
-    left: auto;
-    right: 0;
-    transform: translateX(100%);
-}
-
-.md-drawer.right.open {
-    transform: translateX(0);
-}
-
-/* ─── CONTENT ─────────────────────────────────────────────────────────────── */
-
-.md-drawer__content {
-    padding: 16px;
-    flex: 1;
-}
-
-/* ─── LIQUID GLASS VARIANT ────────────────────────────────────────────────── */
-
-.md-drawer.glass {
-    background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
-    backdrop-filter: blur(var(--glass-blur-strong, 40px));
-    -webkit-backdrop-filter: blur(var(--glass-blur-strong, 40px));
-    border-right: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
-}
-
-.md-drawer.glass.right {
-    border-right: none;
-    border-left: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
-}
-`;
-
-    const style = document.createElement('style');
-    style.setAttribute('data-md-drawer', '');
-    style.textContent = css;
-    document.head.appendChild(style);
-}
+import './styles.scss';
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
@@ -121,7 +33,6 @@ export interface DrawerProps {
 // ─── Component ──────────────────────────────────────────────────────────────────
 
 export const Drawer: ParentComponent<DrawerProps> = (props) => {
-    injectStyles();
 
     const dismissible = () => props.dismissible ?? true;
     const anchor = () => props.anchor ?? 'left';

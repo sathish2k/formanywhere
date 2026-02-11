@@ -4,6 +4,7 @@
  */
 import { JSX, splitProps, Component, createContext, useContext, createSignal, ParentComponent, Accessor } from 'solid-js';
 import { Ripple } from '../ripple';
+import './styles.scss';
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
@@ -48,144 +49,6 @@ export interface RadioProps {
     class?: string;
 }
 
-// ─── Styles (injected once) ─────────────────────────────────────────────────────
-
-let stylesInjected = false;
-
-function injectStyles() {
-    if (stylesInjected || typeof document === 'undefined') return;
-    stylesInjected = true;
-
-    const css = `
-/* ═══════════════════════════════════════════════════════════════════════════════
-   M3 RADIO - Based on material-components/material-web
-   ═══════════════════════════════════════════════════════════════════════════════ */
-
-.md-radio-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-/* Label wrapper */
-.md-radio-wrapper {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-}
-
-.md-radio-wrapper.disabled {
-    cursor: not-allowed;
-    opacity: 0.38;
-}
-
-/* Touch target / state layer container */
-.md-radio-container {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: inherit;
-    overflow: hidden;
-    border: none;
-    background: transparent;
-    padding: 0;
-}
-
-/* State layer on hover */
-.md-radio-container:hover:not(:disabled)::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: var(--m3-color-on-surface, #1C1B1F);
-    opacity: 0.08;
-}
-
-.md-radio-wrapper.checked .md-radio-container:hover:not(:disabled)::before {
-    background: var(--m3-color-primary, #6750A4);
-    opacity: 0.08;
-}
-
-/* Focus ring */
-.md-radio-container:focus-visible {
-    outline: 2px solid var(--m3-color-primary, #6750A4);
-    outline-offset: -2px;
-}
-
-/* Outer circle */
-.md-radio__outer {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid var(--m3-color-on-surface-variant, #49454E);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-    transition: border-color var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
-}
-
-.md-radio-wrapper.checked .md-radio__outer {
-    border-color: var(--m3-color-primary, #6750A4);
-}
-
-/* Inner circle (fill) */
-.md-radio__inner {
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: var(--m3-color-primary, #6750A4);
-    transition: all var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
-}
-
-.md-radio-wrapper.checked .md-radio__inner {
-    width: 10px;
-    height: 10px;
-}
-
-/* Label text */
-.md-radio__label {
-    font-size: 14px;
-    line-height: 20px;
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    color: var(--m3-color-on-surface, #1C1B1F);
-    user-select: none;
-}
-
-.md-radio-wrapper.disabled .md-radio__label {
-    color: var(--m3-color-on-surface-variant, #49454E);
-}
-
-/* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
-
-.md-radio-wrapper.glass .md-radio__outer {
-    background: var(--glass-tint, rgba(255, 255, 255, 0.3));
-    backdrop-filter: blur(var(--glass-blur, 12px));
-    -webkit-backdrop-filter: blur(var(--glass-blur, 12px));
-    border-color: var(--glass-border, rgba(255, 255, 255, 0.4));
-}
-
-.md-radio-wrapper.glass.checked .md-radio__outer {
-    border-color: var(--m3-color-primary, rgba(103, 80, 164, 0.85));
-}
-
-.md-radio-wrapper.glass .md-radio-container:hover:not(:disabled)::before {
-    background: var(--glass-hover, rgba(255, 255, 255, 0.15));
-}
-`;
-
-    const style = document.createElement('style');
-    style.setAttribute('data-md-radio', '');
-    style.textContent = css;
-    document.head.appendChild(style);
-}
-
 // ─── RadioGroup Component ───────────────────────────────────────────────────────
 
 export const RadioGroup: ParentComponent<RadioGroupProps> = (props) => {
@@ -224,8 +87,6 @@ export const RadioGroup: ParentComponent<RadioGroupProps> = (props) => {
 export const Radio: Component<RadioProps> = (props) => {
     const [local] = splitProps(props, ['value', 'disabled', 'label', 'style', 'class']);
     const group = useContext(RadioGroupContext);
-
-    injectStyles();
 
     const isChecked = () => group?.value() === local.value;
     const isDisabled = () => local.disabled || group?.disabled;

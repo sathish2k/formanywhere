@@ -34,7 +34,8 @@
     border-radius: var(--m3-shape-large);
     box-shadow: var(--glass-shadow);
     overflow: hidden;
-    transition: all var(--m3-motion-duration-medium) var(--m3-motion-easing-emphasized);
+    transition: box-shadow var(--m3-motion-duration-medium) var(--m3-motion-easing-emphasized),
+               transform var(--m3-motion-duration-medium) var(--m3-motion-easing-emphasized);
 }
 
 .lg-card:hover {

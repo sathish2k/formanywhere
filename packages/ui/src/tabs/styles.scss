@@ -1,0 +1,96 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 TABS - Based on material-components/material-web
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.md-tab-list {
+    display: flex;
+    border-bottom: 1px solid var(--m3-color-surface-variant, rgba(231, 224, 236, 0.4));
+
+    /* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
+
+    &.glass {
+        background: var(--glass-tint, rgba(255, 255, 255, 0.4));
+        backdrop-filter: blur(var(--glass-blur, 20px));
+        -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.25));
+        border-radius: var(--m3-shape-medium, 12px);
+        border-bottom-color: var(--glass-border, rgba(255, 255, 255, 0.25));
+
+        .md-tab:hover:not(.disabled) {
+            background: var(--glass-hover, rgba(255, 255, 255, 0.15));
+        }
+
+        .md-tab.active .md-tab__indicator {
+            background: var(--m3-color-primary, rgba(103, 80, 164, 0.9));
+        }
+    }
+}
+
+.md-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 16px;
+    min-width: 90px;
+    border: none;
+    background: transparent;
+    color: var(--m3-color-on-surface-variant, #49454E);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    cursor: pointer;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+
+    &.primary { flex-direction: column; }
+    &.secondary { flex-direction: row; }
+
+    &.disabled {
+        cursor: not-allowed;
+        opacity: 0.38;
+        pointer-events: none;
+    }
+
+    &.active {
+        color: var(--m3-color-primary, #6750A4);
+
+        .md-tab__indicator {
+            background: var(--m3-color-primary, #6750A4);
+        }
+
+        &:hover:not(.disabled) {
+            color: var(--m3-color-primary, #6750A4);
+        }
+    }
+
+    /* Hover state */
+    &:hover:not(.disabled) {
+        color: var(--m3-color-on-surface, #1C1B1F);
+    }
+
+    /* Focus ring */
+    &:focus-visible {
+        outline: 2px solid var(--m3-color-primary, #6750A4);
+        outline-offset: -2px;
+    }
+}
+
+/* Active indicator (underline) */
+.md-tab__indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background: transparent;
+    transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+/* Tab panel */
+.md-tab-panel {
+    padding: 16px;
+}

@@ -1,0 +1,291 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 BUTTON - Based on material-components/material-web
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+// M3 motion tokens
+$duration-short: var(--m3-motion-duration-short, 150ms);
+$easing-standard: var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+
+@keyframes md-btn-spin {
+    to { transform: rotate(360deg); }
+}
+
+.md-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    outline: none;
+    overflow: hidden;
+    border: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background $duration-short $easing-standard,
+                box-shadow $duration-short $easing-standard,
+                transform $duration-short $easing-standard,
+                opacity $duration-short $easing-standard;
+
+    /* ─── SIZES ──────────────────────────────────────────────────────────── */
+
+    &.size-sm {
+        padding: 6px 16px;
+        font-size: 14px;
+        border-radius: var(--m3-shape-small, 8px);
+        min-height: 32px;
+    }
+
+    &.size-md {
+        padding: 10px 24px;
+        font-size: 14px;
+        border-radius: var(--m3-shape-full, 9999px);
+        min-height: 40px;
+    }
+
+    &.size-lg {
+        padding: 14px 32px;
+        font-size: 16px;
+        border-radius: var(--m3-shape-full, 9999px);
+        min-height: 48px;
+    }
+
+    /* ─── DISABLED ────────────────────────────────────────────────────────── */
+
+    &.disabled {
+        cursor: not-allowed;
+        opacity: 0.38;
+        pointer-events: none;
+    }
+
+    /* ─── LOADING ─────────────────────────────────────────────────────────── */
+
+    &.loading {
+        cursor: wait;
+        pointer-events: none;
+    }
+
+    /* ─── FOCUS RING ──────────────────────────────────────────────────────── */
+
+    &:focus-visible {
+        outline: 2px solid var(--m3-color-primary, #6750A4);
+        outline-offset: 2px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       VARIANTS
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    /* ─── FILLED ──────────────────────────────────────────────────────────── */
+
+    &.filled {
+        background: var(--m3-color-primary, #6750A4);
+        color: var(--m3-color-on-primary, #fff);
+        box-shadow: var(--m3-elevation-1, 0 1px 2px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1));
+
+        &:hover:not(.disabled) {
+            box-shadow: var(--m3-elevation-2, 0 2px 4px rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.1));
+            filter: brightness(1.08);
+        }
+
+        &:active:not(.disabled) {
+            box-shadow: var(--m3-elevation-1);
+            transform: scale(0.98);
+        }
+    }
+
+    /* ─── SECONDARY ───────────────────────────────────────────────────────── */
+
+    &.secondary {
+        background: var(--m3-color-secondary, #14b8a6);
+        color: var(--m3-color-on-secondary, #fff);
+        box-shadow: var(--m3-elevation-1, 0 1px 2px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1));
+
+        &:hover:not(.disabled) {
+            box-shadow: var(--m3-elevation-2);
+            filter: brightness(1.08);
+        }
+
+        &:active:not(.disabled) {
+            transform: scale(0.98);
+        }
+    }
+
+    /* ─── TONAL ───────────────────────────────────────────────────────────── */
+
+    &.tonal {
+        background: var(--m3-color-secondary-container, rgba(139, 92, 246, 0.12));
+        color: var(--m3-color-on-secondary-container, #6750A4);
+
+        &:hover:not(.disabled) {
+            box-shadow: var(--m3-elevation-1);
+            filter: brightness(0.96);
+        }
+
+        &:active:not(.disabled) {
+            transform: scale(0.98);
+        }
+    }
+
+    /* ─── OUTLINED ────────────────────────────────────────────────────────── */
+
+    &.outlined {
+        background: transparent;
+        color: var(--m3-color-primary, #6750A4);
+        border: 1px solid var(--m3-color-outline, rgba(120, 117, 121, 0.4));
+
+        &:hover:not(.disabled) {
+            background: var(--m3-color-primary-container, rgba(99, 102, 241, 0.08));
+        }
+
+        &:active:not(.disabled) {
+            background: var(--m3-color-primary-container, rgba(99, 102, 241, 0.12));
+            transform: scale(0.98);
+        }
+    }
+
+    /* ─── TEXT ─────────────────────────────────────────────────────────────── */
+
+    &.text {
+        background: transparent;
+        color: var(--m3-color-primary, #6750A4);
+        padding-left: 12px;
+        padding-right: 12px;
+
+        &:hover:not(.disabled) {
+            background: var(--m3-color-primary-container, rgba(99, 102, 241, 0.08));
+        }
+
+        &:active:not(.disabled) {
+            background: var(--m3-color-primary-container, rgba(99, 102, 241, 0.12));
+        }
+    }
+
+    /* ─── GHOST ────────────────────────────────────────────────────────────── */
+
+    &.ghost {
+        background: transparent;
+        color: var(--m3-color-on-surface, #1f1f1f);
+
+        &:hover:not(.disabled) {
+            background: var(--m3-color-surface-container, rgba(255, 255, 255, 0.7));
+        }
+    }
+
+    /* ─── DANGER ───────────────────────────────────────────────────────────── */
+
+    &.danger {
+        background: var(--m3-color-error, #B3261E);
+        color: var(--m3-color-on-error, #fff);
+        box-shadow: var(--m3-elevation-1);
+
+        &:hover:not(.disabled) {
+            box-shadow: var(--m3-elevation-2);
+            filter: brightness(1.08);
+        }
+
+        &:active:not(.disabled) {
+            transform: scale(0.98);
+        }
+    }
+
+    /* ─── GLASS (Liquid Glass) ─────────────────────────────────────────────── */
+
+    &.glass {
+        background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+        color: var(--m3-color-on-surface, #1f1f1f);
+        border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
+        backdrop-filter: blur(var(--glass-blur, 20px));
+        -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+        box-shadow: var(--glass-shadow, 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04));
+
+        &:hover:not(.disabled) {
+            background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
+            box-shadow: var(--glass-shadow-elevated, 0 16px 48px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06));
+            transform: translateY(-1px);
+        }
+
+        &:active:not(.disabled) {
+            transform: translateY(0) scale(0.98);
+        }
+    }
+}
+
+/* ─── SPINNER ──────────────────────────────────────────────────────────────── */
+
+.md-btn-spinner {
+    display: flex;
+    animation: md-btn-spin 1s linear infinite;
+
+    svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   COLOR OVERRIDES - apply via data-color attribute
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+// Filled/Secondary/Tonal/Danger color overrides
+.md-button.filled,
+.md-button.secondary,
+.md-button.danger,
+.md-button.tonal {
+    &[data-color="secondary"] {
+        background: var(--m3-color-secondary, #8E33FF);
+        color: var(--m3-color-on-secondary, #fff);
+    }
+
+    &[data-color="info"] {
+        background: var(--m3-color-tertiary, #00B8D9);
+        color: var(--m3-color-on-tertiary, #fff);
+    }
+
+    &[data-color="success"] {
+        background: var(--m3-color-success, #22C55E);
+        color: #fff;
+    }
+
+    &[data-color="warning"] {
+        background: var(--m3-color-warning, #FFAB00);
+        color: #1f1f1f;
+    }
+
+    &[data-color="error"] {
+        background: var(--m3-color-error, #FF5630);
+        color: #fff;
+    }
+}
+
+// Outlined/Text color overrides
+.md-button.outlined,
+.md-button.text {
+    &[data-color="secondary"] {
+        color: var(--m3-color-secondary, #8E33FF);
+        border-color: var(--m3-color-secondary, #8E33FF);
+    }
+
+    &[data-color="error"] {
+        color: var(--m3-color-error, #FF5630);
+        border-color: var(--m3-color-error, #FF5630);
+    }
+
+    &[data-color="success"] {
+        color: var(--m3-color-success, #22C55E);
+        border-color: var(--m3-color-success, #22C55E);
+    }
+
+    &[data-color="info"] {
+        color: var(--m3-color-tertiary, #00B8D9);
+        border-color: var(--m3-color-tertiary, #00B8D9);
+    }
+
+    &[data-color="warning"] {
+        color: var(--m3-color-warning, #FFAB00);
+        border-color: var(--m3-color-warning, #FFAB00);
+    }
+}

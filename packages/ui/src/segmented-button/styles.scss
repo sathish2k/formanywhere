@@ -1,0 +1,93 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 SEGMENTED BUTTON
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.md-segmented-button {
+    display: inline-flex;
+    border: 1px solid var(--m3-color-outline, rgba(120, 117, 121, 0.4));
+    border-radius: var(--m3-shape-full, 9999px);
+    overflow: hidden;
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+
+    /* ─── LIQUID GLASS VARIANT ────────────────────────────────────────────────── */
+
+    &.glass {
+        border-color: var(--glass-border-medium, rgba(255, 255, 255, 0.4));
+        background: var(--glass-tint-subtle, rgba(255, 255, 255, 0.3));
+        backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+        -webkit-backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+
+        .md-segmented-button__segment {
+            border-color: var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
+
+            &.selected {
+                background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+            }
+        }
+    }
+}
+
+/* ─── SEGMENT ─────────────────────────────────────────────────────────────── */
+
+.md-segmented-button__segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1;
+    padding: 10px 24px;
+    min-height: 40px;
+    border: none;
+    border-right: 1px solid var(--m3-color-outline, rgba(120, 117, 121, 0.4));
+    background: transparent;
+    color: var(--m3-color-on-surface, #1D1B20);
+    font-size: var(--m3-label-large-size, 14px);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
+                color var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    font-family: inherit;
+
+    &:last-child {
+        border-right: none;
+    }
+
+    &:hover {
+        background: color-mix(in srgb, var(--m3-color-on-surface) 8%, transparent);
+    }
+
+    &.selected {
+        background: var(--m3-color-secondary-container, rgba(232, 222, 248, 0.38));
+        color: var(--m3-color-on-secondary-container, #1D192B);
+
+        &:hover {
+            background: color-mix(in srgb, var(--m3-color-on-secondary-container) 8%, var(--m3-color-secondary-container, rgba(232, 222, 248, 0.38)));
+        }
+
+        .md-segmented-button__check {
+            display: inline-flex;
+        }
+    }
+
+    &:disabled {
+        opacity: 0.38;
+        cursor: default;
+        pointer-events: none;
+    }
+}
+
+/* ─── CHECKMARK in selected ───────────────────────────────────────────────── */
+
+.md-segmented-button__check {
+    display: none;
+    width: 18px;
+    height: 18px;
+}
+
+/* ─── ICON SLOT ───────────────────────────────────────────────────────────── */
+
+.md-segmented-button__icon {
+    display: inline-flex;
+    width: 18px;
+    height: 18px;
+}

@@ -5,88 +5,7 @@
  * CSS class-based styling with M3 design tokens
  */
 import { JSX, Component, splitProps, Show } from 'solid-js';
-
-// ─── Styles (injected once) ─────────────────────────────────────────────────────
-
-let stylesInjected = false;
-
-function injectStyles() {
-    if (stylesInjected || typeof document === 'undefined') return;
-    stylesInjected = true;
-
-    const css = `
-/* ═══════════════════════════════════════════════════════════════════════════════
-   M3 SEARCH BAR
-   ═══════════════════════════════════════════════════════════════════════════════ */
-
-.md-search-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    height: 56px;
-    padding: 0 16px;
-    border-radius: var(--m3-shape-full, 9999px);
-    background: var(--m3-color-surface-container-high, rgba(236, 230, 240, 0.38));
-    box-sizing: border-box;
-    transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                box-shadow var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
-}
-
-.md-search-bar:focus-within {
-    box-shadow: var(--m3-elevation-2, 0 2px 4px rgba(0, 0, 0, 0.05), 0 4px 8px rgba(0, 0, 0, 0.1));
-}
-
-/* ─── ICON SLOTS ──────────────────────────────────────────────────────────── */
-
-.md-search-bar__leading,
-.md-search-bar__trailing {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    color: var(--m3-color-on-surface-variant, #49454F);
-}
-
-/* ─── INPUT ───────────────────────────────────────────────────────────────── */
-
-.md-search-bar__input {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: var(--m3-body-large-size, 16px);
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    color: var(--m3-color-on-surface, #1D1B20);
-    padding: 0;
-    min-width: 0;
-}
-
-.md-search-bar__input::placeholder {
-    color: var(--m3-color-on-surface-variant, #49454F);
-}
-
-/* ─── LIQUID GLASS VARIANT ────────────────────────────────────────────────── */
-
-.md-search-bar.glass {
-    background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
-    backdrop-filter: blur(var(--glass-blur, 20px));
-    -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
-    border: 1px solid var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
-}
-
-.md-search-bar.glass:focus-within {
-    background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
-    border-color: var(--glass-border-medium, rgba(255, 255, 255, 0.4));
-    box-shadow: var(--glass-shadow, 0 8px 32px rgba(0, 0, 0, 0.08));
-}
-`;
-
-    const style = document.createElement('style');
-    style.setAttribute('data-md-search', '');
-    style.textContent = css;
-    document.head.appendChild(style);
-}
+import './styles.scss';
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
@@ -128,8 +47,6 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
         'value', 'placeholder', 'leadingIcon', 'trailingIcon',
         'onChange', 'onSearch', 'disabled', 'variant', 'id', 'style', 'class'
     ]);
-
-    injectStyles();
 
     const handleChange = (value: string) => {
         local.onChange?.(value);

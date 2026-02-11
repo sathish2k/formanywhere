@@ -1,0 +1,51 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 STACK - Flex layout utility component
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.md-stack {
+    display: flex;
+    box-sizing: border-box;
+
+    /* ─── DIRECTION ────────────────────────────────────────────────────────────── */
+
+    &.dir-row { flex-direction: row; }
+    &.dir-column { flex-direction: column; }
+    &.dir-row-reverse { flex-direction: row-reverse; }
+    &.dir-column-reverse { flex-direction: column-reverse; }
+
+    /* ─── GAP ──────────────────────────────────────────────────────────────────── */
+
+    &.gap-none { gap: 0; }
+    &.gap-xs { gap: 4px; }
+    &.gap-sm { gap: 8px; }
+    &.gap-md { gap: 16px; }
+    &.gap-lg { gap: 24px; }
+    &.gap-xl { gap: 32px; }
+
+    /* ─── ALIGN ITEMS ──────────────────────────────────────────────────────────── */
+
+    &.align-start { align-items: flex-start; }
+    &.align-center { align-items: center; }
+    &.align-end { align-items: flex-end; }
+    &.align-stretch { align-items: stretch; }
+    &.align-baseline { align-items: baseline; }
+
+    /* ─── JUSTIFY CONTENT ──────────────────────────────────────────────────────── */
+
+    &.justify-start { justify-content: flex-start; }
+    &.justify-center { justify-content: center; }
+    &.justify-end { justify-content: flex-end; }
+    &.justify-between { justify-content: space-between; }
+    &.justify-around { justify-content: space-around; }
+    &.justify-evenly { justify-content: space-evenly; }
+
+    /* ─── WRAP ─────────────────────────────────────────────────────────────────── */
+
+    &.flex-wrap { flex-wrap: wrap; }
+    &.flex-nowrap { flex-wrap: nowrap; }
+    &.flex-wrap-reverse { flex-wrap: wrap-reverse; }
+
+    /* ─── MODIFIERS ────────────────────────────────────────────────────────────── */
+
+    &.full-width { width: 100%; }
+}

@@ -11,6 +11,7 @@
  * Uses CSS class-based styling with M3 design tokens
  */
 import { createSignal, onMount, onCleanup, JSX, Component, splitProps } from 'solid-js';
+import './styles.scss';
 
 // M3 Animation constants (from material-components/material-web)
 const PRESS_GROW_MS = 450;
@@ -37,65 +38,6 @@ enum State {
     WAITING_FOR_CLICK,
 }
 
-// ─── Styles (injected once) ─────────────────────────────────────────────────────
-
-let stylesInjected = false;
-
-function injectStyles() {
-    if (stylesInjected || typeof document === 'undefined') return;
-    stylesInjected = true;
-
-    const css = `
-/* ═══════════════════════════════════════════════════════════════════════════════
-   M3 RIPPLE - Based on material-components/material-web
-   ═══════════════════════════════════════════════════════════════════════════════ */
-
-.m3-ripple-surface {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    overflow: hidden;
-    border-radius: inherit;
-}
-
-/* Hover state layer */
-.m3-ripple-surface::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    background-color: var(--ripple-color, currentColor);
-    transition: opacity 75ms linear;
-}
-
-.m3-ripple-surface.hovered::before {
-    opacity: 0.08;
-}
-
-.m3-ripple-surface.pressed::before {
-    opacity: 0.1;
-}
-
-/* Ripple circle (animated via Web Animations API) */
-.m3-ripple-surface::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0;
-    background: radial-gradient(closest-side, var(--ripple-color, currentColor) max(calc(100% - 70px), 65%), transparent 100%);
-}
-
-.m3-ripple-surface.pressed::after {
-    opacity: 0.1;
-}
-`;
-
-    const style = document.createElement('style');
-    style.setAttribute('data-md-ripple', '');
-    style.textContent = css;
-    document.head.appendChild(style);
-}
-
 export interface RippleProps {
     /** Disables the ripple effect */
     disabled?: boolean;
@@ -119,8 +61,6 @@ export interface RippleProps {
 export const Ripple: Component<RippleProps> = (props) => {
     const [local] = splitProps(props, ['disabled', 'class', 'color']);
 
-    injectStyles();
-
     let surfaceRef: HTMLDivElement | undefined;
     let growAnimation: Animation | undefined;
     let rippleStartEvent: PointerEvent | undefined;
@@ -134,9 +74,9 @@ export const Ripple: Component<RippleProps> = (props) => {
     let rippleScale = '';
     let rippleSize = '';
 
-    const shouldReactToEvent = (event: PointerEvent) => {
+    const shouldReactToEvent = (event: PointerEvent, checkButton = false) => {
         if (local.disabled) return false;
-        if (event.button !== 0) return false; // Only primary button
+        if (checkButton && event.button !== 0) return false; // Only primary button
         return true;
     };
 
@@ -276,7 +216,7 @@ export const Ripple: Component<RippleProps> = (props) => {
     };
 
     const handlePointerdown = async (event: PointerEvent) => {
-        if (!shouldReactToEvent(event)) return;
+        if (!shouldReactToEvent(event, true)) return;
 
         rippleStartEvent = event;
 
@@ -297,7 +237,7 @@ export const Ripple: Component<RippleProps> = (props) => {
     };
 
     const handlePointerup = (event: PointerEvent) => {
-        if (!shouldReactToEvent(event)) return;
+        if (!shouldReactToEvent(event, true)) return;
 
         if (state() === State.HOLDING) {
             setState(State.WAITING_FOR_CLICK);

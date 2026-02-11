@@ -1,0 +1,89 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 MENU - Based on material-components/material-web
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@keyframes md-menu-open {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.md-menu {
+    position: fixed;
+    min-width: 112px;
+    max-width: 280px;
+    max-height: 256px;
+    overflow-y: auto;
+    background: var(--m3-color-surface-container, rgba(255, 255, 255, 0.95));
+    border-radius: var(--m3-shape-extra-small, 4px);
+    box-shadow: var(--m3-elevation-2, 0 2px 6px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.15));
+    padding: 8px 0;
+    z-index: 1000;
+    transform-origin: top left;
+    animation: md-menu-open var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
+
+    /* Glass menu */
+    &.glass {
+        background: var(--glass-tint-light, rgba(255, 255, 255, 0.75));
+        backdrop-filter: blur(var(--glass-blur, 20px));
+        -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+        border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
+        border-radius: var(--m3-shape-medium, 12px);
+    }
+}
+
+/* ─── MENU ITEM ────────────────────────────────────────────────────────────── */
+
+.md-menu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 12px 12px 16px;
+    min-height: 48px;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    color: var(--m3-color-on-surface, #1D1B20);
+    overflow: hidden;
+    transition: background var(--m3-motion-duration-short, 100ms);
+
+    &:hover:not(:disabled) {
+        background: var(--m3-color-on-surface, rgba(28, 27, 31, 0.08));
+    }
+
+    &:focus-visible {
+        background: var(--m3-color-on-surface, rgba(28, 27, 31, 0.12));
+        outline: none;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.38;
+    }
+}
+
+.md-menu-item__icon {
+    display: flex;
+    color: var(--m3-color-on-surface-variant, #49454E);
+}
+
+.md-menu-item__label {
+    flex: 1;
+}
+
+.md-menu-item__trailing {
+    font-size: 12px;
+    color: var(--m3-color-on-surface-variant, #49454E);
+}
+
+/* ─── DIVIDER ──────────────────────────────────────────────────────────────── */
+
+.md-menu-divider {
+    height: 1px;
+    background: var(--m3-color-outline-variant, rgba(200, 195, 200, 0.5));
+    margin: 8px 0;
+}

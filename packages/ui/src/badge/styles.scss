@@ -1,0 +1,56 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   M3 BADGE
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.md-badge-anchor {
+    position: relative;
+    display: inline-flex;
+}
+
+.md-badge {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: var(--m3-shape-full, 9999px);
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    box-sizing: border-box;
+    z-index: 1;
+
+    /* ─── DOT VARIANT ─────────────────────────────────────────────────────────── */
+
+    &.dot {
+        min-width: 8px;
+        height: 8px;
+        padding: 0;
+    }
+
+    /* ─── COLOR MODIFIERS ─────────────────────────────────────────────────────── */
+
+    &.error {
+        background: var(--m3-color-error, #FF5630);
+        color: var(--m3-color-on-error, #fff);
+    }
+
+    &.primary {
+        background: var(--m3-color-primary, #6366f1);
+        color: var(--m3-color-on-primary, #fff);
+    }
+
+    &.secondary {
+        background: var(--m3-color-secondary, #14b8a6);
+        color: var(--m3-color-on-secondary, #fff);
+    }
+
+    /* ─── POSITION MODIFIERS ──────────────────────────────────────────────────── */
+
+    &.top-right  { top: 0; right: 0; transform: translate(50%, -50%); }
+    &.top-left   { top: 0; left: 0; transform: translate(-50%, -50%); }
+    &.bottom-right { bottom: 0; right: 0; transform: translate(50%, 50%); }
+    &.bottom-left  { bottom: 0; left: 0; transform: translate(-50%, 50%); }
+}

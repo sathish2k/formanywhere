@@ -3,7 +3,8 @@
     "version": "0.0.1",
     "type": "module",
     "sideEffects": [
-        "**/*.css"
+        "**/*.css",
+        "**/*.scss"
     ],
     "main": "./src/index.ts",
     "types": "./src/index.ts",
@@ -31,6 +32,8 @@
         "solid-js": "^1.9.11"
     },
     "devDependencies": {
+        "sass": "1.97.3",
+        "sass-embedded": "1.97.3",
         "typescript": "^5.7.0"
     },
     "peerDependencies": {
