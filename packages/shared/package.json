@@ -2,7 +2,7 @@
     "name": "@formanywhere/shared",
     "version": "0.0.1",
     "type": "module",
-    "sideEffects": false,
+    "sideEffects": ["**/*.css", "**/*.scss"],
     "main": "./src/index.ts",
     "types": "./src/index.ts",
     "exports": {
@@ -69,6 +69,10 @@
         "./auth/signup": {
             "import": "./src/components/auth/SignUpForm.tsx",
             "types": "./src/components/auth/SignUpForm.tsx"
+        },
+        "./dashboard": {
+            "import": "./src/components/dashboard/index.tsx",
+            "types": "./src/components/dashboard/index.tsx"
         }
     },
     "scripts": {

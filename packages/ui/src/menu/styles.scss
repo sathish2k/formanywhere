@@ -52,11 +52,11 @@
     transition: background var(--m3-motion-duration-short, 100ms);
 
     &:hover:not(:disabled) {
-        background: var(--m3-color-on-surface, rgba(28, 27, 31, 0.08));
+        background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 8%, transparent);
     }
 
     &:focus-visible {
-        background: var(--m3-color-on-surface, rgba(28, 27, 31, 0.12));
+        background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 12%, transparent);
         outline: none;
     }
 

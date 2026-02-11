@@ -45,3 +45,6 @@ export function isTauri(): boolean {
 // Asset utilities for SVG/Image rendering
 export * from './assets';
 
+// Navigation
+export { navigateTo, go } from './navigate';
+

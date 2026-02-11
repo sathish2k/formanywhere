@@ -13,6 +13,14 @@ const ICON_PATHS: Record<string, { path: string; viewBox?: string; fill?: boolea
         path: 'M5 12h14M12 5l7 7-7 7',
         viewBox: '0 0 24 24',
     },
+    'arrow-down': {
+        path: 'M12 5v14M19 12l-7 7-7-7',
+        viewBox: '0 0 24 24',
+    },
+    'arrow-up': {
+        path: 'M12 19V5M5 12l7-7 7 7',
+        viewBox: '0 0 24 24',
+    },
     'chevron-down': {
         path: 'M6 9l6 6 6-6',
         viewBox: '0 0 24 24',
@@ -21,7 +29,102 @@ const ICON_PATHS: Record<string, { path: string; viewBox?: string; fill?: boolea
         path: 'M4 6h16M4 12h16M4 18h16',
         viewBox: '0 0 24 24',
     },
+    'close': {
+        path: 'M18 6L6 18M6 6l12 12',
+        viewBox: '0 0 24 24',
+    },
 
+    // Actions
+    'plus': {
+        path: 'M12 5v14M5 12h14',
+        viewBox: '0 0 24 24',
+    },
+    'edit': {
+        path: 'M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z',
+        viewBox: '0 0 24 24',
+    },
+    'trash': {
+        path: 'M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6',
+        viewBox: '0 0 24 24',
+    },
+    'copy': {
+        path: 'M20 9h-9a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-9a2 2 0 00-2-2zM5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1',
+        viewBox: '0 0 24 24',
+    },
+    'share': {
+        path: 'M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13',
+        viewBox: '0 0 24 24',
+    },
+    'download': {
+        path: 'M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3',
+        viewBox: '0 0 24 24',
+    },
+    'more-vert': {
+        path: 'M12 13a1 1 0 100-2 1 1 0 000 2zM12 6a1 1 0 100-2 1 1 0 000 2zM12 20a1 1 0 100-2 1 1 0 000 2z',
+        viewBox: '0 0 24 24',
+    },
+    'sort': {
+        path: 'M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4',
+        viewBox: '0 0 24 24',
+    },
+    'eye': {
+        path: 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z',
+        viewBox: '0 0 24 24',
+    },
+
+    // People & Profile
+    'person': {
+        path: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z',
+        viewBox: '0 0 24 24',
+    },
+    'bell': {
+        path: 'M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0',
+        viewBox: '0 0 24 24',
+    },
+    'settings': {
+        path: 'M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2zM12 15a3 3 0 100-6 3 3 0 000 6z',
+        viewBox: '0 0 24 24',
+    },
+    'logout': {
+        path: 'M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9',
+        viewBox: '0 0 24 24',
+    },
+
+    // Content
+    'file-text': {
+        path: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8',
+        viewBox: '0 0 24 24',
+    },
+    'help-circle': {
+        path: 'M12 22a10 10 0 100-20 10 10 0 000 20zM9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01',
+        viewBox: '0 0 24 24',
+    },
+    'info': {
+        path: 'M12 22a10 10 0 100-20 10 10 0 000 20zM12 16v-4M12 8h.01',
+        viewBox: '0 0 24 24',
+    },
+
+    // Data & Filters
+    'calendar': {
+        path: 'M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zM16 2v4M8 2v4M3 10h18',
+        viewBox: '0 0 24 24',
+    },
+    'message-square': {
+        path: 'M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z',
+        viewBox: '0 0 24 24',
+    },
+    'sliders': {
+        path: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',
+        viewBox: '0 0 24 24',
+    },
+    'checkbox-checked': {
+        path: 'M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM9 12l2 2 4-4',
+        viewBox: '0 0 24 24',
+    },
+    'checkbox-empty': {
+        path: 'M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z',
+        viewBox: '0 0 24 24',
+    },
 
     // Status
     'check': {
