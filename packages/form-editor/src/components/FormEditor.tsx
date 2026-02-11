@@ -1,6 +1,6 @@
 import { Component, createSignal, createContext, useContext } from 'solid-js';
-import type { FormSchema, FormElement } from '@formanywhere/shared';
-import { generateId } from '@formanywhere/shared';
+import type { FormSchema, FormElement } from '@formanywhere/shared/types';
+import { generateId } from '@formanywhere/shared/utils';
 
 // Form editor context
 interface FormEditorContextValue {

@@ -1,4 +1,4 @@
-import type { FormSchema, FormElement, ValidationRule } from '@formanywhere/shared';
+import type { FormSchema, FormElement, ValidationRule } from '@formanywhere/shared/types';
 
 export interface ValidationResult {
     valid: boolean;

@@ -1,6 +1,7 @@
 import { Component, For, createSignal } from 'solid-js';
-import type { FormSchema, FormElement } from '@formanywhere/shared';
-import { Input, Select } from '@formanywhere/ui';
+import type { FormSchema, FormElement } from '@formanywhere/shared/types';
+import { Input } from '@formanywhere/ui/input';
+import { Select } from '@formanywhere/ui/select';
 import { validateForm, validateField } from '../validators';
 import { evaluateCondition } from '../conditional';
 

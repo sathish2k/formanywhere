@@ -2,16 +2,14 @@
  * Navigation and Search Demo for Showcase
  */
 import { createSignal } from 'solid-js';
-import {
-    NavigationBar, NavigationBarItem,
-    NavigationRail, NavigationRailItem,
-    TopAppBar,
-    SearchBar,
-    SegmentedButton,
-    TimePicker,
-    Typography,
-    Divider
-} from '@formanywhere/ui';
+import { NavigationBar, NavigationBarItem } from '@formanywhere/ui/navigation-bar';
+import { NavigationRail, NavigationRailItem } from '@formanywhere/ui/navigation-rail';
+import { TopAppBar } from '@formanywhere/ui/top-app-bar';
+import { SearchBar } from '@formanywhere/ui/search';
+import { SegmentedButton } from '@formanywhere/ui/segmented-button';
+import { TimePicker } from '@formanywhere/ui/time-picker';
+import { Typography } from '@formanywhere/ui/typography';
+import { Divider } from '@formanywhere/ui/divider';
 
 export const NavigationDemo = () => {
     const [navIndex, setNavIndex] = createSignal<number>(0);

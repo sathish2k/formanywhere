@@ -3,7 +3,11 @@
  * Demonstrates Drawer and Bottom Sheet interactions
  */
 import { createSignal } from 'solid-js';
-import { Button, Drawer, BottomSheet, Typography, List, ListItem } from '@formanywhere/ui';
+import { Button } from '@formanywhere/ui/button';
+import { Drawer } from '@formanywhere/ui/drawer';
+import { BottomSheet } from '@formanywhere/ui/bottom-sheet';
+import { Typography } from '@formanywhere/ui/typography';
+import { List, ListItem } from '@formanywhere/ui/list';
 
 export const OverlayDemo = () => {
     const [drawerOpen, setDrawerOpen] = createSignal(false);

@@ -7,12 +7,12 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import { PricingTable } from "@formanywhere/shared";
-import type { PricingPlan, Feature } from "@formanywhere/shared";
-import { FAQSection } from "@formanywhere/shared";
-import type { FAQ } from "@formanywhere/shared";
-import { ContactSalesCard } from "@formanywhere/shared";
-import { CTASection } from "@formanywhere/shared";
+import { PricingTable } from "@formanywhere/shared/pricing-table";
+import type { PricingPlan, Feature } from "@formanywhere/shared/pricing-table";
+import { FAQSection } from "@formanywhere/shared/faq-section";
+import type { FAQ } from "@formanywhere/shared/faq-section";
+import { ContactSalesCard } from "@formanywhere/shared/contact-sales-card";
+import { CTASection } from "@formanywhere/shared/cta-section";
 import { Typography } from "@formanywhere/ui/typography";
 import { Chip } from "@formanywhere/ui/chip";
 
@@ -137,7 +137,6 @@ const faqs: FAQ[] = [
         <Chip
           variant="label"
           label="Simple Pricing"
-          client:load
           class="mb-6"
           style={{
             background: "var(--m3-color-secondary-container)",

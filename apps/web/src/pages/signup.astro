@@ -5,7 +5,7 @@
  * Uses theme colors and UI components
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { SignUpForm } from "@formanywhere/shared";
+import { SignUpForm } from "@formanywhere/shared/auth/signup";
 import { Typography } from "@formanywhere/ui/typography";
 
 const features = [
@@ -120,7 +120,6 @@ const features = [
             variant="headline-large"
             color="on-surface"
             as="h1"
-            client:load
           >
             Create your account
           </Typography>
@@ -128,7 +127,6 @@ const features = [
             variant="body-large"
             color="on-surface-variant"
             class="mt-2"
-            client:load
           >
             Start building beautiful forms in minutes
           </Typography>

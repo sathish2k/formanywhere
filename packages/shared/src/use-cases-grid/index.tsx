@@ -90,37 +90,37 @@ const useCases = [
     {
         title: 'Field Services',
         description: 'Building inspections with photo evidence. Maintenance checklists with technician signatures. Delivery confirmations with GPS proof.',
-        imageSrc: '/assets/features/drag-drop-builder.png',
+        imageSrc: '/assets/features/drag-drop-builder.webp',
         alt: 'Field inspector with clipboard'
     },
     {
         title: 'Events & Conferences',
         description: 'Attendee registration with badge printing. Session feedback collection. Lead capture for exhibitors - all working offline.',
-        imageSrc: '/assets/features/works-everywhere.png',
+        imageSrc: '/assets/features/works-everywhere.webp',
         alt: 'Event registration booth'
     },
     {
         title: 'Healthcare',
         description: 'HIPAA-compliant patient intake forms. Symptom trackers with offline capability. Consent forms with e-signatures.',
-        imageSrc: '/assets/features/secure-data.png',
+        imageSrc: '/assets/features/secure-data.webp',
         alt: 'Medical clipboard with privacy shield'
     },
     {
         title: 'Retail & Inventory',
         description: 'Customer surveys at point of sale. Inventory audits with barcode scanning. Employee incident reports.',
-        imageSrc: '/assets/features/any-platform.png',
+        imageSrc: '/assets/features/any-platform.webp',
         alt: 'Retail store with mobile device'
     },
     {
         title: 'Construction',
         description: 'Safety inspection checklists. Daily progress reports with photos. Subcontractor time tracking with signatures.',
-        imageSrc: '/assets/features/offline-first.png',
+        imageSrc: '/assets/features/offline-first.webp',
         alt: 'Construction site with mobile form'
     },
     {
         title: 'Developing Markets',
         description: 'Full functionality in areas with unreliable internet. NGO field surveys. Agricultural data collection in rural zones.',
-        imageSrc: '/assets/features/smart-logic.png',
+        imageSrc: '/assets/features/smart-logic.webp',
         alt: 'Global map with connectivity dots'
     },
 ];

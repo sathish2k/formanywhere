@@ -37,6 +37,38 @@
         "./footer": {
             "import": "./src/components/footer/index.tsx",
             "types": "./src/components/footer/index.tsx"
+        },
+        "./pricing-table": {
+            "import": "./src/components/pricing-table/index.tsx",
+            "types": "./src/components/pricing-table/index.tsx"
+        },
+        "./faq-section": {
+            "import": "./src/components/faq-section/index.tsx",
+            "types": "./src/components/faq-section/index.tsx"
+        },
+        "./contact-sales-card": {
+            "import": "./src/components/contact-sales-card/index.tsx",
+            "types": "./src/components/contact-sales-card/index.tsx"
+        },
+        "./cta-section": {
+            "import": "./src/components/cta-section/index.tsx",
+            "types": "./src/components/cta-section/index.tsx"
+        },
+        "./template-card": {
+            "import": "./src/components/template-card/index.tsx",
+            "types": "./src/components/template-card/index.tsx"
+        },
+        "./template-browser": {
+            "import": "./src/components/template-browser/index.tsx",
+            "types": "./src/components/template-browser/index.tsx"
+        },
+        "./auth/signin": {
+            "import": "./src/components/auth/SignInForm.tsx",
+            "types": "./src/components/auth/SignInForm.tsx"
+        },
+        "./auth/signup": {
+            "import": "./src/components/auth/SignUpForm.tsx",
+            "types": "./src/components/auth/SignUpForm.tsx"
         }
     },
     "scripts": {

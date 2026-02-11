@@ -1,4 +1,4 @@
-import type { ConditionalRule } from '@formanywhere/shared';
+import type { ConditionalRule } from '@formanywhere/shared/types';
 
 export function evaluateCondition(
     rule: ConditionalRule,

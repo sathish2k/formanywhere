@@ -17,19 +17,85 @@ import { Button } from '../button';
 import { IconButton } from '../icon-button';
 import { Typography } from '../typography';
 import './styles.scss';
-import {
-    format,
-    addMonths,
-    subMonths,
-    startOfMonth,
-    endOfMonth,
-    eachDayOfInterval,
-    isSameDay,
-    isToday,
-    startOfWeek,
-    endOfWeek,
-    isSameMonth
-} from 'date-fns';
+
+// ─── Lightweight date utilities (replaces date-fns ~75KB) ───────────────────────
+
+const MONTH_NAMES = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+];
+const SHORT_MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function addMonths(date: Date, months: number): Date {
+    const d = new Date(date);
+    d.setMonth(d.getMonth() + months);
+    return d;
+}
+
+function subMonths(date: Date, months: number): Date {
+    return addMonths(date, -months);
+}
+
+function startOfMonth(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+function endOfMonth(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+}
+
+function startOfWeek(date: Date): Date {
+    const d = new Date(date);
+    d.setDate(d.getDate() - d.getDay());
+    return d;
+}
+
+function endOfWeek(date: Date): Date {
+    const d = new Date(date);
+    d.setDate(d.getDate() + (6 - d.getDay()));
+    return d;
+}
+
+function eachDayOfInterval(interval: { start: Date; end: Date }): Date[] {
+    const days: Date[] = [];
+    const current = new Date(interval.start);
+    while (current <= interval.end) {
+        days.push(new Date(current));
+        current.setDate(current.getDate() + 1);
+    }
+    return days;
+}
+
+function isSameDay(a: Date, b: Date): boolean {
+    return a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate();
+}
+
+function isToday(date: Date): boolean {
+    return isSameDay(date, new Date());
+}
+
+function isSameMonth(a: Date, b: Date): boolean {
+    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
+}
+
+/** Lightweight date formatting (subset of date-fns format patterns) */
+function formatDate(date: Date, pattern: string): string {
+    switch (pattern) {
+        case 'MMM d, yyyy':
+            return `${SHORT_MONTH_NAMES[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        case 'EEE, MMM d':
+            return `${DAY_NAMES[date.getDay()]}, ${SHORT_MONTH_NAMES[date.getMonth()]} ${date.getDate()}`;
+        case 'MMMM yyyy':
+            return `${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
+        case 'd':
+            return String(date.getDate());
+        default:
+            return date.toLocaleDateString();
+    }
+}
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
@@ -120,7 +186,7 @@ export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
             <div class="md-date-picker__trigger" onClick={handleOpen}>
                 <TextField
                     label={local.label || "Select Date"}
-                    value={local.value ? format(local.value, 'MMM d, yyyy') : ''}
+                    value={local.value ? formatDate(local.value, 'MMM d, yyyy') : ''}
                     disabled={local.disabled}
                     error={local.error}
                     supportingText={local.helperText}
@@ -144,7 +210,7 @@ export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
                     <Typography variant="label-medium" color="on-surface-variant">Select Date</Typography>
                     <div class="md-date-picker__header-date">
                         <Typography variant="headline-large" color="on-surface">
-                            {tempSelectedDate() ? format(tempSelectedDate(), 'EEE, MMM d') : 'Select date'}
+                            {tempSelectedDate() ? formatDate(tempSelectedDate(), 'EEE, MMM d') : 'Select date'}
                         </Typography>
                     </div>
                 </div>
@@ -154,7 +220,7 @@ export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
                     <div class="md-date-picker__month-nav">
                         <div class="md-date-picker__month-label">
                             <Typography variant="title-small" color="on-surface">
-                                {format(viewDate(), 'MMMM yyyy')}
+                                {formatDate(viewDate(), 'MMMM yyyy')}
                             </Typography>
                             <button class="md-date-picker__today-btn" onClick={() => setViewDate(new Date())}>
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--m3-color-on-surface-variant)">
@@ -192,7 +258,7 @@ export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
                                         class={getDayClass(day)}
                                         onClick={() => handleDayClick(day)}
                                     >
-                                        {format(day, 'd')}
+                                        {formatDate(day, 'd')}
                                     </button>
                                 </div>
                             )}

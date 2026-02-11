@@ -2,7 +2,8 @@
  * Tabs Showcase - SolidJS wrapper for the showcase page
  * Extracted from .astro file to avoid JSX parsing issues
  */
-import { Typography, Tabs, TabList, Tab, TabPanel } from '@formanywhere/ui';
+import { Typography } from '@formanywhere/ui/typography';
+import { Tabs, TabList, Tab, TabPanel } from '@formanywhere/ui/tabs';
 
 export const TabsShowcase = () => {
     return (

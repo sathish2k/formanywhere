@@ -10,7 +10,7 @@ import { Chip } from "@formanywhere/ui/chip";
 import { Typography } from "@formanywhere/ui/typography";
 import { Button } from "@formanywhere/ui/button";
 import { Card } from "@formanywhere/ui/card";
-import { CTASection } from "@formanywhere/shared";
+import { CTASection } from "@formanywhere/shared/cta-section";
 
 const values = [
   {
@@ -114,7 +114,6 @@ const iconPaths: Record<string, string> = {
             <Chip
               variant="label"
               label="OUR MISSION"
-              client:load
               style={{
                 background: "var(--m3-color-secondary-container)",
                 color: "var(--m3-color-on-secondary-container)",
@@ -235,7 +234,6 @@ const iconPaths: Record<string, string> = {
           <Chip
             variant="label"
             label="CORE PRINCIPLES"
-            client:load
             class="mb-4"
             style={{
               background: "var(--m3-color-secondary-container)",
@@ -302,7 +300,6 @@ const iconPaths: Record<string, string> = {
           <Chip
             variant="label"
             label="TECHNOLOGY"
-            client:load
             class="mb-4"
             style={{
               background: "var(--m3-color-secondary-container)",

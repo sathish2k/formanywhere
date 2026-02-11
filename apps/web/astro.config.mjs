@@ -38,7 +38,24 @@ export default defineConfig({
       solidSvg({
         defaultAsComponent: true,
         svgo: {
-          enabled: false // Disable SVGO to avoid potential issues
+          enabled: true,
+          svgoConfig: {
+            plugins: [
+              {
+                name: 'preset-default',
+                params: {
+                  overrides: {
+                    // Keep viewBox for proper scaling
+                    removeViewBox: false,
+                    // Keep IDs to avoid clashes with gradients/masks
+                    cleanupIds: false,
+                  },
+                },
+              },
+              // Remove unnecessary metadata
+              'removeXMLNS',
+            ],
+          },
         }
       })
     ],

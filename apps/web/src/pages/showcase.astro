@@ -1,20 +1,16 @@
 ---
-import {
-    Button,
-    Card,
-    Chip,
-    Typography,
-    Slider,
-    DatePicker,
-    TextField,
-    Select,
-    Checkbox,
-    RadioGroup,
-    Radio,
-    Switch,
-    CircularProgress,
-    LinearProgress,
-} from "@formanywhere/ui";
+import { Button } from "@formanywhere/ui/button";
+import { Card } from "@formanywhere/ui/card";
+import { Chip } from "@formanywhere/ui/chip";
+import { Typography } from "@formanywhere/ui/typography";
+import { Slider } from "@formanywhere/ui/slider";
+import { DatePicker } from "@formanywhere/ui/date-picker";
+import { TextField } from "@formanywhere/ui/textfield";
+import { Select } from "@formanywhere/ui/select";
+import { Checkbox } from "@formanywhere/ui/checkbox";
+import { RadioGroup, Radio } from "@formanywhere/ui/radio";
+import { Switch } from "@formanywhere/ui/switch";
+import { CircularProgress, LinearProgress } from "@formanywhere/ui/progress";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { TabsShowcase } from "../components/showcase/TabsShowcase";
 import { IconButtonShowcase } from "../components/showcase/IconButtonShowcase";
@@ -32,13 +28,11 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Chip
                         variant="label"
                         label="Design System v1.0"
-                        client:load
                     />
                     <Typography
                         variant="display-medium"
                         color="on-surface"
                         align="center"
-                        client:load
                         class="mb-4"
                     >
                         UI Component Showcase
@@ -47,7 +41,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         variant="body-large"
                         color="on-surface-variant"
                         align="center"
-                        client:load
                         class="max-w-2xl mx-auto"
                     >
                         Explore all components from the @formanywhere/ui design
@@ -64,7 +57,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Typography
@@ -75,7 +67,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Display
@@ -84,21 +75,18 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="display-large"
                                 color="on-surface"
-                                client:load
                             >
                                 Display Large - The quick brown fox
                             </Typography>
                             <Typography
                                 variant="display-medium"
                                 color="on-surface"
-                                client:load
                             >
                                 Display Medium - The quick brown fox
                             </Typography>
                             <Typography
                                 variant="display-small"
                                 color="on-surface"
-                                client:load
                             >
                                 Display Small - The quick brown fox
                             </Typography>
@@ -110,7 +98,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Headlines
@@ -119,21 +106,18 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="headline-large"
                                 color="on-surface"
-                                client:load
                             >
                                 Headline Large - The quick brown fox jumps
                             </Typography>
                             <Typography
                                 variant="headline-medium"
                                 color="on-surface"
-                                client:load
                             >
                                 Headline Medium - The quick brown fox jumps
                             </Typography>
                             <Typography
                                 variant="headline-small"
                                 color="on-surface"
-                                client:load
                             >
                                 Headline Small - The quick brown fox jumps over
                             </Typography>
@@ -145,7 +129,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Titles
@@ -154,7 +137,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-large"
                                 color="on-surface"
-                                client:load
                             >
                                 Title Large - The quick brown fox jumps over the
                                 lazy
@@ -162,7 +144,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-medium"
                                 color="on-surface"
-                                client:load
                             >
                                 Title Medium - The quick brown fox jumps over
                                 the lazy dog
@@ -170,7 +151,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-small"
                                 color="on-surface"
-                                client:load
                             >
                                 Title Small - The quick brown fox jumps over the
                                 lazy dog
@@ -183,7 +163,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Body
@@ -192,7 +171,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="body-large"
                                 color="on-surface"
-                                client:load
                             >
                                 Body Large - The quick brown fox jumps over the
                                 lazy dog. Pack my box with five dozen liquor
@@ -201,7 +179,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="body-medium"
                                 color="on-surface"
-                                client:load
                             >
                                 Body Medium - The quick brown fox jumps over the
                                 lazy dog. Pack my box with five dozen liquor
@@ -210,7 +187,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="body-small"
                                 color="on-surface"
-                                client:load
                             >
                                 Body Small - The quick brown fox jumps over the
                                 lazy dog. Pack my box with five dozen liquor
@@ -225,7 +201,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Colors
@@ -236,42 +211,36 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="body-large"
                                 color="on-surface"
-                                client:load
                             >
                                 On Surface
                             </Typography>
                             <Typography
                                 variant="body-large"
                                 color="on-surface-variant"
-                                client:load
                             >
                                 On Surface Variant
                             </Typography>
                             <Typography
                                 variant="body-large"
                                 color="primary"
-                                client:load
                             >
                                 Primary
                             </Typography>
                             <Typography
                                 variant="body-large"
                                 color="secondary"
-                                client:load
                             >
                                 Secondary
                             </Typography>
                             <Typography
                                 variant="body-large"
                                 color="tertiary"
-                                client:load
                             >
                                 Tertiary
                             </Typography>
                             <Typography
                                 variant="body-large"
                                 color="error"
-                                client:load
                             >
                                 Error
                             </Typography>
@@ -288,7 +257,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Buttons
@@ -299,7 +267,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Variants
@@ -325,7 +292,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Sizes
@@ -348,7 +314,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             With Icons
@@ -393,7 +358,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             States
@@ -418,7 +382,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Cards
@@ -426,12 +389,11 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Elevated Card -->
-                        <Card variant="elevated" client:load>
+                        <Card variant="elevated">
                             <div class="p-6">
                                 <Typography
                                     variant="title-large"
                                     color="on-surface"
-                                    client:load
                                     class="mb-2"
                                 >
                                     Elevated Card
@@ -439,7 +401,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                                 <Typography
                                     variant="body-medium"
                                     color="on-surface-variant"
-                                    client:load
                                     class="mb-4"
                                 >
                                     This card has an elevated appearance with
@@ -452,12 +413,11 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         </Card>
 
                         <!-- Filled Card -->
-                        <Card variant="filled" client:load>
+                        <Card variant="filled">
                             <div class="p-6">
                                 <Typography
                                     variant="title-large"
                                     color="on-surface"
-                                    client:load
                                     class="mb-2"
                                 >
                                     Filled Card
@@ -465,7 +425,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                                 <Typography
                                     variant="body-medium"
                                     color="on-surface-variant"
-                                    client:load
                                     class="mb-4"
                                 >
                                     This card has a filled background with
@@ -478,12 +437,11 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         </Card>
 
                         <!-- Outlined Card -->
-                        <Card variant="outlined" client:load>
+                        <Card variant="outlined">
                             <div class="p-6">
                                 <Typography
                                     variant="title-large"
                                     color="on-surface"
-                                    client:load
                                     class="mb-2"
                                 >
                                     Outlined Card
@@ -491,7 +449,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                                 <Typography
                                     variant="body-medium"
                                     color="on-surface-variant"
-                                    client:load
                                     class="mb-4"
                                 >
                                     This card has a border outline with minimal
@@ -514,7 +471,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Chips
@@ -525,7 +481,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Variants
@@ -541,7 +496,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Selected State
@@ -557,7 +511,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Label Variant with Colors
@@ -566,37 +519,31 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Chip
                                 variant="label"
                                 label="Primary Chip"
-                                client:load
                             />
                             <Chip
                                 variant="label"
                                 color="secondary"
                                 label="Secondary"
-                                client:load
                             />
                             <Chip
                                 variant="label"
                                 color="info"
                                 label="Info"
-                                client:load
                             />
                             <Chip
                                 variant="label"
                                 color="success"
                                 label="Success"
-                                client:load
                             />
                             <Chip
                                 variant="label"
                                 color="warning"
                                 label="Warning"
-                                client:load
                             />
                             <Chip
                                 variant="label"
                                 color="error"
                                 label="Error"
-                                client:load
                             />
                         </div>
                     </div>
@@ -611,7 +558,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Sliders
@@ -622,7 +568,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-medium"
                                 color="on-surface-variant"
-                                client:load
                                 class="mb-4"
                             >
                                 Continuous
@@ -638,7 +583,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-medium"
                                 color="on-surface-variant"
-                                client:load
                                 class="mb-4"
                             >
                                 Discrete (Steps)
@@ -658,7 +602,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-medium"
                                 color="on-surface-variant"
-                                client:load
                                 class="mb-4"
                             >
                                 Secondary Color
@@ -674,7 +617,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-medium"
                                 color="on-surface-variant"
-                                client:load
                                 class="mb-4"
                             >
                                 Disabled
@@ -698,7 +640,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Pickers
@@ -709,7 +650,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-medium"
                                 color="on-surface-variant"
-                                client:load
                                 class="mb-4"
                             >
                                 Date Picker
@@ -740,7 +680,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Text Fields
@@ -751,7 +690,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Variants
@@ -779,7 +717,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Glass Variant
@@ -809,7 +746,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             States
@@ -850,7 +786,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Select
@@ -897,7 +832,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Checkboxes
@@ -907,7 +841,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             States
@@ -933,7 +866,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Glass Variant
@@ -959,7 +891,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Radio Buttons
@@ -972,7 +903,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-medium"
                                 color="on-surface-variant"
-                                client:load
                                 class="mb-4"
                             >
                                 Standard
@@ -996,7 +926,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-medium"
                                 color="on-surface-variant"
-                                client:load
                                 class="mb-4"
                             >
                                 Glass Variant
@@ -1036,7 +965,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Switches
@@ -1046,7 +974,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             States
@@ -1056,24 +983,21 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                                 <Switch client:load />
                                 <Typography
                                     variant="body-medium"
-                                    color="on-surface"
-                                    client:load>Off</Typography
+                                    color="on-surface">Off</Typography
                                 >
                             </div>
                             <div class="flex items-center gap-3">
                                 <Switch client:load defaultChecked />
                                 <Typography
                                     variant="body-medium"
-                                    color="on-surface"
-                                    client:load>On</Typography
+                                    color="on-surface">On</Typography
                                 >
                             </div>
                             <div class="flex items-center gap-3">
                                 <Switch client:load disabled />
                                 <Typography
                                     variant="body-medium"
-                                    color="on-surface-variant"
-                                    client:load>Disabled</Typography
+                                    color="on-surface-variant">Disabled</Typography
                                 >
                             </div>
                         </div>
@@ -1083,7 +1007,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Glass Variant
@@ -1093,8 +1016,7 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                                 <Switch client:load class="glass" />
                                 <Typography
                                     variant="body-medium"
-                                    color="on-surface"
-                                    client:load>Glass Off</Typography
+                                    color="on-surface">Glass Off</Typography
                                 >
                             </div>
                             <div class="flex items-center gap-3">
@@ -1105,8 +1027,7 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                                 />
                                 <Typography
                                     variant="body-medium"
-                                    color="on-surface"
-                                    client:load>Glass On</Typography
+                                    color="on-surface">Glass On</Typography
                                 >
                             </div>
                         </div>
@@ -1122,7 +1043,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Progress Indicators
@@ -1133,7 +1053,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Circular
@@ -1157,7 +1076,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Linear
@@ -1167,7 +1085,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                                 <Typography
                                     variant="body-small"
                                     color="on-surface-variant"
-                                    client:load
                                     class="mb-2">Indeterminate</Typography
                                 >
                                 <LinearProgress client:load indeterminate />
@@ -1176,7 +1093,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                                 <Typography
                                     variant="body-small"
                                     color="on-surface-variant"
-                                    client:load
                                     class="mb-2">Determinate (60%)</Typography
                                 >
                                 <LinearProgress client:load value={60} />
@@ -1185,7 +1101,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                                 <Typography
                                     variant="body-small"
                                     color="on-surface-variant"
-                                    client:load
                                     class="mb-2">With Buffer</Typography
                                 >
                                 <LinearProgress
@@ -1198,7 +1113,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                                 <Typography
                                     variant="body-small"
                                     color="on-surface-variant"
-                                    client:load
                                     class="mb-2">Glass Variant</Typography
                                 >
                                 <LinearProgress
@@ -1220,7 +1134,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Tabs
@@ -1237,7 +1150,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Icon Buttons
@@ -1254,7 +1166,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Navigation Bar
@@ -1271,7 +1182,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Liquid Glass Effects
@@ -1285,7 +1195,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-medium"
                                 color="on-surface"
-                                client:load
                                 class="mb-2"
                             >
                                 Subtle Glass
@@ -1293,7 +1202,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="body-small"
                                 color="on-surface-variant"
-                                client:load
                             >
                                 12px blur - For backgrounds and secondary
                                 surfaces
@@ -1305,7 +1213,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-medium"
                                 color="on-surface"
-                                client:load
                                 class="mb-2"
                             >
                                 Standard Glass
@@ -1313,7 +1220,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="body-small"
                                 color="on-surface-variant"
-                                client:load
                             >
                                 20px blur - For cards and panels
                             </Typography>
@@ -1326,7 +1232,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="title-medium"
                                 color="on-surface"
-                                client:load
                                 class="mb-2"
                             >
                                 Strong Glass
@@ -1334,7 +1239,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="body-small"
                                 color="on-surface-variant"
-                                client:load
                             >
                                 40px blur - For modals and dialogs
                             </Typography>
@@ -1346,21 +1250,18 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                         <Typography
                             variant="title-medium"
                             color="on-surface-variant"
-                            client:load
                             class="mb-4"
                         >
                             Elevated Card with Hover
                         </Typography>
                         <Card
                             variant="elevated"
-                            client:load
                             class="text-center"
                         >
                             <div class="p-6">
                                 <Typography
                                     variant="title-large"
                                     color="on-surface"
-                                    client:load
                                     class="mb-2"
                                 >
                                     Hover Me!
@@ -1368,7 +1269,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                                 <Typography
                                     variant="body-medium"
                                     color="on-surface-variant"
-                                    client:load
                                 >
                                     This card lifts up with enhanced shadow on
                                     hover
@@ -1387,7 +1287,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="headline-large"
                         color="on-surface"
-                        client:load
                         class="mb-8"
                     >
                         Theme Colors
@@ -1396,7 +1295,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                     <Typography
                         variant="body-large"
                         color="on-surface-variant"
-                        client:load
                         class="mb-6"
                     >
                         Use the theme switcher in the header to see how all
@@ -1416,7 +1314,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="label-small"
                                 color="on-surface-variant"
-                                client:load
                             >
                                 Primary
                             </Typography>
@@ -1432,7 +1329,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="label-small"
                                 color="on-surface-variant"
-                                client:load
                             >
                                 Secondary
                             </Typography>
@@ -1448,7 +1344,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="label-small"
                                 color="on-surface-variant"
-                                client:load
                             >
                                 Tertiary
                             </Typography>
@@ -1464,7 +1359,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="label-small"
                                 color="on-surface-variant"
-                                client:load
                             >
                                 Success
                             </Typography>
@@ -1480,7 +1374,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="label-small"
                                 color="on-surface-variant"
-                                client:load
                             >
                                 Warning
                             </Typography>
@@ -1496,7 +1389,6 @@ import { NavigationShowcase } from "../components/showcase/NavigationShowcase";
                             <Typography
                                 variant="label-small"
                                 color="on-surface-variant"
-                                client:load
                             >
                                 Error
                             </Typography>

@@ -6,7 +6,8 @@ import { Typography } from "@formanywhere/ui/typography";
 import { Button } from "@formanywhere/ui/button";
 import { Chip } from "@formanywhere/ui/chip";
 import { SearchBar } from "@formanywhere/ui/search";
-import { TemplateBrowser, TemplateCard } from "@formanywhere/shared";
+import { TemplateBrowser } from "@formanywhere/shared/template-browser";
+import { TemplateCard } from "@formanywhere/shared/template-card";
 
 const categories = [
   { id: "all", label: "All Templates", icon: "file" },
@@ -165,7 +166,6 @@ const iconPaths: Record<string, string> = {
         <Chip
           variant="label"
           label="Form Templates"
-          client:load
           class="mb-6"
           style={{
             background: "rgba(255, 255, 255, 0.2)",

@@ -1,5 +1,5 @@
 import { Component, Show, createMemo } from 'solid-js';
-import { Input } from '@formanywhere/ui';
+import { Input } from '@formanywhere/ui/input';
 import { useFormEditor } from '../FormEditor';
 
 export const PropertiesPanel: Component = () => {

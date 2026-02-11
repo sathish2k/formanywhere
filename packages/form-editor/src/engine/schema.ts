@@ -1,5 +1,5 @@
 // Form schema validation and manipulation utilities
-import type { FormSchema, FormElement, ValidationRule } from '@formanywhere/shared';
+import type { FormSchema, FormElement, ValidationRule } from '@formanywhere/shared/types';
 
 export function validateSchema(schema: FormSchema): { valid: boolean; errors: string[] } {
     const errors: string[] = [];

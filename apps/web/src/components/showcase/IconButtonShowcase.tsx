@@ -3,7 +3,8 @@
  * Extracted from .astro file to avoid JSX parsing issues with icon prop
  * SVG icons must be defined inside the component function for SolidJS compilation
  */
-import { IconButton, Typography } from '@formanywhere/ui';
+import { IconButton } from '@formanywhere/ui/icon-button';
+import { Typography } from '@formanywhere/ui/typography';
 
 export const IconButtonShowcase = () => {
     const HeartIcon = (

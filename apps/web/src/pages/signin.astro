@@ -5,7 +5,7 @@
  * Uses theme colors and UI components
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { SignInForm } from "@formanywhere/shared";
+import { SignInForm } from "@formanywhere/shared/auth/signin";
 import { Typography } from "@formanywhere/ui/typography";
 
 const features = [
@@ -121,7 +121,6 @@ const features = [
             variant="headline-large"
             color="on-surface"
             as="h1"
-            client:load
           >
             Welcome back
           </Typography>
@@ -129,7 +128,6 @@ const features = [
             variant="body-large"
             color="on-surface-variant"
             class="mt-2"
-            client:load
           >
             Sign in to your account to continue
           </Typography>

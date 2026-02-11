@@ -1,5 +1,5 @@
 import { Component } from 'solid-js';
-import { FORM_ELEMENT_TYPES } from '@formanywhere/shared';
+import { FORM_ELEMENT_TYPES } from '@formanywhere/shared/constants';
 import { useFormEditor } from '../FormEditor';
 
 export const Toolbar: Component = () => {
