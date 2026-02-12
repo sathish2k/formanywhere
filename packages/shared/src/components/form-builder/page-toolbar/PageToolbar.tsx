@@ -1,8 +1,9 @@
 /**
  * PageToolbar — Page navigation bar
- * Add page, page tab pills, per-page menu, Logic & Workflow buttons
+ * Matches AI-Powered Form Builder UI design:
+ *   Add page | Page 1 · Page 2 … (with kebab menus) | Logic · Workflow
  */
-import { For, Show, createSignal } from 'solid-js';
+import { For, Show, createSignal, onCleanup, onMount } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Icon } from '@formanywhere/ui/icon';
 
@@ -18,48 +19,69 @@ export interface PageToolbarProps {
     onAddPage: () => void;
     onDuplicatePage: (id: string) => void;
     onDeletePage: (id: string) => void;
+    onEditPage?: (id: string) => void;
+    onLogic?: () => void;
+    onWorkflow?: () => void;
 }
 
 export const PageToolbar: Component<PageToolbarProps> = (props) => {
     const [menuPageId, setMenuPageId] = createSignal<string | null>(null);
+    let toolbarRef: HTMLDivElement | undefined;
+
+    /* Close kebab menu when clicking outside */
+    const handleClickOutside = (e: MouseEvent) => {
+        if (menuPageId() && toolbarRef && !toolbarRef.contains(e.target as Node)) {
+            setMenuPageId(null);
+        }
+    };
+
+    onMount(() => document.addEventListener('click', handleClickOutside));
+    onCleanup(() => document.removeEventListener('click', handleClickOutside));
 
     return (
-        <div class="form-builder-page__page-bar">
-            <div class="form-builder-page__page-tabs">
-                <button class="form-builder-page__add-page" onClick={() => props.onAddPage()}>
-                    <Icon name="plus" size={16} />
+        <div class="page-toolbar" ref={toolbarRef}>
+            {/* ── Left: Add page + page tabs ── */}
+            <div class="page-toolbar__tabs">
+                <button class="page-toolbar__add-btn" onClick={() => props.onAddPage()}>
+                    <Icon name="plus" size={14} />
                     Add page
                 </button>
 
-                <span class="form-builder-page__page-divider" />
+                <span class="page-toolbar__divider" />
 
                 <For each={props.pages}>
                     {(page) => (
-                        <div class="form-builder-page__page-tab-wrapper">
-                            <button
-                                class={`form-builder-page__page-tab ${props.activePageId === page.id ? 'form-builder-page__page-tab--active' : ''}`}
+                        <div class="page-toolbar__tab-wrapper">
+                            <div
+                                class={`page-toolbar__tab ${props.activePageId === page.id ? 'page-toolbar__tab--active' : ''}`}
                                 onClick={() => props.onSetActivePage(page.id)}
                             >
-                                {page.title}
-                            </button>
-                            <button
-                                class="form-builder-page__page-menu-btn"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setMenuPageId(menuPageId() === page.id ? null : page.id);
-                                }}
-                            >
-                                <Icon name="more-vert" size={14} />
-                            </button>
+                                <span class="page-toolbar__tab-label">{page.title}</span>
+                                <button
+                                    class="page-toolbar__kebab"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setMenuPageId(menuPageId() === page.id ? null : page.id);
+                                    }}
+                                >
+                                    <Icon name="more-vert" size={14} />
+                                </button>
+                            </div>
 
-                            {/* Page context menu */}
+                            {/* Kebab dropdown */}
                             <Show when={menuPageId() === page.id}>
-                                <div class="form-builder-page__page-menu">
+                                <div class="page-toolbar__menu">
+                                    <button onClick={() => { props.onEditPage?.(page.id); setMenuPageId(null); }}>
+                                        <Icon name="pencil" size={14} />
+                                        Edit Page
+                                    </button>
                                     <button onClick={() => { props.onDuplicatePage(page.id); setMenuPageId(null); }}>
                                         <Icon name="copy" size={14} />
                                         Duplicate
                                     </button>
+                                    <div class="page-toolbar__menu-divider" />
                                     <button
+                                        class="page-toolbar__menu-danger"
                                         onClick={() => { props.onDeletePage(page.id); setMenuPageId(null); }}
                                         disabled={props.pages.length <= 1}
                                     >
@@ -73,13 +95,14 @@ export const PageToolbar: Component<PageToolbarProps> = (props) => {
                 </For>
             </div>
 
-            <div class="form-builder-page__page-bar-actions">
-                <span class="form-builder-page__page-divider" />
-                <button class="form-builder-page__bar-btn">
+            {/* ── Right: Logic · Workflow ── */}
+            <div class="page-toolbar__actions">
+                <span class="page-toolbar__divider" />
+                <button class="page-toolbar__action-btn" onClick={() => props.onLogic?.()}>
                     <Icon name="git-branch" size={16} />
                     Logic
                 </button>
-                <button class="form-builder-page__bar-btn">
+                <button class="page-toolbar__action-btn" onClick={() => props.onWorkflow?.()}>
                     <Icon name="workflow" size={16} />
                     Workflow
                 </button>

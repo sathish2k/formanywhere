@@ -1,24 +1,77 @@
 /* BuilderHeader styles */
 
-.form-builder-page__header {
+.builder-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
-    padding: 0 16px;
+    height: 48px;
+    padding: 0 12px;
     background: var(--m3-color-surface-container-lowest, #fff);
     border-bottom: 1px solid var(--m3-color-outline-variant, #C4C7C5);
     flex-shrink: 0;
 }
 
-.form-builder-page__header-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.form-builder-page__header-actions {
+/* ── Left group: back · name · dashboard ── */
+.builder-header__left {
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0; /* allow truncation */
+}
+
+.builder-header__form-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+/* ── Right group: preview · settings · publish ── */
+.builder-header__right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Compact CTA buttons in header */
+.builder-header__btn {
+    gap: 6px;
+}
+
+/* ── Settings dropdown wrapper ── */
+.builder-header__settings-wrapper {
+    position: relative;
+}
+
+.builder-header__settings-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 50;
+    margin-top: 4px;
+    padding: 4px;
+    min-width: 180px;
+    background: var(--m3-color-surface-container-lowest, #fff);
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: var(--m3-shape-small, 8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+    button {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 8px 12px;
+        border: none;
+        border-radius: var(--m3-shape-extra-small, 4px);
+        background: transparent;
+        color: var(--m3-color-on-surface, #1C1B1F);
+        font-size: 0.8125rem;
+        cursor: pointer;
+        text-align: left;
+
+        &:hover {
+            background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 6%, transparent);
+        }
+    }
 }

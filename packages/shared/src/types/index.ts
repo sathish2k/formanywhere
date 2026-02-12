@@ -1,4 +1,6 @@
 // Form element types
+export * from './form-rules';
+
 export interface FormElement {
     id: string;
     type: FormElementType;

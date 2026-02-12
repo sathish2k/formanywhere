@@ -4,6 +4,10 @@
  * Composes:
  *   - BuilderHeader          (top app bar)
  *   - PageToolbar            (page navigation bar)
+ *   - LogicDialog            (conditional logic rules)
+ *   - WorkflowDialog         (visual workflow builder)
+ *   - SchemaDialog           (view JSON schema)
+ *   - IntegrationsDialog     (external service connections)
  *   - @formanywhere/form-editor  (editor panels)
  *   - @formanywhere/form-runtime (preview)
  */
@@ -16,11 +20,15 @@ import {
     ImportForm,
 } from '@formanywhere/form-editor';
 import { FormPreview } from '@formanywhere/form-runtime';
-import type { FormSchema } from '../../types';
+import type { FormSchema, FormRule } from '../../types';
 import { generateId, go } from '../../utils';
 import { BuilderHeader } from './header/BuilderHeader';
 import { PageToolbar } from './page-toolbar/PageToolbar';
 import type { PageTab } from './page-toolbar/PageToolbar';
+import { LogicDialog } from './dialogs/LogicDialog';
+import { WorkflowDialog } from './dialogs/WorkflowDialog';
+import { SchemaDialog } from './dialogs/SchemaDialog';
+import { IntegrationsDialog } from './dialogs/IntegrationsDialog';
 
 export type BuilderMode = 'blank' | 'template' | 'import' | 'ai';
 
@@ -44,6 +52,17 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
     const [pages, setPages] = createSignal<PageTab[]>([{ id: generateId(), title: 'Page 1' }]);
     const [activePageId, setActivePageId] = createSignal<string>('');
 
+    // Dialog state
+    const [logicOpen, setLogicOpen] = createSignal(false);
+    const [workflowOpen, setWorkflowOpen] = createSignal(false);
+    const [schemaDialogOpen, setSchemaDialogOpen] = createSignal(false);
+    const [integrationsOpen, setIntegrationsOpen] = createSignal(false);
+    const [formRules, setFormRules] = createSignal<FormRule[]>([]);
+
+    // Rule management handlers
+    const addRule = (rule: FormRule) => setFormRules((prev) => [...prev, rule]);
+    const updateRule = (id: string, rule: FormRule) => setFormRules((prev) => prev.map((r) => r.id === id ? rule : r));
+    const deleteRule = (id: string) => setFormRules((prev) => prev.filter((r) => r.id !== id));
     onMount(() => {
         const firstPage = pages()[0];
         if (firstPage) setActivePageId(firstPage.id);
@@ -138,6 +157,9 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                 onTogglePreview={() => setPreviewing(!previewing())}
                 onSave={handleSave}
                 onBack={() => go('/dashboard')}
+                onDashboard={() => go('/dashboard')}
+                onViewSchema={() => setSchemaDialogOpen(true)}
+                onIntegrations={() => setIntegrationsOpen(true)}
             />
 
             <Show when={!showOverlay() && !previewing()}>
@@ -148,6 +170,8 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                     onAddPage={addPage}
                     onDuplicatePage={duplicatePage}
                     onDeletePage={deletePage}
+                    onLogic={() => setLogicOpen(true)}
+                    onWorkflow={() => setWorkflowOpen(true)}
                 />
             </Show>
 
@@ -180,6 +204,35 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                     </FormEditor>
                 </Show>
             </Show>
+
+            {/* Dialogs */}
+            <LogicDialog
+                open={logicOpen()}
+                onClose={() => setLogicOpen(false)}
+                rules={formRules()}
+                onAddRule={addRule}
+                onUpdateRule={updateRule}
+                onDeleteRule={deleteRule}
+                pages={pages()}
+            />
+            <WorkflowDialog
+                open={workflowOpen()}
+                onClose={() => setWorkflowOpen(false)}
+                rules={formRules()}
+                onAddRule={addRule}
+                onUpdateRule={updateRule}
+                onDeleteRule={deleteRule}
+                pages={pages()}
+            />
+            <SchemaDialog
+                open={schemaDialogOpen()}
+                onClose={() => setSchemaDialogOpen(false)}
+                schema={schema()}
+            />
+            <IntegrationsDialog
+                open={integrationsOpen()}
+                onClose={() => setIntegrationsOpen(false)}
+            />
         </div>
     );
 };

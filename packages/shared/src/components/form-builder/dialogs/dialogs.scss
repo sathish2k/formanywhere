@@ -1,0 +1,567 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Shared dialog styles — Logic, Workflow, Schema, Integrations
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Logic Dialog ───────────────────────────────────────────────────────── */
+.logic-dialog {
+    max-width: 640px;
+    width: 90vw;
+}
+
+.logic-dialog__content {
+    min-height: 300px;
+}
+
+.logic-dialog__header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.logic-dialog__count {
+    font-size: 0.8125rem;
+    color: var(--m3-color-on-surface-variant, #49454F);
+}
+
+.logic-dialog__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--m3-color-on-surface-variant, #49454F);
+
+    p {
+        font-size: 0.8125rem;
+        max-width: 320px;
+        line-height: 1.5;
+    }
+}
+
+.logic-dialog__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.logic-dialog__rule-card {
+    padding: 12px;
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: 12px;
+    background: var(--m3-color-surface-container-low, #F7F2FA);
+}
+
+.logic-dialog__rule-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.logic-dialog__rule-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logic-dialog__rule-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--m3-color-on-surface, #1C1B1F);
+}
+
+.logic-dialog__rule-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.logic-dialog__rule-meta {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.logic-dialog__chip {
+    font-size: 0.6875rem;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background: var(--m3-color-surface-container-highest, #E6E0E9);
+    color: var(--m3-color-on-surface-variant, #49454F);
+}
+
+/* Toggle switch */
+.logic-dialog__toggle {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
+
+    input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+}
+
+.logic-dialog__toggle-slider {
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background: var(--m3-color-outline, #79747E);
+    cursor: pointer;
+    transition: background 200ms;
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        left: 3px;
+        top: 3px;
+        border-radius: 50%;
+        background: #fff;
+        transition: transform 200ms;
+    }
+}
+
+.logic-dialog__toggle input:checked + .logic-dialog__toggle-slider {
+    background: var(--m3-color-primary, #6750A4);
+
+    &::before {
+        transform: translateX(16px);
+    }
+}
+
+/* Icon buttons */
+.logic-dialog__icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    cursor: pointer;
+
+    &:hover {
+        background: var(--m3-color-surface-container-highest, #E6E0E9);
+    }
+
+    &--danger:hover {
+        background: color-mix(in srgb, var(--m3-color-error, #B3261E) 12%, transparent);
+        color: var(--m3-color-error, #B3261E);
+    }
+}
+
+/* Editor view */
+.logic-dialog__editor {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.logic-dialog__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+
+    label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--m3-color-on-surface-variant, #49454F);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    input, select {
+        padding: 8px 10px;
+        border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+        border-radius: 8px;
+        background: var(--m3-color-surface-container-lowest, #fff);
+        color: var(--m3-color-on-surface, #1C1B1F);
+        font-size: 0.8125rem;
+
+        &:focus {
+            outline: 2px solid var(--m3-color-primary, #6750A4);
+            outline-offset: -1px;
+            border-color: transparent;
+        }
+    }
+}
+
+.logic-dialog__row {
+    display: flex;
+    gap: 10px;
+}
+
+.logic-dialog__section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.logic-dialog__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.logic-dialog__link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    background: transparent;
+    color: var(--m3-color-primary, #6750A4);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover { text-decoration: underline; }
+}
+
+.logic-dialog__condition-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+
+    input, select {
+        flex: 1;
+        padding: 6px 8px;
+        border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+        border-radius: 8px;
+        background: var(--m3-color-surface-container-lowest, #fff);
+        color: var(--m3-color-on-surface, #1C1B1F);
+        font-size: 0.8125rem;
+
+        &:focus {
+            outline: 2px solid var(--m3-color-primary, #6750A4);
+            outline-offset: -1px;
+        }
+    }
+}
+
+.logic-dialog__remove-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover { background: color-mix(in srgb, var(--m3-color-error, #B3261E) 12%, transparent); color: var(--m3-color-error, #B3261E); }
+    &:disabled { opacity: 0.3; cursor: not-allowed; }
+}
+
+.logic-dialog__editor-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+}
+
+
+/* ── Workflow Dialog ────────────────────────────────────────────────────── */
+.workflow-dialog {
+    max-width: 800px;
+    width: 90vw;
+}
+
+.workflow-dialog__content {
+    display: flex;
+    min-height: 400px;
+    gap: 0;
+}
+
+.workflow-dialog__sidebar {
+    width: 200px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    padding-right: 12px;
+    overflow-y: auto;
+}
+
+.workflow-dialog__sidebar-header {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.workflow-dialog__group-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    text-transform: uppercase;
+    margin: 12px 0 4px;
+}
+
+.workflow-dialog__rule-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--m3-color-on-surface, #1C1B1F);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    text-align: left;
+
+    &:hover { background: var(--m3-color-surface-container-low, #F7F2FA); }
+    &--selected { background: var(--m3-color-secondary-container, rgba(139, 92, 246, 0.12)); font-weight: 600; }
+}
+
+.workflow-dialog__rule-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--m3-color-outline, #79747E);
+
+    &--active { background: var(--m3-color-primary, #6750A4); }
+}
+
+.workflow-dialog__rule-item-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.workflow-dialog__empty-sidebar,
+.workflow-dialog__empty-canvas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 32px;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    text-align: center;
+    height: 100%;
+
+    p { font-size: 0.8125rem; line-height: 1.5; }
+}
+
+.workflow-dialog__canvas {
+    flex: 1;
+    padding-left: 16px;
+    overflow-y: auto;
+}
+
+.workflow-dialog__flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+}
+
+.workflow-dialog__flow-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+
+    h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--m3-color-on-surface, #1C1B1F);
+        margin: 0;
+    }
+}
+
+.workflow-dialog__flow-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Flow nodes */
+.workflow-dialog__node {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    background: var(--m3-color-surface-container-lowest, #fff);
+}
+
+.workflow-dialog__node--trigger {
+    border-left: 3px solid var(--m3-color-tertiary, #7D5260);
+}
+
+.workflow-dialog__node--condition {
+    border-left: 3px solid var(--m3-color-primary, #6750A4);
+}
+
+.workflow-dialog__node--action {
+    border-left: 3px solid var(--m3-color-secondary, #625B71);
+}
+
+.workflow-dialog__node-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--m3-color-surface-container-highest, #E6E0E9);
+    color: var(--m3-color-on-surface, #1C1B1F);
+}
+
+.workflow-dialog__node-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.workflow-dialog__node-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--m3-color-on-surface-variant, #49454F);
+}
+
+.workflow-dialog__node-value {
+    font-size: 0.8125rem;
+    color: var(--m3-color-on-surface, #1C1B1F);
+}
+
+.workflow-dialog__node-detail {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+
+    code {
+        padding: 1px 6px;
+        border-radius: 4px;
+        background: var(--m3-color-surface-container-highest, #E6E0E9);
+        font-family: 'SF Mono', 'Menlo', monospace;
+        font-size: 0.75rem;
+    }
+}
+
+.workflow-dialog__op {
+    font-weight: 700;
+    color: var(--m3-color-primary, #6750A4);
+}
+
+.workflow-dialog__connector {
+    width: 2px;
+    height: 20px;
+    background: var(--m3-color-outline-variant, #C4C7C5);
+}
+
+
+/* ── Schema Dialog ──────────────────────────────────────────────────────── */
+.schema-dialog {
+    max-width: 700px;
+    width: 90vw;
+}
+
+.schema-dialog__content {
+    max-height: 60vh;
+    overflow: auto;
+}
+
+.schema-dialog__code {
+    margin: 0;
+    padding: 16px;
+    border-radius: 8px;
+    background: #1E1E1E;
+    color: #D4D4D4;
+    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+}
+
+
+/* ── Integrations Dialog ────────────────────────────────────────────────── */
+.integrations-dialog {
+    max-width: 520px;
+    width: 90vw;
+}
+
+.integrations-dialog__desc {
+    font-size: 0.8125rem;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    margin-bottom: 16px;
+}
+
+.integrations-dialog__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.integrations-dialog__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: 12px;
+}
+
+.integrations-dialog__item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background: var(--m3-color-surface-container-highest, #E6E0E9);
+    color: var(--m3-color-on-surface, #1C1B1F);
+}
+
+.integrations-dialog__item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.integrations-dialog__item-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--m3-color-on-surface, #1C1B1F);
+}
+
+.integrations-dialog__item-desc {
+    font-size: 0.75rem;
+    color: var(--m3-color-on-surface-variant, #49454F);
+}
