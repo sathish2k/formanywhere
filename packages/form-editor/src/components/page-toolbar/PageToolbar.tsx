@@ -41,6 +41,7 @@ export interface PageToolbarProps {
     onRenamePage?: (id: string, title: string) => void;
     onLogic?: () => void;
     onWorkflow?: () => void;
+    onDebug?: () => void;
 }
 
 export const PageToolbar: Component<PageToolbarProps> = (props) => {
@@ -148,6 +149,7 @@ export const PageToolbar: Component<PageToolbarProps> = (props) => {
                 <ToolbarActions
                     onLogic={props.onLogic}
                     onWorkflow={props.onWorkflow}
+                    onDebug={props.onDebug}
                 />
             </div>
 

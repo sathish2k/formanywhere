@@ -29,6 +29,7 @@ import { WorkflowDialog } from './dialogs/WorkflowDialog';
 import { SchemaDialog } from './dialogs/SchemaDialog';
 import { IntegrationsDialog } from './dialogs/IntegrationsDialog';
 import { FormSettingsDialog } from './dialogs/FormSettingsDialog';
+import { LogicDebuggerDialog } from './dialogs/LogicDebuggerDialog';
 import type { FormSettings } from './dialogs/FormSettingsDialog';
 
 export type BuilderMode = 'blank' | 'template' | 'import' | 'ai';
@@ -60,6 +61,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
     const [schemaDialogOpen, setSchemaDialogOpen] = createSignal(false);
     const [integrationsOpen, setIntegrationsOpen] = createSignal(false);
     const [formSettingsOpen, setFormSettingsOpen] = createSignal(false);
+    const [debuggerOpen, setDebuggerOpen] = createSignal(false);
     const [formRules, setFormRules] = createSignal<FormRule[]>([]);
     const [formSettings, setFormSettings] = createSignal<FormSettings>({
         primaryColor: '#6750A4',
@@ -347,6 +349,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                     onDeletePage={deletePage}
                     onLogic={() => setLogicOpen(true)}
                     onWorkflow={() => setWorkflowOpen(true)}
+                    onDebug={() => setDebuggerOpen(true)}
                 />
             </Show>
 
@@ -413,6 +416,12 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                 onClose={() => setFormSettingsOpen(false)}
                 settings={formSettings()}
                 onSave={setFormSettings}
+            />
+            <LogicDebuggerDialog
+                open={debuggerOpen()}
+                onClose={() => setDebuggerOpen(false)}
+                rules={formRules()}
+                elements={schema()?.elements ?? []}
             />
         </div>
     );

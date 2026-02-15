@@ -324,6 +324,50 @@ const ICON_PATHS: Record<string, { path: string; viewBox?: string; fill?: boolea
         path: 'M6 4h4a2 2 0 012 2v12a2 2 0 01-2 2H6M18 4h-4a2 2 0 00-2 2v12a2 2 0 002 2h4',
         viewBox: '0 0 24 24',
     },
+    'monitor': {
+        path: 'M2 3h20a1 1 0 011 1v12a1 1 0 01-1 1H2a1 1 0 01-1-1V4a1 1 0 011-1zM8 21h8M12 17v4',
+        viewBox: '0 0 24 24',
+    },
+    'tablet': {
+        path: 'M6 2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zM12 18h.01',
+        viewBox: '0 0 24 24',
+    },
+    'smartphone': {
+        path: 'M8 2h8a2 2 0 012 2v16a2 2 0 01-2 2H8a2 2 0 01-2-2V4a2 2 0 012-2zM12 18h.01',
+        viewBox: '0 0 24 24',
+    },
+    'chevron-left': {
+        path: 'M15 18l-6-6 6-6',
+        viewBox: '0 0 24 24',
+    },
+    'eye-off': {
+        path: 'M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22',
+        viewBox: '0 0 24 24',
+    },
+    'bug': {
+        path: 'M8 2l1.88 1.88M14.12 3.88L16 2M9 7.13v-1a3.003 3.003 0 116 0v1M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 014-4h4a4 4 0 014 4v3c0 3.3-2.7 6-6 6zM12 20v-9M6.53 9C4.6 8.8 3 7.1 3 5M6 13H2M6 17l-4 1M17.47 9c1.93-.2 3.53-1.9 3.53-4M18 13h4M18 17l4 1',
+        viewBox: '0 0 24 24',
+    },
+    'skip-forward': {
+        path: 'M5 4l10 8-10 8V4zM19 5v14',
+        viewBox: '0 0 24 24',
+    },
+    'fast-forward': {
+        path: 'M13 19l9-7-9-7v14zM2 19l9-7-9-7v14z',
+        viewBox: '0 0 24 24',
+    },
+    'refresh-cw': {
+        path: 'M23 4v6h-6M1 20v-6h6M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15',
+        viewBox: '0 0 24 24',
+    },
+    'activity': {
+        path: 'M22 12h-4l-3 9L9 3l-3 9H2',
+        viewBox: '0 0 24 24',
+    },
+    'bar-chart': {
+        path: 'M12 20V10M18 20V4M6 20v-4',
+        viewBox: '0 0 24 24',
+    },
 };
 
 export interface IconProps extends JSX.SvgSVGAttributes<SVGSVGElement> {

@@ -149,7 +149,7 @@ export const FormSettingsDialog: Component<FormSettingsDialogProps> = (props) =>
                     <IconButton
                         variant="standard"
                         size="sm"
-                        icon={<Icon name="x" size={18} />}
+                        icon={<Icon name="cross" size={18} />}
                         onClick={props.onClose}
                     />
                     <Typography variant="title-medium">Form Settings</Typography>

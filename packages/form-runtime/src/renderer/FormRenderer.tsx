@@ -317,7 +317,7 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
                         class="form-renderer__signature-canvas"
                     />
                     <button type="button" class="form-renderer__signature-clear" onClick={clearSignature}>
-                        <Icon name="x" size={14} />
+                        <Icon name="cross" size={14} />
                         Clear
                     </button>
                 </div>

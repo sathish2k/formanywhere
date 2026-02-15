@@ -1,5 +1,5 @@
 /**
- * ToolbarActions — Right-side action buttons (Logic / Workflow)
+ * ToolbarActions — Right-side action buttons (Logic / Workflow / Debug)
  * Grouped with a leading vertical divider.
  * Uses Button from @formanywhere/ui for M3 consistency.
  */
@@ -10,6 +10,7 @@ import { Button } from '@formanywhere/ui/button';
 export interface ToolbarActionsProps {
     onLogic?: () => void;
     onWorkflow?: () => void;
+    onDebug?: () => void;
 }
 
 export const ToolbarActions: Component<ToolbarActionsProps> = (props) => {
@@ -33,6 +34,15 @@ export const ToolbarActions: Component<ToolbarActionsProps> = (props) => {
             >
                 <Icon name="workflow" size={16} />
                 Workflow
+            </Button>
+            <Button
+                variant="outlined"
+                size="sm"
+                class="page-toolbar__action-btn"
+                onClick={() => props.onDebug?.()}
+            >
+                <Icon name="bug" size={16} />
+                Debug
             </Button>
         </div>
     );
