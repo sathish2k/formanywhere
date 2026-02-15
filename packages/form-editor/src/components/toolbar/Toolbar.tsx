@@ -2,14 +2,14 @@
  * Toolbar — Element palette (reads from element registry)
  * Tiles are draggable via native HTML5 drag-and-drop.
  */
-import { For, createSignal, createMemo } from 'solid-js';
+import { splitProps, For, createSignal, createMemo } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Typography } from '@formanywhere/ui/typography';
 import { Icon } from '@formanywhere/ui/icon';
 import { getElementsByCategory } from '../elements/registry';
 import type { ElementDefinition } from '../elements/types';
 import { useFormEditor } from '../FormEditor';
-import '../../styles.scss';
+import './styles.scss';
 
 /** A single draggable toolbar tile */
 const DraggableTile: Component<{
@@ -17,11 +17,12 @@ const DraggableTile: Component<{
     onClickAdd: (type: string) => void;
     onDragStart?: (type: string) => void;
 }> = (props) => {
+    const [local] = splitProps(props, ['item', 'onClickAdd', 'onDragStart']);
     const handleDragStart = (e: DragEvent) => {
         // Use custom MIME type to distinguish new elements from existing ones (IDs)
-        e.dataTransfer?.setData('application/x-form-type', props.item.type);
+        e.dataTransfer?.setData('application/x-form-type', local.item.type);
         e.dataTransfer!.effectAllowed = 'copy';
-        props.onDragStart?.(props.item.type);
+        local.onDragStart?.(local.item.type);
     };
 
     return (
@@ -29,22 +30,23 @@ const DraggableTile: Component<{
             class="form-toolbar__tile"
             draggable={true}
             onDragStart={handleDragStart}
-            onClick={() => props.onClickAdd(props.item.type)}
-            title={`Add ${props.item.label}`}
-            style={{ '--tile-color': props.item.color } as any}
+            onClick={() => local.onClickAdd(local.item.type)}
+            title={`Add ${local.item.label}`}
+            style={{ '--tile-color': local.item.color } as any}
         >
             <div
                 class="form-toolbar__tile-icon"
-                style={{ background: `${props.item.color}18`, color: props.item.color }}
+                style={{ background: `${local.item.color}18`, color: local.item.color }}
             >
-                <Icon name={props.item.icon} size={20} />
+                <Icon name={local.item.icon} size={20} />
             </div>
-            <span class="form-toolbar__tile-label">{props.item.label}</span>
+            <span class="form-toolbar__tile-label">{local.item.label}</span>
         </button>
     );
 };
 
 export const Toolbar: Component<{ onDragStart?: (type: string) => void }> = (props) => {
+    const [local] = splitProps(props, ['onDragStart']);
     const { addElement } = useFormEditor();
     const [searchQuery, setSearchQuery] = createSignal('');
 
@@ -120,7 +122,7 @@ export const Toolbar: Component<{ onDragStart?: (type: string) => void }> = (pro
                                                 <DraggableTile
                                                     item={item}
                                                     onClickAdd={(type) => addElement(type as any)}
-                                                    onDragStart={props.onDragStart}
+                                                    onDragStart={local.onDragStart}
                                                 />
                                             )}
                                         </For>

@@ -2,7 +2,7 @@
  * IntegrationsDialog — Connect form to external services
  * Migrated from AI-Powered Form Builder UI → SolidJS + M3
  */
-import { For } from 'solid-js';
+import { For, splitProps } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Dialog } from '@formanywhere/ui/dialog';
 import { Button } from '@formanywhere/ui/button';
@@ -30,14 +30,15 @@ const INTEGRATIONS: Integration[] = [
 ];
 
 export const IntegrationsDialog: Component<IntegrationsDialogProps> = (props) => {
+    const [local] = splitProps(props, ['open', 'onClose']);
     return (
         <Dialog
-            open={props.open}
-            onClose={props.onClose}
+            open={local.open}
+            onClose={local.onClose}
             title="Integrations"
             icon={<Icon name="link" size={20} />}
             class="integrations-dialog"
-            actions={<Button variant="text" size="sm" onClick={props.onClose}>Close</Button>}
+            actions={<Button variant="text" size="sm" onClick={local.onClose}>Close</Button>}
         >
             <div class="integrations-dialog__content">
                 <p class="integrations-dialog__desc">Connect your form to external services.</p>

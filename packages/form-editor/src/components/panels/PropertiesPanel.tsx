@@ -1,7 +1,7 @@
 /**
  * Properties Panel — reads property definitions from element registry
  */
-import { Show, createMemo, For } from 'solid-js';
+import { splitProps, Show, createMemo, For } from 'solid-js';
 import type { Component } from 'solid-js';
 import type { FormElement } from '@formanywhere/shared/types';
 import { Typography } from '@formanywhere/ui/typography';
@@ -13,7 +13,7 @@ import { Divider } from '@formanywhere/ui/divider';
 import { getElement } from '../elements/registry';
 import type { PropertyField } from '../elements/types';
 import { useFormEditor } from '../FormEditor';
-import '../../styles.scss';
+import './styles.scss';
 
 export const PropertiesPanel: Component = () => {
     const { schema, selectedElement, updateElement, removeElement, setSelectedElement, duplicateElement, copyElement } = useFormEditor();
@@ -149,32 +149,33 @@ const PropertyFieldRenderer: Component<{
     value: any;
     onChange: (val: any) => void;
 }> = (props) => {
+    const [local] = splitProps(props, ['field', 'value', 'onChange']);
     // Boolean → Switch
-    if (props.field.type === 'boolean') {
+    if (local.field.type === 'boolean') {
         return (
             <div class="form-properties__switch-row">
-                <Typography variant="body-medium">{props.field.label}</Typography>
+                <Typography variant="body-medium">{local.field.label}</Typography>
                 <Switch
                     size="sm"
-                    checked={props.value ?? props.field.defaultValue ?? false}
-                    onChange={(checked) => props.onChange(checked)}
+                    checked={local.value ?? local.field.defaultValue ?? false}
+                    onChange={(checked) => local.onChange(checked)}
                 />
             </div>
         );
     }
 
     // Select → Dropdown
-    if (props.field.type === 'select') {
+    if (local.field.type === 'select') {
         return (
             <div class="form-properties__field">
                 <label class="form-properties__select-label">
-                    <Typography variant="body-small" color="on-surface-variant">{props.field.label}</Typography>
+                    <Typography variant="body-small" color="on-surface-variant">{local.field.label}</Typography>
                     <select
                         class="form-properties__select"
-                        value={String(props.value ?? props.field.defaultValue ?? '')}
-                        onChange={(e) => props.onChange(e.currentTarget.value)}
+                        value={String(local.value ?? local.field.defaultValue ?? '')}
+                        onChange={(e) => local.onChange(e.currentTarget.value)}
                     >
-                        <For each={props.field.options ?? []}>
+                        <For each={local.field.options ?? []}>
                             {(opt) => <option value={opt.value}>{opt.label}</option>}
                         </For>
                     </select>
@@ -184,21 +185,21 @@ const PropertyFieldRenderer: Component<{
     }
 
     // Textarea → Multi-line input
-    if (props.field.type === 'textarea') {
+    if (local.field.type === 'textarea') {
         return (
             <div class="form-properties__field">
                 <label class="form-properties__textarea-label">
-                    <Typography variant="body-small" color="on-surface-variant">{props.field.label}</Typography>
+                    <Typography variant="body-small" color="on-surface-variant">{local.field.label}</Typography>
                     <textarea
                         class="form-properties__textarea"
                         rows={3}
-                        value={String(props.value ?? props.field.defaultValue ?? '')}
-                        onInput={(e) => props.onChange(e.currentTarget.value)}
+                        value={String(local.value ?? local.field.defaultValue ?? '')}
+                        onInput={(e) => local.onChange(e.currentTarget.value)}
                     />
                 </label>
-                <Show when={props.field.helpText}>
+                <Show when={local.field.helpText}>
                     <Typography variant="body-small" color="on-surface-variant" class="form-properties__help-text">
-                        {props.field.helpText}
+                        {local.field.helpText}
                     </Typography>
                 </Show>
             </div>
@@ -206,37 +207,37 @@ const PropertyFieldRenderer: Component<{
     }
 
     // Color → Color picker
-    if (props.field.type === 'color') {
+    if (local.field.type === 'color') {
         return (
             <div class="form-properties__field form-properties__color-row">
-                <Typography variant="body-medium">{props.field.label}</Typography>
+                <Typography variant="body-medium">{local.field.label}</Typography>
                 <input
                     type="color"
                     class="form-properties__color-input"
-                    value={String(props.value ?? props.field.defaultValue ?? '#000000')}
-                    onInput={(e) => props.onChange(e.currentTarget.value)}
+                    value={String(local.value ?? local.field.defaultValue ?? '#000000')}
+                    onInput={(e) => local.onChange(e.currentTarget.value)}
                 />
             </div>
         );
     }
 
     // Range → Slider with value display
-    if (props.field.type === 'range') {
-        const val = () => Number(props.value ?? props.field.defaultValue ?? props.field.min ?? 0);
+    if (local.field.type === 'range') {
+        const val = () => Number(local.value ?? local.field.defaultValue ?? local.field.min ?? 0);
         return (
             <div class="form-properties__field form-properties__range-row">
                 <div class="form-properties__range-header">
-                    <Typography variant="body-small" color="on-surface-variant">{props.field.label}</Typography>
+                    <Typography variant="body-small" color="on-surface-variant">{local.field.label}</Typography>
                     <span class="form-properties__range-value">{val()}</span>
                 </div>
                 <input
                     type="range"
                     class="form-properties__range-input"
-                    min={props.field.min ?? 0}
-                    max={props.field.max ?? 100}
-                    step={props.field.step ?? 1}
+                    min={local.field.min ?? 0}
+                    max={local.field.max ?? 100}
+                    step={local.field.step ?? 1}
                     value={val()}
-                    onInput={(e) => props.onChange(Number(e.currentTarget.value))}
+                    onInput={(e) => local.onChange(Number(e.currentTarget.value))}
                 />
             </div>
         );
@@ -247,17 +248,17 @@ const PropertyFieldRenderer: Component<{
         <div class="form-properties__field">
             <TextField
                 variant="outlined"
-                label={props.field.label}
-                type={props.field.type === 'number' ? 'number' : 'text'}
-                value={String(props.value ?? props.field.defaultValue ?? '')}
+                label={local.field.label}
+                type={local.field.type === 'number' ? 'number' : 'text'}
+                value={String(local.value ?? local.field.defaultValue ?? '')}
                 onInput={(e) => {
                     const raw = (e.target as HTMLInputElement).value;
-                    props.onChange(props.field.type === 'number' ? Number(raw) : raw);
+                    local.onChange(local.field.type === 'number' ? Number(raw) : raw);
                 }}
             />
-            <Show when={props.field.helpText}>
+            <Show when={local.field.helpText}>
                 <Typography variant="body-small" color="on-surface-variant" class="form-properties__help-text">
-                    {props.field.helpText}
+                    {local.field.helpText}
                 </Typography>
             </Show>
         </div>

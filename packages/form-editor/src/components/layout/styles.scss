@@ -1,0 +1,49 @@
+/* ─── EDITOR LAYOUT ────────────────────────────────────────────── */
+
+.form-editor-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr 300px;
+    gap: 0;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+
+    @media (max-width: 1023px) {
+        grid-template-columns: 220px 1fr 260px;
+    }
+
+    @media (max-width: 899px) {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+}
+
+.form-editor-layout__sidebar {
+    overflow-y: auto;
+    background: var(--m3-color-surface-container-lowest, #fff);
+    border-right: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    box-shadow: 2px 0 8px rgba(145, 158, 171, 0.04);
+
+    &--right {
+        border-right: none;
+        border-left: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    }
+
+    @media (max-width: 899px) {
+        border-right: none;
+        border-left: none;
+        border-bottom: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+
+        &--right {
+            border-bottom: none;
+        }
+    }
+}
+
+.form-editor-layout__canvas-area {
+    overflow-y: auto;
+    background: var(--m3-color-surface-variant, #F5F5F5);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+}

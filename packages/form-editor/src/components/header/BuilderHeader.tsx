@@ -3,7 +3,7 @@
  * Left: Back arrow, form name
  * Right: Preview, Publish, Settings (dropdown), Theme toggle, User profile
  */
-import { createSignal, Show, onMount, onCleanup } from 'solid-js';
+import { splitProps, createSignal, Show, onMount, onCleanup } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
@@ -40,13 +40,14 @@ export interface BuilderHeaderProps {
 }
 
 export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
+    const [local] = splitProps(props, ['formName', 'hasSchema', 'previewing', 'saving', 'userName', 'userEmail', 'userAvatar', 'onBack', 'onSave', 'onTogglePreview', 'onViewSchema', 'onSettings', 'onLogout', 'onProfile', 'onIntegrations', 'onCustomizeTheme']);
     const [settingsOpen, setSettingsOpen] = createSignal(false);
     const [profileMenuOpen, setProfileMenuOpen] = createSignal(false);
     let settingsRef: HTMLDivElement | undefined;
     let profileAnchor: HTMLDivElement | undefined;
 
-    const userName = () => props.userName || 'User';
-    const userEmail = () => props.userEmail || 'user@example.com';
+    const userName = () => local.userName || 'User';
+    const userEmail = () => local.userEmail || 'user@example.com';
     const userInitials = () =>
         userName()
             .split(' ')
@@ -70,14 +71,14 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
             {/* ── Left: Back · Form name ── */}
             <div class="builder-header__left">
                 <IconButton
-                    onClick={() => props.onBack()}
+                    onClick={() => local.onBack()}
                     variant="standard"
                     size="sm"
                     icon={<Icon name="arrow-left" size={18} />}
                     title="Back"
                 />
                 <Typography variant="title-medium" class="builder-header__form-name">
-                    {props.formName}
+                    {local.formName}
                 </Typography>
             </div>
 
@@ -86,23 +87,23 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
                 <Button
                     variant="text"
                     size="sm"
-                    onClick={() => props.onTogglePreview()}
-                    disabled={!props.hasSchema}
+                    onClick={() => local.onTogglePreview()}
+                    disabled={!local.hasSchema}
                     class="builder-header__btn"
                 >
-                    <Icon name={props.previewing ? 'pencil' : 'eye'} size={16} />
-                    {props.previewing ? 'Edit' : 'Preview'}
+                    <Icon name={local.previewing ? 'pencil' : 'eye'} size={16} />
+                    {local.previewing ? 'Edit' : 'Preview'}
                 </Button>
 
                 <Button
                     variant="filled"
                     size="sm"
-                    onClick={() => props.onSave()}
-                    disabled={props.saving || !props.hasSchema}
+                    onClick={() => local.onSave()}
+                    disabled={local.saving || !local.hasSchema}
                     class="builder-header__btn"
                 >
                     <Icon name="upload" size={16} />
-                    {props.saving ? 'Saving…' : 'Publish'}
+                    {local.saving ? 'Saving…' : 'Publish'}
                 </Button>
 
                 <div class="builder-header__settings-wrapper" ref={settingsRef}>
@@ -115,19 +116,19 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
                     />
                     <Show when={settingsOpen()}>
                         <div class="builder-header__settings-menu">
-                            <button onClick={() => { props.onViewSchema?.(); setSettingsOpen(false); }}>
+                            <button onClick={() => { local.onViewSchema?.(); setSettingsOpen(false); }}>
                                 <Icon name="file-text" size={16} />
                                 View Schema
                             </button>
-                            <button onClick={() => { props.onCustomizeTheme?.(); setSettingsOpen(false); }}>
+                            <button onClick={() => { local.onCustomizeTheme?.(); setSettingsOpen(false); }}>
                                 <Icon name="sliders" size={16} />
                                 Customize Theme
                             </button>
-                            <button onClick={() => { props.onIntegrations?.(); setSettingsOpen(false); }}>
+                            <button onClick={() => { local.onIntegrations?.(); setSettingsOpen(false); }}>
                                 <Icon name="link" size={16} />
                                 Integrations
                             </button>
-                            <button onClick={() => { props.onSettings?.(); setSettingsOpen(false); }}>
+                            <button onClick={() => { local.onSettings?.(); setSettingsOpen(false); }}>
                                 <Icon name="settings" size={16} />
                                 Form Settings
                             </button>
@@ -141,7 +142,7 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
                 {/* User profile */}
                 <div ref={profileAnchor}>
                     <Avatar
-                        src={props.userAvatar}
+                        src={local.userAvatar}
                         initials={userInitials()}
                         size="sm"
                         onClick={() => setProfileMenuOpen(true)}
@@ -157,7 +158,7 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
                 >
                     <div class="builder-header__profile-header">
                         <Avatar
-                            src={props.userAvatar}
+                            src={local.userAvatar}
                             initials={userInitials()}
                             size="sm"
                         />
@@ -172,18 +173,18 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
                     <MenuItem
                         label="Profile Settings"
                         leadingIcon={<Icon name="person" size={20} />}
-                        onClick={() => { props.onProfile?.(); setProfileMenuOpen(false); }}
+                        onClick={() => { local.onProfile?.(); setProfileMenuOpen(false); }}
                     />
                     <MenuItem
                         label="Account Settings"
                         leadingIcon={<Icon name="settings" size={20} />}
-                        onClick={() => { props.onProfile?.(); setProfileMenuOpen(false); }}
+                        onClick={() => { local.onProfile?.(); setProfileMenuOpen(false); }}
                     />
                     <Divider />
                     <MenuItem
                         label="Logout"
                         leadingIcon={<Icon name="logout" size={20} />}
-                        onClick={() => { props.onLogout?.(); setProfileMenuOpen(false); }}
+                        onClick={() => { local.onLogout?.(); setProfileMenuOpen(false); }}
                         style={{ color: 'var(--m3-color-error, #B3261E)' }}
                     />
                 </Menu>

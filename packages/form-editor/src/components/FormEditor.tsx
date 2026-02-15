@@ -1,4 +1,4 @@
-import { createSignal, createContext, useContext } from 'solid-js';
+import { splitProps, createSignal, createContext, useContext } from 'solid-js';
 import type { Component } from 'solid-js';
 import type { FormSchema, FormElement } from '@formanywhere/shared/types';
 import { generateId } from '@formanywhere/shared/utils';
@@ -141,6 +141,7 @@ const deepCloneElement = (el: FormElement): FormElement => {
 };
 
 export const FormEditor: Component<FormEditorProps> = (props) => {
+    const [local] = splitProps(props, ['initialSchema', 'onChange', 'activePageId', 'children']);
     const createDefaultSchema = (): FormSchema => ({
         id: generateId(),
         name: 'Untitled Form',
@@ -154,7 +155,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
     });
 
     const [schema, setSchema] = createSignal<FormSchema>(
-        props.initialSchema ?? createDefaultSchema()
+        local.initialSchema ?? createDefaultSchema()
     );
     const [selectedElement, setSelectedElement] = createSignal<string | null>(null);
     const [selectedElements, setSelectedElements] = createSignal<Set<string>>(new Set());
@@ -189,7 +190,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
         setSchema(history()[newIdx]);
         setHistoryIndex(newIdx);
         skipHistory = false;
-        props.onChange?.(schema());
+        local.onChange?.(schema());
     };
 
     const redo = () => {
@@ -200,14 +201,14 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
         setSchema(history()[newIdx]);
         setHistoryIndex(newIdx);
         skipHistory = false;
-        props.onChange?.(schema());
+        local.onChange?.(schema());
     };
 
     const canUndo = () => historyIndex() > 0;
     const canRedo = () => historyIndex() < history().length - 1;
 
     // ── Active page & page→element binding ───────────────────────────────
-    const activePageId = () => props.activePageId ?? '';
+    const activePageId = () => local.activePageId ?? '';
 
     /** Get the page→elementIds map from schema.settings.pages */
     const getPageElementIds = (): Map<string, string[]> => {
@@ -297,7 +298,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
 
         setSelectedElement(newElement.id);
         pushHistory(schema());
-        props.onChange?.(schema());
+        local.onChange?.(schema());
     };
 
     const updateElement = (id: string, updates: Partial<FormElement>) => {
@@ -307,7 +308,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
             updatedAt: new Date(),
         }));
         pushHistory(schema());
-        props.onChange?.(schema());
+        local.onChange?.(schema());
     };
 
     const removeElement = (id: string) => {
@@ -322,7 +323,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
         }
         setSelectedElements((prev) => { const s = new Set(prev); s.delete(id); return s; });
         pushHistory(schema());
-        props.onChange?.(schema());
+        local.onChange?.(schema());
     };
 
     const moveElement = (elementId: string, targetParentId: string | null, targetIndex: number) => {
@@ -340,7 +341,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
             };
         });
         pushHistory(schema());
-        props.onChange?.(schema());
+        local.onChange?.(schema());
     };
 
     /** Move the currently selected element up or down within its parent list. */
@@ -392,7 +393,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
             return { ...prev, elements: swap(prev.elements), updatedAt: new Date() };
         });
         pushHistory(schema());
-        props.onChange?.(schema());
+        local.onChange?.(schema());
     };
 
     // ── Clipboard: Copy / Paste / Duplicate ───────────────────────────────
@@ -425,7 +426,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
         if (!parentId) assignToPage(clone.id);
         setSelectedElement(clone.id);
         pushHistory(schema());
-        props.onChange?.(schema());
+        local.onChange?.(schema());
     };
 
     const duplicateElement = (id: string) => {
@@ -444,7 +445,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
         if (!parentId) assignToPage(clone.id);
         setSelectedElement(clone.id);
         pushHistory(schema());
-        props.onChange?.(schema());
+        local.onChange?.(schema());
     };
 
     // ── Multi-select ─────────────────────────────────────────────────────
@@ -465,7 +466,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
     };
 
     const clearSelection = () => {
-        setSelectedElements(new Set());
+        setSelectedElements(new Set<string>());
         setSelectedElement(null);
     };
 
@@ -480,10 +481,10 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
                 updatedAt: new Date(),
             }));
         });
-        setSelectedElements(new Set());
+        setSelectedElements(new Set<string>());
         setSelectedElement(null);
         pushHistory(schema());
-        props.onChange?.(schema());
+        local.onChange?.(schema());
     };
 
     return (
@@ -513,7 +514,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
                 removeSelected,
             }}
         >
-            {props.children}
+            {local.children}
         </FormEditorContext.Provider>
     );
 };

@@ -1,4 +1,4 @@
-import { For, createSignal, Show, createMemo, onMount, onCleanup } from 'solid-js';
+import { splitProps, For, createSignal, Show, createMemo, onMount, onCleanup } from 'solid-js';
 import type { Component } from 'solid-js';
 import type { FormSchema, FormElement, FormPage } from '@formanywhere/shared/types';
 import { createForm, zodForm, setValue, getValues } from '@modular-forms/solid';
@@ -13,7 +13,7 @@ import { Icon } from '@formanywhere/ui/icon';
 import { Typography } from '@formanywhere/ui/typography';
 import { evaluateCondition } from '../conditional';
 import { buildZodSchema, buildInitialValues } from '../zodSchema';
-import '../styles.scss';
+import './styles.scss';
 
 /** All form values stored as strings — matches native HTML input behaviour. */
 type DynamicFormValues = Record<string, string>;
@@ -41,19 +41,20 @@ export interface FormRendererProps {
 }
 
 export const FormRenderer: Component<FormRendererProps> = (props) => {
-    const zodSchema = buildZodSchema(props.schema);
+    const [local] = splitProps(props, ['schema', 'onSubmit']);
+    const zodSchema = buildZodSchema(local.schema);
     const [formStore, { Form, Field }] = createForm<DynamicFormValues>({
         validate: zodForm(zodSchema),
         validateOn: 'blur',
         revalidateOn: 'input',
-        initialValues: buildInitialValues(props.schema),
+        initialValues: buildInitialValues(local.schema),
     });
 
     const [submitted, setSubmitted] = createSignal(false);
 
     // Multi-page state
-    const isMultiPage = () => !!props.schema.settings.multiPage && !!props.schema.settings.pages?.length;
-    const pages = () => props.schema.settings.pages ?? [];
+    const isMultiPage = () => !!local.schema.settings.multiPage && !!local.schema.settings.pages?.length;
+    const pages = () => local.schema.settings.pages ?? [];
     const [currentPageIndex, setCurrentPageIndex] = createSignal(0);
     const currentPage = () => pages()[currentPageIndex()];
     const totalPages = () => pages().length;
@@ -62,11 +63,11 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
 
     /** Elements for the current page (multi-page) or all elements (single-page). */
     const visibleElements = createMemo(() => {
-        if (!isMultiPage()) return props.schema.elements;
+        if (!isMultiPage()) return local.schema.elements;
         const page = currentPage();
         if (!page) return [];
         const idSet = new Set(page.elements);
-        return props.schema.elements.filter((el) => idSet.has(el.id));
+        return local.schema.elements.filter((el) => idSet.has(el.id));
     });
 
     const goNext = () => {
@@ -78,7 +79,7 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
 
     const handleSubmit = (values: DynamicFormValues) => {
         setSubmitted(true);
-        props.onSubmit(values);
+        local.onSubmit(values);
     };
 
     /** Check conditional visibility using current form values. */
@@ -241,7 +242,7 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
             ctx.lineWidth = 2;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.strokeStyle = 'var(--m3-color-on-surface, #1C1B1F)';
+            ctx.strokeStyle = getComputedStyle(canvas).getPropertyValue('--m3-color-on-surface').trim() || '#1C1B1F';
 
             // Restore existing signature if field has data
             if (field.value) {
@@ -616,7 +617,7 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
                         <Icon name="check-circle" size={48} />
                     </div>
                     <Typography variant="headline-small">
-                        {props.schema.settings.successHeading || props.schema.settings.successMessage}
+                        {local.schema.settings.successHeading || local.schema.settings.successMessage}
                     </Typography>
                 </div>
             }
@@ -690,7 +691,7 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
                     >
                         <Button variant="filled" type="submit" disabled={formStore.submitting}>
                             <Icon name="check" size={18} />
-                            {props.schema.settings.submitButtonText}
+                            {local.schema.settings.submitButtonText}
                         </Button>
                     </Show>
                 </div>

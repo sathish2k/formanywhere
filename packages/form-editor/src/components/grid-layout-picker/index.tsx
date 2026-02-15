@@ -7,7 +7,7 @@
  *   - Hover: scale 1.05, primary border, elevated shadow
  *   - Visual bar preview showing column proportions
  */
-import { For, createSignal } from 'solid-js';
+import { splitProps, For, createSignal } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Icon } from '@formanywhere/ui/icon';
 import { Typography } from '@formanywhere/ui/typography';
@@ -42,6 +42,7 @@ export interface GridLayoutPickerProps {
 }
 
 export const GridLayoutPicker: Component<GridLayoutPickerProps> = (props) => {
+    const [local] = splitProps(props, ['onSelectColumns']);
     const [hoveredId, setHoveredId] = createSignal<number | null>(null);
 
     return (
@@ -61,7 +62,7 @@ export const GridLayoutPicker: Component<GridLayoutPickerProps> = (props) => {
                             style={{ 'animation-delay': `${index() * 0.1}s` }}
                             onMouseEnter={() => setHoveredId(option.columns)}
                             onMouseLeave={() => setHoveredId(null)}
-                            onClick={() => props.onSelectColumns(option.columns)}
+                            onClick={() => local.onSelectColumns(option.columns)}
                         >
                             {/* Icon box */}
                             <div class="grid-layout-picker__icon-box">

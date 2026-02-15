@@ -3,6 +3,7 @@
  * Grouped with a leading vertical divider.
  * Uses Button from @formanywhere/ui for M3 consistency.
  */
+import { splitProps } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Icon } from '@formanywhere/ui/icon';
 import { Button } from '@formanywhere/ui/button';
@@ -14,6 +15,7 @@ export interface ToolbarActionsProps {
 }
 
 export const ToolbarActions: Component<ToolbarActionsProps> = (props) => {
+    const [local] = splitProps(props, ['onLogic', 'onWorkflow', 'onDebug']);
     return (
         <div class="page-toolbar__actions">
             <span class="page-toolbar__divider" />
@@ -21,7 +23,7 @@ export const ToolbarActions: Component<ToolbarActionsProps> = (props) => {
                 variant="outlined"
                 size="sm"
                 class="page-toolbar__action-btn"
-                onClick={() => props.onLogic?.()}
+                onClick={() => local.onLogic?.()}
             >
                 <Icon name="git-branch" size={16} />
                 Logic
@@ -30,7 +32,7 @@ export const ToolbarActions: Component<ToolbarActionsProps> = (props) => {
                 variant="outlined"
                 size="sm"
                 class="page-toolbar__action-btn"
-                onClick={() => props.onWorkflow?.()}
+                onClick={() => local.onWorkflow?.()}
             >
                 <Icon name="workflow" size={16} />
                 Workflow
@@ -39,7 +41,7 @@ export const ToolbarActions: Component<ToolbarActionsProps> = (props) => {
                 variant="outlined"
                 size="sm"
                 class="page-toolbar__action-btn"
-                onClick={() => props.onDebug?.()}
+                onClick={() => local.onDebug?.()}
             >
                 <Icon name="bug" size={16} />
                 Debug

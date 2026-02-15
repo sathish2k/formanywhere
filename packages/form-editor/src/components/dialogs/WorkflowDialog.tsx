@@ -2,7 +2,7 @@
  * WorkflowDialog — Visual workflow builder for form automation
  * Migrated from AI-Powered Form Builder UI → SolidJS + M3
  */
-import { For, Show, createSignal } from 'solid-js';
+import { splitProps, For, Show, createSignal } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Dialog } from '@formanywhere/ui/dialog';
 import { Button } from '@formanywhere/ui/button';
@@ -22,13 +22,14 @@ export interface WorkflowDialogProps {
 }
 
 export const WorkflowDialog: Component<WorkflowDialogProps> = (props) => {
+    const [local] = splitProps(props, ['open', 'onClose', 'rules', 'onUpdateRule', 'onDeleteRule']);
     const [selectedRule, setSelectedRule] = createSignal<string | null>(null);
 
-    const activeRules = () => props.rules.filter((r) => r.enabled);
-    const inactiveRules = () => props.rules.filter((r) => !r.enabled);
+    const activeRules = () => local.rules.filter((r) => r.enabled);
+    const inactiveRules = () => local.rules.filter((r) => !r.enabled);
 
     const toggleRule = (rule: FormRule) => {
-        props.onUpdateRule(rule.id, { ...rule, enabled: !rule.enabled });
+        local.onUpdateRule(rule.id, { ...rule, enabled: !rule.enabled });
     };
 
     const getTriggerLabel = (trigger: FormRule['trigger']) => {
@@ -65,19 +66,19 @@ export const WorkflowDialog: Component<WorkflowDialogProps> = (props) => {
 
     return (
         <Dialog
-            open={props.open}
-            onClose={props.onClose}
+            open={local.open}
+            onClose={local.onClose}
             title="Workflow Builder"
             icon={<Icon name="workflow" size={20} />}
             class="workflow-dialog"
             actions={
-                <Button variant="text" size="sm" onClick={props.onClose}>Close</Button>
+                <Button variant="text" size="sm" onClick={local.onClose}>Close</Button>
             }
         >
             <div class="workflow-dialog__content">
                 <div class="workflow-dialog__sidebar">
                     <div class="workflow-dialog__sidebar-header">
-                        <span>Rules ({props.rules.length})</span>
+                        <span>Rules ({local.rules.length})</span>
                     </div>
 
                     <Show when={activeRules().length > 0}>
@@ -110,7 +111,7 @@ export const WorkflowDialog: Component<WorkflowDialogProps> = (props) => {
                         </For>
                     </Show>
 
-                    <Show when={props.rules.length === 0}>
+                    <Show when={local.rules.length === 0}>
                         <div class="workflow-dialog__empty-sidebar">
                             <Icon name="workflow" size={24} />
                             <p>No rules. Create rules in the Logic dialog first.</p>
@@ -126,7 +127,7 @@ export const WorkflowDialog: Component<WorkflowDialogProps> = (props) => {
                         </div>
                     }>
                         {(() => {
-                            const rule = () => props.rules.find((r) => r.id === selectedRule());
+                            const rule = () => local.rules.find((r) => r.id === selectedRule());
                             return (
                                 <Show when={rule()}>
                                     {(r) => (
@@ -138,7 +139,7 @@ export const WorkflowDialog: Component<WorkflowDialogProps> = (props) => {
                                                         <input type="checkbox" checked={r().enabled} onChange={() => toggleRule(r())} />
                                                         <span class="logic-dialog__toggle-slider" />
                                                     </label>
-                                                    <button class="logic-dialog__icon-btn logic-dialog__icon-btn--danger" onClick={() => { props.onDeleteRule(r().id); setSelectedRule(null); }}>
+                                                    <button class="logic-dialog__icon-btn logic-dialog__icon-btn--danger" onClick={() => { local.onDeleteRule(r().id); setSelectedRule(null); }}>
                                                         <Icon name="trash" size={14} />
                                                     </button>
                                                 </div>

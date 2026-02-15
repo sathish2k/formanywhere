@@ -7,7 +7,7 @@
  *   3. Header — Google Font URL, custom meta tags
  *   4. External Resources — External CSS/JS URLs
  */
-import { createSignal, For, Show } from 'solid-js';
+import { splitProps, createSignal, For, Show } from 'solid-js';
 import type { Component, JSX } from 'solid-js';
 import { Dialog } from '@formanywhere/ui/dialog';
 import { Button } from '@formanywhere/ui/button';
@@ -79,30 +79,31 @@ const FONT_OPTIONS = [
 // ─── Component ──────────────────────────────────────────────────────────────────
 
 export const FormSettingsDialog: Component<FormSettingsDialogProps> = (props) => {
+    const [local] = splitProps(props, ['open', 'onClose', 'settings', 'onSave']);
     const [activeTab, setActiveTab] = createSignal<SettingsTab>('theme');
 
     // Local editable copies
-    const [primaryColor, setPrimaryColor] = createSignal(props.settings.primaryColor);
-    const [secondaryColor, setSecondaryColor] = createSignal(props.settings.secondaryColor);
-    const [backgroundColor, setBackgroundColor] = createSignal(props.settings.backgroundColor);
-    const [surfaceColor, setSurfaceColor] = createSignal(props.settings.surfaceColor);
-    const [borderRadius, setBorderRadius] = createSignal(props.settings.borderRadius);
-    const [fontFamily, setFontFamily] = createSignal(props.settings.fontFamily);
-    const [customCSS, setCustomCSS] = createSignal(props.settings.customCSS);
-    const [googleFontUrl, setGoogleFontUrl] = createSignal(props.settings.googleFontUrl);
-    const [customHeadTags, setCustomHeadTags] = createSignal(props.settings.customHeadTags);
-    const [externalCSS, setExternalCSS] = createSignal<string[]>([...props.settings.externalCSS]);
-    const [externalJS, setExternalJS] = createSignal<string[]>([...props.settings.externalJS]);
-    const [successHeading, setSuccessHeading] = createSignal(props.settings.successHeading || 'Thank You!');
-    const [successMessage, setSuccessMessage] = createSignal(props.settings.successMessage || 'Your response has been recorded.');
-    const [successShowData, setSuccessShowData] = createSignal(props.settings.successShowData ?? false);
-    const [successButtonText, setSuccessButtonText] = createSignal(props.settings.successButtonText || '');
-    const [successButtonUrl, setSuccessButtonUrl] = createSignal(props.settings.successButtonUrl || '');
-    const [redirectUrl, setRedirectUrl] = createSignal(props.settings.redirectUrl || '');
-    const [redirectDelay, setRedirectDelay] = createSignal(props.settings.redirectDelay || 0);
+    const [primaryColor, setPrimaryColor] = createSignal(local.settings.primaryColor);
+    const [secondaryColor, setSecondaryColor] = createSignal(local.settings.secondaryColor);
+    const [backgroundColor, setBackgroundColor] = createSignal(local.settings.backgroundColor);
+    const [surfaceColor, setSurfaceColor] = createSignal(local.settings.surfaceColor);
+    const [borderRadius, setBorderRadius] = createSignal(local.settings.borderRadius);
+    const [fontFamily, setFontFamily] = createSignal(local.settings.fontFamily);
+    const [customCSS, setCustomCSS] = createSignal(local.settings.customCSS);
+    const [googleFontUrl, setGoogleFontUrl] = createSignal(local.settings.googleFontUrl);
+    const [customHeadTags, setCustomHeadTags] = createSignal(local.settings.customHeadTags);
+    const [externalCSS, setExternalCSS] = createSignal<string[]>([...local.settings.externalCSS]);
+    const [externalJS, setExternalJS] = createSignal<string[]>([...local.settings.externalJS]);
+    const [successHeading, setSuccessHeading] = createSignal(local.settings.successHeading || 'Thank You!');
+    const [successMessage, setSuccessMessage] = createSignal(local.settings.successMessage || 'Your response has been recorded.');
+    const [successShowData, setSuccessShowData] = createSignal(local.settings.successShowData ?? false);
+    const [successButtonText, setSuccessButtonText] = createSignal(local.settings.successButtonText || '');
+    const [successButtonUrl, setSuccessButtonUrl] = createSignal(local.settings.successButtonUrl || '');
+    const [redirectUrl, setRedirectUrl] = createSignal(local.settings.redirectUrl || '');
+    const [redirectDelay, setRedirectDelay] = createSignal(local.settings.redirectDelay || 0);
 
     const handleSave = () => {
-        props.onSave({
+        local.onSave({
             primaryColor: primaryColor(),
             secondaryColor: secondaryColor(),
             backgroundColor: backgroundColor(),
@@ -122,7 +123,7 @@ export const FormSettingsDialog: Component<FormSettingsDialogProps> = (props) =>
             redirectUrl: redirectUrl(),
             redirectDelay: redirectDelay(),
         });
-        props.onClose();
+        local.onClose();
     };
 
     // Resource list helpers
@@ -138,8 +139,8 @@ export const FormSettingsDialog: Component<FormSettingsDialogProps> = (props) =>
 
     return (
         <Dialog
-            open={props.open}
-            onClose={props.onClose}
+            open={local.open}
+            onClose={local.onClose}
             class="form-settings-dialog"
             closeOnBackdropClick={false}
         >
@@ -150,7 +151,7 @@ export const FormSettingsDialog: Component<FormSettingsDialogProps> = (props) =>
                         variant="standard"
                         size="sm"
                         icon={<Icon name="cross" size={18} />}
-                        onClick={props.onClose}
+                        onClick={local.onClose}
                     />
                     <Typography variant="title-medium">Form Settings</Typography>
                 </div>
@@ -530,23 +531,26 @@ const ColorField: Component<{
     label: string;
     value: string;
     onChange: (val: string) => void;
-}> = (props) => (
+}> = (props) => {
+    const [local] = splitProps(props, ['label', 'value', 'onChange']);
+    return (
     <div class="form-settings-dialog__color-field">
-        <Typography variant="body-small" color="on-surface-variant">{props.label}</Typography>
+        <Typography variant="body-small" color="on-surface-variant">{local.label}</Typography>
         <div class="form-settings-dialog__color-input-row">
             <input
                 type="color"
                 class="form-settings-dialog__color-swatch"
-                value={props.value}
-                onInput={(e) => props.onChange(e.currentTarget.value)}
+                value={local.value}
+                onInput={(e) => local.onChange(e.currentTarget.value)}
             />
             <input
                 type="text"
                 class="form-settings-dialog__color-hex"
-                value={props.value}
-                onInput={(e) => props.onChange(e.currentTarget.value)}
+                value={local.value}
+                onInput={(e) => local.onChange(e.currentTarget.value)}
                 maxLength={7}
             />
         </div>
     </div>
-);
+    );
+};

@@ -1,3 +1,4 @@
+import { splitProps } from 'solid-js';
 import { For, createSignal, type Accessor, Show, Index } from 'solid-js';
 import type { Component } from 'solid-js';
 import { useFormEditor } from '../FormEditor';
@@ -7,7 +8,7 @@ import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
 import { GridLayoutPicker } from '../grid-layout-picker';
-import '../../styles.scss';
+import './styles.scss';
 
 /** Layout types that can be dropped at root level */
 const LAYOUT_TYPES = new Set([
@@ -26,6 +27,7 @@ interface CanvasRegionProps {
 }
 
 export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
+    const [local] = splitProps(props, ['elements', 'parentId', 'dragSource', 'onCanvasDragStart', 'onDragEnd', 'isEmpty', 'placeholder']);
     const { addElement, moveElement, selectedElement, setSelectedElement, removeElement, toggleSelectElement, selectedElements } = useFormEditor();
     const [isDragOver, setIsDragOver] = createSignal(false);
     const [showGridPicker, setShowGridPicker] = createSignal(false);
@@ -38,7 +40,7 @@ export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
         const hasId = e.dataTransfer?.types.includes('application/x-form-id');
 
         if (hasType || hasId) {
-            const effect = props.dragSource() === 'toolbar' ? 'copy' : 'move';
+            const effect = local.dragSource() === 'toolbar' ? 'copy' : 'move';
             e.dataTransfer!.dropEffect = effect;
             setIsDragOver(true);
         }
@@ -60,17 +62,17 @@ export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
 
         if (newType) {
             // At root level (parentId === null), only allow layout elements
-            if (!props.parentId && !LAYOUT_TYPES.has(newType)) {
+            if (!local.parentId && !LAYOUT_TYPES.has(newType)) {
                 return; // Block non-layout elements at root — must drop inside a grid column
             }
-            addElement(newType as any, props.parentId);
+            addElement(newType as any, local.parentId);
         } else if (existingId) {
-            moveElement(existingId, props.parentId, props.elements().length);
+            moveElement(existingId, local.parentId, local.elements().length);
         }
     };
 
     const handleGridSelect = (cols: number) => {
-        addElement('grid', props.parentId, -1, cols);
+        addElement('grid', local.parentId, -1, cols);
         setShowGridPicker(false);
     };
 
@@ -89,7 +91,7 @@ export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
         // OR pass the event to us.
         // Let's make `CanvasFieldRow` handle the drop event using `dataTransfer` and call context directly?
         // Or callback with type/id.
-        // The `CanvasFieldRow` in this file is just deferring to `props.onDrop`.
+        // The `CanvasFieldRow` in this file is just deferring to `local.onDrop`.
     };
 
     return (
@@ -97,7 +99,7 @@ export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
             class="canvas-region"
             classList={{
                 'canvas-region--drag-over': isDragOver(),
-                'canvas-region--empty': props.elements().length === 0 && !props.isEmpty
+                'canvas-region--empty': local.elements().length === 0 && !local.isEmpty
             }}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
@@ -105,10 +107,10 @@ export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
             style={{ 'min-height': '50px', 'height': '100%' }} // Ensure drop target has size
         >
             <Show
-                when={props.elements().length > 0}
+                when={local.elements().length > 0}
                 fallback={
                     <div class="canvas-region__empty-placeholder">
-                        <Show when={props.isEmpty}>
+                        <Show when={local.isEmpty}>
                             {/* Empty state for root canvas */}
                             <Show
                                 when={showGridPicker()}
@@ -136,29 +138,29 @@ export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
                                 <GridLayoutPicker onSelectColumns={handleGridSelect} />
                             </Show>
                         </Show>
-                        <Show when={!props.isEmpty && props.placeholder}>
+                        <Show when={!local.isEmpty && local.placeholder}>
                             <div class="canvas-region__drop-cta">
                                 <Icon name="plus" size={16} />
-                                <Typography variant="body-small" color="on-surface-variant">{props.placeholder}</Typography>
+                                <Typography variant="body-small" color="on-surface-variant">{local.placeholder}</Typography>
                             </div>
                         </Show>
                     </div>
                 }
             >
-                <Index each={props.elements()}>
+                <Index each={local.elements()}>
                     {(element, index) => (
                         <CanvasFieldRow
                             element={element()}
                             index={index}
-                            parentId={props.parentId}
+                            parentId={local.parentId}
                             isSelected={selectedElement() === element().id || selectedElements().has(element().id)}
                             onSelect={(multi) => toggleSelectElement(element().id, multi)}
                             onRemove={() => {
                                 removeElement(element().id);
                             }}
-                            onCanvasDragStart={props.onCanvasDragStart}
-                            onDragEnd={props.onDragEnd}
-                            dragSource={props.dragSource}
+                            onCanvasDragStart={local.onCanvasDragStart}
+                            onDragEnd={local.onDragEnd}
+                            dragSource={local.dragSource}
                         />
                     )}
                 </Index>

@@ -12,7 +12,7 @@
  *   - Edit Page      → Dialog (rename page) from @formanywhere/ui
  *   - Delete Page     → ConfirmationDialog from @formanywhere/shared
  */
-import { For, Show, createSignal, onCleanup, onMount } from 'solid-js';
+import { splitProps, For, Show, createSignal, onCleanup, onMount } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Icon } from '@formanywhere/ui/icon';
 import { Button } from '@formanywhere/ui/button';
@@ -45,6 +45,7 @@ export interface PageToolbarProps {
 }
 
 export const PageToolbar: Component<PageToolbarProps> = (props) => {
+    const [local] = splitProps(props, ['pages', 'activePageId', 'onSetActivePage', 'onAddPage', 'onDeletePage', 'onDuplicatePage', 'onRenamePage', 'onLogic', 'onWorkflow', 'onDebug']);
     const [menuPageId, setMenuPageId] = createSignal<string | null>(null);
 
     /* ── Edit (rename) dialog state ── */
@@ -73,7 +74,7 @@ export const PageToolbar: Component<PageToolbarProps> = (props) => {
     /* ── Helpers ── */
 
     const pageTitle = (id: string) =>
-        props.pages.find((p) => p.id === id)?.title ?? '';
+        local.pages.find((p) => p.id === id)?.title ?? '';
 
     const openEditDialog = (id: string) => {
         setEditPageTitle(pageTitle(id));
@@ -84,7 +85,7 @@ export const PageToolbar: Component<PageToolbarProps> = (props) => {
         const id = editPageId();
         const title = editPageTitle().trim();
         if (id && title) {
-            props.onRenamePage?.(id, title);
+            local.onRenamePage?.(id, title);
         }
         setEditPageId(null);
     };
@@ -96,7 +97,7 @@ export const PageToolbar: Component<PageToolbarProps> = (props) => {
     const confirmDelete = () => {
         const id = deletePageId();
         if (id) {
-            props.onDeletePage(id);
+            local.onDeletePage(id);
         }
         setDeletePageId(null);
     };
@@ -110,7 +111,7 @@ export const PageToolbar: Component<PageToolbarProps> = (props) => {
                         variant="outlined"
                         size="sm"
                         class="page-toolbar__add-btn"
-                        onClick={() => props.onAddPage()}
+                        onClick={() => local.onAddPage()}
                     >
                         <Icon name="plus" size={14} />
                         Add page
@@ -118,14 +119,14 @@ export const PageToolbar: Component<PageToolbarProps> = (props) => {
 
                     <span class="page-toolbar__divider" />
 
-                    <For each={props.pages}>
+                    <For each={local.pages}>
                         {(page) => (
                             <div class="page-toolbar__tab-wrapper">
                                 <PageTabPill
                                     id={page.id}
                                     title={page.title}
-                                    active={props.activePageId === page.id}
-                                    onSelect={props.onSetActivePage}
+                                    active={local.activePageId === page.id}
+                                    onSelect={local.onSetActivePage}
                                     onMenuToggle={toggleMenu}
                                 />
 
@@ -133,9 +134,9 @@ export const PageToolbar: Component<PageToolbarProps> = (props) => {
                                 <Show when={menuPageId() === page.id}>
                                     <TabMenu
                                         pageId={page.id}
-                                        canDelete={props.pages.length > 1}
+                                        canDelete={local.pages.length > 1}
                                         onEdit={(id) => { openEditDialog(id); setMenuPageId(null); }}
-                                        onDuplicate={(id) => { props.onDuplicatePage(id); setMenuPageId(null); }}
+                                        onDuplicate={(id) => { local.onDuplicatePage(id); setMenuPageId(null); }}
                                         onDelete={(id) => { openDeleteDialog(id); setMenuPageId(null); }}
                                         onClose={() => setMenuPageId(null)}
                                     />
@@ -147,9 +148,9 @@ export const PageToolbar: Component<PageToolbarProps> = (props) => {
 
                 {/* ── Right: Logic · Workflow ── */}
                 <ToolbarActions
-                    onLogic={props.onLogic}
-                    onWorkflow={props.onWorkflow}
-                    onDebug={props.onDebug}
+                    onLogic={local.onLogic}
+                    onWorkflow={local.onWorkflow}
+                    onDebug={local.onDebug}
                 />
             </div>
 

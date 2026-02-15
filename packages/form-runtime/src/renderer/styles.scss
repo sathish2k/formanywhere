@@ -1,8 +1,3 @@
-/* ═══════════════════════════════════════════════════════════════
-   @formanywhere/form-runtime — M3 Polished Styles
-   Matches the quality of the AI Form Builder UI
-   ═══════════════════════════════════════════════════════════════ */
-
 /* ─── FORM RENDERER ────────────────────────────────────────────── */
 
 .form-renderer {
@@ -256,7 +251,7 @@
     }
 
     &--filled {
-        color: #FAAF00;
+        color: var(--m3-color-warning, #FAAF00);
     }
 }
 

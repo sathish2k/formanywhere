@@ -4,14 +4,14 @@
  * Users describe their form, and AI creates the initial draft.
  * Can be swapped with a real AI backend in the future.
  */
-import { createSignal, For, Show } from 'solid-js';
+import { splitProps, createSignal, For, Show } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
 import type { FormSchema, FormElement, FormElementType } from '@formanywhere/shared/types';
 import { generateId } from '@formanywhere/shared/utils';
-import '../../styles.scss';
+import './styles.scss';
 
 export interface AIFormBuilderProps {
     onGenerated: (schema: FormSchema) => void;
@@ -115,6 +115,7 @@ function parsePromptToSchema(prompt: string): FormSchema {
 }
 
 export const AIFormBuilder: Component<AIFormBuilderProps> = (props) => {
+    const [local] = splitProps(props, ['onGenerated', 'onCancel']);
     const [prompt, setPrompt] = createSignal('');
     const [generating, setGenerating] = createSignal(false);
     const [previewSchema, setPreviewSchema] = createSignal<FormSchema | null>(null);
@@ -133,7 +134,7 @@ export const AIFormBuilder: Component<AIFormBuilderProps> = (props) => {
 
     const handleAccept = () => {
         const schema = previewSchema();
-        if (schema) props.onGenerated(schema);
+        if (schema) local.onGenerated(schema);
     };
 
     const handleRegenerate = () => {
@@ -187,7 +188,7 @@ export const AIFormBuilder: Component<AIFormBuilderProps> = (props) => {
                         </div>
 
                         <div class="ai-form-builder__actions">
-                            <Button variant="text" onClick={props.onCancel}>Cancel</Button>
+                            <Button variant="text" onClick={local.onCancel}>Cancel</Button>
                             <Button
                                 variant="filled"
                                 onClick={handleGenerate}
@@ -226,7 +227,7 @@ export const AIFormBuilder: Component<AIFormBuilderProps> = (props) => {
                             </div>
 
                             <div class="ai-form-builder__preview-actions">
-                                <Button variant="text" onClick={props.onCancel}>Cancel</Button>
+                                <Button variant="text" onClick={local.onCancel}>Cancel</Button>
                                 <Button variant="outlined" onClick={handleRegenerate}>
                                     <Icon name="sparkle" size={18} />
                                     Regenerate

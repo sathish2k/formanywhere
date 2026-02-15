@@ -25,6 +25,4 @@ export type { GridLayoutPickerProps } from './components/grid-layout-picker';
 export { LogicDialog, WorkflowDialog, SchemaDialog, IntegrationsDialog } from './components/dialogs';
 export type { LogicDialogProps, WorkflowDialogProps, SchemaDialogProps, IntegrationsDialogProps } from './components/dialogs';
 
-// SCSS
-import './components/form-builder.scss';
-import './components/grid-layout-picker/grid-layout-picker.scss';
+// SCSS — co-located imports are in each component's directory

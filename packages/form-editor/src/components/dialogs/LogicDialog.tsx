@@ -2,7 +2,7 @@
  * LogicDialog — Manage conditional logic rules for form fields
  * Migrated from AI-Powered Form Builder UI → SolidJS + M3
  */
-import { For, Show, createSignal } from 'solid-js';
+import { splitProps, For, Show, createSignal } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Dialog } from '@formanywhere/ui/dialog';
 import { Button } from '@formanywhere/ui/button';
@@ -51,6 +51,7 @@ const ACTION_TYPES: { value: RuleAction['type']; label: string }[] = [
 ];
 
 export const LogicDialog: Component<LogicDialogProps> = (props) => {
+    const [local] = splitProps(props, ['open', 'onClose', 'rules', 'onAddRule', 'onUpdateRule', 'onDeleteRule']);
     const [editingRule, setEditingRule] = createSignal<FormRule | null>(null);
     const [isNew, setIsNew] = createSignal(false);
 
@@ -71,8 +72,8 @@ export const LogicDialog: Component<LogicDialogProps> = (props) => {
     const handleSave = () => {
         const rule = editingRule();
         if (!rule || !rule.name.trim()) return;
-        if (isNew()) props.onAddRule(rule);
-        else props.onUpdateRule(rule.id, rule);
+        if (isNew()) local.onAddRule(rule);
+        else local.onUpdateRule(rule.id, rule);
         setEditingRule(null);
     };
 
@@ -123,27 +124,27 @@ export const LogicDialog: Component<LogicDialogProps> = (props) => {
 
     return (
         <Dialog
-            open={props.open}
-            onClose={props.onClose}
+            open={local.open}
+            onClose={local.onClose}
             title="Conditional Logic"
             icon={<Icon name="git-branch" size={20} />}
             class="logic-dialog"
             actions={
-                <Button variant="text" size="sm" onClick={props.onClose}>Close</Button>
+                <Button variant="text" size="sm" onClick={local.onClose}>Close</Button>
             }
         >
             <div class="logic-dialog__content">
                 {/* Rule list view */}
                 <Show when={!editingRule()}>
                     <div class="logic-dialog__header-row">
-                        <span class="logic-dialog__count">{props.rules.length} rule{props.rules.length !== 1 ? 's' : ''}</span>
+                        <span class="logic-dialog__count">{local.rules.length} rule{local.rules.length !== 1 ? 's' : ''}</span>
                         <Button variant="filled" size="sm" onClick={handleAdd}>
                             <Icon name="plus" size={14} />
                             Add Rule
                         </Button>
                     </div>
 
-                    <Show when={props.rules.length === 0}>
+                    <Show when={local.rules.length === 0}>
                         <div class="logic-dialog__empty">
                             <Icon name="git-branch" size={32} />
                             <p>No rules yet. Add conditional logic to control field visibility, values, and page navigation.</p>
@@ -151,7 +152,7 @@ export const LogicDialog: Component<LogicDialogProps> = (props) => {
                     </Show>
 
                     <div class="logic-dialog__list">
-                        <For each={props.rules}>
+                        <For each={local.rules}>
                             {(rule) => (
                                 <div class="logic-dialog__rule-card">
                                     <div class="logic-dialog__rule-header">
@@ -160,7 +161,7 @@ export const LogicDialog: Component<LogicDialogProps> = (props) => {
                                                 <input
                                                     type="checkbox"
                                                     checked={rule.enabled}
-                                                    onChange={() => props.onUpdateRule(rule.id, { ...rule, enabled: !rule.enabled })}
+                                                    onChange={() => local.onUpdateRule(rule.id, { ...rule, enabled: !rule.enabled })}
                                                 />
                                                 <span class="logic-dialog__toggle-slider" />
                                             </label>
@@ -170,7 +171,7 @@ export const LogicDialog: Component<LogicDialogProps> = (props) => {
                                             <button class="logic-dialog__icon-btn" onClick={() => handleEdit(rule)} title="Edit">
                                                 <Icon name="pencil" size={14} />
                                             </button>
-                                            <button class="logic-dialog__icon-btn logic-dialog__icon-btn--danger" onClick={() => props.onDeleteRule(rule.id)} title="Delete">
+                                            <button class="logic-dialog__icon-btn logic-dialog__icon-btn--danger" onClick={() => local.onDeleteRule(rule.id)} title="Delete">
                                                 <Icon name="trash" size={14} />
                                             </button>
                                         </div>

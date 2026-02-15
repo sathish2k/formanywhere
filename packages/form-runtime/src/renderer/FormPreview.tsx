@@ -4,7 +4,7 @@
  * Shows the rendered form in a centred card with device-preview chrome,
  * a success feedback screen, and submitted-data inspector.
  */
-import { createSignal, createMemo, Show } from 'solid-js';
+import { splitProps, createSignal, createMemo, Show } from 'solid-js';
 import type { Component, JSX } from 'solid-js';
 import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
@@ -12,7 +12,7 @@ import { Icon } from '@formanywhere/ui/icon';
 import { Divider } from '@formanywhere/ui/divider';
 import type { FormSchema } from '@formanywhere/shared/types';
 import { FormRenderer } from './FormRenderer';
-import '../styles.scss';
+import './styles.scss';
 
 export interface FormPreviewProps {
     schema: FormSchema;
@@ -21,6 +21,7 @@ export interface FormPreviewProps {
 }
 
 export const FormPreview: Component<FormPreviewProps> = (props) => {
+    const [local] = splitProps(props, ['schema', 'onBackToEditor', 'onSubmit']);
     const [previewData, setPreviewData] = createSignal<Record<string, unknown> | null>(null);
     const [device, setDevice] = createSignal<'desktop' | 'tablet' | 'mobile'>('desktop');
 
@@ -34,7 +35,7 @@ export const FormPreview: Component<FormPreviewProps> = (props) => {
 
     const handleSubmit = (data: Record<string, unknown>) => {
         setPreviewData(data);
-        props.onSubmit?.(data);
+        local.onSubmit?.(data);
     };
 
     const handleReset = () => {
@@ -43,7 +44,7 @@ export const FormPreview: Component<FormPreviewProps> = (props) => {
 
     /** Build CSS custom properties from theme settings */
     const themeStyle = createMemo((): JSX.CSSProperties => {
-        const theme = props.schema.settings.theme;
+        const theme = local.schema.settings.theme;
         if (!theme) return {};
         const s: Record<string, string> = {};
         if (theme.primaryColor) s['--m3-color-primary'] = theme.primaryColor;
@@ -64,9 +65,9 @@ export const FormPreview: Component<FormPreviewProps> = (props) => {
                         <Icon name="eye" size={16} />
                         <Typography variant="label-medium">Preview Mode</Typography>
                     </div>
-                    <Show when={props.schema.elements.length > 0}>
+                    <Show when={local.schema.elements.length > 0}>
                         <Typography variant="body-small" color="on-surface-variant">
-                            {props.schema.elements.length} {props.schema.elements.length === 1 ? 'field' : 'fields'}
+                            {local.schema.elements.length} {local.schema.elements.length === 1 ? 'field' : 'fields'}
                         </Typography>
                     </Show>
                 </div>
@@ -98,8 +99,8 @@ export const FormPreview: Component<FormPreviewProps> = (props) => {
                         </button>
                     </div>
                 </div>
-                <Show when={props.onBackToEditor}>
-                    <Button variant="outlined" onClick={props.onBackToEditor}>
+                <Show when={local.onBackToEditor}>
+                    <Button variant="outlined" onClick={local.onBackToEditor}>
                         <Icon name="pencil" size={16} />
                         Back to Editor
                     </Button>
@@ -107,13 +108,13 @@ export const FormPreview: Component<FormPreviewProps> = (props) => {
             </div>
 
             {/* Injected Google Font */}
-            <Show when={props.schema.settings.googleFontUrl}>
-                <link rel="stylesheet" href={props.schema.settings.googleFontUrl} />
+            <Show when={local.schema.settings.googleFontUrl}>
+                <link rel="stylesheet" href={local.schema.settings.googleFontUrl} />
             </Show>
 
             {/* Injected Custom CSS */}
-            <Show when={props.schema.settings.customCSS}>
-                <style>{props.schema.settings.customCSS}</style>
+            <Show when={local.schema.settings.customCSS}>
+                <style>{local.schema.settings.customCSS}</style>
             </Show>
 
             {/* Form card container */}
@@ -134,34 +135,34 @@ export const FormPreview: Component<FormPreviewProps> = (props) => {
                                     <Icon name="check-circle" size={56} />
                                 </div>
                                 <Typography variant="headline-small">
-                                    {props.schema.settings.successHeading || 'Thank You!'}
+                                    {local.schema.settings.successHeading || 'Thank You!'}
                                 </Typography>
                                 <Typography variant="body-medium" color="on-surface-variant">
-                                    {props.schema.settings.successMessage || 'Your response has been recorded.'}
+                                    {local.schema.settings.successMessage || 'Your response has been recorded.'}
                                 </Typography>
 
                                 {/* Optional redirect info */}
-                                <Show when={props.schema.settings.redirectUrl}>
+                                <Show when={local.schema.settings.redirectUrl}>
                                     <Typography variant="body-small" color="on-surface-variant">
-                                        Redirecting to {props.schema.settings.redirectUrl}
-                                        {props.schema.settings.redirectDelay ? ` in ${props.schema.settings.redirectDelay}s...` : '...'}
+                                        Redirecting to {local.schema.settings.redirectUrl}
+                                        {local.schema.settings.redirectDelay ? ` in ${local.schema.settings.redirectDelay}s...` : '...'}
                                     </Typography>
                                 </Show>
 
                                 {/* Optional custom button */}
-                                <Show when={props.schema.settings.successButtonText}>
+                                <Show when={local.schema.settings.successButtonText}>
                                     <Button
                                         variant="tonal"
                                         onClick={() => {
-                                            const url = props.schema.settings.successButtonUrl;
+                                            const url = local.schema.settings.successButtonUrl;
                                             if (url) window.open(url, '_blank');
                                         }}
                                     >
-                                        {props.schema.settings.successButtonText}
+                                        {local.schema.settings.successButtonText}
                                     </Button>
                                 </Show>
 
-                                <Show when={props.schema.settings.successShowData !== false}>
+                                <Show when={local.schema.settings.successShowData !== false}>
                                     <Divider />
 
                                     {/* Submitted data inspector */}
@@ -183,8 +184,8 @@ export const FormPreview: Component<FormPreviewProps> = (props) => {
                                         <Icon name="redo" size={16} />
                                         Preview Again
                                     </Button>
-                                    <Show when={props.onBackToEditor}>
-                                        <Button variant="filled" onClick={props.onBackToEditor}>
+                                    <Show when={local.onBackToEditor}>
+                                        <Button variant="filled" onClick={local.onBackToEditor}>
                                             <Icon name="pencil" size={16} />
                                             Back to Editor
                                         </Button>
@@ -196,17 +197,17 @@ export const FormPreview: Component<FormPreviewProps> = (props) => {
                         {/* Form header */}
                         <div class="form-preview__form-header">
                             <Typography variant="headline-small">
-                                {props.schema.name}
+                                {local.schema.name}
                             </Typography>
-                            <Show when={props.schema.description}>
+                            <Show when={local.schema.description}>
                                 <Typography variant="body-medium" color="on-surface-variant">
-                                    {props.schema.description}
+                                    {local.schema.description}
                                 </Typography>
                             </Show>
                         </div>
 
                         <FormRenderer
-                            schema={props.schema}
+                            schema={local.schema}
                             onSubmit={handleSubmit}
                         />
                     </Show>

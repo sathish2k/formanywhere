@@ -2,6 +2,7 @@
  * SchemaDialog — View & copy current form schema JSON
  * Migrated from AI-Powered Form Builder UI → SolidJS + M3
  */
+import { splitProps } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Dialog } from '@formanywhere/ui/dialog';
 import { Button } from '@formanywhere/ui/button';
@@ -16,7 +17,8 @@ export interface SchemaDialogProps {
 }
 
 export const SchemaDialog: Component<SchemaDialogProps> = (props) => {
-    const schemaJson = () => props.schema ? JSON.stringify(props.schema, null, 2) : '{}';
+    const [local] = splitProps(props, ['open', 'onClose', 'schema']);
+    const schemaJson = () => local.schema ? JSON.stringify(local.schema, null, 2) : '{}';
 
     const handleCopy = () => {
         navigator.clipboard.writeText(schemaJson());
@@ -24,8 +26,8 @@ export const SchemaDialog: Component<SchemaDialogProps> = (props) => {
 
     return (
         <Dialog
-            open={props.open}
-            onClose={props.onClose}
+            open={local.open}
+            onClose={local.onClose}
             title="Form Schema"
             icon={<Icon name="file-text" size={20} />}
             class="schema-dialog"
@@ -35,7 +37,7 @@ export const SchemaDialog: Component<SchemaDialogProps> = (props) => {
                         <Icon name="copy" size={14} />
                         Copy
                     </Button>
-                    <Button variant="text" size="sm" onClick={props.onClose}>Close</Button>
+                    <Button variant="text" size="sm" onClick={local.onClose}>Close</Button>
                 </>
             }
         >

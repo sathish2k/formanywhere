@@ -122,7 +122,7 @@
         left: 3px;
         top: 3px;
         border-radius: 50%;
-        background: #fff;
+        background: var(--m3-color-surface, #fff);
         transition: transform 200ms;
     }
 }
@@ -497,8 +497,8 @@
     margin: 0;
     padding: 16px;
     border-radius: 8px;
-    background: #1E1E1E;
-    color: #D4D4D4;
+    background: var(--m3-color-inverse-surface, #1E1E1E);
+    color: var(--m3-color-inverse-on-surface, #D4D4D4);
     font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
     font-size: 0.8125rem;
     line-height: 1.5;
@@ -777,7 +777,7 @@
     border-radius: 100px;
     font-size: 0.8125rem;
     font-weight: 600;
-    color: #fff;
+    color: var(--m3-color-on-primary, #fff);
     cursor: default;
 
     &--secondary {
@@ -1061,8 +1061,8 @@
     }
 
     &--pass {
-        background: #C8E6C9;
-        color: #1B5E20;
+        background: var(--m3-color-success-container, #C8E6C9);
+        color: var(--m3-color-on-success-container, #1B5E20);
     }
 
     &--fail {
@@ -1144,7 +1144,7 @@
     padding: 0 5px;
     border-radius: 9999px;
     background: var(--m3-color-error, #B3261E);
-    color: #fff;
+    color: var(--m3-color-on-error, #fff);
     font-weight: 700;
     min-width: 14px;
     text-align: center;
@@ -1234,12 +1234,12 @@
     border-radius: 4px;
 
     &--true {
-        color: #1B5E20;
-        background: #E8F5E9;
+        color: var(--m3-color-on-success-container, #1B5E20);
+        background: var(--m3-color-success-container, #E8F5E9);
     }
     &--false {
-        color: #B71C1C;
-        background: #FFEBEE;
+        color: var(--m3-color-on-error-container, #B71C1C);
+        background: var(--m3-color-error-container, #FFEBEE);
     }
 }
 
@@ -1317,7 +1317,7 @@
     align-items: center;
     gap: 8px;
     padding: 32px 16px;
-    color: #2E7D32;
+    color: var(--m3-color-on-success-container, #2E7D32);
     text-align: center;
 
     p { font-size: 0.8125rem; }
@@ -1329,7 +1329,7 @@
     padding: 10px 12px;
     border: 1px solid var(--m3-color-error-container, #F9DEDC);
     border-radius: 10px;
-    background: #FFF3F0;
+    background: var(--m3-color-error-container, #FFF3F0);
     margin-bottom: 8px;
 }
 
@@ -1419,8 +1419,8 @@
     font-size: 0.75rem;
     margin-bottom: 4px;
 
-    &--pass { background: #E8F5E9; }
-    &--fail { background: #FFEBEE; }
+    &--pass { background: var(--m3-color-success-container, #E8F5E9); }
+    &--fail { background: var(--m3-color-error-container, #FFEBEE); }
 }
 
 .debugger__condition-status {
@@ -1430,8 +1430,8 @@
     flex-shrink: 0;
 }
 
-.debugger__condition-row--pass .debugger__condition-status { color: #2E7D32; }
-.debugger__condition-row--fail .debugger__condition-status { color: #C62828; }
+.debugger__condition-row--pass .debugger__condition-status { color: var(--m3-color-on-success-container, #2E7D32); }
+.debugger__condition-row--fail .debugger__condition-status { color: var(--m3-color-on-error-container, #C62828); }
 
 .debugger__condition-field {
     font-family: 'SF Mono', 'Fira Code', monospace;

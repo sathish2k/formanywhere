@@ -2,7 +2,7 @@
  * CanvasElement — Renders the actual M3 UI control based on element type.
  * Used inside the Canvas to show real form fields (not just type badges).
  */
-import { Show, For, Switch as SwitchFlow, Match, createSignal } from 'solid-js';
+import { splitProps, Show, For, Switch as SwitchFlow, Match, createSignal } from 'solid-js';
 import type { Component } from 'solid-js';
 import type { FormElement } from '@formanywhere/shared/types';
 import { TextField } from '@formanywhere/ui/textfield';
@@ -23,7 +23,8 @@ export interface CanvasElementProps {
 }
 
 export const CanvasElement: Component<CanvasElementProps> = (props) => {
-    const el = () => props.element;
+    const [local] = splitProps(props, ['element', 'dragSource', 'onCanvasDragStart', 'onDragEnd']);
+    const el = () => local.element;
 
     return (
         <SwitchFlow>
@@ -197,9 +198,9 @@ export const CanvasElement: Component<CanvasElementProps> = (props) => {
                     <CanvasRegion
                         elements={() => el().elements || []}
                         parentId={el().id}
-                        dragSource={props.dragSource}
-                        onCanvasDragStart={props.onCanvasDragStart}
-                        onDragEnd={props.onDragEnd}
+                        dragSource={local.dragSource}
+                        onCanvasDragStart={local.onCanvasDragStart}
+                        onDragEnd={local.onDragEnd}
                         placeholder={`Drop content in ${el().type.replace('-', ' ')}`}
                     />
                 </div>
@@ -208,9 +209,9 @@ export const CanvasElement: Component<CanvasElementProps> = (props) => {
             <Match when={el().type === 'grid'}>
                 <GridElement
                     element={el()}
-                    dragSource={props.dragSource}
-                    onCanvasDragStart={props.onCanvasDragStart}
-                    onDragEnd={props.onDragEnd}
+                    dragSource={local.dragSource}
+                    onCanvasDragStart={local.onCanvasDragStart}
+                    onDragEnd={local.onDragEnd}
                 />
             </Match>
         </SwitchFlow>
@@ -224,22 +225,23 @@ const GridElement: Component<{
     onCanvasDragStart?: (id: string) => void;
     onDragEnd?: () => void;
 }> = (props) => {
+    const [local] = splitProps(props, ['element', 'dragSource', 'onCanvasDragStart', 'onDragEnd']);
     const { updateElement, selectedElement, setSelectedElement } = useFormEditor();
 
-    const columns = () => props.element.elements || [];
+    const columns = () => local.element.elements || [];
     const totalSpan = () => columns().reduce((sum, c) => sum + ((c as any).span || 1), 0);
 
     const updateColumnWidth = (colId: string, newSpan: number) => {
         const updatedCols = columns().map((col) =>
             col.id === colId ? { ...col, span: newSpan } : col
         );
-        updateElement(props.element.id, { elements: updatedCols });
+        updateElement(local.element.id, { elements: updatedCols });
     };
 
     const deleteColumn = (colId: string) => {
         const remaining = columns().filter((col) => col.id !== colId);
-        updateElement(props.element.id, { elements: remaining });
-        if (selectedElement() === colId) setSelectedElement(props.element.id);
+        updateElement(local.element.id, { elements: remaining });
+        if (selectedElement() === colId) setSelectedElement(local.element.id);
     };
 
     return (
@@ -254,9 +256,9 @@ const GridElement: Component<{
                             onSelect={() => setSelectedElement(col.id)}
                             onDelete={() => deleteColumn(col.id)}
                             onUpdateWidth={(span) => updateColumnWidth(col.id, span)}
-                            dragSource={props.dragSource}
-                            onCanvasDragStart={props.onCanvasDragStart}
-                            onDragEnd={props.onDragEnd}
+                            dragSource={local.dragSource}
+                            onCanvasDragStart={local.onCanvasDragStart}
+                            onDragEnd={local.onDragEnd}
                         />
                     )}
                 </For>
@@ -277,17 +279,18 @@ const GridColumnEl: Component<{
     onCanvasDragStart?: (id: string) => void;
     onDragEnd?: () => void;
 }> = (props) => {
+    const [local] = splitProps(props, ['col', 'totalSpan', 'isSelected', 'onSelect', 'onDelete', 'onUpdateWidth', 'dragSource', 'onCanvasDragStart', 'onDragEnd']);
     const [showWidthPopup, setShowWidthPopup] = createSignal(false);
-    const span = () => (props.col as any).span || 1;
+    const span = () => (local.col as any).span || 1;
 
     return (
         <div
             class="canvas-element__grid-col"
-            classList={{ 'canvas-element__grid-col--selected': props.isSelected }}
+            classList={{ 'canvas-element__grid-col--selected': local.isSelected }}
             style={{ width: `${(span() / 12) * 100}%` }}
             onClick={(e) => {
                 e.stopPropagation();
-                props.onSelect();
+                local.onSelect();
             }}
         >
             {/* Delete column button */}
@@ -295,7 +298,7 @@ const GridColumnEl: Component<{
                 class="canvas-element__grid-col-delete"
                 onClick={(e) => {
                     e.stopPropagation();
-                    props.onDelete();
+                    local.onDelete();
                 }}
             >
                 <Icon name="minus" size={12} />
@@ -319,7 +322,7 @@ const GridColumnEl: Component<{
                         <button
                             classList={{ active: span() === v }}
                             onClick={() => {
-                                props.onUpdateWidth(v);
+                                local.onUpdateWidth(v);
                                 setShowWidthPopup(false);
                             }}
                         >
@@ -332,11 +335,11 @@ const GridColumnEl: Component<{
             {/* Column drop zone */}
             <div class="canvas-element__grid-col-inner">
                 <CanvasRegion
-                    elements={() => props.col.elements || []}
-                    parentId={props.col.id}
-                    dragSource={props.dragSource}
-                    onCanvasDragStart={props.onCanvasDragStart}
-                    onDragEnd={props.onDragEnd}
+                    elements={() => local.col.elements || []}
+                    parentId={local.col.id}
+                    dragSource={local.dragSource}
+                    onCanvasDragStart={local.onCanvasDragStart}
+                    onDragEnd={local.onDragEnd}
                     placeholder="Drop elements here"
                 />
             </div>

@@ -9,7 +9,7 @@ import { Canvas } from '../canvas/Canvas';
 import { Toolbar } from '../toolbar/Toolbar';
 import { PropertiesPanel } from '../panels/PropertiesPanel';
 import { useFormEditor } from '../FormEditor';
-import '../../styles.scss';
+import './styles.scss';
 
 export const FormEditorLayout: Component = () => {
     const {

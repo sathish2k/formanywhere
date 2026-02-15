@@ -2,13 +2,14 @@
  * ImportForm — @formanywhere/form-editor
  * Lets users paste JSON or upload a file to import an existing form schema.
  */
-import { createSignal } from 'solid-js';
+import { createSignal, splitProps } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
 import type { FormSchema } from '@formanywhere/shared/types';
 import { parseSchema } from '../../engine/schema';
+import './styles.scss';
 
 export interface ImportFormProps {
     onImport: (schema: FormSchema) => void;
@@ -16,6 +17,7 @@ export interface ImportFormProps {
 }
 
 export const ImportForm: Component<ImportFormProps> = (props) => {
+    const [local] = splitProps(props, ['onImport', 'onCancel']);
     const [jsonInput, setJsonInput] = createSignal('');
     const [error, setError] = createSignal('');
     const [dragOver, setDragOver] = createSignal(false);
@@ -34,7 +36,7 @@ export const ImportForm: Component<ImportFormProps> = (props) => {
                 return;
             }
             setError('');
-            props.onImport(schema);
+            local.onImport(schema);
         } catch {
             setError('Invalid JSON. Please check the format and try again.');
         }
@@ -129,7 +131,7 @@ export const ImportForm: Component<ImportFormProps> = (props) => {
 
                 {/* Actions */}
                 <div class="import-form__actions">
-                    <Button variant="text" onClick={props.onCancel}>
+                    <Button variant="text" onClick={local.onCancel}>
                         Cancel
                     </Button>
                     <Button

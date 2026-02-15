@@ -11,7 +11,7 @@
  *   - Edge-case generator (auto-generated test scenarios)
  *   - Test data inputs per referenced field
  */
-import { createSignal, createMemo, For, Show, batch } from 'solid-js';
+import { splitProps, createSignal, createMemo, For, Show, batch } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Dialog } from '@formanywhere/ui/dialog';
 import { Button } from '@formanywhere/ui/button';
@@ -75,6 +75,7 @@ const ACTION_LABELS: Record<string, string> = {
 // ─── Component ──────────────────────────────────────────────────────────────────
 
 export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) => {
+    const [local] = splitProps(props, ['open', 'onClose', 'rules', 'elements']);
     // State
     const [breakpoints, setBreakpoints] = createSignal<Set<string>>(new Set());
     const [testValues, setTestValues] = createSignal<Record<string, string>>({});
@@ -84,9 +85,9 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
     const [activeTab, setActiveTab] = createSignal<'watch' | 'trace' | 'conflicts' | 'coverage'>('watch');
 
     // Derived
-    const referencedFields = createMemo(() => collectReferencedFields(props.rules));
-    const edgeCases = createMemo(() => generateEdgeCases(props.rules));
-    const enabledRules = createMemo(() => props.rules.filter((r) => r.enabled));
+    const referencedFields = createMemo(() => collectReferencedFields(local.rules));
+    const edgeCases = createMemo(() => generateEdgeCases(local.rules));
+    const enabledRules = createMemo(() => local.rules.filter((r) => r.enabled));
 
     // ── Breakpoint management ────────────────────────────────────────────────
     const toggleBreakpoint = (ruleId: string) => {
@@ -114,7 +115,7 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
     // ── Execution ────────────────────────────────────────────────────────────
     const run = () => {
         const values: Record<string, unknown> = { ...testValues() };
-        const result = runDebugSession(props.rules, values, breakpoints());
+        const result = runDebugSession(local.rules, values, breakpoints());
         batch(() => {
             setSession(result);
             setStepIndex(result.pausedAtIndex);
@@ -129,10 +130,10 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
         const idx = stepIndex();
         if (idx === null) return;
         const nextIdx = idx + 1;
-        if (nextIdx >= props.rules.length) {
+        if (nextIdx >= local.rules.length) {
             // Finish
             const values: Record<string, unknown> = { ...testValues() };
-            const result = runDebugSession(props.rules, values, new Set()); // run without breakpoints to completion
+            const result = runDebugSession(local.rules, values, new Set()); // run without breakpoints to completion
             batch(() => {
                 setSession(result);
                 setStepIndex(null);
@@ -140,11 +141,11 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
             return;
         }
         const values: Record<string, unknown> = { ...testValues() };
-        const result = runDebugSession(props.rules, values, breakpoints(), nextIdx);
+        const result = runDebugSession(local.rules, values, breakpoints(), nextIdx);
         batch(() => {
             setSession(result);
             setStepIndex(result.pausedAtIndex ?? nextIdx);
-            setSelectedRuleId(props.rules[nextIdx]?.id ?? null);
+            setSelectedRuleId(local.rules[nextIdx]?.id ?? null);
         });
     };
 
@@ -153,10 +154,10 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
         if (idx === null) return;
         // Remove current breakpoint temporarily and continue
         const bp = new Set(breakpoints());
-        const currentRuleId = props.rules[idx]?.id;
+        const currentRuleId = local.rules[idx]?.id;
         if (currentRuleId) bp.delete(currentRuleId);
         const values: Record<string, unknown> = { ...testValues() };
-        const result = runDebugSession(props.rules, values, bp);
+        const result = runDebugSession(local.rules, values, bp);
         batch(() => {
             setSession(result);
             setStepIndex(result.pausedAtIndex);
@@ -202,14 +203,14 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
 
     return (
         <Dialog
-            open={props.open}
-            onClose={props.onClose}
+            open={local.open}
+            onClose={local.onClose}
             title="Logic Debugger"
             icon={<Icon name="code" size={20} />}
             class="debugger-dialog"
             actions={
                 <div class="debugger__dialog-actions">
-                    <Button variant="text" size="sm" onClick={props.onClose}>Close</Button>
+                    <Button variant="text" size="sm" onClick={local.onClose}>Close</Button>
                 </div>
             }
         >
@@ -218,7 +219,7 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
                 <div class="debugger__rules-panel">
                     <div class="debugger__panel-header">
                         <span class="debugger__panel-title">Rules</span>
-                        <span class="debugger__rule-count">{props.rules.length}</span>
+                        <span class="debugger__rule-count">{local.rules.length}</span>
                     </div>
 
                     {/* Toolbar */}
@@ -261,13 +262,13 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
 
                     {/* Rule list */}
                     <div class="debugger__rule-list">
-                        <Show when={props.rules.length > 0} fallback={
+                        <Show when={local.rules.length > 0} fallback={
                             <div class="debugger__empty">
                                 <Icon name="code" size={24} />
                                 <p>No logic rules defined. Create rules in the Logic dialog first.</p>
                             </div>
                         }>
-                            <For each={props.rules}>
+                            <For each={local.rules}>
                                 {(rule, idx) => {
                                     const evaluation = () => session()?.evaluations.find((e) => e.ruleId === rule.id);
                                     const isCurrentStep = () => stepIndex() !== null && stepIndex() === idx();
@@ -393,7 +394,7 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
                                             <For each={Object.entries(s().snapshot.fieldValues)}>
                                                 {([fieldId, value]) => (
                                                     <div class="debugger__watch-row">
-                                                        <span class="debugger__watch-key">{fieldLabel(props.elements, fieldId)}</span>
+                                                        <span class="debugger__watch-key">{fieldLabel(local.elements, fieldId)}</span>
                                                         <span class="debugger__watch-value">
                                                             {value === '' ? <em>empty</em> : String(value)}
                                                         </span>
@@ -409,7 +410,7 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
                                                 <For each={Object.entries(s().snapshot.visibility)}>
                                                     {([fieldId, visible]) => (
                                                         <div class="debugger__watch-row">
-                                                            <span class="debugger__watch-key">{fieldLabel(props.elements, fieldId)}.visible</span>
+                                                            <span class="debugger__watch-key">{fieldLabel(local.elements, fieldId)}.visible</span>
                                                             <span class={`debugger__watch-bool ${visible ? 'debugger__watch-bool--true' : 'debugger__watch-bool--false'}`}>
                                                                 {visible ? 'true' : 'false'}
                                                             </span>
@@ -426,7 +427,7 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
                                                 <For each={Object.entries(s().snapshot.requiredState)}>
                                                     {([fieldId, required]) => (
                                                         <div class="debugger__watch-row">
-                                                            <span class="debugger__watch-key">{fieldLabel(props.elements, fieldId)}.required</span>
+                                                            <span class="debugger__watch-key">{fieldLabel(local.elements, fieldId)}.required</span>
                                                             <span class={`debugger__watch-bool ${required ? 'debugger__watch-bool--true' : 'debugger__watch-bool--false'}`}>
                                                                 {required ? 'true' : 'false'}
                                                             </span>
@@ -443,7 +444,7 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
                                                 <For each={Object.entries(s().snapshot.enabledState)}>
                                                     {([fieldId, enabled]) => (
                                                         <div class="debugger__watch-row">
-                                                            <span class="debugger__watch-key">{fieldLabel(props.elements, fieldId)}.enabled</span>
+                                                            <span class="debugger__watch-key">{fieldLabel(local.elements, fieldId)}.enabled</span>
                                                             <span class={`debugger__watch-bool ${enabled ? 'debugger__watch-bool--true' : 'debugger__watch-bool--false'}`}>
                                                                 {enabled ? 'true' : 'false'}
                                                             </span>
@@ -521,7 +522,7 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
                                                     </div>
                                                     <div class="debugger__conflict-body">
                                                         <div class="debugger__conflict-title">
-                                                            Conflict on "{fieldLabel(props.elements, conflict.targetId)}"
+                                                            Conflict on "{fieldLabel(local.elements, conflict.targetId)}"
                                                         </div>
                                                         <div class="debugger__conflict-desc">{conflict.description}</div>
                                                         <div class="debugger__conflict-rules">
@@ -565,7 +566,7 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
                                                     <div class={`debugger__condition-row ${cr.passed ? 'debugger__condition-row--pass' : 'debugger__condition-row--fail'}`}>
                                                         <span class="debugger__condition-status">{cr.passed ? '✓' : '✗'}</span>
                                                         <code class="debugger__condition-field">
-                                                            {fieldLabel(props.elements, cr.condition.fieldId)}
+                                                            {fieldLabel(local.elements, cr.condition.fieldId)}
                                                         </code>
                                                         <span class="debugger__condition-op">
                                                             {OPERATOR_SYMBOLS[cr.condition.operator] || cr.condition.operator}
@@ -589,7 +590,7 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
                                                             <span class="debugger__action-type">{ACTION_LABELS[action.type]}</span>
                                                             <span class="debugger__action-arrow">→</span>
                                                             <span class="debugger__action-target">
-                                                                {fieldLabel(props.elements, action.targetId)}
+                                                                {fieldLabel(local.elements, action.targetId)}
                                                             </span>
                                                             <Show when={action.value}>
                                                                 <span class="debugger__action-value">= "{action.value}"</span>
@@ -652,7 +653,7 @@ export const LogicDebuggerDialog: Component<LogicDebuggerDialogProps> = (props) 
                                 {(fieldId) => (
                                     <div class="debugger__field-row">
                                         <label class="debugger__field-label" title={fieldId}>
-                                            {fieldLabel(props.elements, fieldId)}
+                                            {fieldLabel(local.elements, fieldId)}
                                         </label>
                                         <input
                                             type="text"

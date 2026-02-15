@@ -11,7 +11,7 @@
  *   - @formanywhere/form-editor  (editor panels)
  *   - @formanywhere/form-runtime (preview)
  */
-import { createSignal, Show, For, onMount, createEffect } from 'solid-js';
+import { splitProps, createSignal, Show, For, onMount, createEffect } from 'solid-js';
 import type { Component } from 'solid-js';
 import { FormEditor } from './FormEditor';
 import { FormEditorLayout } from './layout/FormEditorLayout';
@@ -31,6 +31,7 @@ import { IntegrationsDialog } from './dialogs/IntegrationsDialog';
 import { FormSettingsDialog } from './dialogs/FormSettingsDialog';
 import { LogicDebuggerDialog } from './dialogs/LogicDebuggerDialog';
 import type { FormSettings } from './dialogs/FormSettingsDialog';
+import './form-builder.scss';
 
 export type BuilderMode = 'blank' | 'template' | 'import' | 'ai';
 
@@ -44,7 +45,8 @@ export interface FormBuilderPageProps {
 }
 
 export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
-    const mode = () => props.mode ?? 'blank';
+    const [local] = splitProps(props, ['formId', 'mode', 'templateSchema']);
+    const mode = () => local.mode ?? 'blank';
     const [schema, setSchema] = createSignal<FormSchema | null>(null);
     const [previewing, setPreviewing] = createSignal(false);
     const [saving, setSaving] = createSignal(false);
@@ -64,6 +66,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
     const [debuggerOpen, setDebuggerOpen] = createSignal(false);
     const [formRules, setFormRules] = createSignal<FormRule[]>([]);
     const [formSettings, setFormSettings] = createSignal<FormSettings>({
+        // M3 baseline palette defaults — data values for user-customizable theme, not CSS styling
         primaryColor: '#6750A4',
         secondaryColor: '#625B71',
         backgroundColor: '#FFFBFE',
@@ -90,7 +93,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
     const deleteRule = (id: string) => setFormRules((prev) => prev.filter((r) => r.id !== id));
 
     // ── Autosave to localStorage (debounced) ──────────────────────────────
-    const AUTOSAVE_KEY = `formanywhere_draft_${props.formId ?? 'new'}`;
+    const AUTOSAVE_KEY = `formanywhere_draft_${local.formId ?? 'new'}`;
     const AUTOSAVE_INTERVAL = 5_000; // 5 seconds
     let autosaveTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -149,10 +152,10 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
             setShowOverlay('ai');
         } else if (mode() === 'import') {
             setShowOverlay('import');
-        } else if (mode() === 'template' && props.templateSchema) {
-            setSchema({ ...props.templateSchema, id: generateId(), updatedAt: new Date() });
-        } else if (props.formId) {
-            loadExistingForm(props.formId);
+        } else if (mode() === 'template' && local.templateSchema) {
+            setSchema({ ...local.templateSchema, id: generateId(), updatedAt: new Date() });
+        } else if (local.formId) {
+            loadExistingForm(local.formId);
         } else {
             // For blank mode, try restoring a draft
             restoreDraft();
@@ -259,11 +262,11 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
         setSaving(true);
         try {
             const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:4000';
-            const endpoint = props.formId
-                ? `${API_URL}/forms/${props.formId}`
+            const endpoint = local.formId
+                ? `${API_URL}/forms/${local.formId}`
                 : `${API_URL}/forms`;
             await fetch(endpoint, {
-                method: props.formId ? 'PUT' : 'POST',
+                method: local.formId ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     title: schemaToSave.name,
