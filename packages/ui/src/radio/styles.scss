@@ -15,6 +15,15 @@
     gap: 4px;
     cursor: pointer;
 
+    /* ─── SIZE VARIANTS ────────────────────────────────────────────────────────── */
+
+    &.size-sm {
+        .md-radio-container { width: 32px; height: 32px; }
+        .md-radio__outer { width: 16px; height: 16px; }
+        &.checked .md-radio__inner { width: 8px; height: 8px; }
+        .md-radio__label { font-size: 12px; line-height: 16px; }
+    }
+
     &.disabled {
         cursor: not-allowed;
         opacity: 0.38;

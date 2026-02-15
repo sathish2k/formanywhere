@@ -9,6 +9,32 @@
     overflow: hidden;
     font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
 
+    /* ─── SIZE VARIANTS ────────────────────────────────────────────────────────── */
+
+    &.size-sm {
+        .md-segmented-button__segment {
+            min-height: 32px;
+            padding: 6px 16px;
+            font-size: 12px;
+        }
+        .md-segmented-button__check,
+        .md-segmented-button__icon { width: 14px; height: 14px; }
+    }
+
+    &.size-md {
+        /* Default — no overrides needed */
+    }
+
+    &.size-lg {
+        .md-segmented-button__segment {
+            min-height: 48px;
+            padding: 12px 32px;
+            font-size: 16px;
+        }
+        .md-segmented-button__check,
+        .md-segmented-button__icon { width: 20px; height: 20px; }
+    }
+
     /* ─── LIQUID GLASS VARIANT ────────────────────────────────────────────────── */
 
     &.glass {

@@ -106,6 +106,8 @@ export interface DatePickerProps {
     onChange?: (date: Date) => void;
     /** Label for the input */
     label?: string;
+    /** Size variant */
+    size?: 'sm' | 'md' | 'lg';
     /** Disabled state */
     disabled?: boolean;
     /** Error state */
@@ -124,7 +126,7 @@ export interface DatePickerProps {
 
 export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
     const [local, others] = splitProps(props, [
-        'value', 'onChange', 'label', 'disabled', 'error', 'helperText', 'variant', 'style', 'class'
+        'value', 'onChange', 'label', 'size', 'disabled', 'error', 'helperText', 'variant', 'style', 'class'
     ]);
 
     const [open, setOpen] = createSignal(false);
@@ -187,6 +189,7 @@ export const DatePicker: (props: DatePickerProps) => JSX.Element = (props) => {
                 <TextField
                     label={local.label || "Select Date"}
                     value={local.value ? formatDate(local.value, 'MMM d, yyyy') : ''}
+                    size={local.size}
                     disabled={local.disabled}
                     error={local.error}
                     supportingText={local.helperText}

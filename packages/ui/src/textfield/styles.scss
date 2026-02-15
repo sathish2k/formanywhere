@@ -15,6 +15,50 @@
     -webkit-tap-highlight-color: transparent;
     width: 100%;
 
+    /* ─── SIZE VARIANTS ────────────────────────────────────────────────────────── */
+
+    &.size-sm {
+        .md-tf-field { min-height: 40px; }
+        .md-tf-content { min-height: 40px; padding: 0 12px; }
+        .md-tf-input { font-size: 14px; line-height: 20px; }
+        .md-tf-label-outlined { font-size: 14px; line-height: 20px; }
+        .md-tf-label-filled { font-size: 14px; line-height: 20px; }
+        .md-tf-icon { width: 20px; height: 20px; &.leading { margin-right: 8px; } &.trailing { margin-left: 8px; } }
+        .md-tf-supporting { font-size: 11px; padding: 2px 12px 0; }
+
+        &.focused .md-tf-label-outlined,
+        &.populated .md-tf-label-outlined { font-size: 11px; line-height: 14px; transform: translateY(-22px); }
+
+        &.focused .md-tf-label-filled,
+        &.populated .md-tf-label-filled { top: 4px; font-size: 11px; line-height: 14px; }
+
+        &.has-label.filled .md-tf-content { padding-top: 4px; }
+        &.has-label.filled .md-tf-input { padding-top: 12px; }
+    }
+
+    &.size-md {
+        /* Default — no overrides needed */
+    }
+
+    &.size-lg {
+        .md-tf-field { min-height: 64px; }
+        .md-tf-content { min-height: 64px; padding: 0 20px; }
+        .md-tf-input { font-size: 18px; line-height: 28px; }
+        .md-tf-label-outlined { font-size: 18px; line-height: 28px; }
+        .md-tf-label-filled { font-size: 18px; line-height: 28px; }
+        .md-tf-icon { width: 28px; height: 28px; &.leading { margin-right: 16px; } &.trailing { margin-left: 16px; } }
+        .md-tf-supporting { font-size: 13px; padding: 4px 20px 0; }
+
+        &.focused .md-tf-label-outlined,
+        &.populated .md-tf-label-outlined { font-size: 12px; line-height: 16px; transform: translateY(-32px); }
+
+        &.focused .md-tf-label-filled,
+        &.populated .md-tf-label-filled { top: 10px; font-size: 12px; line-height: 16px; }
+
+        &.has-label.filled .md-tf-content { padding-top: 10px; }
+        &.has-label.filled .md-tf-input { padding-top: 20px; }
+    }
+
     &.disabled {
         pointer-events: none;
 

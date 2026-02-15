@@ -12,6 +12,8 @@ export interface TimePickerProps {
     onChange?: (value: string) => void;
     /** Label */
     label?: string;
+    /** Size variant */
+    size?: 'sm' | 'md' | 'lg';
     /** Disabled */
     disabled?: boolean;
     /** Error */

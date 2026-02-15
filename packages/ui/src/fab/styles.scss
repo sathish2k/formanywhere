@@ -50,7 +50,7 @@
 
     /* ─── SIZES ────────────────────────────────────────────────────────────────── */
 
-    &.size-small {
+    &.size-sm {
         height: 40px;
         width: 40px;
         padding: 8px;
@@ -59,7 +59,7 @@
         .md-fab__icon { width: 24px; height: 24px; }
     }
 
-    &.size-medium {
+    &.size-md {
         height: 56px;
         width: 56px;
         padding: 16px;
@@ -68,7 +68,7 @@
         .md-fab__icon { width: 24px; height: 24px; }
     }
 
-    &.size-large {
+    &.size-lg {
         height: 96px;
         width: 96px;
         padding: 30px;

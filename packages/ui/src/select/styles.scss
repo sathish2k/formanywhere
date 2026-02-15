@@ -6,6 +6,38 @@
     position: relative;
     min-width: 200px;
 
+    /* ─── SIZE VARIANTS ────────────────────────────────────────────────────────── */
+
+    &.size-sm {
+        .md-select__field { min-height: 40px; }
+        .md-select__label { font-size: 14px; &.floating { top: 4px; font-size: 11px; } }
+        .md-select__value { font-size: 14px; &.has-label { padding-top: 12px; } }
+        .md-select__arrow { width: 20px; height: 20px; }
+        .md-select__option { padding: 8px 12px; font-size: 14px; }
+        .md-select__supporting { font-size: 11px; }
+
+        &.filled .md-select__field { padding: 4px 12px; }
+        &.outlined .md-select__field { padding: 0 12px; }
+        &.outlined.focused .md-select__field { padding: 0 11px; }
+    }
+
+    &.size-md {
+        /* Default — no overrides needed */
+    }
+
+    &.size-lg {
+        .md-select__field { min-height: 64px; }
+        .md-select__label { font-size: 18px; &.floating { top: 10px; font-size: 12px; } }
+        .md-select__value { font-size: 18px; &.has-label { padding-top: 20px; } }
+        .md-select__arrow { width: 28px; height: 28px; }
+        .md-select__option { padding: 14px 20px; font-size: 18px; }
+        .md-select__supporting { font-size: 13px; }
+
+        &.filled .md-select__field { padding: 10px 20px; }
+        &.outlined .md-select__field { padding: 0 20px; }
+        &.outlined.focused .md-select__field { padding: 0 19px; }
+    }
+
     &.disabled .md-select__field {
         cursor: not-allowed;
         opacity: 0.38;

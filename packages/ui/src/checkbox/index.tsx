@@ -17,6 +17,8 @@ export interface CheckboxProps {
     indeterminate?: boolean;
     /** Disabled state */
     disabled?: boolean;
+    /** Size variant */
+    size?: 'sm' | 'md';
     /** Name for form */
     name?: string;
     /** Value for form */
@@ -39,7 +41,7 @@ export interface CheckboxProps {
 
 export const Checkbox: Component<CheckboxProps> = (props) => {
     const [local] = splitProps(props, [
-        'checked', 'defaultChecked', 'indeterminate', 'disabled',
+        'checked', 'defaultChecked', 'indeterminate', 'disabled', 'size',
         'name', 'value', 'onChange', 'error', 'label', 'ariaLabel', 'style', 'class'
     ]);
 
@@ -57,6 +59,7 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
 
     const wrapperClass = () => {
         const classes = ['md-checkbox-wrapper'];
+        if (local.size === 'sm') classes.push('size-sm');
         if (local.disabled) classes.push('disabled');
         if (local.class) classes.push(local.class);
         return classes.join(' ');

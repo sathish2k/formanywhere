@@ -21,6 +21,8 @@ export interface SelectOption {
 export interface SelectProps {
     /** Select variant */
     variant?: 'filled' | 'outlined';
+    /** Size variant */
+    size?: 'sm' | 'md' | 'lg';
     /** Label text */
     label?: string;
     /** Options */
@@ -53,7 +55,7 @@ export interface SelectProps {
 
 export const Select: Component<SelectProps> = (props) => {
     const [local] = splitProps(props, [
-        'variant', 'label', 'options', 'value', 'defaultValue', 'placeholder',
+        'variant', 'size', 'label', 'options', 'value', 'defaultValue', 'placeholder',
         'supportingText', 'error', 'errorText', 'disabled', 'name', 'onChange', 'style', 'class'
     ]);
 
@@ -95,6 +97,7 @@ export const Select: Component<SelectProps> = (props) => {
     const rootClass = () => {
         const classes = ['md-select'];
         classes.push(local.variant || 'filled');
+        classes.push(`size-${local.size || 'md'}`);
         if (open()) classes.push('open');
         if (focused()) classes.push('focused');
         if (isError()) classes.push('error');

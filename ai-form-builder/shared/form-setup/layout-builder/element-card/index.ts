@@ -1,1 +1,0 @@
-export { ElementCard } from './ElementCard';

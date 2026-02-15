@@ -41,6 +41,8 @@ export interface RadioProps {
     value: string;
     /** Disabled state */
     disabled?: boolean;
+    /** Size variant */
+    size?: 'sm' | 'md';
     /** Label text */
     label?: string;
     /** Custom style */
@@ -85,7 +87,7 @@ export const RadioGroup: ParentComponent<RadioGroupProps> = (props) => {
 // ─── Radio Component ────────────────────────────────────────────────────────────
 
 export const Radio: Component<RadioProps> = (props) => {
-    const [local] = splitProps(props, ['value', 'disabled', 'label', 'style', 'class']);
+    const [local] = splitProps(props, ['value', 'disabled', 'size', 'label', 'style', 'class']);
     const group = useContext(RadioGroupContext);
 
     const isChecked = () => group?.value() === local.value;
@@ -98,6 +100,7 @@ export const Radio: Component<RadioProps> = (props) => {
 
     const wrapperClass = () => {
         const classes = ['md-radio-wrapper'];
+        if (local.size === 'sm') classes.push('size-sm');
         if (isChecked()) classes.push('checked');
         if (isDisabled()) classes.push('disabled');
         if (local.class) classes.push(local.class);

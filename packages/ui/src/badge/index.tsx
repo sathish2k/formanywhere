@@ -16,6 +16,8 @@ export interface BadgeProps {
     max?: number;
     /** Show dot only */
     dot?: boolean;
+    /** Size variant */
+    size?: 'sm' | 'md' | 'lg';
     /** Badge color */
     color?: 'error' | 'primary' | 'secondary';
     /** Whether badge is visible */
@@ -50,6 +52,7 @@ export const Badge: ParentComponent<BadgeProps> = (props) => {
 
     const badgeClass = () => {
         const classes = ['md-badge'];
+        classes.push(`size-${props.size || 'md'}`);
         classes.push(color());
         classes.push(position());
         if (dot()) classes.push('dot');

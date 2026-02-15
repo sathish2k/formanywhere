@@ -18,6 +18,8 @@ import './styles.scss';
 export interface ChipProps {
     /** Chip variant */
     variant?: 'assist' | 'filter' | 'input' | 'suggestion' | 'label';
+    /** Size variant */
+    size?: 'sm' | 'md' | 'lg';
     /** Chip label */
     label: string;
     /** Selected state (for filter chips) */
@@ -44,7 +46,7 @@ export interface ChipProps {
 
 export const Chip: Component<ChipProps> = (props) => {
     const [local] = splitProps(props, [
-        'variant', 'label', 'selected', 'disabled', 'icon',
+        'variant', 'size', 'label', 'selected', 'disabled', 'icon',
         'elevated', 'color', 'onClick', 'onRemove', 'class', 'style'
     ]);
 
@@ -53,6 +55,7 @@ export const Chip: Component<ChipProps> = (props) => {
     const rootClass = () => {
         const classes = ['md-chip'];
         classes.push(variant());
+        classes.push(`size-${local.size || 'md'}`);
         if (local.selected) classes.push('selected');
         if (local.elevated) classes.push('elevated');
         if (local.disabled) classes.push('disabled');

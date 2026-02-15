@@ -43,6 +43,8 @@ export type TextFieldType =
 export interface TextFieldProps {
     /** Text field variant */
     variant?: 'filled' | 'outlined';
+    /** Size variant */
+    size?: 'sm' | 'md' | 'lg';
     /** Label text */
     label?: string;
     /** Supporting/helper text */
@@ -139,7 +141,7 @@ export const TextField: Component<TextFieldProps> = (rawProps) => {
     );
 
     const [local, others] = splitProps(props, [
-        'variant', 'label', 'supportingText', 'error', 'errorText',
+        'variant', 'size', 'label', 'supportingText', 'error', 'errorText',
         'leadingIcon', 'trailingIcon', 'prefixText', 'suffixText',
         'type', 'value', 'defaultValue', 'placeholder', 'disabled',
         'required', 'readOnly', 'noAsterisk', 'maxLength', 'minLength',
@@ -230,6 +232,7 @@ export const TextField: Component<TextFieldProps> = (rawProps) => {
 
     const rootClass = () => {
         const classes = ['md-textfield', local.variant || 'outlined'];
+        classes.push(`size-${local.size || 'md'}`);
         if (focused()) classes.push('focused');
         if (hasValue()) classes.push('populated');
         if (isError() && !local.disabled) classes.push('error');

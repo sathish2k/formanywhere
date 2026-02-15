@@ -29,6 +29,8 @@ export interface SegmentedButtonProps {
     multiSelect?: boolean;
     /** Show checkmark on selected segment */
     showCheckmark?: boolean;
+    /** Size variant */
+    size?: 'sm' | 'md' | 'lg';
     /** Visual variant */
     variant?: 'standard' | 'glass';
     /** Custom style */
@@ -48,7 +50,7 @@ const checkmarkIcon = (
 export const SegmentedButton: Component<SegmentedButtonProps> = (props) => {
     const [local, others] = splitProps(props, [
         'segments', 'options', 'value', 'onChange', 'multiSelect',
-        'showCheckmark', 'variant', 'style', 'class'
+        'showCheckmark', 'size', 'variant', 'style', 'class'
     ]);
 
     const resolvedSegments = () => local.segments ?? local.options ?? [];
@@ -60,6 +62,7 @@ export const SegmentedButton: Component<SegmentedButtonProps> = (props) => {
 
     const rootClass = () => {
         const classes = ['md-segmented-button'];
+        classes.push(`size-${local.size || 'md'}`);
         if (local.variant === 'glass') classes.push('glass');
         if (local.class) classes.push(local.class);
         return classes.join(' ');

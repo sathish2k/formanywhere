@@ -16,7 +16,7 @@ import './styles.scss';
 
 export interface FABProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
     variant?: 'surface' | 'primary' | 'secondary' | 'tertiary';
-    size?: 'small' | 'medium' | 'large';
+    size?: 'sm' | 'md' | 'lg';
     icon: JSX.Element;
     label?: string;
     lowered?: boolean;
@@ -36,7 +36,7 @@ export const FAB: Component<FABProps> = (props) => {
     const rootClass = () => {
         const classes = ['md-fab'];
         classes.push(local.variant || 'primary');
-        classes.push(`size-${local.size || 'medium'}`);
+        classes.push(`size-${local.size || 'md'}`);
         if (isExtended()) classes.push('extended');
         if (local.lowered) classes.push('lowered');
         return classes.join(' ');
