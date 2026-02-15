@@ -13,7 +13,13 @@ import type { FormElementType, FormElement } from '@formanywhere/shared/types';
 export interface PropertyField {
     key: string;
     label: string;
-    type: 'text' | 'number' | 'boolean' | 'select' | 'textarea' | 'color';
+    type: 'text' | 'number' | 'boolean' | 'select' | 'textarea' | 'color' | 'range';
+    /** Min value for 'range' type */
+    min?: number;
+    /** Max value for 'range' type */
+    max?: number;
+    /** Step for 'range' type */
+    step?: number;
     /** Options for 'select' type */
     options?: Array<{ label: string; value: string }>;
     /** Default value */

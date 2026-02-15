@@ -9,6 +9,12 @@ import { Icon } from '@formanywhere/ui/icon';
 import { GridLayoutPicker } from '../grid-layout-picker';
 import '../../styles.scss';
 
+/** Layout types that can be dropped at root level */
+const LAYOUT_TYPES = new Set([
+    'container', 'grid', 'section', 'card', 'grid-column',
+    'divider', 'spacer', 'heading', 'logo', 'text-block',
+]);
+
 interface CanvasRegionProps {
     elements: Accessor<FormElement[]>;
     parentId: string | null;
@@ -28,7 +34,6 @@ export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
         e.preventDefault();
         e.stopPropagation();
 
-        // Only allow drop if we are dragging something valid
         const hasType = e.dataTransfer?.types.includes('application/x-form-type');
         const hasId = e.dataTransfer?.types.includes('application/x-form-id');
 
@@ -54,16 +59,18 @@ export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
         const existingId = e.dataTransfer?.getData('application/x-form-id');
 
         if (newType) {
-            // Add new element to the end of this region
+            // At root level (parentId === null), only allow layout elements
+            if (!props.parentId && !LAYOUT_TYPES.has(newType)) {
+                return; // Block non-layout elements at root — must drop inside a grid column
+            }
             addElement(newType as any, props.parentId);
         } else if (existingId) {
-            // Move existing element to the end of this region
             moveElement(existingId, props.parentId, props.elements().length);
         }
     };
 
     const handleGridSelect = (cols: number) => {
-        addElement('grid', props.parentId); // We might need to handle cols config here later
+        addElement('grid', props.parentId, -1, cols);
         setShowGridPicker(false);
     };
 
@@ -112,18 +119,17 @@ export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
                                         </div>
                                         <Typography variant="title-medium">Start building your form</Typography>
                                         <Typography variant="body-medium" color="on-surface-variant">
-                                            Drag elements from the left panel or click below
+                                            Add a grid layout to begin, then drag elements into columns
                                         </Typography>
                                         <div class="form-canvas__empty-actions">
                                             <Button variant="filled" onClick={() => setShowGridPicker(true)}>
                                                 <Icon name="grid-3x3" size={16} />
                                                 Create Grid Layout
                                             </Button>
-                                            <Button variant="outlined" onClick={() => addElement('text', props.parentId)}>
-                                                <Icon name="type" size={16} />
-                                                Add Text Field
-                                            </Button>
                                         </div>
+                                        <Typography variant="body-small" color="on-surface-variant" style={{ 'margin-top': '8px', opacity: '0.6' }}>
+                                            Or drag a layout element from the sidebar
+                                        </Typography>
                                     </>
                                 }
                             >
@@ -131,7 +137,10 @@ export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
                             </Show>
                         </Show>
                         <Show when={!props.isEmpty && props.placeholder}>
-                            <Typography variant="body-small" color="on-surface-variant">{props.placeholder}</Typography>
+                            <div class="canvas-region__drop-cta">
+                                <Icon name="plus" size={16} />
+                                <Typography variant="body-small" color="on-surface-variant">{props.placeholder}</Typography>
+                            </div>
                         </Show>
                     </div>
                 }

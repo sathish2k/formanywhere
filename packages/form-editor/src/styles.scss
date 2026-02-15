@@ -9,7 +9,8 @@
     display: grid;
     grid-template-columns: 280px 1fr 300px;
     gap: 0;
-    height: calc(100vh - 64px);
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
 
     @media (max-width: 1023px) {
@@ -18,7 +19,7 @@
 
     @media (max-width: 899px) {
         grid-template-columns: 1fr;
-        height: auto;
+        min-height: auto;
     }
 }
 
@@ -48,6 +49,8 @@
     overflow-y: auto;
     background: var(--m3-color-surface-variant, #F5F5F5);
     padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ─── CANVAS ───────────────────────────────────────────────────── */
@@ -57,6 +60,19 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.form-canvas__root-region {
+    width: 100%;
+    min-height: 400px;
+    flex: 1;
+    background: var(--m3-color-surface-container-lowest, #fff);
+    border-radius: 24px;
+    box-shadow:
+        0 0 2px 0 rgba(145, 158, 171, 0.2),
+        0 12px 24px -4px rgba(145, 158, 171, 0.12);
+    padding: 24px 32px;
+    overflow-y: auto;
 }
 
 .form-canvas__fields-container {
@@ -422,6 +438,13 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     padding: 8px 16px 16px;
+
+    /* Fixed tile sizing — all tiles same height */
+    & > .form-toolbar__tile {
+        min-width: 0;        /* prevent grid blowout */
+        min-height: 82px;    /* consistent tile height */
+        width: 100%;         /* fill grid column */
+    }
 }
 
 .form-toolbar__tile {
@@ -641,6 +664,63 @@
 .form-properties__help-text {
     margin-top: 2px;
     opacity: 0.7;
+}
+
+/* Range slider for width/span */
+.form-properties__range-row {
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-properties__range-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.form-properties__range-value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 24px;
+    padding: 0 6px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 12%, transparent);
+    color: var(--m3-color-primary, #6750A4);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.form-properties__range-input {
+    width: 100%;
+    height: 4px;
+    appearance: none;
+    background: var(--m3-color-surface-variant, #E7E0EC);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--m3-color-primary, #6750A4);
+        border: 2px solid var(--m3-color-surface-container-lowest, #fff);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+
+    &::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--m3-color-primary, #6750A4);
+        border: 2px solid var(--m3-color-surface-container-lowest, #fff);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
 }
 
 /* ─── AI FORM BUILDER ──────────────────────────────────────────── */
@@ -937,6 +1017,153 @@
         border-color: var(--m3-color-tertiary, #7D5260);
         background: color-mix(in srgb, var(--m3-color-tertiary, #7D5260) 6%, transparent);
     }
+
+    /* Grid/layout rows: outline + controls only on select */
+    &--grid-type {
+        padding: 0;
+        padding-top: 14px; /* fixed space for outline label — no shift on select */
+        background: transparent;
+        border-color: transparent;
+        border-style: solid;
+        border-radius: 16px;
+        overflow: visible;
+        box-shadow: none;
+
+        &:hover {
+            border-color: var(--m3-color-outline-variant, #C4C7C5);
+            box-shadow: none;
+        }
+
+        &.canvas-field--selected {
+            border-color: var(--m3-color-primary, #6750A4);
+            box-shadow: 0 0 0 1px var(--m3-color-primary, #6750A4),
+                0 2px 8px color-mix(in srgb, var(--m3-color-primary, #6750A4) 15%, transparent);
+        }
+
+        /* Floating label on the outline — only when selected */
+        .canvas-field__outline-label {
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            display: none;
+            align-items: center;
+            gap: 4px;
+            padding: 0 6px;
+            background: var(--m3-color-surface-container-lowest, #fff);
+            color: var(--m3-color-primary, #6750A4);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            line-height: 1;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        &.canvas-field--selected .canvas-field__outline-label {
+            display: flex;
+        }
+
+        /* Drag handle ON the outline — only when selected */
+        .canvas-field__drag-handle {
+            position: absolute;
+            top: -10px;
+            right: 80px;
+            padding: 0 4px;
+            background: var(--m3-color-surface-container-lowest, #fff);
+            z-index: 2;
+            display: none;
+        }
+
+        &.canvas-field--selected .canvas-field__drag-handle {
+            display: flex;
+            opacity: 0.6;
+        }
+
+        /* Plus add-column button ON the outline — only when selected */
+        .canvas-field__add-col-btn {
+            position: absolute;
+            top: -12px;
+            right: 44px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--m3-color-primary, #6750A4);
+            color: var(--m3-color-on-primary, #fff);
+            border: 2px solid var(--m3-color-surface-container-lowest, #fff);
+            cursor: pointer;
+            z-index: 3;
+            font-size: 0;
+            transition: background-color 100ms ease;
+
+            &:hover {
+                background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 85%, #000);
+            }
+        }
+
+        &.canvas-field--selected .canvas-field__add-col-btn {
+            display: flex;
+        }
+
+        /* Column picker popup */
+        .canvas-field__col-picker {
+            position: absolute;
+            top: 16px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 4px;
+            background: var(--m3-color-surface-container-lowest, #fff);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+            border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+            z-index: 10;
+            min-width: 140px;
+        }
+
+        .canvas-field__col-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--m3-color-on-surface, #1C1B1F);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            white-space: nowrap;
+            transition: background-color 100ms ease;
+
+            &:hover {
+                background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 8%, transparent);
+            }
+        }
+
+        /* Delete ON the outline — only when selected */
+        .canvas-field__actions {
+            position: absolute;
+            top: -14px;
+            right: 8px;
+            padding: 0 2px;
+            background: var(--m3-color-surface-container-lowest, #fff);
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        &.canvas-field--selected .canvas-field__actions {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .canvas-field__content {
+            width: 100%;
+        }
+    }
 }
 
 .canvas-field__drag-handle {
@@ -1148,10 +1375,51 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 12px;
     color: var(--m3-color-on-surface-variant, #49454F);
     text-align: center;
     width: 100%;
+    padding: 16px 8px;
+}
+
+/* Empty state illustration + actions */
+.form-canvas__empty-illustration {
+    width: 80px;
+    height: 80px;
+    border-radius: 24px;
+    background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 8%, transparent);
+    color: var(--m3-color-primary, #6750A4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.form-canvas__empty-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+/* Drop CTA inside empty grid columns */
+.canvas-region__drop-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 8px;
+    border-radius: 8px;
+    border: 1px dashed var(--m3-color-outline-variant, #C4C7C5);
+    background: color-mix(in srgb, var(--m3-color-surface-variant, #E7E0EC) 20%, transparent);
+    color: var(--m3-color-on-surface-variant, #49454F);
+    width: 100%;
+    opacity: 0.7;
+    transition: opacity 150ms ease, border-color 150ms ease;
+
+    &:hover {
+        opacity: 1;
+        border-color: var(--m3-color-primary, #6750A4);
+    }
 }
 
 .canvas-element__nested-region {
@@ -1171,18 +1439,153 @@
     width: 100%;
 }
 
+.canvas-element__grid-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 4px;
+
+    &-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--m3-color-on-surface-variant, #49454F);
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+}
+
 .canvas-element__grid-columns {
     display: flex;
-    flex-direction: row;
-    gap: 16px;
+    flex-wrap: wrap;
+    gap: 0;
     width: 100%;
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--m3-color-surface-variant, #F5F5F5);
 }
 
 .canvas-element__grid-col {
-    flex: 1;
     min-width: 0;
+    min-height: 48px;
     display: flex;
     flex-direction: column;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+
+    /* Divider between columns */
+    & + & {
+        border-left: 1px dashed var(--m3-color-outline-variant, #C4C7C5);
+    }
+
+    &--selected {
+        background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 6%, transparent);
+        outline: 2px solid var(--m3-color-primary, #6750A4);
+        outline-offset: -2px;
+        border-radius: 4px;
+    }
+
+    /* Delete button for column */
+    .canvas-element__grid-col-delete {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--m3-color-error, #B3261E);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        z-index: 3;
+        font-size: 0;
+        transition: background-color 100ms ease;
+
+        &:hover {
+            background: color-mix(in srgb, var(--m3-color-error, #B3261E) 80%, #000);
+        }
+    }
+
+    &--selected .canvas-element__grid-col-delete {
+        display: flex;
+    }
+}
+
+.canvas-element__grid-col-inner {
+    flex: 1;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Column width badge */
+.canvas-element__grid-col-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 12%, transparent);
+    color: var(--m3-color-primary, #6750A4);
+    font-size: 0.625rem;
+    font-weight: 700;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 150ms ease;
+    z-index: 1;
+
+    .canvas-element__grid-col:hover & {
+        opacity: 1;
+    }
+}
+
+/* Column width popover */
+.canvas-element__grid-col-width-popup {
+    position: absolute;
+    top: 22px;
+    right: 4px;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    padding: 8px;
+    border-radius: 12px;
+    background: var(--m3-color-surface-container-lowest, #fff);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+
+    button {
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+        border-radius: 6px;
+        background: var(--m3-color-surface, #FAFAFA);
+        color: var(--m3-color-on-surface, #1C1B1F);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 100ms ease, border-color 100ms ease;
+
+        &:hover {
+            background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 8%, transparent);
+            border-color: var(--m3-color-primary, #6750A4);
+        }
+
+        &.active {
+            background: var(--m3-color-primary, #6750A4);
+            color: var(--m3-color-on-primary, #fff);
+            border-color: var(--m3-color-primary, #6750A4);
+        }
+    }
 }
 
 .canvas-element__label-row {

@@ -2,7 +2,7 @@
  * CanvasElement — Renders the actual M3 UI control based on element type.
  * Used inside the Canvas to show real form fields (not just type badges).
  */
-import { Show, For, Switch as SwitchFlow, Match } from 'solid-js';
+import { Show, For, Switch as SwitchFlow, Match, createSignal } from 'solid-js';
 import type { Component } from 'solid-js';
 import type { FormElement } from '@formanywhere/shared/types';
 import { TextField } from '@formanywhere/ui/textfield';
@@ -12,6 +12,7 @@ import { Icon } from '@formanywhere/ui/icon';
 import { Divider } from '@formanywhere/ui/divider';
 
 import { CanvasRegion } from './CanvasRegion';
+import { useFormEditor } from '../FormEditor';
 import type { Accessor } from 'solid-js';
 
 export interface CanvasElementProps {
@@ -193,13 +194,6 @@ export const CanvasElement: Component<CanvasElementProps> = (props) => {
                     class={`canvas-element__${el().type}`}
                     classList={{ 'canvas-element__nested-region': true }}
                 >
-                    <Show when={el().label && el().type !== 'grid-column'}>
-                        <div class="canvas-element__label-row">
-                            <Icon name={el().type === 'card' ? 'credit-card' : 'box'} size={16} />
-                            <Typography variant="label-medium">{el().label}</Typography>
-                        </div>
-                    </Show>
-
                     <CanvasRegion
                         elements={() => el().elements || []}
                         parentId={el().id}
@@ -212,33 +206,140 @@ export const CanvasElement: Component<CanvasElementProps> = (props) => {
             </Match>
 
             <Match when={el().type === 'grid'}>
-                <div class="canvas-element__grid">
-                    <div class="canvas-element__grid-columns">
-                        {/* 
-                            For Grid, we render children directly as they are columns.
-                            We don't use CanvasRegion here because we want a specific DOM structure (flex row).
-                            However, to allow reordering columns, we would need a horizontal properties/drag support.
-                            For MVP, let's assume columns are fixed or use a horizontal list.
-                            
-                            Actually, to keep it consistent, we can map over elements manually here
-                            or use a horizontal CanvasRegion if we supported it.
-                            Let's just iterate and render each column (which is a grid-column element).
-                        */}
-                        <For each={el().elements || []}>
-                            {(col) => (
-                                <div class="canvas-element__grid-col">
-                                    <CanvasElement
-                                        element={col}
-                                        dragSource={props.dragSource}
-                                        onCanvasDragStart={props.onCanvasDragStart}
-                                        onDragEnd={props.onDragEnd}
-                                    />
-                                </div>
-                            )}
-                        </For>
-                    </div>
-                </div>
+                <GridElement
+                    element={el()}
+                    dragSource={props.dragSource}
+                    onCanvasDragStart={props.onCanvasDragStart}
+                    onDragEnd={props.onDragEnd}
+                />
             </Match>
         </SwitchFlow>
+    );
+};
+
+/** Grid element with visual columns and width adjustment */
+const GridElement: Component<{
+    element: FormElement;
+    dragSource: Accessor<'toolbar' | 'canvas' | null>;
+    onCanvasDragStart?: (id: string) => void;
+    onDragEnd?: () => void;
+}> = (props) => {
+    const { updateElement, selectedElement, setSelectedElement } = useFormEditor();
+
+    const columns = () => props.element.elements || [];
+    const totalSpan = () => columns().reduce((sum, c) => sum + ((c as any).span || 1), 0);
+
+    const updateColumnWidth = (colId: string, newSpan: number) => {
+        const updatedCols = columns().map((col) =>
+            col.id === colId ? { ...col, span: newSpan } : col
+        );
+        updateElement(props.element.id, { elements: updatedCols });
+    };
+
+    const deleteColumn = (colId: string) => {
+        const remaining = columns().filter((col) => col.id !== colId);
+        updateElement(props.element.id, { elements: remaining });
+        if (selectedElement() === colId) setSelectedElement(props.element.id);
+    };
+
+    return (
+        <div class="canvas-element__grid">
+            <div class="canvas-element__grid-columns">
+                <For each={columns()}>
+                    {(col) => (
+                        <GridColumnEl
+                            col={col}
+                            totalSpan={totalSpan()}
+                            isSelected={selectedElement() === col.id}
+                            onSelect={() => setSelectedElement(col.id)}
+                            onDelete={() => deleteColumn(col.id)}
+                            onUpdateWidth={(span) => updateColumnWidth(col.id, span)}
+                            dragSource={props.dragSource}
+                            onCanvasDragStart={props.onCanvasDragStart}
+                            onDragEnd={props.onDragEnd}
+                        />
+                    )}
+                </For>
+            </div>
+        </div>
+    );
+};
+
+/** Individual grid column with width badge and popover */
+const GridColumnEl: Component<{
+    col: FormElement;
+    totalSpan: number;
+    isSelected: boolean;
+    onSelect: () => void;
+    onDelete: () => void;
+    onUpdateWidth: (span: number) => void;
+    dragSource: Accessor<'toolbar' | 'canvas' | null>;
+    onCanvasDragStart?: (id: string) => void;
+    onDragEnd?: () => void;
+}> = (props) => {
+    const [showWidthPopup, setShowWidthPopup] = createSignal(false);
+    const span = () => (props.col as any).span || 1;
+
+    return (
+        <div
+            class="canvas-element__grid-col"
+            classList={{ 'canvas-element__grid-col--selected': props.isSelected }}
+            style={{ width: `${(span() / 12) * 100}%` }}
+            onClick={(e) => {
+                e.stopPropagation();
+                props.onSelect();
+            }}
+        >
+            {/* Delete column button */}
+            <button
+                class="canvas-element__grid-col-delete"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    props.onDelete();
+                }}
+            >
+                <Icon name="x" size={12} />
+            </button>
+
+            {/* Width badge */}
+            <div
+                class="canvas-element__grid-col-badge"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setShowWidthPopup(!showWidthPopup());
+                }}
+            >
+                {span()}/12
+            </div>
+
+            {/* Width popup */}
+            <Show when={showWidthPopup()}>
+                <div class="canvas-element__grid-col-width-popup" onClick={(e) => e.stopPropagation()}>
+                    {Array.from({ length: 12 }, (_, i) => i + 1).map((v) => (
+                        <button
+                            classList={{ active: span() === v }}
+                            onClick={() => {
+                                props.onUpdateWidth(v);
+                                setShowWidthPopup(false);
+                            }}
+                        >
+                            {v}
+                        </button>
+                    ))}
+                </div>
+            </Show>
+
+            {/* Column drop zone */}
+            <div class="canvas-element__grid-col-inner">
+                <CanvasRegion
+                    elements={() => props.col.elements || []}
+                    parentId={props.col.id}
+                    dragSource={props.dragSource}
+                    onCanvasDragStart={props.onCanvasDragStart}
+                    onDragEnd={props.onDragEnd}
+                    placeholder="Drop elements here"
+                />
+            </div>
+        </div>
     );
 };

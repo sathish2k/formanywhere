@@ -9,7 +9,7 @@ interface FormEditorContextValue {
     schema: () => FormSchema;
     selectedElement: () => string | null;
     setSelectedElement: (id: string | null) => void;
-    addElement: (type: FormElement['type'], parentId?: string | null, index?: number) => void;
+    addElement: (type: FormElement['type'], parentId?: string | null, index?: number, columns?: number) => void;
     updateElement: (id: string, updates: Partial<FormElement>) => void;
     removeElement: (id: string) => void;
     moveElement: (elementId: string, targetParentId: string | null, targetIndex: number) => void;
@@ -125,7 +125,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
     );
     const [selectedElement, setSelectedElement] = createSignal<string | null>(null);
 
-    const addElement = (type: FormElement['type'], parentId: string | null = null, index: number = -1) => {
+    const addElement = (type: FormElement['type'], parentId: string | null = null, index: number = -1, columns: number = 2) => {
         // Look up element definition from the registry for defaults
         const def = getElement(type);
         const defaults = def?.defaults ?? {};
@@ -137,6 +137,21 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
             required: false,
             ...defaults,
         };
+
+        // Auto-create child columns for grid elements
+        if (type === 'grid') {
+            const cols = Math.max(1, Math.min(columns, 6));
+            const colWidth = Math.floor(12 / cols);
+            newElement.elements = Array.from({ length: cols }, (_, i) => ({
+                id: generateId(),
+                type: 'grid-column' as FormElement['type'],
+                label: `Column ${i + 1}`,
+                required: false,
+                span: colWidth,
+                elements: [],
+            }));
+            (newElement as any).columns = cols;
+        }
 
         setSchema((prev) => ({
             ...prev,

@@ -1,7 +1,8 @@
 /* FormBuilderPage — base layout styles */
 
 .form-builder-page {
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     background: var(--m3-color-surface, #FAFAFA);

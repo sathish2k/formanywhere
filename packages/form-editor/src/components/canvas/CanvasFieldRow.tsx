@@ -6,7 +6,14 @@ import { getElement } from '../elements/registry';
 import { CanvasElement } from './CanvasElement';
 import { useFormEditor } from '../FormEditor';
 import type { FormElement } from '@formanywhere/shared/types';
+import { generateId } from '@formanywhere/shared/utils';
 import '../../styles.scss';
+
+/** Layout types that can be dropped at root level */
+const LAYOUT_TYPES = new Set([
+    'container', 'grid', 'section', 'card', 'grid-column',
+    'divider', 'spacer', 'heading', 'logo', 'text-block',
+]);
 
 export interface CanvasFieldRowProps {
     element: FormElement;
@@ -22,8 +29,9 @@ export interface CanvasFieldRowProps {
 
 /** A single field row on the canvas — supports drag reorder + drop indicator */
 export const CanvasFieldRow: Component<CanvasFieldRowProps> = (props) => {
-    const { addElement, moveElement } = useFormEditor();
+    const { addElement, moveElement, updateElement } = useFormEditor();
     const [isDragOver, setIsDragOver] = createSignal(false);
+    const [showColPicker, setShowColPicker] = createSignal(false);
 
     // Helper to get element definition if needed
     const def = () => getElement(props.element.type);
@@ -63,13 +71,36 @@ export const CanvasFieldRow: Component<CanvasFieldRowProps> = (props) => {
         const existingId = e.dataTransfer?.getData('application/x-form-id');
 
         if (newType) {
-            // Drop on a row = insert BEFORE this row
+            // At root level (parentId === null), only allow layout elements
+            if (!props.parentId && !LAYOUT_TYPES.has(newType)) {
+                return;
+            }
             addElement(newType as any, props.parentId, props.index);
         } else if (existingId) {
-            // Don't move if dropping on itself
             if (existingId === props.element.id) return;
             moveElement(existingId, props.parentId, props.index);
         }
+    };
+
+    const isGridType = () => ['grid', 'container', 'section', 'card'].includes(props.element.type);
+
+    /**
+     * Handle column selection from dropdown.
+     * Adds a new row of N columns inside the same grid element.
+     */
+    const handleColumnSelect = (count: number) => {
+        const existing = props.element.elements || [];
+        const newSpan = Math.floor(12 / count);
+        const newCols: FormElement[] = Array.from({ length: count }, (_, i) => ({
+            id: generateId(),
+            type: 'grid-column' as FormElement['type'],
+            label: `Column ${existing.length + i + 1}`,
+            required: false,
+            span: newSpan,
+            elements: [],
+        }));
+        updateElement(props.element.id, { elements: [...existing, ...newCols] });
+        setShowColPicker(false);
     };
 
     return (
@@ -78,6 +109,7 @@ export const CanvasFieldRow: Component<CanvasFieldRowProps> = (props) => {
             classList={{
                 'canvas-field--selected': props.isSelected,
                 'canvas-field--drop-target': isDragOver(),
+                'canvas-field--grid-type': isGridType(),
             }}
             draggable={true}
             onDragStart={handleDragStart}
@@ -90,10 +122,47 @@ export const CanvasFieldRow: Component<CanvasFieldRowProps> = (props) => {
                 props.onSelect();
             }}
         >
+            {/* Floating label on outline for grid-type elements */}
+            <Show when={isGridType()}>
+                <span class="canvas-field__outline-label">
+                    <Icon name={def()?.icon ?? 'box'} size={12} />
+                    {props.element.label}
+                </span>
+            </Show>
+
             {/* Drag handle */}
             <div class="canvas-field__drag-handle">
                 <Icon name="grip-vertical" size={14} />
             </div>
+
+            {/* Add column menu on outline — grid-type only */}
+            <Show when={isGridType()}>
+                <div
+                    class="canvas-field__add-col-btn"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setShowColPicker(!showColPicker());
+                    }}
+                >
+                    <Icon name="plus" size={14} />
+                </div>
+                <Show when={showColPicker()}>
+                    <div class="canvas-field__col-picker" onClick={(e) => e.stopPropagation()}>
+                        <button class="canvas-field__col-option" onClick={() => handleColumnSelect(1)}>
+                            <Icon name="square" size={14} />
+                            1 Column
+                        </button>
+                        <button class="canvas-field__col-option" onClick={() => handleColumnSelect(2)}>
+                            <Icon name="columns" size={14} />
+                            2 Columns
+                        </button>
+                        <button class="canvas-field__col-option" onClick={() => handleColumnSelect(3)}>
+                            <Icon name="grid-3x3" size={14} />
+                            3 Columns
+                        </button>
+                    </div>
+                </Show>
+            </Show>
 
             {/* M3 field content (recursive CanvasElement) */}
             <div class="canvas-field__content">
@@ -105,7 +174,7 @@ export const CanvasFieldRow: Component<CanvasFieldRowProps> = (props) => {
                 />
             </div>
 
-            {/* Actions */}
+            {/* Actions — only on select (CSS handles visibility for grid-type) */}
             <Show when={props.isSelected}>
                 <div class="canvas-field__actions">
                     <IconButton

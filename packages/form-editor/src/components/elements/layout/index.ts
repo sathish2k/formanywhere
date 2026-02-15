@@ -66,7 +66,7 @@ export const gridColumnElement: ElementDefinition = {
     type: 'grid-column', label: 'Column', icon: 'columns', category: 'layout', color: '#536DFE',
     defaults: { label: 'Column' },
     properties: [
-        { key: 'span', label: 'Column Span', type: 'number', defaultValue: 1, group: 'Layout' },
+        { key: 'span', label: 'Column Width (out of 12)', type: 'range', min: 1, max: 12, step: 1, defaultValue: 1, group: 'Layout' },
         { key: 'customClass', label: 'Custom CSS Class', type: 'text', defaultValue: '' },
     ],
 };

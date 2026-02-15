@@ -211,6 +211,28 @@ const PropertyFieldRenderer: Component<{
         );
     }
 
+    // Range → Slider with value display
+    if (props.field.type === 'range') {
+        const val = () => Number(props.value ?? props.field.defaultValue ?? props.field.min ?? 0);
+        return (
+            <div class="form-properties__field form-properties__range-row">
+                <div class="form-properties__range-header">
+                    <Typography variant="body-small" color="on-surface-variant">{props.field.label}</Typography>
+                    <span class="form-properties__range-value">{val()}</span>
+                </div>
+                <input
+                    type="range"
+                    class="form-properties__range-input"
+                    min={props.field.min ?? 0}
+                    max={props.field.max ?? 100}
+                    step={props.field.step ?? 1}
+                    value={val()}
+                    onInput={(e) => props.onChange(Number(e.currentTarget.value))}
+                />
+            </div>
+        );
+    }
+
     // Default: text or number → TextField
     return (
         <div class="form-properties__field">
