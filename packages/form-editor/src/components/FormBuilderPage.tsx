@@ -31,6 +31,8 @@ import { IntegrationsDialog } from './dialogs/IntegrationsDialog';
 import { FormSettingsDialog } from './dialogs/FormSettingsDialog';
 import { LogicDebuggerDialog } from './dialogs/LogicDebuggerDialog';
 import type { FormSettings } from './dialogs/FormSettingsDialog';
+import { LayoutBuilder } from '@formanywhere/shared/form-setup';
+import type { LayoutConfig } from '@formanywhere/shared/form-setup';
 import './form-builder.scss';
 
 export type BuilderMode = 'blank' | 'template' | 'import' | 'ai';
@@ -42,10 +44,14 @@ export interface FormBuilderPageProps {
     formId?: string;
     /** Template schema to pre-fill */
     templateSchema?: FormSchema;
+    /** Initial form name (from URL param) */
+    initialName?: string;
+    /** Initial form description (from URL param) */
+    initialDescription?: string;
 }
 
 export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
-    const [local] = splitProps(props, ['formId', 'mode', 'templateSchema']);
+    const [local] = splitProps(props, ['formId', 'mode', 'templateSchema', 'initialName', 'initialDescription']);
     const mode = () => local.mode ?? 'blank';
     const [schema, setSchema] = createSignal<FormSchema | null>(null);
     const [previewing, setPreviewing] = createSignal(false);
@@ -56,6 +62,10 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
     // Page management
     const [pages, setPages] = createSignal<PageTab[]>([{ id: generateId(), title: 'Page 1' }]);
     const [activePageId, setActivePageId] = createSignal<string>('');
+
+    // Layout Builder overlay
+    const [layoutBuilderOpen, setLayoutBuilderOpen] = createSignal(false);
+    const [layoutConfig, setLayoutConfig] = createSignal<LayoutConfig | null>(null);
 
     // Dialog state
     const [logicOpen, setLogicOpen] = createSignal(false);
@@ -141,12 +151,36 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
         try { localStorage.removeItem(AUTOSAVE_KEY); } catch { /* noop */ }
     };
 
+    /** Handle inline form rename from the header */
+    const handleFormNameChange = (name: string) => {
+        setSchema((prev) => prev ? { ...prev, name } : prev);
+    };
+
+    /** Handle layout builder save */
+    const handleLayoutSave = (layout: LayoutConfig) => {
+        setLayoutConfig(layout);
+        setLayoutBuilderOpen(false);
+        // Store layout config in schema settings
+        setSchema((prev) => {
+            if (!prev) return prev;
+            return { ...prev, settings: { ...prev.settings, layout } };
+        });
+    };
+
     onMount(() => {
         const firstPage = pages()[0];
         if (firstPage) setActivePageId(firstPage.id);
 
         // Ensure schema has pages entry
         syncPagesToSchema();
+
+        // Apply initial name/description from URL params
+        if (local.initialName) {
+            setSchema((prev) => {
+                const base = prev ?? { id: generateId(), name: '', description: '', elements: [], settings: { pages: [], submitButtonText: 'Submit', successMessage: 'Thank you!' }, version: 1, createdAt: new Date(), updatedAt: new Date() } as FormSchema;
+                return { ...base, name: local.initialName!, description: local.initialDescription ?? base.description ?? '' };
+            });
+        }
 
         if (mode() === 'ai') {
             setShowOverlay('ai');
@@ -321,6 +355,8 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                 onViewSchema={() => setSchemaDialogOpen(true)}
                 onIntegrations={() => setIntegrationsOpen(true)}
                 onSettings={() => setFormSettingsOpen(true)}
+                onLayoutBuilder={() => setLayoutBuilderOpen(true)}
+                onFormNameChange={handleFormNameChange}
             />
 
             {/* Validation errors banner */}
@@ -425,6 +461,16 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                 onClose={() => setDebuggerOpen(false)}
                 rules={formRules()}
                 elements={schema()?.elements ?? []}
+            />
+
+            {/* Layout Builder overlay */}
+            <LayoutBuilder
+                open={layoutBuilderOpen()}
+                onClose={() => setLayoutBuilderOpen(false)}
+                onSave={handleLayoutSave}
+                editingLayout={layoutConfig()}
+                totalPages={pages().length}
+                pages={pages().map((p) => ({ id: p.id, name: p.title, description: '' }))}
             />
         </div>
     );

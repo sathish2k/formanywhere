@@ -73,6 +73,14 @@
             "import": "./src/components/auth/SignUpForm.tsx",
             "types": "./src/components/auth/SignUpForm.tsx"
         },
+        "./auth": {
+            "import": "./src/components/auth/index.ts",
+            "types": "./src/components/auth/index.ts"
+        },
+        "./auth-client": {
+            "import": "./src/lib/auth-client.ts",
+            "types": "./src/lib/auth-client.ts"
+        },
         "./dashboard": {
             "import": "./src/components/dashboard/index.tsx",
             "types": "./src/components/dashboard/index.tsx"
@@ -80,6 +88,10 @@
         "./confirmation-dialog": {
             "import": "./src/components/confirmation-dialog/index.tsx",
             "types": "./src/components/confirmation-dialog/index.tsx"
+        },
+        "./form-setup": {
+            "import": "./src/components/form-setup/index.ts",
+            "types": "./src/components/form-setup/index.ts"
         }
     },
     "scripts": {
@@ -89,6 +101,7 @@
     },
     "dependencies": {
         "@formanywhere/ui": "workspace:*",
+        "better-auth": "1.4.18",
         "solid-js": "^1.9.11"
     },
     "peerDependencies": {

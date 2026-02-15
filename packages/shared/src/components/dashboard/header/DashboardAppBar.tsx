@@ -17,6 +17,7 @@ import { ThemeToggle } from '../../header/theme-toggle';
 import MenuHamburgerIcon from '../../../icons/svg/menu-hamburger.svg';
 import MenuCloseIcon from '../../../icons/svg/menu-close.svg';
 import { go } from '../../../utils/navigate';
+import { authClient } from '../../../lib/auth-client';
 
 export interface DashboardAppBarProps {
     userName?: string;
@@ -133,8 +134,13 @@ export const DashboardAppBar: Component<DashboardAppBarProps> = (props) => {
 
     // ── Actions ─────────────────────────────────────────────────
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         setProfileMenuOpen(false);
+        try {
+            await authClient.signOut();
+        } catch {
+            // Best effort — clear any leftover state
+        }
         localStorage.removeItem('formanywhere-session');
         go('/signin');
     };

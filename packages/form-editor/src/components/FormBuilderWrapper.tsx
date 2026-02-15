@@ -11,6 +11,8 @@ import type { BuilderMode } from './FormBuilderPage';
 export const FormBuilderWrapper: Component = () => {
     const [mode, setMode] = createSignal<BuilderMode>('blank');
     const [formId, setFormId] = createSignal<string | undefined>(undefined);
+    const [initialName, setInitialName] = createSignal<string | undefined>(undefined);
+    const [initialDesc, setInitialDesc] = createSignal<string | undefined>(undefined);
     const [ready, setReady] = createSignal(false);
 
     onMount(() => {
@@ -21,12 +23,16 @@ export const FormBuilderWrapper: Component = () => {
         }
         const fid = params.get('form');
         if (fid) setFormId(fid);
+        const name = params.get('name');
+        if (name) setInitialName(name);
+        const desc = params.get('desc');
+        if (desc) setInitialDesc(desc);
         setReady(true);
     });
 
     return (
         <Show when={ready()}>
-            <FormBuilderPage mode={mode()} formId={formId()} />
+            <FormBuilderPage mode={mode()} formId={formId()} initialName={initialName()} initialDescription={initialDesc()} />
         </Show>
     );
 };

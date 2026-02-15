@@ -27,6 +27,10 @@ export interface BuilderHeaderProps {
     onViewSchema?: () => void;
     onCustomizeTheme?: () => void;
     onIntegrations?: () => void;
+    /** Open the Layout Builder overlay */
+    onLayoutBuilder?: () => void;
+    /** Callback when user renames the form inline */
+    onFormNameChange?: (name: string) => void;
     /** User display name (falls back to "User") */
     userName?: string;
     /** User email (falls back to "user@example.com") */
@@ -40,11 +44,14 @@ export interface BuilderHeaderProps {
 }
 
 export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
-    const [local] = splitProps(props, ['formName', 'hasSchema', 'previewing', 'saving', 'userName', 'userEmail', 'userAvatar', 'onBack', 'onSave', 'onTogglePreview', 'onViewSchema', 'onSettings', 'onLogout', 'onProfile', 'onIntegrations', 'onCustomizeTheme']);
+    const [local] = splitProps(props, ['formName', 'hasSchema', 'previewing', 'saving', 'userName', 'userEmail', 'userAvatar', 'onBack', 'onSave', 'onTogglePreview', 'onViewSchema', 'onSettings', 'onLogout', 'onProfile', 'onIntegrations', 'onCustomizeTheme', 'onLayoutBuilder', 'onFormNameChange']);
     const [settingsOpen, setSettingsOpen] = createSignal(false);
     const [profileMenuOpen, setProfileMenuOpen] = createSignal(false);
+    const [editingName, setEditingName] = createSignal(false);
+    const [nameInput, setNameInput] = createSignal('');
     let settingsRef: HTMLDivElement | undefined;
     let profileAnchor: HTMLDivElement | undefined;
+    let nameInputRef: HTMLInputElement | undefined;
 
     const userName = () => local.userName || 'User';
     const userEmail = () => local.userEmail || 'user@example.com';
@@ -66,6 +73,25 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
     onMount(() => document.addEventListener('click', handleClickOutside));
     onCleanup(() => document.removeEventListener('click', handleClickOutside));
 
+    const startEditingName = () => {
+        if (!local.onFormNameChange) return;
+        setNameInput(local.formName);
+        setEditingName(true);
+        setTimeout(() => nameInputRef?.select(), 0);
+    };
+
+    const commitName = () => {
+        const trimmed = nameInput().trim();
+        if (trimmed && trimmed !== local.formName) {
+            local.onFormNameChange?.(trimmed);
+        }
+        setEditingName(false);
+    };
+
+    const cancelEditingName = () => {
+        setEditingName(false);
+    };
+
     return (
         <header class="builder-header">
             {/* ── Left: Back · Form name ── */}
@@ -77,9 +103,30 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
                     icon={<Icon name="arrow-left" size={18} />}
                     title="Back"
                 />
-                <Typography variant="title-medium" class="builder-header__form-name">
-                    {local.formName}
-                </Typography>
+                <Show when={editingName()} fallback={
+                    <span
+                        class="builder-header__form-name"
+                        onClick={startEditingName}
+                        style={{ cursor: local.onFormNameChange ? 'pointer' : 'default' }}
+                        title={local.onFormNameChange ? 'Click to rename' : undefined}
+                    >
+                        <Typography variant="title-medium">
+                            {local.formName}
+                        </Typography>
+                    </span>
+                }>
+                    <input
+                        ref={nameInputRef}
+                        class="builder-header__name-input"
+                        value={nameInput()}
+                        onInput={(e) => setNameInput(e.currentTarget.value)}
+                        onBlur={commitName}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') commitName();
+                            if (e.key === 'Escape') cancelEditingName();
+                        }}
+                    />
+                </Show>
             </div>
 
             {/* ── Right: Preview · Publish · Settings · Theme · Profile ── */}
@@ -116,6 +163,10 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
                     />
                     <Show when={settingsOpen()}>
                         <div class="builder-header__settings-menu">
+                            <button onClick={() => { local.onLayoutBuilder?.(); setSettingsOpen(false); }}>
+                                <Icon name="layout" size={16} />
+                                Layout Builder
+                            </button>
                             <button onClick={() => { local.onViewSchema?.(); setSettingsOpen(false); }}>
                                 <Icon name="file-text" size={16} />
                                 View Schema

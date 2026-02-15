@@ -1,11 +1,11 @@
 /**
  * SignUp Form - SolidJS Component with Modular Forms + Zod
  * Handles user registration with type-safe validation
- * Uses @formanywhere/ui components with proper theming
+ * Uses Better Auth client SDK + @formanywhere/ui components
  */
 import { createForm, zodForm } from '@modular-forms/solid';
 import { z } from 'zod';
-import { Show } from 'solid-js';
+import { Show, createSignal } from 'solid-js';
 import { Button } from '@formanywhere/ui/button';
 import { TextField } from '@formanywhere/ui/input';
 import { Divider } from '@formanywhere/ui/divider';
@@ -13,6 +13,7 @@ import { Typography } from '@formanywhere/ui/typography';
 import { Checkbox } from '@formanywhere/ui/checkbox';
 import GoogleIcon from '../../icons/svg/google.svg?component-solid';
 import GithubIcon from '../../icons/svg/github.svg?component-solid';
+import { authClient } from '../../lib/auth-client';
 
 // Validation schema with password confirmation
 const SignUpSchema = z.object({
@@ -46,38 +47,41 @@ export function SignUpForm(props: SignUpFormProps) {
     const [form, { Form, Field }] = createForm<SignUpFormData>({
         validate: zodForm(SignUpSchema),
     });
+    const [error, setError] = createSignal<string | null>(null);
 
     const handleSubmit = async (values: SignUpFormData) => {
+        setError(null);
         try {
-            const response = await fetch('http://localhost:3001/api/auth/sign-up', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({
-                    name: values.fullName,
-                    email: values.email,
-                    password: values.password,
-                }),
+            const result = await authClient.signUp.email({
+                email: values.email,
+                password: values.password,
+                name: values.fullName,
             });
 
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || 'Registration failed');
+            if (result.error) {
+                setError(result.error.message || 'Registration failed');
+                return;
             }
 
-            window.location.href = '/app';
+            window.location.href = '/dashboard';
             props.onSuccess?.();
-        } catch (err) {
-            console.error(err);
+        } catch (err: any) {
+            setError(err.message || 'Registration failed. Please try again.');
         }
     };
 
-    const handleGoogleSignUp = () => {
-        window.location.href = '/api/auth/google';
+    const handleGoogleSignUp = async () => {
+        await authClient.signIn.social({
+            provider: 'google',
+            callbackURL: '/dashboard',
+        });
     };
 
-    const handleGithubSignUp = () => {
-        window.location.href = '/api/auth/github';
+    const handleGithubSignUp = async () => {
+        await authClient.signIn.social({
+            provider: 'github',
+            callbackURL: '/dashboard',
+        });
     };
 
     return (
@@ -109,6 +113,13 @@ export function SignUpForm(props: SignUpFormProps) {
                 <Typography variant="body-small" color="on-surface-variant">or</Typography>
                 <div class="flex-1"><Divider /></div>
             </div>
+
+            {/* Error Message */}
+            <Show when={error()}>
+                <div class="mb-4 p-3 rounded-lg bg-error/10 border border-error/20">
+                    <Typography variant="body-small" color="error">{error()}</Typography>
+                </div>
+            </Show>
 
             {/* Sign Up Form */}
             <Form onSubmit={handleSubmit}>

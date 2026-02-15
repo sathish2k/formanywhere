@@ -1,0 +1,427 @@
+/**
+ * Layout Builder — Styles
+ * Dialog-based layout builder that mirrors the form builder UI.
+ * Reuses form-editor patterns (builder-header, form-editor-layout, form-properties).
+ */
+
+// ── Import shared builder styles from form-editor ──────────────
+@use '../../../../../form-editor/src/components/header/header';
+@use '../../../../../form-editor/src/components/layout/styles' as editor-layout;
+@use '../../../../../form-editor/src/components/panels/styles' as editor-panels;
+
+// ── Dialog backdrop & container ────────────────────────────────
+
+@keyframes lb-backdrop-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes lb-dialog-in {
+    from { opacity: 0; transform: scale(0.97) translateY(8px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.lb-dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--m3-color-scrim, rgba(0, 0, 0, 0.32));
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: lb-backdrop-in 200ms ease;
+}
+
+.lb-dialog {
+    width: calc(100vw - 48px);
+    height: calc(100vh - 48px);
+    max-width: 1440px;
+    max-height: 900px;
+    background: var(--m3-color-surface, #fafafa);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08);
+    animation: lb-dialog-in 250ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+// ── Canvas wrapper ─────────────────────────────────────────────
+
+.lb-canvas {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+// ── Header / Footer drop zones ─────────────────────────────────
+
+.lb-zone {
+    position: relative;
+    min-height: 56px;
+    padding: 12px 16px;
+    border: 2px dashed var(--m3-color-outline-variant, #C4C7C5);
+    background: var(--m3-color-surface-container-lowest, #fff);
+    transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
+
+    // Header zone — top corners rounded
+    border-radius: 20px 20px 0 0;
+
+    // Footer zone — bottom corners rounded
+    &--footer {
+        border-radius: 0 0 20px 20px;
+    }
+
+    &--drag-over {
+        border-color: var(--m3-color-primary, #6750A4);
+        background: color-mix(in srgb, var(--m3-color-primary-container, #EADDFF) 20%, var(--m3-color-surface-container-lowest, #fff));
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--m3-color-primary, #6750A4) 30%, transparent);
+    }
+
+    &--has-elements {
+        border-style: solid;
+        border-color: color-mix(in srgb, var(--m3-color-primary, #6750A4) 25%, transparent);
+        padding: 12px 16px 16px;
+    }
+
+    &__label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+    }
+
+    &__elements {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    &__empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 0;
+    }
+}
+
+// ── Form canvas placeholder (looks like real form builder canvas) ──
+
+.lb-form-canvas {
+    position: relative;
+    border-left: 2px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-right: 2px solid var(--m3-color-outline-variant, #C4C7C5);
+    background: var(--m3-color-surface-container-lowest, #fff);
+
+    &__card {
+        padding: 20px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        opacity: 0.55;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    &__field {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        background: var(--m3-color-surface, #FAFAFA);
+        transition: background-color 150ms;
+    }
+
+    &__field-handle {
+        display: flex;
+        align-items: center;
+        color: var(--m3-color-on-surface-variant, #49454F);
+        opacity: 0.3;
+    }
+
+    &__field-type {
+        display: inline-flex;
+        padding: 2px 7px;
+        border-radius: 4px;
+        background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 10%, transparent);
+        color: var(--m3-color-primary, #6750A4);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        flex-shrink: 0;
+    }
+
+    &__field-label {
+        font-size: 0.8125rem;
+        color: var(--m3-color-on-surface, #1D1B20);
+        font-weight: 500;
+    }
+
+    &__overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: color-mix(in srgb, var(--m3-color-surface-container-lowest, #fff) 60%, transparent);
+        color: var(--m3-color-on-surface-variant, #49454F);
+        pointer-events: none;
+    }
+}
+
+// ── Element Card ───────────────────────────────────────────────
+
+.lb-element-card {
+    position: relative;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    background: color-mix(in srgb, var(--m3-color-surface-variant, #F5F5F5) 40%, transparent);
+    transition: border-color 200ms cubic-bezier(0.2, 0, 0, 1),
+        box-shadow 200ms cubic-bezier(0.2, 0, 0, 1);
+
+    &:hover {
+        border-color: color-mix(in srgb, var(--m3-color-primary, #6750A4) 40%, transparent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--m3-color-primary, #6750A4) 10%, transparent);
+    }
+
+    &--selected {
+        border-color: var(--m3-color-primary, #6750A4);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--m3-color-primary, #6750A4) 14%, transparent);
+    }
+
+    &__badge {
+        position: absolute;
+        top: -10px;
+        left: 12px;
+        z-index: 5;
+    }
+
+    &__controls {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        z-index: 10;
+        display: flex;
+        gap: 4px;
+        opacity: 0;
+        transition: opacity 200ms;
+
+        &--visible {
+            opacity: 1;
+        }
+    }
+
+    &__control-btn {
+        width: 26px;
+        height: 26px;
+        background: var(--m3-color-surface-container-lowest, #fff);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        border-radius: 50%;
+
+        &--delete:hover {
+            background: var(--m3-color-error-container, #FFDAD6);
+            color: var(--m3-color-error, #B3261E);
+        }
+    }
+
+    &__content {
+        min-height: 24px;
+    }
+}
+
+// ── Stepper Elements ───────────────────────────────────────────
+
+.layout-stepper {
+    width: 100%;
+
+    &__dots {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 8px 0;
+    }
+
+    &__dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--m3-color-outline-variant, #C4C7C5);
+        transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
+
+        &--active {
+            background: var(--m3-color-primary, #6750A4);
+            transform: scale(1.2);
+        }
+
+        &--completed {
+            background: var(--m3-color-primary-container, #EADDFF);
+        }
+    }
+
+    &__numbers {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+    }
+
+    &__step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        position: relative;
+        padding: 0 16px;
+
+        &--active .layout-stepper__step-number {
+            background: var(--m3-color-primary, #6750A4);
+            color: var(--m3-color-on-primary, #fff);
+        }
+    }
+
+    &__step-number {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        background: var(--m3-color-outline-variant, #C4C7C5);
+        color: var(--m3-color-on-surface-variant, #49454F);
+        transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    &__connector {
+        position: absolute;
+        top: 14px;
+        left: calc(50% + 20px);
+        width: calc(100% - 40px);
+        height: 2px;
+        background: var(--m3-color-outline-variant, #C4C7C5);
+    }
+
+    &__progress {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    &__text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    &__text-step {
+        padding: 8px 16px;
+        border-bottom: 2px solid transparent;
+        transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
+
+        &--active {
+            border-bottom-color: var(--m3-color-primary, #6750A4);
+        }
+    }
+}
+
+// ── Progress Bar ───────────────────────────────────────────────
+
+.layout-progress-bar {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &--small {
+        gap: 0;
+    }
+
+    &__track {
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--m3-color-outline-variant, #C4C7C5);
+        overflow: hidden;
+    }
+
+    &__fill {
+        height: 100%;
+        border-radius: 3px;
+        background: var(--m3-color-primary, #6750A4);
+        transition: width 300ms ease;
+    }
+}
+
+// ── Breadcrumb ─────────────────────────────────────────────────
+
+.layout-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    &__step {
+        font-size: 13px;
+        color: var(--m3-color-on-surface-variant, #49454F);
+        cursor: default;
+
+        &--active {
+            font-weight: 700;
+            color: var(--m3-color-primary, #6750A4);
+        }
+
+        &--disabled {
+            opacity: 0.5;
+        }
+    }
+}
+
+// ── Column Layouts ─────────────────────────────────────────────
+
+.layout-columns {
+    display: flex;
+    width: 100%;
+
+    &--two .layout-column,
+    &--three .layout-column {
+        flex: 1;
+    }
+}
+
+.layout-column {
+    min-height: 48px;
+    border: 1px dashed var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: 10px;
+    padding: 10px;
+    transition: border-color 200ms;
+
+    &:hover {
+        border-color: var(--m3-color-primary, #6750A4);
+    }
+
+    &__empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 12px 0;
+        color: var(--m3-color-outline, #79747E);
+    }
+}

@@ -26,6 +26,21 @@
     max-width: 200px;
 }
 
+/* Inline name editing input */
+.builder-header__name-input {
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--m3-color-on-surface, #1C1B1F);
+    background: var(--m3-color-surface-variant, #F5F5F5);
+    border: 1px solid var(--m3-color-primary, #6750A4);
+    border-radius: 8px;
+    padding: 2px 8px;
+    outline: none;
+    max-width: 220px;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--m3-color-primary, #6750A4) 20%, transparent);
+}
+
 /* ── Right group: preview · settings · publish ── */
 .builder-header__right {
     display: flex;

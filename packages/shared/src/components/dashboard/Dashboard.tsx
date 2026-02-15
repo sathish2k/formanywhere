@@ -13,6 +13,7 @@ import { DashboardProvider, useDashboard } from './DashboardProvider';
 import { DashboardAppBar } from './header';
 import { CreateFormSection } from './cards';
 import { FormsListSection } from './FormsListSection';
+import { NewFormDialog } from './NewFormDialog';
 
 export interface DashboardProps {
     /** User ID from session/auth */
@@ -28,7 +29,7 @@ export interface DashboardProps {
  * Separated so it can call useDashboard() safely.
  */
 const DashboardContent: Component<{ userName?: string; userEmail?: string }> = (props) => {
-    const { loading, handleCreateForm } = useDashboard();
+    const { loading, handleCreateForm, newFormDialogOpen, closeNewFormDialog, confirmNewForm } = useDashboard();
     const userName = () => props.userName || 'User';
 
     return (
@@ -50,6 +51,13 @@ const DashboardContent: Component<{ userName?: string; userEmail?: string }> = (
                     <FormsListSection />
                 </div>
             </Show>
+
+            {/* Quick name dialog for new blank forms */}
+            <NewFormDialog
+                open={newFormDialogOpen()}
+                onClose={closeNewFormDialog}
+                onConfirm={confirmNewForm}
+            />
         </div>
     );
 };

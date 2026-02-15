@@ -1,9 +1,17 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+// User data is injected by the auth middleware (src/middleware.ts)
+const { user, isAuthenticated } = Astro.locals;
 ---
 
 <BaseLayout title="Dashboard | FormAnywhere">
-    <div id="dashboard-root">
+    <div
+        id="dashboard-root"
+        data-user-id={user?.id || ''}
+        data-user-name={user?.name || ''}
+        data-user-email={user?.email || ''}
+    >
         <!-- SolidJS Dashboard island mounts here -->
     </div>
 

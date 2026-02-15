@@ -1,11 +1,11 @@
 /**
  * SignIn Form - SolidJS Component with Modular Forms + Zod
  * Handles email/password authentication with type-safe validation
- * Uses @formanywhere/ui components with proper theming
+ * Uses Better Auth client SDK + @formanywhere/ui components
  */
 import { createForm, zodForm } from '@modular-forms/solid';
 import { z } from 'zod';
-import { Show } from 'solid-js';
+import { Show, createSignal } from 'solid-js';
 import { Button } from '@formanywhere/ui/button';
 import { TextField } from '@formanywhere/ui/input';
 import { Divider } from '@formanywhere/ui/divider';
@@ -13,6 +13,7 @@ import { Typography } from '@formanywhere/ui/typography';
 import { Checkbox } from '@formanywhere/ui/checkbox';
 import GoogleIcon from '../../icons/svg/google.svg?component-solid';
 import GithubIcon from '../../icons/svg/github.svg?component-solid';
+import { authClient } from '../../lib/auth-client';
 
 // Validation schema
 const SignInSchema = z.object({
@@ -30,40 +31,58 @@ type SignInFormData = z.infer<typeof SignInSchema>;
 
 interface SignInFormProps {
     onSuccess?: () => void;
+    /** URL to redirect to after successful login (from ?returnTo= query param) */
+    returnTo?: string;
 }
 
 export function SignInForm(props: SignInFormProps) {
     const [form, { Form, Field }] = createForm<SignInFormData>({
         validate: zodForm(SignInSchema),
     });
+    const [error, setError] = createSignal<string | null>(null);
+
+    /** Get redirect URL — check props, then query param, then default */
+    const getRedirectUrl = () => {
+        if (props.returnTo) return props.returnTo;
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('returnTo') || '/dashboard';
+        }
+        return '/dashboard';
+    };
 
     const handleSubmit = async (values: SignInFormData) => {
+        setError(null);
         try {
-            const response = await fetch('http://localhost:3001/api/auth/sign-in', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify(values),
+            const result = await authClient.signIn.email({
+                email: values.email,
+                password: values.password,
             });
 
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || 'Invalid credentials');
+            if (result.error) {
+                setError(result.error.message || 'Invalid credentials');
+                return;
             }
 
-            window.location.href = '/app';
+            window.location.href = getRedirectUrl();
             props.onSuccess?.();
-        } catch (err) {
-            console.error(err);
+        } catch (err: any) {
+            setError(err.message || 'Sign in failed. Please try again.');
         }
     };
 
-    const handleGoogleSignIn = () => {
-        window.location.href = '/api/auth/google';
+    const handleGoogleSignIn = async () => {
+        await authClient.signIn.social({
+            provider: 'google',
+            callbackURL: getRedirectUrl(),
+        });
     };
 
-    const handleGithubSignIn = () => {
-        window.location.href = '/api/auth/github';
+    const handleGithubSignIn = async () => {
+        await authClient.signIn.social({
+            provider: 'github',
+            callbackURL: getRedirectUrl(),
+        });
     };
 
     return (
@@ -95,6 +114,13 @@ export function SignInForm(props: SignInFormProps) {
                 <Typography variant="body-small" color="on-surface-variant">or</Typography>
                 <div class="flex-1"><Divider /></div>
             </div>
+
+            {/* Error Message */}
+            <Show when={error()}>
+                <div class="mb-4 p-3 rounded-lg bg-error/10 border border-error/20">
+                    <Typography variant="body-small" color="error">{error()}</Typography>
+                </div>
+            </Show>
 
             {/* Email Sign In Form */}
             <Form onSubmit={handleSubmit}>

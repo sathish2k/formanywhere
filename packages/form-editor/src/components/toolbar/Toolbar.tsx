@@ -7,13 +7,32 @@ import type { Component } from 'solid-js';
 import { Typography } from '@formanywhere/ui/typography';
 import { Icon } from '@formanywhere/ui/icon';
 import { getElementsByCategory } from '../elements/registry';
-import type { ElementDefinition } from '../elements/types';
 import { useFormEditor } from '../FormEditor';
 import './styles.scss';
 
+/** Category shape for the toolbar (for standalone usage) */
+export interface ToolbarCategory {
+    key: string;
+    title: string;
+    items: Array<{ type: string; label: string; icon: string; color: string }>;
+}
+
+export interface ToolbarProps {
+    /** Called when a tile drag starts */
+    onDragStart?: (type: string) => void;
+    /** External categories — when provided, bypasses element registry */
+    categories?: ToolbarCategory[];
+    /** Click handler — when provided, bypasses useFormEditor().addElement */
+    onClickAdd?: (type: string) => void;
+    /** Header title (default: "Elements") */
+    headerTitle?: string;
+    /** Header icon (default: "layers") */
+    headerIcon?: string;
+}
+
 /** A single draggable toolbar tile */
 const DraggableTile: Component<{
-    item: ElementDefinition;
+    item: { type: string; label: string; icon: string; color: string };
     onClickAdd: (type: string) => void;
     onDragStart?: (type: string) => void;
 }> = (props) => {
@@ -45,15 +64,27 @@ const DraggableTile: Component<{
     );
 };
 
-export const Toolbar: Component<{ onDragStart?: (type: string) => void }> = (props) => {
-    const [local] = splitProps(props, ['onDragStart']);
-    const { addElement } = useFormEditor();
+export const Toolbar: Component<ToolbarProps> = (props) => {
+    const [local] = splitProps(props, ['onDragStart', 'categories', 'onClickAdd', 'headerTitle', 'headerIcon']);
+
+    // Standalone mode: categories + onClickAdd from props
+    // Context mode: element registry + FormEditor context
+    const isStandalone = !!local.categories;
+    const ctx = isStandalone ? null : useFormEditor();
+    const allCategories = isStandalone ? local.categories! : getElementsByCategory();
+
+    const handleAdd = (type: string) => {
+        if (local.onClickAdd) {
+            local.onClickAdd(type);
+        } else {
+            ctx?.addElement(type as any);
+        }
+    };
+
     const [searchQuery, setSearchQuery] = createSignal('');
 
-    const categories = getElementsByCategory();
-
     const [expandedCategories, setExpandedCategories] = createSignal<Record<string, boolean>>(
-        Object.fromEntries(categories.map((c) => [c.key, true]))
+        Object.fromEntries(allCategories.map((c) => [c.key, true]))
     );
 
     const toggleCategory = (key: string) => {
@@ -62,9 +93,9 @@ export const Toolbar: Component<{ onDragStart?: (type: string) => void }> = (pro
 
     const filteredCategories = createMemo(() => {
         const query = searchQuery().toLowerCase().trim();
-        if (!query) return categories;
+        if (!query) return allCategories;
 
-        return categories.map((cat) => ({
+        return allCategories.map((cat) => ({
             ...cat,
             items: cat.items.filter(
                 (item) =>
@@ -78,8 +109,8 @@ export const Toolbar: Component<{ onDragStart?: (type: string) => void }> = (pro
         <div class="form-toolbar">
             {/* Header */}
             <div class="form-toolbar__header">
-                <Icon name="layers" size={20} />
-                <Typography variant="title-small">Elements</Typography>
+                <Icon name={local.headerIcon ?? 'layers'} size={20} />
+                <Typography variant="title-small">{local.headerTitle ?? 'Elements'}</Typography>
             </div>
 
             {/* Search */}
@@ -121,7 +152,7 @@ export const Toolbar: Component<{ onDragStart?: (type: string) => void }> = (pro
                                             {(item) => (
                                                 <DraggableTile
                                                     item={item}
-                                                    onClickAdd={(type) => addElement(type as any)}
+                                                    onClickAdd={handleAdd}
                                                     onDragStart={local.onDragStart}
                                                 />
                                             )}

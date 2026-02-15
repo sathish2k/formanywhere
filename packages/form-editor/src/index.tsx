@@ -3,6 +3,7 @@ export { FormEditor, useFormEditor } from './components/FormEditor';
 export type { FormEditorProps } from './components/FormEditor';
 export { Canvas } from './components/canvas/Canvas';
 export { Toolbar } from './components/toolbar/Toolbar';
+export type { ToolbarCategory, ToolbarProps } from './components/toolbar/Toolbar';
 export { PropertiesPanel } from './components/panels/PropertiesPanel';
 export { FormEditorLayout } from './components/layout/FormEditorLayout';
 export { AIFormBuilder } from './components/ai/AIFormBuilder';

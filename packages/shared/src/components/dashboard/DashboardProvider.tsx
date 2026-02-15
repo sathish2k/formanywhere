@@ -58,6 +58,11 @@ export interface DashboardContextValue {
     handleDeleteForm: (formId: string) => void;
     handleViewForm: (formId: string) => void;
 
+    // New form dialog
+    newFormDialogOpen: () => boolean;
+    closeNewFormDialog: () => void;
+    confirmNewForm: (name: string, description: string) => void;
+
     // Data refresh
     refreshForms: () => void;
 }
@@ -90,6 +95,10 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
     const [rawForms, setRawForms] = createSignal<DashboardFormData[]>([]);
     const [loading, setLoading] = createSignal(true);
     const [initialized, setInitialized] = createSignal(false);
+
+    // New form dialog state
+    const [newFormDialogOpen, setNewFormDialogOpen] = createSignal(false);
+    const [pendingMode, setPendingMode] = createSignal<string>('blank');
 
     // Filter / Sort / Page state
     const [filters, setFilters] = createSignal<FilterState>(defaultFilters);
@@ -290,8 +299,24 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
             go('/templates');
             return;
         }
-        // blank, ai, import all route to the builder with mode param
+        if (optionId === 'blank') {
+            // Show quick name dialog, then go to builder
+            setPendingMode('blank');
+            setNewFormDialogOpen(true);
+            return;
+        }
+        // AI / Import go directly to form builder
         go(`/app?mode=${optionId}`);
+    };
+
+    const closeNewFormDialog = () => setNewFormDialogOpen(false);
+
+    const confirmNewForm = (name: string, description: string) => {
+        setNewFormDialogOpen(false);
+        const params = new URLSearchParams({ mode: pendingMode() });
+        if (name) params.set('name', name);
+        if (description) params.set('desc', description);
+        go(`/app?${params.toString()}`);
     };
 
     const handleEditForm = (formId: string) => {
@@ -344,6 +369,10 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
         handleDuplicateForm,
         handleDeleteForm,
         handleViewForm,
+
+        newFormDialogOpen,
+        closeNewFormDialog,
+        confirmNewForm,
 
         refreshForms: () => loadForms(false),
     };

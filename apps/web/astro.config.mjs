@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import solidJs from '@astrojs/solid-js';
 import solidSvg from 'vite-plugin-solid-svg';
+import node from '@astrojs/node';
 
 /**
  * Custom plugin to automatically append ?component-solid to SVG imports
@@ -21,6 +22,10 @@ function autoSolidSvg() {
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'server',
+  adapter: node({
+    mode: 'standalone',
+  }),
   integrations: [
     solidJs({
       include: [

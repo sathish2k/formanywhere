@@ -11,12 +11,14 @@
         "lint": "echo 'No linter configured'"
     },
     "dependencies": {
+        "@astrojs/node": "9.5.3",
         "@astrojs/solid-js": "^5.1.3",
         "@formanywhere/form-runtime": "workspace:*",
         "@formanywhere/shared": "workspace:*",
         "@formanywhere/ui": "workspace:*",
         "@modular-forms/solid": "0.25.1",
         "astro": "5.17.1",
+        "better-auth": "1.4.18",
         "solid-js": "^1.9.11",
         "zod": "3"
     },
