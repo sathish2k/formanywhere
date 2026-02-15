@@ -20,7 +20,7 @@ export interface CanvasFieldRowProps {
     index: number;
     parentId: string | null;
     isSelected: boolean;
-    onSelect: () => void;
+    onSelect: (multi?: boolean) => void;
     onRemove: () => void;
     onCanvasDragStart?: (id: string) => void;
     onDragEnd?: () => void;
@@ -110,6 +110,7 @@ export const CanvasFieldRow: Component<CanvasFieldRowProps> = (props) => {
                 'canvas-field--selected': props.isSelected,
                 'canvas-field--drop-target': isDragOver(),
                 'canvas-field--grid-type': isGridType(),
+                'canvas-field--hidden': !!(props.element as any).hidden,
             }}
             draggable={true}
             onDragStart={handleDragStart}
@@ -119,7 +120,7 @@ export const CanvasFieldRow: Component<CanvasFieldRowProps> = (props) => {
             onDragEnd={() => props.onDragEnd?.()}
             onClick={(e) => {
                 e.stopPropagation();
-                props.onSelect();
+                props.onSelect(e.metaKey || e.ctrlKey);
             }}
         >
             {/* Floating label on outline for grid-type elements */}
@@ -192,6 +193,14 @@ export const CanvasFieldRow: Component<CanvasFieldRowProps> = (props) => {
             {/* Required badge */}
             <Show when={props.element.required}>
                 <span class="canvas-field__required-badge">*</span>
+            </Show>
+
+            {/* Hidden badge */}
+            <Show when={(props.element as any).hidden}>
+                <span class="canvas-field__hidden-badge">
+                    <Icon name="eye-off" size={10} />
+                    Hidden
+                </span>
             </Show>
         </div>
     );

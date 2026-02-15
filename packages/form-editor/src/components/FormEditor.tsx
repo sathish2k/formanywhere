@@ -13,6 +13,26 @@ interface FormEditorContextValue {
     updateElement: (id: string, updates: Partial<FormElement>) => void;
     removeElement: (id: string) => void;
     moveElement: (elementId: string, targetParentId: string | null, targetIndex: number) => void;
+    moveElementDirection: (direction: 'up' | 'down') => void;
+    /** Undo / redo */
+    undo: () => void;
+    redo: () => void;
+    canUndo: () => boolean;
+    canRedo: () => boolean;
+    /** Clipboard */
+    copyElement: (id: string) => void;
+    pasteElement: (parentId?: string | null, index?: number) => void;
+    duplicateElement: (id: string) => void;
+    clipboard: () => FormElement | null;
+    /** Active page ID for page ↔ element binding */
+    activePageId: () => string;
+    /** Elements visible on the current page (root level, filtered by page) */
+    pageElements: () => FormElement[];
+    /** Multi-select */
+    selectedElements: () => Set<string>;
+    toggleSelectElement: (id: string, multi?: boolean) => void;
+    clearSelection: () => void;
+    removeSelected: () => void;
 }
 
 const FormEditorContext = createContext<FormEditorContextValue>();
@@ -28,6 +48,10 @@ export const useFormEditor = () => {
 export interface FormEditorProps {
     initialSchema?: FormSchema;
     onChange?: (schema: FormSchema) => void;
+    /** Active page ID — elements are filtered by this page */
+    activePageId?: string;
+    /** All page tabs — used to initialise page↔element bindings */
+    pages?: Array<{ id: string; title: string }>;
     children?: any;
 }
 
@@ -107,6 +131,15 @@ const removeElementFromTree = (elements: FormElement[], targetId: string): { ele
     return { elements: filterFn(elements), removed };
 };
 
+/** Deep-clone a FormElement tree (for clipboard / undo) */
+const deepCloneElement = (el: FormElement): FormElement => {
+    const clone: FormElement = { ...el, id: generateId() };
+    if (el.elements) {
+        clone.elements = el.elements.map(deepCloneElement);
+    }
+    return clone;
+};
+
 export const FormEditor: Component<FormEditorProps> = (props) => {
     const createDefaultSchema = (): FormSchema => ({
         id: generateId(),
@@ -124,6 +157,106 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
         props.initialSchema ?? createDefaultSchema()
     );
     const [selectedElement, setSelectedElement] = createSignal<string | null>(null);
+    const [selectedElements, setSelectedElements] = createSignal<Set<string>>(new Set());
+    const [clipboard, setClipboard] = createSignal<FormElement | null>(null);
+
+    // ── Undo / Redo history ──────────────────────────────────────────────
+    const MAX_HISTORY = 50;
+    const [history, setHistory] = createSignal<FormSchema[]>([]);
+    const [historyIndex, setHistoryIndex] = createSignal(-1);
+    let skipHistory = false;
+
+    const pushHistory = (s: FormSchema) => {
+        if (skipHistory) return;
+        setHistory((prev) => {
+            const idx = historyIndex();
+            const trimmed = idx < prev.length - 1 ? prev.slice(0, idx + 1) : [...prev];
+            trimmed.push(s);
+            if (trimmed.length > MAX_HISTORY) trimmed.shift();
+            return trimmed;
+        });
+        setHistoryIndex(history().length - 1);
+    };
+
+    // Seed initial state into history
+    pushHistory(schema());
+
+    const undo = () => {
+        const idx = historyIndex();
+        if (idx <= 0) return;
+        const newIdx = idx - 1;
+        skipHistory = true;
+        setSchema(history()[newIdx]);
+        setHistoryIndex(newIdx);
+        skipHistory = false;
+        props.onChange?.(schema());
+    };
+
+    const redo = () => {
+        const idx = historyIndex();
+        if (idx >= history().length - 1) return;
+        const newIdx = idx + 1;
+        skipHistory = true;
+        setSchema(history()[newIdx]);
+        setHistoryIndex(newIdx);
+        skipHistory = false;
+        props.onChange?.(schema());
+    };
+
+    const canUndo = () => historyIndex() > 0;
+    const canRedo = () => historyIndex() < history().length - 1;
+
+    // ── Active page & page→element binding ───────────────────────────────
+    const activePageId = () => props.activePageId ?? '';
+
+    /** Get the page→elementIds map from schema.settings.pages */
+    const getPageElementIds = (): Map<string, string[]> => {
+        const map = new Map<string, string[]>();
+        const pages = schema().settings.pages;
+        if (pages) {
+            for (const p of pages) map.set(p.id, [...p.elements]);
+        }
+        return map;
+    };
+
+    /** Root elements filtered by the active page */
+    const pageElements = () => {
+        const pgId = activePageId();
+        if (!pgId) return schema().elements; // no pages → show all
+        const pages = schema().settings.pages;
+        if (!pages || pages.length === 0) return schema().elements;
+        const page = pages.find((p) => p.id === pgId);
+        if (!page) return [];
+        const idSet = new Set(page.elements);
+        return schema().elements.filter((el) => idSet.has(el.id));
+    };
+
+    /** Assign a root element to the active page */
+    const assignToPage = (elementId: string) => {
+        const pgId = activePageId();
+        if (!pgId) return;
+        setSchema((prev) => {
+            const pages = prev.settings.pages ? [...prev.settings.pages] : [];
+            const pageIdx = pages.findIndex((p) => p.id === pgId);
+            if (pageIdx >= 0) {
+                const pg = { ...pages[pageIdx], elements: [...pages[pageIdx].elements, elementId] };
+                pages[pageIdx] = pg;
+            }
+            return { ...prev, settings: { ...prev.settings, pages } };
+        });
+    };
+
+    /** Remove an element from all pages */
+    const unassignFromPages = (elementId: string) => {
+        setSchema((prev) => {
+            if (!prev.settings.pages) return prev;
+            const pages = prev.settings.pages.map((p) => ({
+                ...p,
+                elements: p.elements.filter((eid) => eid !== elementId),
+            }));
+            return { ...prev, settings: { ...prev.settings, pages } };
+        });
+    };
 
     const addElement = (type: FormElement['type'], parentId: string | null = null, index: number = -1, columns: number = 2) => {
         // Look up element definition from the registry for defaults
@@ -159,7 +292,11 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
             updatedAt: new Date(),
         }));
 
+        // If adding at root level, assign to active page
+        if (!parentId) assignToPage(newElement.id);
+
         setSelectedElement(newElement.id);
+        pushHistory(schema());
         props.onChange?.(schema());
     };
 
@@ -169,10 +306,12 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
             elements: updateElementInTree(prev.elements, id, (el) => ({ ...el, ...updates })),
             updatedAt: new Date(),
         }));
+        pushHistory(schema());
         props.onChange?.(schema());
     };
 
     const removeElement = (id: string) => {
+        unassignFromPages(id);
         setSchema((prev) => ({
             ...prev,
             elements: removeElementFromTree(prev.elements, id).elements,
@@ -181,6 +320,8 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
         if (selectedElement() === id) {
             setSelectedElement(null);
         }
+        setSelectedElements((prev) => { const s = new Set(prev); s.delete(id); return s; });
+        pushHistory(schema());
         props.onChange?.(schema());
     };
 
@@ -198,6 +339,150 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
                 updatedAt: new Date(),
             };
         });
+        pushHistory(schema());
+        props.onChange?.(schema());
+    };
+
+    /** Move the currently selected element up or down within its parent list. */
+    const moveElementDirection = (direction: 'up' | 'down') => {
+        const id = selectedElement();
+        if (!id) return;
+
+        // Find parent and index
+        const findParentAndIndex = (
+            elements: FormElement[],
+            targetId: string,
+        ): { parent: FormElement[] | null; index: number } => {
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i].id === targetId) return { parent: elements, index: i };
+                if (elements[i].elements) {
+                    const result = findParentAndIndex(elements[i].elements!, targetId);
+                    if (result.parent) return result;
+                }
+            }
+            return { parent: null, index: -1 };
+        };
+
+        const { parent, index } = findParentAndIndex(schema().elements, id);
+        if (!parent) return;
+
+        const newIndex = direction === 'up' ? index - 1 : index + 1;
+        if (newIndex < 0 || newIndex >= parent.length) return;
+
+        // Swap in-place
+        setSchema((prev) => {
+            const swap = (elements: FormElement[]): FormElement[] => {
+                for (let i = 0; i < elements.length; i++) {
+                    if (elements[i].id === id) {
+                        const copy = [...elements];
+                        [copy[i], copy[newIndex]] = [copy[newIndex], copy[i]];
+                        return copy;
+                    }
+                    if (elements[i].elements) {
+                        const newChildren = swap(elements[i].elements!);
+                        if (newChildren !== elements[i].elements) {
+                            const copy = [...elements];
+                            copy[i] = { ...copy[i], elements: newChildren };
+                            return copy;
+                        }
+                    }
+                }
+                return elements;
+            };
+            return { ...prev, elements: swap(prev.elements), updatedAt: new Date() };
+        });
+        pushHistory(schema());
+        props.onChange?.(schema());
+    };
+
+    // ── Clipboard: Copy / Paste / Duplicate ───────────────────────────────
+
+    const findEl = (elements: FormElement[], id: string): FormElement | null => {
+        for (const el of elements) {
+            if (el.id === id) return el;
+            if (el.elements) {
+                const found = findEl(el.elements, id);
+                if (found) return found;
+            }
+        }
+        return null;
+    };
+
+    const copyElement = (id: string) => {
+        const el = findEl(schema().elements, id);
+        if (el) setClipboard(JSON.parse(JSON.stringify(el)));
+    };
+
+    const pasteElement = (parentId: string | null = null, index: number = -1) => {
+        const src = clipboard();
+        if (!src) return;
+        const clone = deepCloneElement(src);
+        setSchema((prev) => ({
+            ...prev,
+            elements: insertElementAt(prev.elements, parentId, index, clone),
+            updatedAt: new Date(),
+        }));
+        if (!parentId) assignToPage(clone.id);
+        setSelectedElement(clone.id);
+        pushHistory(schema());
+        props.onChange?.(schema());
+    };
+
+    const duplicateElement = (id: string) => {
+        const path = findElementPath(schema().elements, id);
+        if (!path) return;
+        const el = findEl(schema().elements, id);
+        if (!el) return;
+        const clone = deepCloneElement(el);
+        const parentId = path.parent?.id ?? null;
+        const insertIdx = path.index + 1;
+        setSchema((prev) => ({
+            ...prev,
+            elements: insertElementAt(prev.elements, parentId, insertIdx, clone),
+            updatedAt: new Date(),
+        }));
+        if (!parentId) assignToPage(clone.id);
+        setSelectedElement(clone.id);
+        pushHistory(schema());
+        props.onChange?.(schema());
+    };
+
+    // ── Multi-select ─────────────────────────────────────────────────────
+
+    const toggleSelectElement = (id: string, multi = false) => {
+        if (multi) {
+            setSelectedElements((prev) => {
+                const s = new Set(prev);
+                if (s.has(id)) s.delete(id); else s.add(id);
+                return s;
+            });
+            // Primary selection follows last click
+            setSelectedElement(id);
+        } else {
+            setSelectedElements(new Set([id]));
+            setSelectedElement(id);
+        }
+    };
+
+    const clearSelection = () => {
+        setSelectedElements(new Set());
+        setSelectedElement(null);
+    };
+
+    const removeSelected = () => {
+        const ids = selectedElements();
+        if (ids.size === 0) return;
+        ids.forEach((id) => {
+            unassignFromPages(id);
+            setSchema((prev) => ({
+                ...prev,
+                elements: removeElementFromTree(prev.elements, id).elements,
+                updatedAt: new Date(),
+            }));
+        });
+        setSelectedElements(new Set());
+        setSelectedElement(null);
+        pushHistory(schema());
         props.onChange?.(schema());
     };
 
@@ -211,6 +496,21 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
                 updateElement,
                 removeElement,
                 moveElement,
+                moveElementDirection,
+                undo,
+                redo,
+                canUndo,
+                canRedo,
+                copyElement,
+                pasteElement,
+                duplicateElement,
+                clipboard,
+                activePageId,
+                pageElements,
+                selectedElements,
+                toggleSelectElement,
+                clearSelection,
+                removeSelected,
             }}
         >
             {props.children}

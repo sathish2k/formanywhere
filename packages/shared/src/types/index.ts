@@ -1,6 +1,8 @@
 // Form element types
 export * from './form-rules';
 
+import type { FormRule } from './form-rules';
+
 export interface FormElement {
     id: string;
     type: FormElementType;
@@ -70,6 +72,8 @@ export interface FormSchema {
     description?: string;
     elements: FormElement[];
     settings: FormSettings;
+    /** Conditional logic / workflow rules */
+    rules?: FormRule[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -77,9 +81,27 @@ export interface FormSchema {
 export interface FormSettings {
     submitButtonText: string;
     successMessage: string;
+    successHeading?: string;
+    successShowData?: boolean;
+    successButtonText?: string;
+    successButtonUrl?: string;
     redirectUrl?: string;
+    redirectDelay?: number;
     multiPage?: boolean;
     pages?: FormPage[];
+    /** Theme & styling */
+    theme?: {
+        primaryColor?: string;
+        secondaryColor?: string;
+        backgroundColor?: string;
+        surfaceColor?: string;
+        borderRadius?: number;
+        fontFamily?: string;
+    };
+    customCSS?: string;
+    googleFontUrl?: string;
+    externalCSS?: string[];
+    externalJS?: string[];
 }
 
 export interface FormPage {

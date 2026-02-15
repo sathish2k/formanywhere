@@ -16,7 +16,7 @@ import { useFormEditor } from '../FormEditor';
 import '../../styles.scss';
 
 export const PropertiesPanel: Component = () => {
-    const { schema, selectedElement, updateElement, removeElement, setSelectedElement } = useFormEditor();
+    const { schema, selectedElement, updateElement, removeElement, setSelectedElement, duplicateElement, copyElement } = useFormEditor();
 
     /** Recursively search the element tree (handles nested containers, grids, etc.) */
     const findElementById = (elements: FormElement[], id: string): FormElement | undefined => {
@@ -113,8 +113,16 @@ export const PropertiesPanel: Component = () => {
 
                             <Divider />
 
-                            {/* Danger zone */}
+                            {/* Actions zone */}
                             <div class="form-properties__section form-properties__section--danger">
+                                <Button
+                                    variant="text"
+                                    onClick={() => duplicateElement(element().id)}
+                                    class="form-properties__action-btn"
+                                >
+                                    <Icon name="copy" size={16} />
+                                    Duplicate
+                                </Button>
                                 <Button
                                     variant="text"
                                     onClick={() => {
@@ -147,6 +155,7 @@ const PropertyFieldRenderer: Component<{
             <div class="form-properties__switch-row">
                 <Typography variant="body-medium">{props.field.label}</Typography>
                 <Switch
+                    size="sm"
                     checked={props.value ?? props.field.defaultValue ?? false}
                     onChange={(checked) => props.onChange(checked)}
                 />

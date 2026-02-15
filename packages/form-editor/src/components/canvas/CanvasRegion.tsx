@@ -26,7 +26,7 @@ interface CanvasRegionProps {
 }
 
 export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
-    const { addElement, moveElement, selectedElement, setSelectedElement, removeElement } = useFormEditor();
+    const { addElement, moveElement, selectedElement, setSelectedElement, removeElement, toggleSelectElement, selectedElements } = useFormEditor();
     const [isDragOver, setIsDragOver] = createSignal(false);
     const [showGridPicker, setShowGridPicker] = createSignal(false);
 
@@ -151,11 +151,10 @@ export const CanvasRegion: Component<CanvasRegionProps> = (props) => {
                             element={element()}
                             index={index}
                             parentId={props.parentId}
-                            isSelected={selectedElement() === element().id}
-                            onSelect={() => setSelectedElement(element().id)}
+                            isSelected={selectedElement() === element().id || selectedElements().has(element().id)}
+                            onSelect={(multi) => toggleSelectElement(element().id, multi)}
                             onRemove={() => {
                                 removeElement(element().id);
-                                setSelectedElement(null);
                             }}
                             onCanvasDragStart={props.onCanvasDragStart}
                             onDragEnd={props.onDragEnd}

@@ -48,3 +48,13 @@ export * from './assets';
 // Navigation
 export { navigateTo, go } from './navigate';
 
+// Analytics (stub)
+export * from './analytics';
+
+// PDF Export (stub)
+export { exportFormPDF } from './pdf-export';
+export type { PDFExportOptions } from './pdf-export';
+
+// Offline support (stub)
+export * from './offline';
+

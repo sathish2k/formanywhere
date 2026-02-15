@@ -147,23 +147,276 @@
 }
 
 .form-renderer__signature-pad {
+    position: relative;
     height: 160px;
     border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
     border-radius: var(--m3-shape-medium, 12px);
     background: var(--m3-color-surface-container-lowest, #fff);
+    overflow: hidden;
+}
+
+.form-renderer__signature-canvas {
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.form-renderer__signature-clear {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: 6px;
+    background: var(--m3-color-surface-container-lowest, #fff);
+    color: var(--m3-color-on-surface-variant, #49454F);
+    font-size: 0.7rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.15s ease;
+
+    &:hover { opacity: 1; }
+}
+
+// ── Radio Group ──────────────────────────────────────────────
+.form-renderer__radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-renderer__radio-label {
+    font-weight: 500;
+}
+
+.form-renderer__radio-options {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 0;
+}
+
+.form-renderer__radio-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.1s ease;
+
+    &:hover { background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 4%, transparent); }
+
+    input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--m3-color-primary, #6750A4);
+        cursor: pointer;
+    }
+}
+
+// ── Switch Row ──────────────────────────────────────────────
+.form-renderer__switch-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+// ── Rating Stars ────────────────────────────────────────────
+.form-renderer__rating-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-renderer__rating-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.form-renderer__star {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--m3-color-on-surface-variant, #49454F);
-    cursor: crosshair;
+    padding: 4px;
+    border: none;
+    background: transparent;
+    color: var(--m3-color-outline, #79747E);
+    cursor: pointer;
+    border-radius: 50%;
+    transition: color 0.15s ease, transform 0.1s ease;
+
+    &:hover {
+        transform: scale(1.15);
+    }
+
+    &--filled {
+        color: #FAAF00;
+    }
+}
+
+// ── Layout elements in runtime ──────────────────────────────
+.form-renderer__heading {
+    margin: 8px 0 4px;
+}
+
+.form-renderer__text-block {
+    margin: 4px 0;
+}
+
+.form-renderer__divider {
+    border: none;
+    border-top: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    margin: 8px 0;
+}
+
+.form-renderer__spacer {
+    // height set via inline style
+}
+
+.form-renderer__logo {
+    max-width: 200px;
+    height: auto;
+    object-fit: contain;
+}
+
+.form-renderer__grid {
+    display: grid;
+    gap: 16px;
+}
+
+.form-renderer__grid-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-renderer__section,
+.form-renderer__card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border-radius: var(--m3-shape-medium, 12px);
+}
+
+.form-renderer__section {
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+}
+
+.form-renderer__card {
+    background: var(--m3-color-surface-container-low, #F7F2FA);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.form-renderer__section-title {
+    margin-bottom: 4px;
+}
+
+.form-renderer__container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .form-renderer__submit-area {
     display: flex;
     justify-content: flex-end;
+    gap: 8px;
     padding-top: 8px;
     border-top: 1px solid var(--m3-color-outline-variant, #C4C7C5);
     margin-top: 8px;
+}
+
+// ── Multi-step Progress ──────────────────────────────────────
+.form-renderer__progress {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+}
+
+.form-renderer__progress-steps {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.form-renderer__step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    font-size: 0.75rem;
+    cursor: default;
+    transition: background 0.15s ease;
+
+    &--completed {
+        cursor: pointer;
+        color: var(--m3-color-primary, #6750A4);
+        &:hover {
+            background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 8%, transparent);
+        }
+    }
+
+    &--active {
+        background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 12%, transparent);
+        color: var(--m3-color-primary, #6750A4);
+        font-weight: 600;
+    }
+}
+
+.form-renderer__step-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: var(--m3-color-surface-container-high, #E6E6E6);
+    color: var(--m3-color-on-surface-variant, #49454F);
+
+    .form-renderer__step--active & {
+        background: var(--m3-color-primary, #6750A4);
+        color: var(--m3-color-on-primary, #FFFFFF);
+    }
+
+    .form-renderer__step--completed & {
+        background: var(--m3-color-primary, #6750A4);
+        color: var(--m3-color-on-primary, #FFFFFF);
+    }
+}
+
+.form-renderer__step-label {
+    display: none;
+    @media (min-width: 480px) { display: inline; }
+}
+
+.form-renderer__progress-bar {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--m3-color-surface-container-high, #E6E6E6);
+    overflow: hidden;
+}
+
+.form-renderer__progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--m3-color-primary, #6750A4);
+    transition: width 0.3s ease;
 }
 
 .form-renderer__submit-btn {
@@ -236,6 +489,48 @@
     display: flex;
     align-items: center;
     gap: 12px;
+}
+
+.form-preview__toolbar-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-preview__device-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    border-radius: 9999px;
+    background: var(--m3-color-surface-container, #F0F0F0);
+}
+
+.form-preview__device-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+
+    &:hover {
+        background: var(--m3-color-surface-container-high, #E6E6E6);
+    }
+
+    &--active {
+        background: var(--m3-color-primary, #6750A4);
+        color: var(--m3-color-on-primary, #FFFFFF);
+
+        &:hover {
+            background: var(--m3-color-primary, #6750A4);
+        }
+    }
 }
 
 .form-preview__badge {

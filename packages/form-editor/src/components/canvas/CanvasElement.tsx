@@ -103,7 +103,7 @@ export const CanvasElement: Component<CanvasElementProps> = (props) => {
             <Match when={el().type === 'switch'}>
                 <div class="canvas-element__switch-row">
                     <Typography variant="body-medium">{el().label}</Typography>
-                    <Switch disabled />
+                    <Switch size="sm" disabled />
                 </div>
             </Match>
 
@@ -298,7 +298,7 @@ const GridColumnEl: Component<{
                     props.onDelete();
                 }}
             >
-                <Icon name="x" size={12} />
+                <Icon name="minus" size={12} />
             </button>
 
             {/* Width badge */}

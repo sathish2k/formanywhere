@@ -14,6 +14,8 @@ export interface SwitchProps {
     defaultChecked?: boolean;
     /** Disabled state */
     disabled?: boolean;
+    /** Size variant */
+    size?: 'sm' | 'md';
     /** Name for form */
     name?: string;
     /** Value for form */
@@ -32,7 +34,7 @@ export interface SwitchProps {
 
 export const Switch: Component<SwitchProps> = (props) => {
     const [local] = splitProps(props, [
-        'checked', 'defaultChecked', 'disabled', 'name', 'value', 'onChange', 'icons', 'style', 'class'
+        'checked', 'defaultChecked', 'disabled', 'size', 'name', 'value', 'onChange', 'icons', 'style', 'class'
     ]);
 
     const [internalChecked, setInternalChecked] = createSignal(local.defaultChecked ?? false);
@@ -49,6 +51,7 @@ export const Switch: Component<SwitchProps> = (props) => {
 
     const rootClass = () => {
         const classes = ['md-switch'];
+        if (local.size === 'sm') classes.push('md-switch--sm');
         if (isChecked()) classes.push('checked');
         if (local.disabled) classes.push('disabled');
         if (local.class) classes.push(local.class);

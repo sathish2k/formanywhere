@@ -6,3 +6,5 @@ export { SchemaDialog } from './SchemaDialog';
 export type { SchemaDialogProps } from './SchemaDialog';
 export { IntegrationsDialog } from './IntegrationsDialog';
 export type { IntegrationsDialogProps } from './IntegrationsDialog';
+export { FormSettingsDialog } from './FormSettingsDialog';
+export type { FormSettingsDialogProps, FormSettings } from './FormSettingsDialog';

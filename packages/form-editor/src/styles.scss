@@ -1018,6 +1018,17 @@
         background: color-mix(in srgb, var(--m3-color-tertiary, #7D5260) 6%, transparent);
     }
 
+    /* Hidden elements — reduced opacity, dashed border */
+    &--hidden {
+        opacity: 0.5;
+        border-style: dashed;
+        border-color: var(--m3-color-outline-variant, #C4C7C5);
+
+        .canvas-field__content {
+            pointer-events: none;
+        }
+    }
+
     /* Grid/layout rows: outline + controls only on select */
     &--grid-type {
         padding: 0;
@@ -1204,6 +1215,24 @@
     color: var(--m3-color-error, #B3261E);
     font-weight: 700;
     font-size: 1rem;
+}
+
+.canvas-field__hidden-badge {
+    position: absolute;
+    top: 8px;
+    right: 28px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: var(--m3-color-surface-container-highest, #E6E0E9);
+    color: var(--m3-color-on-surface-variant, #49454F);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    line-height: 1;
 }
 
 /* ─── CANVAS ELEMENT CONTROLS ─────────────────────────────────── */

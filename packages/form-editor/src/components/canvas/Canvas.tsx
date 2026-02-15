@@ -14,21 +14,18 @@ export const Canvas: Component<{
     onDragEnd?: () => void;
     dragSource: Accessor<'toolbar' | 'canvas' | null>;
 }> = (props) => {
-    const { schema, setSelectedElement } = useFormEditor();
-
-    // Derived accessor for root elements
-    const rootElements = () => schema().elements;
+    const { pageElements, clearSelection } = useFormEditor();
 
     return (
-        <div class="form-canvas" onClick={() => setSelectedElement(null)}>
+        <div class="form-canvas" onClick={() => clearSelection()}>
             <div class="form-canvas__root-region">
                 <CanvasRegion
-                    elements={rootElements}
+                    elements={pageElements}
                     parentId={null}
                     dragSource={props.dragSource}
                     onCanvasDragStart={props.onCanvasDragStart}
                     onDragEnd={props.onDragEnd}
-                    isEmpty={rootElements().length === 0}
+                    isEmpty={pageElements().length === 0}
                 />
             </div>
         </div>
