@@ -51,7 +51,7 @@ export type FormElementType =
     | 'signature';
 
 export interface ValidationRule {
-    type: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'min' | 'max';
+    type: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'min' | 'max' | 'email' | 'url' | 'custom';
     value?: string | number;
     message: string;
 }

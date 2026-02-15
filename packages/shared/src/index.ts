@@ -10,6 +10,7 @@ export * from './components/category-filter';
 export * from './components/template-browser';
 export * from './components/header';
 export * from './components/footer';
+export * from './components/confirmation-dialog';
 
 // Pricing & Marketing Components
 export * from './components/pricing-table';

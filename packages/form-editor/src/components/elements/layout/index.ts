@@ -27,6 +27,8 @@ export const gridElement: ElementDefinition = {
         { key: 'label', label: 'Label', type: 'text', group: 'General' },
         { key: 'columns', label: 'Columns', type: 'number', defaultValue: 2, group: 'Layout' },
         { key: 'gap', label: 'Gap (px)', type: 'number', defaultValue: 16 },
+        { key: 'mobileColumns', label: 'Mobile Columns', type: 'number', defaultValue: 1, helpText: 'Columns on small screens' },
+        { key: 'tabletColumns', label: 'Tablet Columns', type: 'number', defaultValue: 2, helpText: 'Columns on medium screens' },
         { key: 'hidden', label: 'Hidden', type: 'boolean', defaultValue: false, group: 'State' },
         { key: 'customClass', label: 'Custom CSS Class', type: 'text', defaultValue: '' },
     ],
@@ -38,6 +40,10 @@ export const sectionElement: ElementDefinition = {
     properties: [
         { key: 'label', label: 'Title', type: 'text', group: 'General' },
         { key: 'description', label: 'Description', type: 'textarea' },
+        { key: 'collapsible', label: 'Collapsible', type: 'boolean', defaultValue: false, group: 'Settings' },
+        { key: 'defaultExpanded', label: 'Default Expanded', type: 'boolean', defaultValue: true },
+        { key: 'showBorder', label: 'Show Border', type: 'boolean', defaultValue: true, group: 'Appearance' },
+        { key: 'sectionBgColor', label: 'Background Color', type: 'color', defaultValue: '' },
         { key: 'margin', label: 'Margin (px)', type: 'number', defaultValue: 0, group: 'Layout' },
         { key: 'hidden', label: 'Hidden', type: 'boolean', defaultValue: false, group: 'State' },
         { key: 'customClass', label: 'Custom CSS Class', type: 'text', defaultValue: '' },
@@ -69,7 +75,14 @@ export const dividerElement: ElementDefinition = {
     type: 'divider', label: 'Divider', icon: 'minus', category: 'layout', color: '#64FFDA',
     defaults: { label: 'Divider' },
     properties: [
-        { key: 'customClass', label: 'Custom CSS Class', type: 'text', defaultValue: '', group: 'Appearance' },
+        { key: 'thickness', label: 'Thickness (px)', type: 'number', defaultValue: 1, group: 'Appearance' },
+        { key: 'color', label: 'Color', type: 'color', defaultValue: '#E0E0E0' },
+        {
+            key: 'style', label: 'Style', type: 'select', options: [
+                { label: 'Solid', value: 'solid' }, { label: 'Dashed', value: 'dashed' }, { label: 'Dotted', value: 'dotted' },
+            ], defaultValue: 'solid'
+        },
+        { key: 'customClass', label: 'Custom CSS Class', type: 'text', defaultValue: '' },
     ],
 };
 
@@ -93,6 +106,13 @@ export const headingElement: ElementDefinition = {
                 { label: 'H3', value: '3' }, { label: 'H4', value: '4' },
             ], defaultValue: '2'
         },
+        {
+            key: 'headingWeight', label: 'Weight', type: 'select', options: [
+                { label: 'Light', value: '300' }, { label: 'Normal', value: '400' },
+                { label: 'Medium', value: '500' }, { label: 'Bold', value: '700' },
+            ], defaultValue: '700'
+        },
+        { key: 'headingColor', label: 'Color', type: 'color', defaultValue: '' },
         {
             key: 'alignment', label: 'Alignment', type: 'select', options: [
                 { label: 'Left', value: 'left' }, { label: 'Center', value: 'center' }, { label: 'Right', value: 'right' },

@@ -3,6 +3,7 @@
  */
 import { Show, createMemo, For } from 'solid-js';
 import type { Component } from 'solid-js';
+import type { FormElement } from '@formanywhere/shared/types';
 import { Typography } from '@formanywhere/ui/typography';
 import { TextField } from '@formanywhere/ui/textfield';
 import { Switch } from '@formanywhere/ui/switch';
@@ -17,9 +18,22 @@ import '../../styles.scss';
 export const PropertiesPanel: Component = () => {
     const { schema, selectedElement, updateElement, removeElement, setSelectedElement } = useFormEditor();
 
-    const currentElement = createMemo(() =>
-        schema().elements.find((el) => el.id === selectedElement())
-    );
+    /** Recursively search the element tree (handles nested containers, grids, etc.) */
+    const findElementById = (elements: FormElement[], id: string): FormElement | undefined => {
+        for (const el of elements) {
+            if (el.id === id) return el;
+            if (el.elements) {
+                const found = findElementById(el.elements, id);
+                if (found) return found;
+            }
+        }
+        return undefined;
+    };
+
+    const currentElement = createMemo(() => {
+        const id = selectedElement();
+        return id ? findElementById(schema().elements, id) : undefined;
+    });
 
     /** Get the element definition from the registry */
     const elementDef = createMemo(() => {

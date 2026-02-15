@@ -76,6 +76,10 @@
         "./dashboard": {
             "import": "./src/components/dashboard/index.tsx",
             "types": "./src/components/dashboard/index.tsx"
+        },
+        "./confirmation-dialog": {
+            "import": "./src/components/confirmation-dialog/index.tsx",
+            "types": "./src/components/confirmation-dialog/index.tsx"
         }
     },
     "scripts": {

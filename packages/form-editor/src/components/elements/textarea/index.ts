@@ -21,7 +21,10 @@ export const textareaElement: ElementDefinition = {
         { key: 'disabled', label: 'Disabled', type: 'boolean', defaultValue: false, group: 'State' },
         { key: 'readOnly', label: 'Read Only', type: 'boolean', defaultValue: false },
         { key: 'hidden', label: 'Hidden', type: 'boolean', defaultValue: false },
+        { key: 'customError', label: 'Custom Error', type: 'text', helpText: 'Shown when validation fails' },
         { key: 'rows', label: 'Rows', type: 'number', defaultValue: 4, group: 'Appearance' },
+        { key: 'autoResize', label: 'Auto Resize', type: 'boolean', defaultValue: false, helpText: 'Expand height as user types' },
+        { key: 'characterCounter', label: 'Character Counter', type: 'boolean', defaultValue: false, helpText: 'Show remaining characters' },
         {
             key: 'width', label: 'Width', type: 'select', options: [
                 { label: '25%', value: '25' }, { label: '50%', value: '50' },

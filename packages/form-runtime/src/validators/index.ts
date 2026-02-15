@@ -74,18 +74,33 @@ function validateRule(rule: ValidationRule, value: unknown): string | null {
     return null;
 }
 
+/**
+ * Recursively collects validation errors for all elements,
+ * including those nested inside layout containers.
+ */
+function collectFieldErrors(
+    elements: FormElement[],
+    values: Record<string, unknown>,
+    errors: Record<string, string>,
+): void {
+    for (const element of elements) {
+        // Validate the element itself (skip pure layout containers)
+        const error = validateField(element, values[element.id]);
+        if (error) {
+            errors[element.id] = error;
+        }
+        // Recurse into nested children (grid, section, card, container, etc.)
+        if (element.elements) {
+            collectFieldErrors(element.elements, values, errors);
+        }
+    }
+}
+
 export function validateForm(
     schema: FormSchema,
     values: Record<string, unknown>
 ): ValidationResult {
     const errors: Record<string, string> = {};
-
-    for (const element of schema.elements) {
-        const error = validateField(element, values[element.id]);
-        if (error) {
-            errors[element.id] = error;
-        }
-    }
-
+    collectFieldErrors(schema.elements, values, errors);
     return { valid: Object.keys(errors).length === 0, errors };
 }

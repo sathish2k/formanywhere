@@ -60,7 +60,7 @@ export const emailElement: ElementDefinition = {
 
 export const phoneElement: ElementDefinition = {
     type: 'phone',
-    label: 'Phone',
+    label: 'Phone Number',
     icon: 'phone',
     category: 'text-inputs',
     color: '#009688',
@@ -84,13 +84,16 @@ export const numberElement: ElementDefinition = {
         { key: 'min', label: 'Min', type: 'number', group: 'Validation' },
         { key: 'max', label: 'Max', type: 'number', group: 'Validation' },
         { key: 'step', label: 'Step', type: 'number', defaultValue: 1 },
+        { key: 'precision', label: 'Decimal Places', type: 'number', defaultValue: 0, helpText: '0 for integers' },
+        { key: 'unit', label: 'Unit', type: 'text', helpText: 'e.g. kg, $, %' },
+        { key: 'showArrows', label: 'Show Arrows', type: 'boolean', defaultValue: true, helpText: 'Increment/decrement buttons' },
         { key: 'customError', label: 'Custom Error', type: 'text', helpText: 'Shown when validation fails' },
     ],
 };
 
 export const urlElement: ElementDefinition = {
     type: 'url',
-    label: 'URL',
+    label: 'Website URL',
     icon: 'link',
     category: 'text-inputs',
     color: '#8BC34A',

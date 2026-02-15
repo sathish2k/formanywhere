@@ -1,7 +1,7 @@
 /**
  * BuilderHeader — Top app bar for the form builder
- * Left: Back icon, form name, Dashboard CTA
- * Right: Preview, Settings (dropdown), Publish
+ * Left: Back arrow, form name
+ * Right: Preview, Publish, Settings (dropdown), Theme toggle, User profile
  */
 import { createSignal, Show, onMount, onCleanup } from 'solid-js';
 import type { Component } from 'solid-js';
@@ -9,6 +9,10 @@ import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
 import { IconButton } from '@formanywhere/ui/icon-button';
 import { Icon } from '@formanywhere/ui/icon';
+import { Avatar } from '@formanywhere/ui/avatar';
+import { Menu, MenuItem } from '@formanywhere/ui/menu';
+import { Divider } from '@formanywhere/ui/divider';
+import { ThemeToggle } from '@formanywhere/shared/header';
 
 export interface BuilderHeaderProps {
     formName: string;
@@ -23,11 +27,33 @@ export interface BuilderHeaderProps {
     onViewSchema?: () => void;
     onCustomizeTheme?: () => void;
     onIntegrations?: () => void;
+    /** User display name (falls back to "User") */
+    userName?: string;
+    /** User email (falls back to "user@example.com") */
+    userEmail?: string;
+    /** URL to user avatar image */
+    userAvatar?: string;
+    /** Navigate to profile page */
+    onProfile?: () => void;
+    /** Log the user out */
+    onLogout?: () => void;
 }
 
 export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
     const [settingsOpen, setSettingsOpen] = createSignal(false);
+    const [profileMenuOpen, setProfileMenuOpen] = createSignal(false);
     let settingsRef: HTMLDivElement | undefined;
+    let profileAnchor: HTMLDivElement | undefined;
+
+    const userName = () => props.userName || 'User';
+    const userEmail = () => props.userEmail || 'user@example.com';
+    const userInitials = () =>
+        userName()
+            .split(' ')
+            .map((w) => w[0])
+            .join('')
+            .toUpperCase()
+            .slice(0, 2);
 
     /* Close settings menu on outside click */
     const handleClickOutside = (e: MouseEvent) => {
@@ -41,7 +67,7 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
 
     return (
         <header class="builder-header">
-            {/* ── Left: Back · Form name · Dashboard ── */}
+            {/* ── Left: Back · Form name ── */}
             <div class="builder-header__left">
                 <IconButton
                     onClick={() => props.onBack()}
@@ -53,18 +79,9 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
                 <Typography variant="title-medium" class="builder-header__form-name">
                     {props.formName}
                 </Typography>
-                <Button
-                    variant="text"
-                    size="sm"
-                    onClick={() => props.onDashboard?.()}
-                    class="builder-header__btn"
-                >
-                    <Icon name="layout" size={14} />
-                    Dashboard
-                </Button>
             </div>
 
-            {/* ── Right: Preview · Settings · Publish ── */}
+            {/* ── Right: Preview · Publish · Settings · Theme · Profile ── */}
             <div class="builder-header__right">
                 <Button
                     variant="text"
@@ -75,6 +92,17 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
                 >
                     <Icon name={props.previewing ? 'pencil' : 'eye'} size={16} />
                     {props.previewing ? 'Edit' : 'Preview'}
+                </Button>
+
+                <Button
+                    variant="filled"
+                    size="sm"
+                    onClick={() => props.onSave()}
+                    disabled={props.saving || !props.hasSchema}
+                    class="builder-header__btn"
+                >
+                    <Icon name="upload" size={16} />
+                    {props.saving ? 'Saving…' : 'Publish'}
                 </Button>
 
                 <div class="builder-header__settings-wrapper" ref={settingsRef}>
@@ -107,16 +135,58 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
                     </Show>
                 </div>
 
-                <Button
-                    variant="filled"
-                    size="sm"
-                    onClick={() => props.onSave()}
-                    disabled={props.saving || !props.hasSchema}
-                    class="builder-header__btn"
+                {/* Theme colour selector */}
+                <ThemeToggle />
+
+                {/* User profile */}
+                <div ref={profileAnchor}>
+                    <Avatar
+                        src={props.userAvatar}
+                        initials={userInitials()}
+                        size="sm"
+                        onClick={() => setProfileMenuOpen(true)}
+                        style={{ cursor: 'pointer' }}
+                    />
+                </div>
+
+                <Menu
+                    open={profileMenuOpen()}
+                    onClose={() => setProfileMenuOpen(false)}
+                    anchorEl={profileAnchor}
+                    position="bottom-end"
                 >
-                    <Icon name="upload" size={16} />
-                    {props.saving ? 'Saving…' : 'Publish'}
-                </Button>
+                    <div class="builder-header__profile-header">
+                        <Avatar
+                            src={props.userAvatar}
+                            initials={userInitials()}
+                            size="sm"
+                        />
+                        <div>
+                            <Typography variant="title-small">{userName()}</Typography>
+                            <Typography variant="label-small" color="on-surface-variant">
+                                {userEmail()}
+                            </Typography>
+                        </div>
+                    </div>
+                    <Divider />
+                    <MenuItem
+                        label="Profile Settings"
+                        leadingIcon={<Icon name="person" size={20} />}
+                        onClick={() => { props.onProfile?.(); setProfileMenuOpen(false); }}
+                    />
+                    <MenuItem
+                        label="Account Settings"
+                        leadingIcon={<Icon name="settings" size={20} />}
+                        onClick={() => { props.onProfile?.(); setProfileMenuOpen(false); }}
+                    />
+                    <Divider />
+                    <MenuItem
+                        label="Logout"
+                        leadingIcon={<Icon name="logout" size={20} />}
+                        onClick={() => { props.onLogout?.(); setProfileMenuOpen(false); }}
+                        style={{ color: 'var(--m3-color-error, #B3261E)' }}
+                    />
+                </Menu>
             </div>
         </header>
     );

@@ -31,6 +31,7 @@ const DraggableTile: Component<{
             onDragStart={handleDragStart}
             onClick={() => props.onClickAdd(props.item.type)}
             title={`Add ${props.item.label}`}
+            style={{ '--tile-color': props.item.color } as any}
         >
             <div
                 class="form-toolbar__tile-icon"

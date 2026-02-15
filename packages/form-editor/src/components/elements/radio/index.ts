@@ -3,7 +3,7 @@ import type { ElementDefinition } from '../types';
 
 export const radioElement: ElementDefinition = {
     type: 'radio',
-    label: 'Radio',
+    label: 'Multiple Choice',
     icon: 'radio',
     category: 'choice',
     color: '#FF5722',
@@ -15,6 +15,12 @@ export const radioElement: ElementDefinition = {
         { key: 'defaultValue', label: 'Default Value', type: 'text', defaultValue: '' },
         { key: 'tooltip', label: 'Tooltip', type: 'text', defaultValue: '' },
         { key: 'required', label: 'Required', type: 'boolean', defaultValue: false, group: 'Validation' },
+        { key: 'customError', label: 'Custom Error', type: 'text', helpText: 'Shown when validation fails' },
+        {
+            key: 'layout', label: 'Layout', type: 'select', options: [
+                { label: 'Vertical', value: 'vertical' }, { label: 'Horizontal', value: 'horizontal' },
+            ], defaultValue: 'vertical', group: 'Appearance'
+        },
         { key: 'disabled', label: 'Disabled', type: 'boolean', defaultValue: false, group: 'State' },
         { key: 'hidden', label: 'Hidden', type: 'boolean', defaultValue: false },
         {

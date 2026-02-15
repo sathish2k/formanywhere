@@ -22,7 +22,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    overflow-x: auto;
+    overflow-x: clip;
+    overflow-y: visible;
     flex: 1;
     scrollbar-width: none;
 
@@ -113,14 +114,7 @@
             font-weight: 600;
         }
 
-        .page-toolbar__kebab {
-            color: rgba(255, 255, 255, 0.8);
-
-            &:hover {
-                background: rgba(255, 255, 255, 0.18);
-                color: #fff;
-            }
-        }
+        /* Kebab color override removed — see compound selector below */
 
         &:hover {
             background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 90%, #000);
@@ -161,6 +155,16 @@
     &:hover {
         background: color-mix(in srgb, var(--m3-color-on-surface-variant, #49454F) 12%, transparent);
         color: var(--m3-color-on-surface, #1C1B1F);
+    }
+
+    /* Active tab — match on-primary label color (specificity 0,3,0 beats base 0,2,0) */
+    .page-toolbar__tab--active & {
+        color: var(--m3-color-on-primary, #fff);
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: var(--m3-color-on-primary, #fff);
+        }
     }
 }
 
@@ -269,4 +273,11 @@
         transform: translateY(0);
         box-shadow: none;
     }
+}
+
+/* ── Edit (rename) page dialog body ── */
+.page-toolbar__edit-dialog-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }

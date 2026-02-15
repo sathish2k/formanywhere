@@ -13,7 +13,10 @@ export const signatureElement: ElementDefinition = {
         { key: 'helperText', label: 'Helper Text', type: 'text', defaultValue: '' },
         { key: 'description', label: 'Description', type: 'textarea', defaultValue: '' },
         { key: 'tooltip', label: 'Tooltip', type: 'text', defaultValue: '' },
+        { key: 'penColor', label: 'Pen Color', type: 'color', defaultValue: '#000000', group: 'Appearance' },
+        { key: 'backgroundColor', label: 'Background Color', type: 'color', defaultValue: '#FFFFFF' },
         { key: 'required', label: 'Required', type: 'boolean', defaultValue: false, group: 'Validation' },
+        { key: 'customError', label: 'Custom Error', type: 'text', helpText: 'Shown when validation fails' },
         { key: 'disabled', label: 'Disabled', type: 'boolean', defaultValue: false, group: 'State' },
         { key: 'hidden', label: 'Hidden', type: 'boolean', defaultValue: false },
         {

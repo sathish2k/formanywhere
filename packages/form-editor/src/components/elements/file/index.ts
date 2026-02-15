@@ -17,6 +17,9 @@ export const fileElement: ElementDefinition = {
         { key: 'accept', label: 'Accepted Types', type: 'text', defaultValue: '', helpText: 'e.g. .pdf,.jpg,.png', group: 'File' },
         { key: 'multiple', label: 'Allow Multiple', type: 'boolean', defaultValue: false },
         { key: 'maxSize', label: 'Max Size (MB)', type: 'number', defaultValue: 10 },
+        { key: 'dragDropEnabled', label: 'Drag & Drop', type: 'boolean', defaultValue: true, helpText: 'Allow drag-and-drop upload' },
+        { key: 'previewEnabled', label: 'Preview Files', type: 'boolean', defaultValue: true, helpText: 'Show file previews after upload' },
+        { key: 'customError', label: 'Custom Error', type: 'text', helpText: 'Shown when validation fails' },
         { key: 'disabled', label: 'Disabled', type: 'boolean', defaultValue: false, group: 'State' },
         { key: 'hidden', label: 'Hidden', type: 'boolean', defaultValue: false },
         {

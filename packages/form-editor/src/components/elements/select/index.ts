@@ -17,6 +17,8 @@ export const selectElement: ElementDefinition = {
         { key: 'tooltip', label: 'Tooltip', type: 'text', defaultValue: '' },
         { key: 'required', label: 'Required', type: 'boolean', defaultValue: false, group: 'Validation' },
         { key: 'multiple', label: 'Multi-select', type: 'boolean', defaultValue: false, helpText: 'Allow selecting multiple options' },
+        { key: 'searchable', label: 'Searchable', type: 'boolean', defaultValue: false, helpText: 'Allow searching/filtering options' },
+        { key: 'customError', label: 'Custom Error', type: 'text', helpText: 'Shown when validation fails' },
         { key: 'disabled', label: 'Disabled', type: 'boolean', defaultValue: false, group: 'State' },
         { key: 'readOnly', label: 'Read Only', type: 'boolean', defaultValue: false },
         { key: 'hidden', label: 'Hidden', type: 'boolean', defaultValue: false },

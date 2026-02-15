@@ -1,0 +1,37 @@
+/* ═══════════════════════════════════════════════════════════════
+   ConfirmationDialog — styles
+   ═══════════════════════════════════════════════════════════════ */
+
+.confirmation-dialog {
+    max-width: 400px;
+
+    .md-dialog__content {
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: var(--m3-color-on-surface-variant, #49454F);
+    }
+}
+
+/* ── Destructive variant: tinted header icon ── */
+.confirmation-dialog--destructive {
+    .md-dialog__icon {
+        color: var(--m3-color-error, #B3261E);
+    }
+}
+
+/* ── Action button row ── */
+.confirmation-dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* ── Destructive confirm button ── */
+.confirmation-dialog__confirm--danger {
+    background: var(--m3-color-error, #B3261E) !important;
+    color: var(--m3-color-on-error, #fff) !important;
+
+    &:hover {
+        background: color-mix(in srgb, var(--m3-color-error, #B3261E) 88%, #000) !important;
+    }
+}

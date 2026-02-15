@@ -120,10 +120,13 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
     };
 
     const editPage = (pageId: string) => {
+        // Legacy fallback — handled by PageToolbar's onRenamePage dialog now
         const page = pages().find((p) => p.id === pageId);
         if (!page) return;
-        const newTitle = window.prompt('Rename page:', page.title);
-        if (newTitle && newTitle.trim()) {
+    };
+
+    const renamePage = (pageId: string, newTitle: string) => {
+        if (newTitle.trim()) {
             setPages((prev) => prev.map((p) => p.id === pageId ? { ...p, title: newTitle.trim() } : p));
         }
     };
@@ -176,6 +179,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                     onSetActivePage={setActivePageId}
                     onAddPage={addPage}
                     onEditPage={editPage}
+                    onRenamePage={renamePage}
                     onDuplicatePage={duplicatePage}
                     onDeletePage={deletePage}
                     onLogic={() => setLogicOpen(true)}

@@ -75,3 +75,11 @@
         }
     }
 }
+
+/* ── Profile menu header (avatar + name + email) ── */
+.builder-header__profile-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+}

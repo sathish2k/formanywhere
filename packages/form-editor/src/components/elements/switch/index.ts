@@ -3,7 +3,7 @@ import type { ElementDefinition } from '../types';
 
 export const switchElement: ElementDefinition = {
     type: 'switch',
-    label: 'Switch',
+    label: 'Yes/No',
     icon: 'toggle-left',
     category: 'choice',
     color: '#E91E63',
@@ -15,6 +15,9 @@ export const switchElement: ElementDefinition = {
         { key: 'defaultValue', label: 'Default Value', type: 'boolean', defaultValue: false },
         { key: 'tooltip', label: 'Tooltip', type: 'text', defaultValue: '' },
         { key: 'required', label: 'Required', type: 'boolean', defaultValue: false, group: 'Validation' },
+        { key: 'customError', label: 'Custom Error', type: 'text', helpText: 'Shown when validation fails' },
+        { key: 'onLabel', label: 'On Label', type: 'text', defaultValue: 'Yes', group: 'Labels' },
+        { key: 'offLabel', label: 'Off Label', type: 'text', defaultValue: 'No' },
         { key: 'disabled', label: 'Disabled', type: 'boolean', defaultValue: false, group: 'State' },
         { key: 'hidden', label: 'Hidden', type: 'boolean', defaultValue: false },
         {
