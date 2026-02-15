@@ -18,5 +18,3 @@ export * from './components/contact-sales-card';
 export * from './components/cta-section';
 export * from './components/auth/SignInForm';
 export * from './components/auth/SignUpForm';
-export * from './components/form-builder';
-

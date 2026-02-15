@@ -13,15 +13,13 @@
  */
 import { createSignal, Show, onMount } from 'solid-js';
 import type { Component } from 'solid-js';
-import {
-    FormEditor,
-    FormEditorLayout,
-    AIFormBuilder,
-    ImportForm,
-} from '@formanywhere/form-editor';
+import { FormEditor } from './FormEditor';
+import { FormEditorLayout } from './layout/FormEditorLayout';
+import { AIFormBuilder } from './ai/AIFormBuilder';
+import { ImportForm } from './import/ImportForm';
 import { FormPreview } from '@formanywhere/form-runtime';
-import type { FormSchema, FormRule } from '../../types';
-import { generateId, go } from '../../utils';
+import type { FormSchema, FormRule } from '@formanywhere/shared/types';
+import { generateId, go } from '@formanywhere/shared/utils';
 import { BuilderHeader } from './header/BuilderHeader';
 import { PageToolbar } from './page-toolbar/PageToolbar';
 import type { PageTab } from './page-toolbar/PageToolbar';
@@ -121,6 +119,15 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
         }
     };
 
+    const editPage = (pageId: string) => {
+        const page = pages().find((p) => p.id === pageId);
+        if (!page) return;
+        const newTitle = window.prompt('Rename page:', page.title);
+        if (newTitle && newTitle.trim()) {
+            setPages((prev) => prev.map((p) => p.id === pageId ? { ...p, title: newTitle.trim() } : p));
+        }
+    };
+
     const handleSave = async () => {
         const currentSchema = schema();
         if (!currentSchema) return;
@@ -168,6 +175,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                     activePageId={activePageId()}
                     onSetActivePage={setActivePageId}
                     onAddPage={addPage}
+                    onEditPage={editPage}
                     onDuplicatePage={duplicatePage}
                     onDeletePage={deletePage}
                     onLogic={() => setLogicOpen(true)}

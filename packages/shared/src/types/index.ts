@@ -7,8 +7,15 @@ export interface FormElement {
     label: string;
     required?: boolean;
     placeholder?: string;
+    description?: string;
     validation?: ValidationRule[];
     conditionalLogic?: ConditionalRule[];
+    /** Options for select/radio/checkbox elements */
+    options?: Array<{ label: string; value: string }>;
+    /** Nested elements for layout containers (Grid, Section, etc.) */
+    elements?: FormElement[];
+    /** Allow extra properties from element plugins */
+    [key: string]: unknown;
 }
 
 export type FormElementType =

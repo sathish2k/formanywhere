@@ -1,0 +1,134 @@
+/**
+ * GridLayoutPicker styles
+ * Matches InlineGridSelector from AI-Powered Form Builder reference:
+ *   - Container slide-in from below
+ *   - Cards fade-in with staggered delay + scale
+ *   - Hover: scale 1.05, primary border, elevated shadow
+ *   - Visual bar preview with primary color
+ */
+
+/* ─── Animations ─── */
+
+@keyframes grid-picker-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes grid-card-in {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ─── Container ─── */
+
+.grid-layout-picker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 32px;
+    animation: grid-picker-in 0.4s var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)) both;
+}
+
+.grid-layout-picker__heading {
+    font-weight: 600 !important;
+    text-align: center;
+}
+
+/* ─── Options row ─── */
+
+.grid-layout-picker__options {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* ─── Individual card ─── */
+
+.grid-layout-picker__card {
+    min-width: 140px;
+    padding: 24px;
+    cursor: pointer;
+    border: 2px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: var(--m3-shape-medium, 12px);
+    background: var(--m3-color-surface-container-lowest, #fff);
+    text-align: center;
+    transition: all 0.2s ease;
+    animation: grid-card-in 0.3s var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)) both;
+    /* animation-delay is set inline per card (0s, 0.1s, 0.2s) */
+
+    &:hover,
+    &--hovered {
+        border-color: var(--m3-color-primary, #6750A4);
+        background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 4%, transparent);
+        box-shadow: 0 8px 24px color-mix(in srgb, var(--m3-color-primary, #6750A4) 15%, transparent);
+        transform: scale(1.05);
+    }
+
+    &:active {
+        transform: scale(0.95);
+    }
+}
+
+/* ─── Icon box ─── */
+
+.grid-layout-picker__icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--m3-shape-medium, 12px);
+    background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 10%, transparent);
+    color: var(--m3-color-primary, #6750A4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    transition: all 0.2s ease;
+}
+
+/* ─── Label & description ─── */
+
+.grid-layout-picker__label {
+    font-weight: 700 !important;
+    margin-bottom: 4px;
+}
+
+.grid-layout-picker__desc {
+    display: block;
+    margin-bottom: 16px;
+}
+
+/* ─── Visual bar preview ─── */
+
+.grid-layout-picker__preview {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+}
+
+.grid-layout-picker__bar {
+    height: 32px;
+    background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 30%, transparent);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+/* On hover, darken the bars */
+.grid-layout-picker__card:hover .grid-layout-picker__bar,
+.grid-layout-picker__card--hovered .grid-layout-picker__bar {
+    background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 50%, transparent);
+}

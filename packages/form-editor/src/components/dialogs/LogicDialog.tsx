@@ -7,7 +7,7 @@ import type { Component } from 'solid-js';
 import { Dialog } from '@formanywhere/ui/dialog';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
-import type { FormRule, RuleCondition, RuleAction } from '../../../types';
+import type { FormRule, RuleCondition, RuleAction } from '@formanywhere/shared/types';
 import type { PageTab } from '../page-toolbar/PageToolbar';
 import './dialogs.scss';
 

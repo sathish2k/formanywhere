@@ -15,7 +15,7 @@
     text-decoration: none;
     -webkit-tap-highlight-color: transparent;
     transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                color var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+        color var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
 
     &:disabled {
         cursor: not-allowed;
@@ -25,16 +25,33 @@
 
     /* Sizes */
     &.size-sm {
-        width: 32px; height: 32px;
-        .md-icon-button__icon { width: 20px; height: 20px; }
+        width: 32px;
+        height: 32px;
+
+        .md-icon-button__icon {
+            width: 20px;
+            height: 20px;
+        }
     }
+
     &.size-md {
-        width: 40px; height: 40px;
-        .md-icon-button__icon { width: 24px; height: 24px; }
+        width: 40px;
+        height: 40px;
+
+        .md-icon-button__icon {
+            width: 24px;
+            height: 24px;
+        }
     }
+
     &.size-lg {
-        width: 48px; height: 48px;
-        .md-icon-button__icon { width: 28px; height: 28px; }
+        width: 48px;
+        height: 48px;
+
+        .md-icon-button__icon {
+            width: 28px;
+            height: 28px;
+        }
     }
 
     /* ─── STANDARD VARIANT ─────────────────────────────────────────────────────── */
@@ -42,7 +59,7 @@
     &.standard,
     &.text {
         background: transparent;
-        color: var(--m3-color-on-surface-variant, #49454E);
+        color: inherit;
 
         &.selected {
             color: var(--m3-color-primary, #6750A4);

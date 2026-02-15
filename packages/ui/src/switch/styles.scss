@@ -47,7 +47,7 @@
     }
 
     &:hover:not(.disabled) .md-switch__handle::before {
-        background: var(--m3-color-on-surface, rgba(28, 27, 31, 0.08));
+        background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 8%, transparent);
     }
 
     /* Focus ring */
@@ -57,7 +57,7 @@
         border-radius: var(--m3-shape-full, 16px);
 
         .md-switch__handle::before {
-            background: var(--m3-color-on-surface, rgba(28, 27, 31, 0.12));
+            background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 12%, transparent);
         }
     }
 
@@ -96,7 +96,7 @@
     background: var(--m3-color-surface-container-highest, #E6E0E9);
     border: 2px solid var(--m3-color-outline, rgba(120, 117, 121, 0.4));
     transition: background var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                border-color var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+        border-color var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
 }
 
 /* Hover state layer on track */
@@ -117,16 +117,16 @@
     height: 16px;
     border-radius: var(--m3-shape-full, 50%);
     background: var(--m3-color-outline, rgba(120, 117, 121, 0.8));
-    box-shadow: var(--m3-elevation-1, 0 1px 3px rgba(0,0,0,0.12));
+    box-shadow: var(--m3-elevation-1, 0 1px 3px rgba(0, 0, 0, 0.12));
     display: flex;
     align-items: center;
     justify-content: center;
     transition: transform var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)),
-               width var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)),
-               height var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)),
-               left var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)),
-               background var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)),
-               box-shadow var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
+        width var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)),
+        height var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)),
+        left var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)),
+        background var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)),
+        box-shadow var(--m3-motion-duration-short, 200ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
 
     /* Handle state layer */
     &::before {

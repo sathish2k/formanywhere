@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { FormBuilderWrapper } from "@formanywhere/shared/form-builder";
+import { FormBuilderWrapper } from "@formanywhere/form-editor";
 ---
 
 <BaseLayout title="Form Builder - FormAnywhere">
-    <FormBuilderWrapper client:load />
+    <FormBuilderWrapper client:only="solid-js" />
 </BaseLayout>

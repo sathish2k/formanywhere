@@ -7,8 +7,8 @@ import type { Component } from 'solid-js';
 import { FormPreview } from '@formanywhere/form-runtime';
 import { Typography } from '@formanywhere/ui/typography';
 import { CircularProgress } from '@formanywhere/ui/progress';
-import type { FormSchema } from '../../../types';
-import { go } from '../../../utils';
+import type { FormSchema } from '@formanywhere/shared/types';
+import { go } from '@formanywhere/shared/utils';
 
 export const FormPreviewPage: Component = () => {
     const [schema, setSchema] = createSignal<FormSchema | null>(null);

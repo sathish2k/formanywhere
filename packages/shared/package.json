@@ -2,7 +2,10 @@
     "name": "@formanywhere/shared",
     "version": "0.0.1",
     "type": "module",
-    "sideEffects": ["**/*.css", "**/*.scss"],
+    "sideEffects": [
+        "**/*.css",
+        "**/*.scss"
+    ],
     "main": "./src/index.ts",
     "types": "./src/index.ts",
     "exports": {
@@ -73,11 +76,6 @@
         "./dashboard": {
             "import": "./src/components/dashboard/index.tsx",
             "types": "./src/components/dashboard/index.tsx"
-        },
-        "./form-builder": {
-            "solid": "./src/components/form-builder/index.tsx",
-            "import": "./src/components/form-builder/index.tsx",
-            "types": "./src/components/form-builder/index.tsx"
         }
     },
     "scripts": {

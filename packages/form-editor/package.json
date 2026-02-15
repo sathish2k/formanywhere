@@ -2,7 +2,10 @@
     "name": "@formanywhere/form-editor",
     "version": "0.0.1",
     "type": "module",
-    "sideEffects": ["**/*.css", "**/*.scss"],
+    "sideEffects": [
+        "**/*.css",
+        "**/*.scss"
+    ],
     "main": "./src/index.tsx",
     "types": "./src/index.tsx",
     "exports": {

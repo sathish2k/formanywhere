@@ -6,7 +6,7 @@ import type { Component } from 'solid-js';
 import { Dialog } from '@formanywhere/ui/dialog';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
-import type { FormSchema } from '../../../types';
+import type { FormSchema } from '@formanywhere/shared/types';
 import './dialogs.scss';
 
 export interface SchemaDialogProps {

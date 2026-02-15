@@ -2,16 +2,17 @@ import { createSignal, createContext, useContext } from 'solid-js';
 import type { Component } from 'solid-js';
 import type { FormSchema, FormElement } from '@formanywhere/shared/types';
 import { generateId } from '@formanywhere/shared/utils';
+import { getElement } from './elements/registry';
 
 // Form editor context
 interface FormEditorContextValue {
     schema: () => FormSchema;
     selectedElement: () => string | null;
     setSelectedElement: (id: string | null) => void;
-    addElement: (type: FormElement['type']) => void;
+    addElement: (type: FormElement['type'], parentId?: string | null, index?: number) => void;
     updateElement: (id: string, updates: Partial<FormElement>) => void;
     removeElement: (id: string) => void;
-    moveElement: (fromIndex: number, toIndex: number) => void;
+    moveElement: (elementId: string, targetParentId: string | null, targetIndex: number) => void;
 }
 
 const FormEditorContext = createContext<FormEditorContextValue>();
@@ -29,6 +30,82 @@ export interface FormEditorProps {
     onChange?: (schema: FormSchema) => void;
     children?: any;
 }
+
+/** Helper: Find element and its parent in the tree */
+const findElementPath = (elements: FormElement[], targetId: string): { parent: FormElement | null; index: number; element: FormElement } | null => {
+    for (let i = 0; i < elements.length; i++) {
+        if (elements[i].id === targetId) {
+            return { parent: null, index: i, element: elements[i] };
+        }
+        if (elements[i].elements) {
+            const found = findElementPath(elements[i].elements!, targetId);
+            if (found) {
+                return found.parent ? found : { parent: elements[i], index: found.index, element: found.element };
+            }
+        }
+    }
+    return null;
+};
+
+/** Helper: Recursively update elements */
+const updateElementInTree = (elements: FormElement[], targetId: string, updater: (el: FormElement) => FormElement): FormElement[] => {
+    return elements.map((el) => {
+        if (el.id === targetId) {
+            return updater(el);
+        }
+        if (el.elements) {
+            return { ...el, elements: updateElementInTree(el.elements, targetId, updater) };
+        }
+        return el;
+    });
+};
+
+/** Helper: Insert element at specific path */
+const insertElementAt = (elements: FormElement[], parentId: string | null, index: number, newElement: FormElement): FormElement[] => {
+    if (!parentId) {
+        const newElements = [...elements];
+        const targetIndex = index >= 0 ? index : newElements.length;
+        newElements.splice(targetIndex, 0, newElement);
+        return newElements;
+    }
+    return elements.map((el) => {
+        if (el.id === parentId) {
+            const children = el.elements ? [...el.elements] : [];
+            const targetIndex = index >= 0 ? index : children.length;
+            children.splice(targetIndex, 0, newElement);
+            return { ...el, elements: children };
+        }
+        if (el.elements) {
+            return { ...el, elements: insertElementAt(el.elements, parentId, index, newElement) };
+        }
+        return el;
+    });
+};
+
+/** Helper: Remove element from tree */
+const removeElementFromTree = (elements: FormElement[], targetId: string): { elements: FormElement[]; removed: FormElement | null } => {
+    let removed: FormElement | null = null;
+
+    const filterFn = (list: FormElement[]): FormElement[] => {
+        const result: FormElement[] = [];
+        for (const el of list) {
+            if (el.id === targetId) {
+                removed = el;
+                continue;
+            }
+            if (el.elements) {
+                const { elements: newChildren, removed: childRemoved } = removeElementFromTree(el.elements, targetId);
+                if (childRemoved) removed = childRemoved;
+                result.push({ ...el, elements: newChildren });
+            } else {
+                result.push(el);
+            }
+        }
+        return result;
+    };
+
+    return { elements: filterFn(elements), removed };
+};
 
 export const FormEditor: Component<FormEditorProps> = (props) => {
     const createDefaultSchema = (): FormSchema => ({
@@ -48,17 +125,22 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
     );
     const [selectedElement, setSelectedElement] = createSignal<string | null>(null);
 
-    const addElement = (type: FormElement['type']) => {
+    const addElement = (type: FormElement['type'], parentId: string | null = null, index: number = -1) => {
+        // Look up element definition from the registry for defaults
+        const def = getElement(type);
+        const defaults = def?.defaults ?? {};
+
         const newElement: FormElement = {
             id: generateId(),
             type,
-            label: `New ${type} field`,
+            label: defaults.label ?? `New ${type} field`,
             required: false,
+            ...defaults,
         };
 
         setSchema((prev) => ({
             ...prev,
-            elements: [...prev.elements, newElement],
+            elements: insertElementAt(prev.elements, parentId, index, newElement),
             updatedAt: new Date(),
         }));
 
@@ -69,9 +151,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
     const updateElement = (id: string, updates: Partial<FormElement>) => {
         setSchema((prev) => ({
             ...prev,
-            elements: prev.elements.map((el) =>
-                el.id === id ? { ...el, ...updates } : el
-            ),
+            elements: updateElementInTree(prev.elements, id, (el) => ({ ...el, ...updates })),
             updatedAt: new Date(),
         }));
         props.onChange?.(schema());
@@ -80,7 +160,7 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
     const removeElement = (id: string) => {
         setSchema((prev) => ({
             ...prev,
-            elements: prev.elements.filter((el) => el.id !== id),
+            elements: removeElementFromTree(prev.elements, id).elements,
             updatedAt: new Date(),
         }));
         if (selectedElement() === id) {
@@ -89,12 +169,19 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
         props.onChange?.(schema());
     };
 
-    const moveElement = (fromIndex: number, toIndex: number) => {
+    const moveElement = (elementId: string, targetParentId: string | null, targetIndex: number) => {
         setSchema((prev) => {
-            const elements = [...prev.elements];
-            const [removed] = elements.splice(fromIndex, 1);
-            elements.splice(toIndex, 0, removed);
-            return { ...prev, elements, updatedAt: new Date() };
+            const { elements: elementsWithoutSource, removed } = removeElementFromTree(prev.elements, elementId);
+
+            if (!removed) return prev;
+
+            const finalElements = insertElementAt(elementsWithoutSource, targetParentId, targetIndex, removed);
+
+            return {
+                ...prev,
+                elements: finalElements,
+                updatedAt: new Date(),
+            };
         });
         props.onChange?.(schema());
     };

@@ -1,0 +1,272 @@
+/* ═══════════════════════════════════════════════════════════════
+   PageToolbar — AI-Powered Form Builder UI
+   Matches reference: horizontal page nav bar with pill tabs,
+   add-page button, kebab menus, and action buttons.
+   ═══════════════════════════════════════════════════════════════ */
+
+.page-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px;
+    background: var(--m3-color-surface-container-lowest, #fff);
+    border-bottom: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    flex-shrink: 0;
+    gap: 8px;
+    min-height: 44px;
+    box-shadow: 0 1px 3px rgba(145, 158, 171, 0.04);
+}
+
+/* ── Left: tabs container ── */
+.page-toolbar__tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    flex: 1;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* ── Add page button ── */
+.page-toolbar__add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border: 1.5px dashed var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: var(--m3-shape-full, 9999px);
+    background: var(--m3-color-surface-container-lowest, #fff);
+    color: var(--m3-color-on-surface-variant, #49454F);
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+
+    &:hover {
+        border-color: var(--m3-color-primary, #6750A4);
+        border-style: solid;
+        color: var(--m3-color-primary, #6750A4);
+        background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 6%, transparent);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.10);
+    }
+
+    &:active {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+}
+
+/* ── Vertical divider ── */
+.page-toolbar__divider {
+    width: 1px;
+    height: 22px;
+    background: var(--m3-color-outline-variant, #C4C7C5);
+    flex-shrink: 0;
+    opacity: 0.6;
+}
+
+/* ── Tab wrapper ── */
+.page-toolbar__tab-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* ── Page tab (pill shape — contains label + kebab inside) ── */
+.page-toolbar__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 6px 5px 14px;
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: var(--m3-shape-full, 9999px);
+    background: transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    min-width: fit-content;
+    transition: all var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+
+    &:hover {
+        background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 5%, transparent);
+        border-color: var(--m3-color-outline, #79747E);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Active state — primary fill */
+    &--active {
+        background: var(--m3-color-primary, #6750A4);
+        border-color: var(--m3-color-primary, #6750A4);
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.24);
+
+        .page-toolbar__tab-label {
+            color: var(--m3-color-on-primary, #fff);
+            font-weight: 600;
+        }
+
+        .page-toolbar__kebab {
+            color: rgba(255, 255, 255, 0.8);
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.18);
+                color: #fff;
+            }
+        }
+
+        &:hover {
+            background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 90%, #000);
+            border-color: color-mix(in srgb, var(--m3-color-primary, #6750A4) 90%, #000);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.32);
+        }
+    }
+}
+
+/* ── Page label text ── */
+.page-toolbar__tab-label {
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    letter-spacing: -0.01em;
+    user-select: none;
+    line-height: 1;
+}
+
+/* ── Kebab (three-dot) IconButton inside tab ── */
+.page-toolbar__kebab.md-icon-button {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0;
+    margin-left: 2px;
+    background: transparent;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    flex-shrink: 0;
+
+    .md-icon-button__icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    &:hover {
+        background: color-mix(in srgb, var(--m3-color-on-surface-variant, #49454F) 12%, transparent);
+        color: var(--m3-color-on-surface, #1C1B1F);
+    }
+}
+
+/* ── Kebab dropdown menu ── */
+.page-toolbar__menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 20;
+    padding: 4px;
+    background: var(--m3-color-surface-container-lowest, #fff);
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: var(--m3-shape-medium, 12px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+    min-width: 160px;
+    animation: page-toolbar-menu-in var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
+
+    button {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 8px 12px;
+        border: none;
+        border-radius: var(--m3-shape-small, 8px);
+        background: transparent;
+        color: var(--m3-color-on-surface, #1C1B1F);
+        font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-align: left;
+        white-space: nowrap;
+        transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+
+        &:hover {
+            background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 6%, transparent);
+        }
+
+        &:disabled {
+            opacity: 0.38;
+            cursor: not-allowed;
+        }
+    }
+}
+
+@keyframes page-toolbar-menu-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.page-toolbar__menu-divider {
+    height: 1px;
+    margin: 4px 8px;
+    background: var(--m3-color-outline-variant, #C4C7C5);
+}
+
+.page-toolbar__menu-danger {
+    color: var(--m3-color-error, #B3261E) !important;
+
+    &:hover {
+        background: color-mix(in srgb, var(--m3-color-error, #B3261E) 8%, transparent) !important;
+    }
+}
+
+/* ── Right: action buttons ── */
+.page-toolbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.page-toolbar__action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
+    border-radius: var(--m3-shape-full, 9999px);
+    background: transparent;
+    color: var(--m3-color-on-surface-variant, #49454F);
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+
+    &:hover {
+        border-color: var(--m3-color-primary, #6750A4);
+        background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 6%, transparent);
+        color: var(--m3-color-primary, #6750A4);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(99, 102, 241, 0.10);
+    }
+
+    &:active {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+}

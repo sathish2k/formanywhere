@@ -28,7 +28,7 @@ export interface IconButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButto
 
 export const IconButton: Component<IconButtonProps> = (props) => {
     const [local, others] = splitProps(props, [
-        'variant', 'icon', 'size', 'selected', 'toggle', 'disabled', 'style', 'href'
+        'variant', 'icon', 'size', 'selected', 'toggle', 'disabled', 'style', 'href', 'class'
     ]);
 
     const rootClass = () => {
@@ -36,6 +36,7 @@ export const IconButton: Component<IconButtonProps> = (props) => {
         classes.push(local.variant || 'standard');
         classes.push(`size-${local.size || 'md'}`);
         if (local.selected) classes.push('selected');
+        if (local.class) classes.push(local.class);
         return classes.join(' ');
     };
 

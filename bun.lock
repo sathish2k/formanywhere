@@ -3,6 +3,9 @@
   "workspaces": {
     "": {
       "name": "formanywhere",
+      "dependencies": {
+        "@thisbeyond/solid-dnd": "0.7.4",
+      },
       "devDependencies": {
         "turbo": "^2.3.0",
         "typescript": "^5.7.0",
@@ -69,6 +72,7 @@
       "dependencies": {
         "@formanywhere/shared": "workspace:*",
         "@formanywhere/ui": "workspace:*",
+        "@thisbeyond/solid-dnd": "0.7.4",
         "solid-js": "^1.9.11",
       },
       "devDependencies": {
@@ -507,6 +511,8 @@
     "@tauri-apps/cli-win32-ia32-msvc": ["@tauri-apps/cli-win32-ia32-msvc@2.9.6", "", { "os": "win32", "cpu": "ia32" }, "sha512-S4pT0yAJgFX8QRCyKA1iKjZ9Q/oPjCZf66A/VlG5Yw54Nnr88J1uBpmenINbXxzyhduWrIXBaUbEY1K80ZbpMg=="],
 
     "@tauri-apps/cli-win32-x64-msvc": ["@tauri-apps/cli-win32-x64-msvc@2.9.6", "", { "os": "win32", "cpu": "x64" }, "sha512-ldWuWSSkWbKOPjQMJoYVj9wLHcOniv7diyI5UAJ4XsBdtaFB0pKHQsqw/ItUma0VXGC7vB4E9fZjivmxur60aw=="],
+
+    "@thisbeyond/solid-dnd": ["@thisbeyond/solid-dnd@0.7.4", "", { "peerDependencies": { "solid-js": "^1.5" } }, "sha512-jgV9EtR3gAtVsILG8p1OAGrhHIgnK4W04YxpyLgJRCDKEFYQWuDrMdUe8F5Kc6pcVXlC4IMXr4cB8fS2Ut3/Ow=="],
 
     "@tokenizer/inflate": ["@tokenizer/inflate@0.4.1", "", { "dependencies": { "debug": "^4.4.3", "token-types": "^6.1.1" } }, "sha512-2mAv+8pkG6GIZiF1kNg1jAjh27IDxEPKwdGul3snfztFerfPGI1LjDezZp3i7BElXompqEtPmoPx6c2wgtWsOA=="],
 

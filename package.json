@@ -1,14 +1,12 @@
 {
   "name": "formanywhere",
-  "type": "module",
   "version": "0.0.1",
-  "private": true,
+  "devDependencies": {
+    "turbo": "^2.3.0",
+    "typescript": "^5.7.0"
+  },
   "packageManager": "bun@1.2.20",
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "backend/*"
-  ],
+  "private": true,
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
@@ -19,11 +17,13 @@
     "build:web": "turbo build --filter=@formanywhere/web",
     "build:desktop": "turbo build --filter=@formanywhere/desktop"
   },
-  "devDependencies": {
-    "turbo": "^2.3.0",
-    "typescript": "^5.7.0"
-  },
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "backend/*"
+  ],
   "dependencies": {
-    "@thisbeyond/solid-dnd": "0.7.5"
+    "@thisbeyond/solid-dnd": "0.7.4"
   }
 }
