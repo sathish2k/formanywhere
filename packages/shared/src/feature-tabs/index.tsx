@@ -76,8 +76,8 @@ const features = [
                             <Card variant="filled" padding="md" style={{
                                 'border-radius': '1rem',
                                 'border-top-right-radius': '0.25rem',
-                                background: 'var(--m3-color-primary)',
-                                color: 'var(--m3-color-on-primary)'
+                                background: 'var(--m3-color-primary-container)',
+                                color: 'var(--m3-color-on-primary-container)'
                             }}>
                                 <Typography variant="body-medium" style={{ color: 'inherit' }}>Registration for a tech conference with payment.</Typography>
                             </Card>
@@ -201,7 +201,7 @@ const features = [
                         'border-top-color': 'transparent'
                     }} class="animate-spin" />
                     <Box>
-                        <Typography variant="title-medium" style={{ 'font-weight': 'bold' }}>Syncing...</Typography>
+                        <Typography variant="title-medium" as="span" style={{ 'font-weight': 'bold' }}>Syncing...</Typography>
                         <Typography variant="body-small" style={{ opacity: 0.6 }}>Restoring connection</Typography>
                     </Box>
                 </Card>
@@ -355,12 +355,14 @@ export const FeatureTabs = () => {
                     'border-radius': '9999px',
                     gap: '0.25rem'
                 }}>
+                    <div role="tablist" aria-label="Feature demos" style={{ display: 'inline-flex', gap: '0.25rem' }}>
                     <For each={features}>
                         {(feature, index) => {
                             const isActive = () => active() === index();
                             return (
                                 <Button
                                     variant={isActive() ? "tonal" : "ghost"}
+                                    role="tab"
                                     onClick={() => {
                                         setActive(index());
                                         if (interval) window.clearInterval(interval);
@@ -385,6 +387,7 @@ export const FeatureTabs = () => {
                             );
                         }}
                     </For>
+                    </div>
                 </Card>
             </Box>
 
@@ -424,6 +427,9 @@ export const FeatureTabs = () => {
                                 const isActive = () => active() === index();
                                 return (
                                     <Box
+                                        id={panelId(feature.id)}
+                                        role="tabpanel"
+                                        aria-label={feature.title}
                                         padding="xl"
                                         display="flex"
                                         style={{
@@ -453,6 +459,7 @@ export const FeatureTabs = () => {
                                         />
                                         <Typography
                                             variant="display-medium"
+                                            as="p"
                                             class="mb-6 leading-tight tracking-tight"
                                             style={{ color: 'var(--m3-color-on-surface)' }}
                                         >
@@ -461,7 +468,7 @@ export const FeatureTabs = () => {
                                         <Typography
                                             variant="body-large"
                                             class="leading-relaxed"
-                                            style={{ color: 'var(--m3-color-on-surface-variant)', opacity: 0.9 }}
+                                            style={{ color: 'var(--m3-color-on-surface)', opacity: 0.8 }}
                                         >
                                             {feature.desc}
                                         </Typography>

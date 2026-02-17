@@ -31,8 +31,8 @@ import { IntegrationsDialog } from './dialogs/IntegrationsDialog';
 import { FormSettingsDialog } from './dialogs/FormSettingsDialog';
 import { LogicDebuggerDialog } from './dialogs/LogicDebuggerDialog';
 import type { FormSettings } from './dialogs/FormSettingsDialog';
-import { LayoutBuilder } from '@formanywhere/shared/form-setup';
-import type { LayoutConfig } from '@formanywhere/shared/form-setup';
+import { LayoutBuilder } from '@formanywhere/shared/form-setup/layout-builder';
+import type { LayoutConfig } from '@formanywhere/shared/form-setup/layout-builder/types';
 import './form-builder.scss';
 
 export type BuilderMode = 'blank' | 'template' | 'import' | 'ai';

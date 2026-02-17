@@ -108,6 +108,7 @@ export const Box: ParentComponent<BoxProps> = (props) => {
     return (
         <Dynamic
             component={local.as || 'div'}
+            {...others}
             class={rootClass()}
             style={customStyles()}
             data-component="box"

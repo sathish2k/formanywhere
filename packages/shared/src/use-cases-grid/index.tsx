@@ -68,6 +68,7 @@ const FeatureCard: Component<FeatureCardProps> = (props) => {
                 <Typography
                     variant="title-medium"
                     color="on-surface"
+                    as="h3"
                     style={{ 'margin-bottom': '8px' }}
                 >
                     {props.title}

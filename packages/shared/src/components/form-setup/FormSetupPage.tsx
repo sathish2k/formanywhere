@@ -12,7 +12,7 @@ import { Icon } from '@formanywhere/ui/icon';
 import { Divider } from '@formanywhere/ui/divider';
 import { Card } from '@formanywhere/ui/card';
 import { go, generateId } from '../../utils';
-import { LayoutBuilder } from './layout-builder';
+import { LayoutBuilder } from './layout-builder/LayoutBuilder';
 import type { LayoutConfig, PageData } from './layout-builder/types';
 import { defaultLayout } from './layout-builder/types';
 

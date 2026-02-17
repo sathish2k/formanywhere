@@ -23,8 +23,14 @@ function autoSolidSvg() {
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
+  compressHTML: true,
+  build: {
+    // Inline all stylesheets to eliminate render-blocking CSS requests
+    // Combined with server compression, this is optimal (246KB inlined → ~35KB gzipped)
+    inlineStylesheets: 'always',
+  },
   adapter: node({
-    mode: 'standalone',
+    mode: 'middleware',
   }),
   integrations: [
     solidJs({
@@ -74,9 +80,15 @@ export default defineConfig({
             if (id.includes('node_modules/solid-js')) return 'vendor-solid';
             if (id.includes('node_modules/@floating-ui')) return 'vendor-floating-ui';
             if (id.includes('node_modules/@modular-forms')) return 'vendor-modular-forms';
+            if (id.includes('node_modules/better-auth') || id.includes('node_modules/@better-auth')) return 'auth-client';
+            if (id.includes('node_modules/zod') || id.includes('node_modules/valibot')) return 'vendor-validation';
           }
         }
-      }
+      },
+      // Enable CSS code splitting for per-route loading
+      cssCodeSplit: true,
+      // Target modern browsers only
+      target: 'es2022',
     },
     ssr: {
       // Ensure workspace packages are bundled and transformed properly

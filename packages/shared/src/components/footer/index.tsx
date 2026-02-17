@@ -118,6 +118,7 @@ export const Footer: Component<FooterProps> = (props) => {
                             </Box>
                             <Typography
                                 variant="title-medium"
+                                as="span"
                                 style={{ color: 'white', 'font-weight': '700' }}
                             >
                                 FormAnywhere

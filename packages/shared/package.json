@@ -92,6 +92,14 @@
         "./form-setup": {
             "import": "./src/components/form-setup/index.ts",
             "types": "./src/components/form-setup/index.ts"
+        },
+        "./form-setup/layout-builder": {
+            "import": "./src/components/form-setup/layout-builder/LayoutBuilder.tsx",
+            "types": "./src/components/form-setup/layout-builder/LayoutBuilder.tsx"
+        },
+        "./form-setup/layout-builder/types": {
+            "import": "./src/components/form-setup/layout-builder/types.ts",
+            "types": "./src/components/form-setup/layout-builder/types.ts"
         }
     },
     "scripts": {

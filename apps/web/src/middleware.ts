@@ -50,6 +50,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
         return next();
     }
 
+    // Skip auth checks for prerendered pages (headers not available)
+    const isPrerendered = context.isPrerendered ?? false;
+    if (isPrerendered) {
+        return next();
+    }
+
     // Try to get session from cookies by forwarding them to Better Auth
     let sessionUser: { id: string; name: string; email: string; image?: string } | null = null;
 
