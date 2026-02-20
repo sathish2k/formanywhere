@@ -41,49 +41,9 @@
             "import": "./src/components/footer/index.tsx",
             "types": "./src/components/footer/index.tsx"
         },
-        "./pricing-table": {
-            "import": "./src/components/pricing-table/index.tsx",
-            "types": "./src/components/pricing-table/index.tsx"
-        },
-        "./faq-section": {
-            "import": "./src/components/faq-section/index.tsx",
-            "types": "./src/components/faq-section/index.tsx"
-        },
-        "./contact-sales-card": {
-            "import": "./src/components/contact-sales-card/index.tsx",
-            "types": "./src/components/contact-sales-card/index.tsx"
-        },
-        "./cta-section": {
-            "import": "./src/components/cta-section/index.tsx",
-            "types": "./src/components/cta-section/index.tsx"
-        },
-        "./template-card": {
-            "import": "./src/components/template-card/index.tsx",
-            "types": "./src/components/template-card/index.tsx"
-        },
-        "./template-browser": {
-            "import": "./src/components/template-browser/index.tsx",
-            "types": "./src/components/template-browser/index.tsx"
-        },
-        "./auth/signin": {
-            "import": "./src/components/auth/SignInForm.tsx",
-            "types": "./src/components/auth/SignInForm.tsx"
-        },
-        "./auth/signup": {
-            "import": "./src/components/auth/SignUpForm.tsx",
-            "types": "./src/components/auth/SignUpForm.tsx"
-        },
-        "./auth": {
-            "import": "./src/components/auth/index.ts",
-            "types": "./src/components/auth/index.ts"
-        },
         "./auth-client": {
             "import": "./src/lib/auth-client.ts",
             "types": "./src/lib/auth-client.ts"
-        },
-        "./dashboard": {
-            "import": "./src/components/dashboard/index.tsx",
-            "types": "./src/components/dashboard/index.tsx"
         },
         "./confirmation-dialog": {
             "import": "./src/components/confirmation-dialog/index.tsx",
@@ -100,6 +60,22 @@
         "./form-setup/layout-builder/types": {
             "import": "./src/components/form-setup/layout-builder/types.ts",
             "types": "./src/components/form-setup/layout-builder/types.ts"
+        },
+        "./icons/svg/menu-hamburger.svg": {
+            "import": "./src/icons/svg/menu-hamburger.svg",
+            "default": "./src/icons/svg/menu-hamburger.svg"
+        },
+        "./icons/svg/menu-close.svg": {
+            "import": "./src/icons/svg/menu-close.svg",
+            "default": "./src/icons/svg/menu-close.svg"
+        },
+        "./icons/svg/google.svg": {
+            "import": "./src/icons/svg/google.svg",
+            "default": "./src/icons/svg/google.svg"
+        },
+        "./icons/svg/github.svg": {
+            "import": "./src/icons/svg/github.svg",
+            "default": "./src/icons/svg/github.svg"
         }
     },
     "scripts": {

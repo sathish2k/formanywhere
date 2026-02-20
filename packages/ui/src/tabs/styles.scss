@@ -1,12 +1,33 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
    M3 TABS - Based on material-components/material-web
+   Ref: tabs/internal/tab-styles.css, primary-tab-styles.css, secondary-tab-styles.css
    ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Tab List (container) ─────────────────────────────────────────────────── */
 
 .md-tab-list {
     display: flex;
-    border-bottom: 1px solid var(--m3-color-surface-variant, rgba(231, 224, 236, 0.4));
+    align-items: stretch;
+    background: var(--m3-color-surface, #fef7ff);
+    border-bottom: 1px solid var(--m3-color-surface-variant, #e7e0ec);
 
-    /* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
+    /* ─── SCROLLABLE ───────────────────────────────────────────────────────── */
+
+    &.scrollable {
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+
+        /* Hide scrollbar */
+        scrollbar-width: none;
+        &::-webkit-scrollbar { display: none; }
+
+        .md-tab {
+            flex: 0 0 auto;
+        }
+    }
+
+    /* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────── */
 
     &.glass {
         background: var(--glass-tint, rgba(255, 255, 255, 0.4));
@@ -26,71 +47,330 @@
     }
 }
 
+/* ─── Individual Tab ───────────────────────────────────────────────────────── */
+
 .md-tab {
+    // Layout
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 12px 16px;
-    min-width: 90px;
+    flex: 1 0 0;
+    padding: 0 16px;
+    min-width: 48px;
+    height: 48px;
+    box-sizing: border-box;
+    z-index: 0;
+
+    // Reset
     border: none;
     background: transparent;
-    color: var(--m3-color-on-surface-variant, #49454E);
-    font-size: 14px;
-    font-weight: 500;
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    cursor: pointer;
-    overflow: hidden;
+    outline: none;
     -webkit-tap-highlight-color: transparent;
-    transition: color var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
 
-    &.primary { flex-direction: column; }
-    &.secondary { flex-direction: row; }
+    // Typography — M3 title-small
+    font-family: var(--m3-font-plain, var(--m3-font-body, 'Inter', system-ui, sans-serif));
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+
+    // Color — inactive
+    color: var(--m3-color-on-surface-variant, #49454f);
+    cursor: pointer;
+
+    // Transition
+    transition: color 250ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+
+    // ── Content wrapper ───────────────────────────────────────────────────
+
+    .md-tab__content {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        z-index: 1;
+    }
+
+    // ── Icon ──────────────────────────────────────────────────────────────
+
+    .md-tab__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        fill: currentColor;
+        color: var(--m3-color-on-surface-variant, #49454f);
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+        transition: color 250ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    }
+
+    .md-tab__label {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    // ── Primary variant (stacked icon + label by default) ─────────────────
+
+    &.primary .md-tab__content {
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    &.primary.inline-icon .md-tab__content {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    // with icon + label = 64px height
+    &.primary.with-icon-and-label {
+        height: 64px;
+    }
+
+    // ── Secondary variant (inline icon + label) ───────────────────────────
+
+    &.secondary .md-tab__content {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    // ── Icon-only ─────────────────────────────────────────────────────────
+
+    &.icon-only {
+        height: 48px;
+    }
+
+    // ── State layers ──────────────────────────────────────────────────────
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        opacity: 0;
+        background: var(--m3-color-on-surface, #1d1b20);
+        transition: opacity 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    }
+
+    // ── Hover ─────────────────────────────────────────────────────────────
+
+    &:hover:not(.disabled) {
+        color: var(--m3-color-on-surface, #1d1b20);
+        cursor: pointer;
+
+        &::before {
+            opacity: 0.08;
+        }
+
+        .md-tab__icon {
+            color: var(--m3-color-on-surface, #1d1b20);
+        }
+    }
+
+    // ── Focus ─────────────────────────────────────────────────────────────
+
+    &:focus-visible {
+        outline: 3px solid var(--m3-color-secondary, #625b71);
+        outline-offset: -3px;
+        border-radius: 8px;
+    }
+
+    &:focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    &:focus:not(.disabled) {
+        color: var(--m3-color-on-surface, #1d1b20);
+
+        &::before {
+            opacity: 0.12;
+        }
+
+        .md-tab__icon {
+            color: var(--m3-color-on-surface, #1d1b20);
+        }
+    }
+
+    // ── Pressed ───────────────────────────────────────────────────────────
+
+    &:active:not(.disabled) {
+        color: var(--m3-color-on-surface, #1d1b20);
+
+        &::before {
+            opacity: 0.12;
+        }
+
+        .md-tab__icon {
+            color: var(--m3-color-on-surface, #1d1b20);
+        }
+    }
+
+    // ── Primary hover/focus/press overrides ───────────────────────────────
+
+    &.primary:hover:not(.disabled)::before {
+        background: var(--m3-color-on-surface, #1d1b20);
+    }
+
+    &.primary:active:not(.disabled)::before {
+        background: var(--m3-color-primary, #6750a4);
+    }
+
+    // ── Secondary hover/focus/press — state layer always on-surface ──────
+
+    &.secondary:hover:not(.disabled)::before,
+    &.secondary:focus:not(.disabled)::before,
+    &.secondary:active:not(.disabled)::before {
+        background: var(--m3-color-on-surface, #1d1b20);
+    }
+
+    // ── Disabled ──────────────────────────────────────────────────────────
 
     &.disabled {
-        cursor: not-allowed;
+        cursor: default;
         opacity: 0.38;
         pointer-events: none;
     }
 
-    &.active {
-        color: var(--m3-color-primary, #6750A4);
+    // ── Active state (shared) ─────────────────────────────────────────────
 
+    &.active {
         .md-tab__indicator {
-            background: var(--m3-color-primary, #6750A4);
+            transform: scaleX(1);
+            opacity: 1;
+        }
+    }
+
+    // ── Active — Secondary (on-surface text) ──────────────────────────────
+
+    &.secondary.active {
+        color: var(--m3-color-on-surface, #1d1b20);
+
+        .md-tab__icon {
+            color: var(--m3-color-on-surface, #1d1b20);
         }
 
         &:hover:not(.disabled) {
-            color: var(--m3-color-primary, #6750A4);
+            color: var(--m3-color-on-surface, #1d1b20);
+
+            &::before {
+                background: var(--m3-color-on-surface, #1d1b20);
+                opacity: 0.08;
+            }
+        }
+
+        &:focus:not(.disabled) {
+            color: var(--m3-color-on-surface, #1d1b20);
+        }
+
+        &:active:not(.disabled) {
+            color: var(--m3-color-on-surface, #1d1b20);
+
+            &::before {
+                background: var(--m3-color-on-surface, #1d1b20);
+                opacity: 0.12;
+            }
         }
     }
 
-    /* Hover state */
-    &:hover:not(.disabled) {
-        color: var(--m3-color-on-surface, #1C1B1F);
-    }
+    // ── Active — Primary (primary color text) ─────────────────────────────
 
-    /* Focus ring */
-    &:focus-visible {
-        outline: 2px solid var(--m3-color-primary, #6750A4);
-        outline-offset: -2px;
+    &.primary.active {
+        color: var(--m3-color-primary, #6750a4);
+
+        .md-tab__icon {
+            color: var(--m3-color-primary, #6750a4);
+        }
+
+        &:hover:not(.disabled) {
+            color: var(--m3-color-primary, #6750a4);
+
+            &::before {
+                background: var(--m3-color-primary, #6750a4);
+                opacity: 0.08;
+            }
+        }
+
+        &:focus:not(.disabled) {
+            color: var(--m3-color-primary, #6750a4);
+        }
+
+        &:active:not(.disabled) {
+            color: var(--m3-color-primary, #6750a4);
+
+            &::before {
+                background: var(--m3-color-primary, #6750a4);
+                opacity: 0.12;
+            }
+        }
     }
 }
 
-/* Active indicator (underline) */
+/* ─── Active Indicator (underline) ─────────────────────────────────────────── */
+
 .md-tab__indicator {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 1;
     height: 3px;
     border-radius: 3px 3px 0 0;
-    background: transparent;
-    transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    background: var(--m3-color-primary, #6750a4);
+    transform: scaleX(0);
+    transform-origin: bottom left;
+    opacity: 0;
+    /* No CSS transition — animation is handled via Web Animations API for sliding */
 }
 
-/* Tab panel */
+// Primary indicator: inside .md-tab__content (content-width)
+.md-tab.primary .md-tab__content {
+    position: relative;
+
+    .md-tab__indicator {
+        // Relative to content, not full tab
+    }
+}
+
+// Secondary indicator: full-width, 2px, no border-radius
+.md-tab.secondary > .md-tab__indicator {
+    height: 2px;
+    border-radius: 0;
+}
+
+/* ─── Forced Colors (High Contrast) ───────────────────────────────────────── */
+
+@media (forced-colors: active) {
+    .md-tab__indicator {
+        background: CanvasText;
+    }
+
+    .md-tab {
+        color: ButtonText;
+
+        &.active {
+            color: ButtonText;
+        }
+
+        &.disabled {
+            color: GrayText;
+        }
+    }
+}
+
+/* ─── Reduced Motion ──────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    .md-tab__indicator {
+        transition: opacity 150ms ease;
+    }
+}
+
+/* ─── Tab Panel ────────────────────────────────────────────────────────────── */
+
 .md-tab-panel {
     padding: 16px;
 }

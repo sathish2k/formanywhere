@@ -1,10 +1,19 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   M3 TEXTFIELD - Based on material-components/material-web
+   M3 TEXTFIELD — Based on material-components/material-web compiled CSS
+   Flat CSS classes (no Shadow DOM). See index.tsx for class mapping.
    ═══════════════════════════════════════════════════════════════════════════════ */
 
+// ─── Motion ──────────────────────────────────────────────────────────────────
+$_easing: var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+$_duration: 150ms;
+
+// ─── Autofill detection keyframes ────────────────────────────────────────────
 @keyframes md-tf-autofill-start { from {} to {} }
 @keyframes md-tf-autofill-cancel { from {} to {} }
 
+// ═════════════════════════════════════════════════════════════════════════════
+// ROOT
+// ═════════════════════════════════════════════════════════════════════════════
 .md-textfield {
     display: inline-flex;
     flex-direction: column;
@@ -14,31 +23,36 @@
     text-align: start;
     -webkit-tap-highlight-color: transparent;
     width: 100%;
+    outline: none;
+    resize: both;
 
-    /* ─── SIZE VARIANTS ────────────────────────────────────────────────────────── */
-
+    // ─── SIZE VARIANTS ───────────────────────────────────────────────────────
     &.size-sm {
         .md-tf-field { min-height: 40px; }
         .md-tf-content { min-height: 40px; padding: 0 12px; }
         .md-tf-input { font-size: 14px; line-height: 20px; }
         .md-tf-label-outlined { font-size: 14px; line-height: 20px; }
         .md-tf-label-filled { font-size: 14px; line-height: 20px; }
-        .md-tf-icon { width: 20px; height: 20px; &.leading { margin-right: 8px; } &.trailing { margin-left: 8px; } }
+        .md-tf-icon {
+            width: 20px; height: 20px;
+            &.leading { margin-inline-end: 8px; }
+            &.trailing { margin-inline-start: 8px; }
+        }
         .md-tf-supporting { font-size: 11px; padding: 2px 12px 0; }
 
         &.focused .md-tf-label-outlined,
-        &.populated .md-tf-label-outlined { font-size: 11px; line-height: 14px; transform: translateY(-22px); }
-
+        &.populated .md-tf-label-outlined {
+            font-size: 11px; line-height: 14px; transform: translateY(-22px);
+        }
         &.focused .md-tf-label-filled,
-        &.populated .md-tf-label-filled { top: 4px; font-size: 11px; line-height: 14px; }
-
+        &.populated .md-tf-label-filled {
+            top: 4px; font-size: 11px; line-height: 14px;
+        }
         &.has-label.filled .md-tf-content { padding-top: 4px; }
         &.has-label.filled .md-tf-input { padding-top: 12px; }
     }
 
-    &.size-md {
-        /* Default — no overrides needed */
-    }
+    &.size-md { /* default — no overrides */ }
 
     &.size-lg {
         .md-tf-field { min-height: 64px; }
@@ -46,69 +60,77 @@
         .md-tf-input { font-size: 18px; line-height: 28px; }
         .md-tf-label-outlined { font-size: 18px; line-height: 28px; }
         .md-tf-label-filled { font-size: 18px; line-height: 28px; }
-        .md-tf-icon { width: 28px; height: 28px; &.leading { margin-right: 16px; } &.trailing { margin-left: 16px; } }
+        .md-tf-icon {
+            width: 28px; height: 28px;
+            &.leading { margin-inline-end: 16px; }
+            &.trailing { margin-inline-start: 16px; }
+        }
         .md-tf-supporting { font-size: 13px; padding: 4px 20px 0; }
 
         &.focused .md-tf-label-outlined,
-        &.populated .md-tf-label-outlined { font-size: 12px; line-height: 16px; transform: translateY(-32px); }
-
+        &.populated .md-tf-label-outlined {
+            font-size: 12px; line-height: 16px; transform: translateY(-32px);
+        }
         &.focused .md-tf-label-filled,
-        &.populated .md-tf-label-filled { top: 10px; font-size: 12px; line-height: 16px; }
-
+        &.populated .md-tf-label-filled {
+            top: 10px; font-size: 12px; line-height: 16px;
+        }
         &.has-label.filled .md-tf-content { padding-top: 10px; }
         &.has-label.filled .md-tf-input { padding-top: 20px; }
     }
 
+    // ─── DISABLED ────────────────────────────────────────────────────────────
     &.disabled {
         pointer-events: none;
 
-        .md-tf-field {
-            cursor: default;
-        }
-
-        .md-tf-icon {
-            opacity: 0.38;
-        }
-
-        .md-tf-supporting {
-            opacity: 0.38;
-        }
+        .md-tf-field { cursor: default; }
+        .md-tf-icon { opacity: 0.38; }
+        .md-tf-supporting { opacity: 0.38; }
     }
 
+    // ─── ERROR (shared) ──────────────────────────────────────────────────────
     &.error {
         .md-tf-input {
-            caret-color: var(--m3-color-error, #B3261E);
+            caret-color: var(--m3-color-error, #b3261e);
         }
 
         .md-tf-icon.trailing {
-            color: var(--m3-color-error, #B3261E);
+            color: var(--m3-color-error, #b3261e);
         }
 
         .md-tf-supporting .md-tf-supporting-text {
-            color: var(--m3-color-error, #B3261E);
+            color: var(--m3-color-error, #b3261e);
+        }
+
+        // Error + hover label & indicator colors
+        &:not(.focused):not(.disabled) .md-tf-field:hover {
+            .md-tf-label-filled,
+            .md-tf-label-outlined {
+                color: var(--m3-color-on-error-container, #410e0b);
+            }
         }
     }
 
+    // ─── NO SPINNER ──────────────────────────────────────────────────────────
     &.no-spinner {
         .md-tf-input::-webkit-inner-spin-button,
         .md-tf-input::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
-
         .md-tf-input[type="number"] {
             -moz-appearance: textfield;
         }
     }
 
-    &:not(.focused) .md-tf-input::placeholder {
+    // ─── PLACEHOLDER VISIBILITY ──────────────────────────────────────────────
+    // M3 reference shows placeholder at all times.
+    // Only hide when a floating label is visible and field is not focused/populated.
+    &.has-label:not(.focused):not(.populated) .md-tf-input::placeholder {
         color: transparent;
     }
 
-    &.populated:not(.focused) .md-tf-input::placeholder {
-        color: transparent;
-    }
-
+    // ─── PREFIX / SUFFIX visibility on focus / populated ─────────────────────
     &.focused,
     &.populated {
         .md-tf-prefix,
@@ -117,55 +139,56 @@
         }
     }
 
-    /* ─── OUTLINED VARIANT ─────────────────────────────────────────────────────── */
-
+    // ═════════════════════════════════════════════════════════════════════════
+    // OUTLINED VARIANT
+    // ═════════════════════════════════════════════════════════════════════════
     &.outlined {
         .md-tf-field {
             border-radius: var(--m3-shape-extra-small, 4px);
         }
 
+        // Hover (non-error, non-disabled, non-focused)
         &:not(.disabled):not(.error):not(.focused) .md-tf-field:hover {
             .md-tf-outline-start,
             .md-tf-outline-notch,
             .md-tf-outline-end {
-                border-color: var(--m3-color-on-surface, #1D1B20);
+                border-color: var(--m3-color-on-surface, #1d1b20);
+            }
+            .md-tf-label-outlined {
+                color: var(--m3-color-on-surface, #1d1b20);
             }
         }
 
+        // Focused — 3px border per M3 spec
         &.focused {
             .md-tf-outline-start {
-                border-left-width: 2px;
-                border-top-width: 2px;
-                border-bottom-width: 2px;
-                border-color: var(--m3-color-primary, #6750A4);
+                border-left-width: 3px;
+                border-top-width: 3px;
+                border-bottom-width: 3px;
+                border-color: var(--m3-color-primary, #6750a4);
             }
-
             .md-tf-outline-notch {
                 border-top: none;
-                border-bottom-width: 2px;
-                border-bottom-color: var(--m3-color-primary, #6750A4);
+                border-bottom-width: 3px;
+                border-bottom-color: var(--m3-color-primary, #6750a4);
             }
-
             .md-tf-outline-end {
-                border-right-width: 2px;
-                border-top-width: 2px;
-                border-bottom-width: 2px;
-                border-color: var(--m3-color-primary, #6750A4);
+                border-right-width: 3px;
+                border-top-width: 3px;
+                border-bottom-width: 3px;
+                border-color: var(--m3-color-primary, #6750a4);
             }
-
             .md-tf-label-outlined {
                 font-size: 12px;
                 line-height: 16px;
                 transform: translateY(-28px);
-                color: var(--m3-color-primary, #6750A4);
+                color: var(--m3-color-primary, #6750a4);
             }
         }
 
+        // Populated (notch open)
         &.populated {
-            .md-tf-outline-notch {
-                border-top: none;
-            }
-
+            .md-tf-outline-notch { border-top: none; }
             .md-tf-label-outlined {
                 font-size: 12px;
                 line-height: 16px;
@@ -173,130 +196,162 @@
             }
         }
 
+        // Error
         &.error {
             .md-tf-outline-start,
             .md-tf-outline-notch,
             .md-tf-outline-end {
-                border-color: var(--m3-color-error, #B3261E);
+                border-color: var(--m3-color-error, #b3261e);
+            }
+            .md-tf-label-outlined {
+                color: var(--m3-color-error, #b3261e);
             }
 
+            // Error + hover
+            &:not(.focused):not(.disabled) .md-tf-field:hover {
+                .md-tf-outline-start,
+                .md-tf-outline-notch,
+                .md-tf-outline-end {
+                    border-color: var(--m3-color-on-error-container, #410e0b);
+                }
+            }
+
+            // Error + focused
             &.focused {
                 .md-tf-outline-start {
-                    border-color: var(--m3-color-error, #B3261E);
+                    border-color: var(--m3-color-error, #b3261e);
                 }
-
                 .md-tf-outline-notch {
-                    border-bottom-color: var(--m3-color-error, #B3261E);
+                    border-bottom-color: var(--m3-color-error, #b3261e);
                 }
-
                 .md-tf-outline-end {
-                    border-color: var(--m3-color-error, #B3261E);
+                    border-color: var(--m3-color-error, #b3261e);
                 }
-            }
-
-            .md-tf-label-outlined {
-                color: var(--m3-color-error, #B3261E);
+                .md-tf-label-outlined {
+                    color: var(--m3-color-error, #b3261e);
+                }
             }
         }
 
+        // Disabled
         &.disabled {
             .md-tf-outline-start,
             .md-tf-outline-notch,
             .md-tf-outline-end {
-                border-color: var(--m3-color-on-surface, #1D1B20);
+                border-color: var(--m3-color-on-surface, #1d1b20);
                 opacity: 0.12;
             }
-
             .md-tf-label-outlined {
-                color: var(--m3-color-on-surface, #1D1B20);
+                color: var(--m3-color-on-surface, #1d1b20);
                 opacity: 0.38;
             }
         }
     }
 
-    /* ─── FILLED VARIANT ───────────────────────────────────────────────────────── */
-
+    // ═════════════════════════════════════════════════════════════════════════
+    // FILLED VARIANT
+    // ═════════════════════════════════════════════════════════════════════════
     &.filled {
         .md-tf-field {
             border-radius: var(--m3-shape-extra-small, 4px) var(--m3-shape-extra-small, 4px) 0 0;
-            background: var(--m3-color-surface-container-highest, #E6E0E9);
+            background: var(--m3-color-surface-container-highest, #e6e0e9);
             overflow: hidden;
         }
 
+        // Disabled
         &.disabled .md-tf-field {
             background: rgba(var(--m3-color-on-surface-rgb, 29, 27, 32), 0.04);
         }
 
-        &:not(.disabled):not(.focused) .md-tf-field:hover .md-tf-active-indicator {
-            background: var(--m3-color-on-surface, #1D1B20);
+        // Hover (non-error, non-disabled, non-focused)
+        &:not(.disabled):not(.error):not(.focused) .md-tf-field:hover {
+            .md-tf-active-indicator {
+                background: var(--m3-color-on-surface, #1d1b20);
+            }
+            .md-tf-label-filled {
+                color: var(--m3-color-on-surface-variant, #49454f);
+            }
         }
 
+        // State layer hover
         &:not(.disabled) .md-tf-field:hover .md-tf-state-layer {
             opacity: 0.08;
         }
 
+        // Focused — 3px thick indicator per M3 spec
         &.focused {
             .md-tf-active-indicator {
-                height: 2px;
-                background: var(--m3-color-primary, #6750A4);
+                height: 3px;
+                background: var(--m3-color-primary, #6750a4);
             }
-
             .md-tf-label-filled {
                 top: 8px;
                 transform: translateY(0);
                 font-size: 12px;
                 line-height: 16px;
-                color: var(--m3-color-primary, #6750A4);
+                color: var(--m3-color-primary, #6750a4);
             }
         }
 
-        &.populated {
-            .md-tf-label-filled {
-                top: 8px;
-                transform: translateY(0);
-                font-size: 12px;
-                line-height: 16px;
-            }
+        // Populated
+        &.populated .md-tf-label-filled {
+            top: 8px;
+            transform: translateY(0);
+            font-size: 12px;
+            line-height: 16px;
         }
 
+        // Error
         &.error {
             .md-tf-active-indicator {
-                background: var(--m3-color-error, #B3261E);
+                background: var(--m3-color-error, #b3261e);
             }
-
             &.focused .md-tf-active-indicator {
-                height: 2px;
-                background: var(--m3-color-error, #B3261E);
+                height: 3px;
+                background: var(--m3-color-error, #b3261e);
+            }
+            .md-tf-label-filled {
+                color: var(--m3-color-error, #b3261e);
             }
 
-            .md-tf-label-filled {
-                color: var(--m3-color-error, #B3261E);
+            // Error + hover
+            &:not(.focused):not(.disabled) .md-tf-field:hover {
+                .md-tf-active-indicator {
+                    background: var(--m3-color-on-error-container, #410e0b);
+                }
+                .md-tf-state-layer {
+                    opacity: 0.08;
+                }
             }
         }
 
+        // Disabled
         &.disabled {
             .md-tf-active-indicator {
-                background: var(--m3-color-on-surface, #1D1B20);
+                background: var(--m3-color-on-surface, #1d1b20);
                 opacity: 0.38;
             }
-
             .md-tf-label-filled {
-                color: var(--m3-color-on-surface, #1D1B20);
+                color: var(--m3-color-on-surface, #1d1b20);
                 opacity: 0.38;
             }
         }
 
-        &.has-label .md-tf-content {
-            padding-top: 8px;
-        }
-
-        &.has-label .md-tf-input {
-            padding-top: 16px;
-        }
+        &.has-label .md-tf-content { padding-top: 8px; }
+        &.has-label .md-tf-input { padding-top: 16px; }
     }
 
-    /* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
+    // ═════════════════════════════════════════════════════════════════════════
+    // TEXTAREA
+    // ═════════════════════════════════════════════════════════════════════════
+    &.textarea .md-tf-field {
+        min-height: auto;
+        resize: inherit;
+    }
 
+    // ═════════════════════════════════════════════════════════════════════════
+    // LIQUID GLASS VARIANT
+    // ═════════════════════════════════════════════════════════════════════════
     &.glass {
         &.outlined .md-tf-field {
             background: var(--glass-tint, rgba(255, 255, 255, 0.45));
@@ -311,11 +366,10 @@
             .md-tf-outline-end {
                 border-color: var(--glass-border, rgba(255, 255, 255, 0.3));
             }
-
             &.focused {
                 .md-tf-outline-start,
                 .md-tf-outline-end {
-                    border-color: var(--m3-color-primary, #6750A4);
+                    border-color: var(--m3-color-primary, #6750a4);
                 }
             }
         }
@@ -328,13 +382,14 @@
         }
 
         .md-tf-input {
-            color: var(--glass-on-surface, var(--m3-color-on-surface, #1D1B20));
+            color: var(--glass-on-surface, var(--m3-color-on-surface, #1d1b20));
         }
     }
 }
 
-/* ─── FIELD CONTAINER ──────────────────────────────────────────────────────── */
-
+// ═════════════════════════════════════════════════════════════════════════════
+// FIELD CONTAINER
+// ═════════════════════════════════════════════════════════════════════════════
 .md-tf-field {
     position: relative;
     display: flex;
@@ -345,8 +400,13 @@
     box-sizing: border-box;
 }
 
-/* ─── OUTLINE BORDER SEGMENTS ──────────────────────────────────────────────── */
+.md-textfield.disabled .md-tf-field {
+    cursor: default;
+}
 
+// ═════════════════════════════════════════════════════════════════════════════
+// OUTLINE BORDER SEGMENTS (outlined variant)
+// ═════════════════════════════════════════════════════════════════════════════
 .md-tf-outline {
     position: absolute;
     inset: 0;
@@ -360,16 +420,16 @@
 .md-tf-outline-notch,
 .md-tf-outline-end {
     box-sizing: border-box;
-    transition: border-color 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                border-width 100ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    transition: border-color $_duration $_easing,
+                border-width 100ms $_easing;
 }
 
 .md-tf-outline-start {
     width: 12px;
     border-radius: var(--m3-shape-extra-small, 4px) 0 0 var(--m3-shape-extra-small, 4px);
-    border-left: 1px solid var(--m3-color-outline, #79747E);
-    border-top: 1px solid var(--m3-color-outline, #79747E);
-    border-bottom: 1px solid var(--m3-color-outline, #79747E);
+    border-left: 1px solid var(--m3-color-outline, #79747e);
+    border-top: 1px solid var(--m3-color-outline, #79747e);
+    border-bottom: 1px solid var(--m3-color-outline, #79747e);
     margin-right: -1px;
 }
 
@@ -378,48 +438,51 @@
     display: flex;
     align-items: center;
     max-width: calc(100% - 24px);
-    border-top: 1px solid var(--m3-color-outline, #79747E);
-    border-bottom: 1px solid var(--m3-color-outline, #79747E);
+    border-top: 1px solid var(--m3-color-outline, #79747e);
+    border-bottom: 1px solid var(--m3-color-outline, #79747e);
     padding: 0;
 }
 
 .md-tf-outline-end {
     flex: 1;
     border-radius: 0 var(--m3-shape-extra-small, 4px) var(--m3-shape-extra-small, 4px) 0;
-    border-right: 1px solid var(--m3-color-outline, #79747E);
-    border-top: 1px solid var(--m3-color-outline, #79747E);
-    border-bottom: 1px solid var(--m3-color-outline, #79747E);
+    border-right: 1px solid var(--m3-color-outline, #79747e);
+    border-top: 1px solid var(--m3-color-outline, #79747e);
+    border-bottom: 1px solid var(--m3-color-outline, #79747e);
     margin-left: -1px;
 }
 
-/* ─── ACTIVE INDICATOR (Filled bottom line) ────────────────────────────────── */
-
+// ═════════════════════════════════════════════════════════════════════════════
+// ACTIVE INDICATOR (filled bottom line)
+// ═════════════════════════════════════════════════════════════════════════════
 .md-tf-active-indicator {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     height: 1px;
-    background: var(--m3-color-on-surface-variant, #49454E);
-    transition: height 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                background 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    background: var(--m3-color-on-surface-variant, #49454f);
+    transition: height $_duration $_easing,
+                background $_duration $_easing;
     pointer-events: none;
 }
 
-/* ─── STATE LAYER (Filled hover) ───────────────────────────────────────────── */
-
+// ═════════════════════════════════════════════════════════════════════════════
+// STATE LAYER (filled hover)
+// ═════════════════════════════════════════════════════════════════════════════
 .md-tf-state-layer {
     position: absolute;
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
     opacity: 0;
-    background: var(--m3-color-on-surface, #1D1B20);
-    transition: opacity 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    background: var(--m3-color-on-surface, #1d1b20);
+    transition: opacity $_duration $_easing;
 }
 
-/* ─── CONTENT WRAPPER ──────────────────────────────────────────────────────── */
-
+// ═════════════════════════════════════════════════════════════════════════════
+// CONTENT WRAPPER
+// ═════════════════════════════════════════════════════════════════════════════
 .md-tf-content {
     display: flex;
     flex: 1;
@@ -430,14 +493,17 @@
     min-height: 56px;
 }
 
-/* ─── LABELS ───────────────────────────────────────────────────────────────── */
+// ═════════════════════════════════════════════════════════════════════════════
+// LABELS
+// ═════════════════════════════════════════════════════════════════════════════
 
-/* Outlined label */
+// Outlined label
 .md-tf-label-outlined {
     display: block;
-    font-size: 16px;
-    line-height: 24px;
-    color: var(--m3-color-on-surface-variant, #49454E);
+    font-size: var(--m3-typescale-body-large-size, 1rem);
+    line-height: var(--m3-typescale-body-large-line-height, 1.5rem);
+    font-weight: var(--m3-typescale-body-large-weight, 400);
+    color: var(--m3-color-on-surface-variant, #49454f);
     white-space: nowrap;
     pointer-events: none;
     padding: 0 4px;
@@ -446,31 +512,32 @@
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: font-size 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                line-height 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                transform 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                color 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    transition: font-size $_duration $_easing,
+                line-height $_duration $_easing,
+                transform $_duration $_easing,
+                color $_duration $_easing;
 }
 
-/* Filled label */
+// Filled label
 .md-tf-label-filled {
     position: absolute;
     left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 16px;
-    line-height: 24px;
-    color: var(--m3-color-on-surface-variant, #49454E);
+    font-size: var(--m3-typescale-body-large-size, 1rem);
+    line-height: var(--m3-typescale-body-large-line-height, 1.5rem);
+    font-weight: var(--m3-typescale-body-large-weight, 400);
+    color: var(--m3-color-on-surface-variant, #49454f);
     pointer-events: none;
     max-width: calc(100% - 32px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    transition: top 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-               transform 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-               font-size 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-               line-height 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-               color 150ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    transition: top $_duration $_easing,
+                transform $_duration $_easing,
+                font-size $_duration $_easing,
+                line-height $_duration $_easing,
+                color $_duration $_easing;
 
     &.has-leading {
         left: 52px;
@@ -478,21 +545,25 @@
     }
 }
 
-/* ─── INPUT ────────────────────────────────────────────────────────────────── */
-
+// ═════════════════════════════════════════════════════════════════════════════
+// INPUT
+// ═════════════════════════════════════════════════════════════════════════════
 .md-tf-input {
     flex: 1;
     border: none;
     background: transparent;
     outline: none;
     font-family: inherit;
-    font-size: 16px;
-    line-height: 24px;
-    color: var(--m3-color-on-surface, #1D1B20);
+    font-size: var(--m3-typescale-body-large-size, 1rem);
+    line-height: var(--m3-typescale-body-large-line-height, 1.5rem);
+    font-weight: var(--m3-typescale-body-large-weight, 400);
+    color: var(--m3-color-on-surface, #1d1b20);
     min-width: 0;
     width: 100%;
     padding: 0;
-    caret-color: var(--m3-color-primary, #6750A4);
+    caret-color: var(--m3-color-primary, #6750a4);
+    overflow-x: hidden;
+    text-align: inherit;
     -webkit-tap-highlight-color: transparent;
 
     &:focus,
@@ -512,25 +583,40 @@
     }
 
     &::placeholder {
-        color: var(--m3-color-on-surface-variant, #49454E);
+        color: var(--m3-color-on-surface-variant, #49454f);
         opacity: 1;
     }
 
+    // Hide native date/search pickers
+    &::-webkit-calendar-picker-indicator { display: none; }
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button { display: none; }
+
     &:disabled {
-        color: var(--m3-color-on-surface, #1D1B20);
+        color: var(--m3-color-on-surface, #1d1b20);
         opacity: 0.38;
         -webkit-text-fill-color: currentColor;
+        cursor: default;
     }
 
-    /* Textarea */
+    // Textarea
     &.textarea {
         resize: vertical;
         min-height: 48px;
     }
 }
 
-/* ─── INPUT WRAPPER ────────────────────────────────────────────────────────── */
+// Focus caret
+.md-textfield.focused .md-tf-input {
+    caret-color: var(--m3-color-primary, #6750a4);
+}
+.md-textfield.error.focused .md-tf-input {
+    caret-color: var(--m3-color-error, #b3261e);
+}
 
+// ═════════════════════════════════════════════════════════════════════════════
+// INPUT WRAPPER
+// ═════════════════════════════════════════════════════════════════════════════
 .md-tf-input-wrapper {
     display: flex;
     flex: 1;
@@ -538,55 +624,64 @@
     min-width: 0;
 }
 
-/* ─── ICONS ────────────────────────────────────────────────────────────────── */
-
+// ═════════════════════════════════════════════════════════════════════════════
+// ICONS
+// ═════════════════════════════════════════════════════════════════════════════
 .md-tf-icon {
     display: flex;
     align-items: center;
     justify-content: center;
+    fill: currentColor;
     width: 24px;
     height: 24px;
-    color: var(--m3-color-on-surface-variant, #49454E);
+    font-size: 24px;
+    color: var(--m3-color-on-surface-variant, #49454f);
     flex-shrink: 0;
+    position: relative;
 
     &.leading {
-        margin-right: 16px;
+        margin-inline-end: 16px;
     }
 
     &.trailing {
-        margin-left: 16px;
+        margin-inline-start: 16px;
     }
 }
 
-/* ─── PREFIX / SUFFIX ──────────────────────────────────────────────────────── */
-
+// ═════════════════════════════════════════════════════════════════════════════
+// PREFIX / SUFFIX
+// ═════════════════════════════════════════════════════════════════════════════
 .md-tf-prefix,
 .md-tf-suffix {
-    font-size: 16px;
-    line-height: 24px;
-    color: var(--m3-color-on-surface-variant, #49454E);
+    font-size: var(--m3-typescale-body-large-size, 1rem);
+    line-height: var(--m3-typescale-body-large-line-height, 1.5rem);
+    font-weight: var(--m3-typescale-body-large-weight, 400);
+    color: var(--m3-color-on-surface-variant, #49454f);
     white-space: nowrap;
+    width: min-content;
     opacity: 0;
-    transition: opacity 100ms var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    transition: opacity 100ms $_easing;
 }
 
 .md-tf-prefix {
-    margin-right: 2px;
+    padding-inline-end: 2px;
 }
 
 .md-tf-suffix {
-    margin-left: 2px;
+    padding-inline-start: 2px;
 }
 
-/* ─── SUPPORTING TEXT ──────────────────────────────────────────────────────── */
-
+// ═════════════════════════════════════════════════════════════════════════════
+// SUPPORTING TEXT
+// ═════════════════════════════════════════════════════════════════════════════
 .md-tf-supporting {
     display: flex;
     justify-content: space-between;
     padding: 4px 16px 0;
-    font-size: 12px;
-    line-height: 16px;
-    color: var(--m3-color-on-surface-variant, #49454E);
+    font-size: var(--m3-typescale-body-small-size, 0.75rem);
+    line-height: var(--m3-typescale-body-small-line-height, 1rem);
+    font-weight: var(--m3-typescale-body-small-weight, 400);
+    color: var(--m3-color-on-surface-variant, #49454f);
     gap: 16px;
 }
 
@@ -599,12 +694,65 @@
     white-space: nowrap;
 }
 
-/* ─── RIPPLE WRAPPER (Filled only) ─────────────────────────────────────────── */
-
+// ═════════════════════════════════════════════════════════════════════════════
+// RIPPLE WRAPPER (filled only)
+// ═════════════════════════════════════════════════════════════════════════════
 .md-tf-ripple-wrapper {
     position: absolute;
     inset: 0;
     overflow: hidden;
     border-radius: inherit;
     pointer-events: none;
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// FORCED-COLORS (High-Contrast Mode)
+// ═════════════════════════════════════════════════════════════════════════════
+@media (forced-colors: active) {
+    .md-tf-input {
+        background: none;
+    }
+
+    .md-tf-outline-start,
+    .md-tf-outline-notch,
+    .md-tf-outline-end {
+        border-color: CanvasText;
+    }
+
+    .md-tf-active-indicator {
+        background: CanvasText;
+    }
+
+    .md-textfield.focused {
+        .md-tf-outline-start,
+        .md-tf-outline-notch,
+        .md-tf-outline-end {
+            border-color: Highlight;
+        }
+        .md-tf-active-indicator {
+            background: Highlight;
+        }
+    }
+
+    .md-textfield.disabled {
+        .md-tf-outline-start,
+        .md-tf-outline-notch,
+        .md-tf-outline-end {
+            border-color: GrayText;
+            opacity: 1;
+        }
+        .md-tf-active-indicator {
+            background: GrayText;
+            opacity: 1;
+        }
+        .md-tf-input {
+            color: GrayText;
+            opacity: 1;
+        }
+        .md-tf-label-outlined,
+        .md-tf-label-filled {
+            color: GrayText;
+            opacity: 1;
+        }
+    }
 }

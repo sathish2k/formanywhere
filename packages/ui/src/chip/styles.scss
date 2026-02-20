@@ -1,100 +1,580 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   M3 CHIP - Based on material-components/material-web
+   M3 CHIP — Based on material-components/material-web chip styles
+   Mapped from Shadow DOM (:host, .container, .action) to flat class architecture
    ═══════════════════════════════════════════════════════════════════════════════ */
 
+/* ─── ROOT (maps to :host) ─────────────────────────────────────────────────── */
+
 .md-chip {
-    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    height: 32px;
-    padding: 0 16px;
-    border-radius: var(--m3-shape-small, 8px);
-    font-size: 14px;
-    font-weight: 500;
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    position: relative;
+    height: var(--md-chip-container-height, 32px);
+    border-radius: var(--md-chip-container-shape, var(--m3-shape-small, 8px));
+    padding: 0;
+    padding-inline-start: var(--md-chip-leading-space, 16px);
+    padding-inline-end: var(--md-chip-trailing-space, 16px);
+    gap: var(--md-chip-icon-label-space, 8px);
+    box-sizing: border-box;
     cursor: pointer;
-    border: 1px solid var(--m3-color-outline, rgba(120, 117, 121, 0.4));
+    border: var(--md-chip-outline-width, 1px) solid var(--md-chip-outline-color, var(--m3-color-outline, #79747e));
     background: transparent;
-    color: var(--m3-color-on-surface, #1D1B20);
+    color: var(--md-chip-label-text-color, var(--m3-color-on-surface, #1d1b20));
+    font-family: var(--md-chip-label-text-font, var(--m3-font-body, 'Inter', system-ui, sans-serif));
+    font-size: var(--md-chip-label-text-size, 0.875rem);
+    font-weight: var(--md-chip-label-text-weight, 500);
+    line-height: var(--md-chip-label-text-line-height, 1.25rem);
     overflow: hidden;
     user-select: none;
+    text-decoration: none;
+    text-transform: inherit;
     -webkit-tap-highlight-color: transparent;
-    transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                box-shadow var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    outline: none;
+    appearance: none;
+    transition: background-color 150ms cubic-bezier(0.2, 0, 0, 1),
+                border-color 150ms cubic-bezier(0.2, 0, 0, 1),
+                box-shadow 150ms cubic-bezier(0.2, 0, 0, 1),
+                color 150ms cubic-bezier(0.2, 0, 0, 1);
 
-    /* ─── SIZE VARIANTS ────────────────────────────────────────────────────────── */
+    /* ─── TOUCH TARGET ─────────────────────────────────────────────────────── */
+
+    &::before {
+        content: '';
+        position: absolute;
+        height: 48px;
+        inset: 50% 0 0;
+        transform: translateY(-50%);
+        width: 100%;
+    }
+
+    /* ─── LABEL ─────────────────────────────────────────────────────────────── */
+
+    > span {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        z-index: 1;
+    }
+
+    /* ─── ICON ──────────────────────────────────────────────────────────────── */
+
+    > svg,
+    > span[aria-hidden="true"] {
+        display: flex;
+        align-self: center;
+        fill: currentColor;
+        position: relative;
+        z-index: 1;
+        flex-shrink: 0;
+
+        > svg,
+        > * {
+            width: var(--md-chip-icon-size, 18px);
+            height: var(--md-chip-icon-size, 18px);
+        }
+    }
+
+    > svg {
+        width: var(--md-chip-icon-size, 18px);
+        height: var(--md-chip-icon-size, 18px);
+    }
+
+    /* ─── FOCUS RING ────────────────────────────────────────────────────────── */
+
+    &:focus-visible {
+        outline: 3px solid var(--m3-color-secondary, #625b71);
+        outline-offset: 2px;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════════════
+       SIZE VARIANTS (custom extension)
+       ═════════════════════════════════════════════════════════════════════════ */
 
     &.size-sm {
-        height: 24px;
-        padding: 0 8px;
-        gap: 4px;
-        font-size: 12px;
+        --md-chip-container-height: 24px;
+        --md-chip-leading-space: 8px;
+        --md-chip-trailing-space: 8px;
+        --md-chip-icon-label-space: 4px;
+        --md-chip-label-text-size: 0.75rem;
+        --md-chip-icon-size: 14px;
         border-radius: var(--m3-shape-extra-small, 4px);
-
-        svg { width: 14px; height: 14px; }
     }
 
     &.size-md {
-        /* Default — no overrides needed */
+        /* Default — 32px, no overrides needed */
     }
 
     &.size-lg {
-        height: 40px;
-        padding: 0 20px;
-        gap: 10px;
-        font-size: 16px;
+        --md-chip-container-height: 40px;
+        --md-chip-leading-space: 20px;
+        --md-chip-trailing-space: 20px;
+        --md-chip-icon-label-space: 10px;
+        --md-chip-label-text-size: 1rem;
+        --md-chip-icon-size: 20px;
         border-radius: var(--m3-shape-medium, 12px);
-
-        svg { width: 20px; height: 20px; }
     }
+
+    /* ═════════════════════════════════════════════════════════════════════════
+       ASSIST CHIP (default) — maps to assist-styles.css
+       ═════════════════════════════════════════════════════════════════════════ */
+
+    &.assist {
+        --md-chip-outline-color: var(--md-assist-chip-outline-color, var(--m3-color-outline, #79747e));
+        --md-chip-outline-width: var(--md-assist-chip-outline-width, 1px);
+        --md-chip-label-text-color: var(--md-assist-chip-label-text-color, var(--m3-color-on-surface, #1d1b20));
+        --md-chip-leading-icon-color: var(--md-assist-chip-leading-icon-color, var(--m3-color-primary, #6750a4));
+
+        color: var(--md-chip-label-text-color);
+
+        > svg,
+        > span[aria-hidden="true"] {
+            color: var(--md-chip-leading-icon-color);
+        }
+
+        /* ─── Hover ─────────────────────────────────────────────────────────── */
+        &:hover:not(.disabled) {
+            color: var(--md-assist-chip-hover-label-text-color, var(--m3-color-on-surface, #1d1b20));
+            background-color: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 8%, transparent);
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: var(--md-assist-chip-hover-leading-icon-color, var(--m3-color-primary, #6750a4));
+            }
+        }
+
+        /* ─── Focus ─────────────────────────────────────────────────────────── */
+        &:focus-visible:not(.disabled) {
+            color: var(--md-assist-chip-focus-label-text-color, var(--m3-color-on-surface, #1d1b20));
+            border-color: var(--md-assist-chip-focus-outline-color, var(--m3-color-on-surface, #1d1b20));
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: var(--md-assist-chip-focus-leading-icon-color, var(--m3-color-primary, #6750a4));
+            }
+        }
+
+        /* ─── Pressed ───────────────────────────────────────────────────────── */
+        &:active:not(.disabled) {
+            color: var(--md-assist-chip-pressed-label-text-color, var(--m3-color-on-surface, #1d1b20));
+            background-color: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 12%, transparent);
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: var(--md-assist-chip-pressed-leading-icon-color, var(--m3-color-primary, #6750a4));
+            }
+        }
+
+        /* ─── Elevated ──────────────────────────────────────────────────────── */
+        &.elevated {
+            border: none;
+            background-color: var(--md-assist-chip-elevated-container-color, var(--m3-color-surface-container-low, #f7f2fa));
+            box-shadow: var(--m3-elevation-1,
+                0px 1px 2px rgba(0, 0, 0, 0.3),
+                0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+
+            &:hover:not(.disabled) {
+                box-shadow: var(--m3-elevation-2,
+                    0px 1px 2px rgba(0, 0, 0, 0.3),
+                    0px 2px 6px 2px rgba(0, 0, 0, 0.15));
+                background-color: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 8%, var(--md-assist-chip-elevated-container-color, var(--m3-color-surface-container-low, #f7f2fa)));
+            }
+
+            &:focus-visible:not(.disabled) {
+                box-shadow: var(--m3-elevation-1,
+                    0px 1px 2px rgba(0, 0, 0, 0.3),
+                    0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+            }
+
+            &:active:not(.disabled) {
+                box-shadow: var(--m3-elevation-1,
+                    0px 1px 2px rgba(0, 0, 0, 0.3),
+                    0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+            }
+
+            &.disabled {
+                background-color: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 12%, transparent);
+                box-shadow: none;
+            }
+        }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════════════
+       SUGGESTION CHIP — same tokens as assist chip per M3 spec
+       ═════════════════════════════════════════════════════════════════════════ */
+
+    &.suggestion {
+        --md-chip-outline-color: var(--md-assist-chip-outline-color, var(--m3-color-outline, #79747e));
+        --md-chip-outline-width: var(--md-assist-chip-outline-width, 1px);
+        --md-chip-label-text-color: var(--md-assist-chip-label-text-color, var(--m3-color-on-surface, #1d1b20));
+
+        color: var(--md-chip-label-text-color);
+
+        &:hover:not(.disabled) {
+            color: var(--md-assist-chip-hover-label-text-color, var(--m3-color-on-surface, #1d1b20));
+            background-color: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 8%, transparent);
+        }
+
+        &:focus-visible:not(.disabled) {
+            color: var(--md-assist-chip-focus-label-text-color, var(--m3-color-on-surface, #1d1b20));
+            border-color: var(--md-assist-chip-focus-outline-color, var(--m3-color-on-surface, #1d1b20));
+        }
+
+        &:active:not(.disabled) {
+            color: var(--md-assist-chip-pressed-label-text-color, var(--m3-color-on-surface, #1d1b20));
+            background-color: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 12%, transparent);
+        }
+
+        &.elevated {
+            border: none;
+            background-color: var(--md-assist-chip-elevated-container-color, var(--m3-color-surface-container-low, #f7f2fa));
+            box-shadow: var(--m3-elevation-1,
+                0px 1px 2px rgba(0, 0, 0, 0.3),
+                0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+
+            &:hover:not(.disabled) {
+                box-shadow: var(--m3-elevation-2,
+                    0px 1px 2px rgba(0, 0, 0, 0.3),
+                    0px 2px 6px 2px rgba(0, 0, 0, 0.15));
+            }
+
+            &:focus-visible:not(.disabled) {
+                box-shadow: var(--m3-elevation-1,
+                    0px 1px 2px rgba(0, 0, 0, 0.3),
+                    0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+            }
+
+            &:active:not(.disabled) {
+                box-shadow: var(--m3-elevation-1,
+                    0px 1px 2px rgba(0, 0, 0, 0.3),
+                    0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+            }
+
+            &.disabled {
+                background-color: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 12%, transparent);
+                box-shadow: none;
+            }
+        }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════════════
+       FILTER CHIP — maps to filter-styles.css
+       ═════════════════════════════════════════════════════════════════════════ */
+
+    &.filter {
+        --md-chip-outline-color: var(--md-filter-chip-outline-color, var(--m3-color-outline, #79747e));
+        --md-chip-outline-width: var(--md-filter-chip-outline-width, 1px);
+        --md-chip-label-text-color: var(--md-filter-chip-label-text-color, var(--m3-color-on-surface-variant, #49454f));
+        --md-chip-leading-icon-color: var(--md-filter-chip-leading-icon-color, var(--m3-color-primary, #6750a4));
+
+        color: var(--md-chip-label-text-color);
+
+        > svg,
+        > span[aria-hidden="true"] {
+            color: var(--md-chip-leading-icon-color);
+        }
+
+        /* ─── Hover ─────────────────────────────────────────────────────────── */
+        &:hover:not(.disabled):not(.selected) {
+            color: var(--md-filter-chip-hover-label-text-color, var(--m3-color-on-surface-variant, #49454f));
+            background-color: color-mix(in srgb, var(--m3-color-on-surface-variant, #49454f) 8%, transparent);
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: var(--md-filter-chip-hover-leading-icon-color, var(--m3-color-primary, #6750a4));
+            }
+        }
+
+        /* ─── Focus ─────────────────────────────────────────────────────────── */
+        &:focus-visible:not(.disabled):not(.selected) {
+            color: var(--md-filter-chip-focus-label-text-color, var(--m3-color-on-surface-variant, #49454f));
+            border-color: var(--md-filter-chip-focus-outline-color, var(--m3-color-on-surface-variant, #49454f));
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: var(--md-filter-chip-focus-leading-icon-color, var(--m3-color-primary, #6750a4));
+            }
+        }
+
+        /* ─── Pressed ───────────────────────────────────────────────────────── */
+        &:active:not(.disabled):not(.selected) {
+            color: var(--md-filter-chip-pressed-label-text-color, var(--m3-color-on-surface-variant, #49454f));
+            background-color: color-mix(in srgb, var(--m3-color-on-secondary-container, #1d192b) 12%, transparent);
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: var(--md-filter-chip-pressed-leading-icon-color, var(--m3-color-primary, #6750a4));
+            }
+        }
+
+        /* ─── Selected ──────────────────────────────────────────────────────── */
+        &.selected {
+            border-width: var(--md-filter-chip-selected-outline-width, 0px);
+            background-color: var(--md-filter-chip-selected-container-color, var(--m3-color-secondary-container, #e8def8));
+            color: var(--md-filter-chip-selected-label-text-color, var(--m3-color-on-secondary-container, #1d192b));
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: var(--md-filter-chip-selected-leading-icon-color, var(--m3-color-on-secondary-container, #1d192b));
+            }
+
+            &:hover:not(.disabled) {
+                color: var(--md-filter-chip-selected-hover-label-text-color, var(--m3-color-on-secondary-container, #1d192b));
+                background-color: color-mix(in srgb, var(--m3-color-on-secondary-container, #1d192b) 8%, var(--md-filter-chip-selected-container-color, var(--m3-color-secondary-container, #e8def8)));
+
+                > svg,
+                > span[aria-hidden="true"] {
+                    color: var(--md-filter-chip-selected-hover-leading-icon-color, var(--m3-color-on-secondary-container, #1d192b));
+                }
+            }
+
+            &:focus-visible:not(.disabled) {
+                color: var(--md-filter-chip-selected-focus-label-text-color, var(--m3-color-on-secondary-container, #1d192b));
+
+                > svg,
+                > span[aria-hidden="true"] {
+                    color: var(--md-filter-chip-selected-focus-leading-icon-color, var(--m3-color-on-secondary-container, #1d192b));
+                }
+            }
+
+            &:active:not(.disabled) {
+                color: var(--md-filter-chip-selected-pressed-label-text-color, var(--m3-color-on-secondary-container, #1d192b));
+                background-color: color-mix(in srgb, var(--m3-color-on-surface-variant, #49454f) 12%, var(--md-filter-chip-selected-container-color, var(--m3-color-secondary-container, #e8def8)));
+
+                > svg,
+                > span[aria-hidden="true"] {
+                    color: var(--md-filter-chip-selected-pressed-leading-icon-color, var(--m3-color-on-secondary-container, #1d192b));
+                }
+            }
+
+            &.disabled {
+                background-color: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 12%, transparent);
+            }
+        }
+
+        /* ─── Elevated ──────────────────────────────────────────────────────── */
+        &.elevated {
+            border: none;
+            background-color: var(--md-filter-chip-elevated-container-color, var(--m3-color-surface-container-low, #f7f2fa));
+            box-shadow: var(--m3-elevation-1,
+                0px 1px 2px rgba(0, 0, 0, 0.3),
+                0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+
+            &:hover:not(.disabled) {
+                box-shadow: var(--m3-elevation-2,
+                    0px 1px 2px rgba(0, 0, 0, 0.3),
+                    0px 2px 6px 2px rgba(0, 0, 0, 0.15));
+            }
+
+            &:focus-visible:not(.disabled) {
+                box-shadow: var(--m3-elevation-1,
+                    0px 1px 2px rgba(0, 0, 0, 0.3),
+                    0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+            }
+
+            &:active:not(.disabled) {
+                box-shadow: var(--m3-elevation-1,
+                    0px 1px 2px rgba(0, 0, 0, 0.3),
+                    0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+            }
+
+            &.selected {
+                background-color: var(--md-filter-chip-elevated-selected-container-color, var(--m3-color-secondary-container, #e8def8));
+            }
+
+            &.disabled {
+                background-color: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 12%, transparent);
+                box-shadow: none;
+            }
+        }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════════════
+       INPUT CHIP — maps to input-styles.css
+       ═════════════════════════════════════════════════════════════════════════ */
+
+    &.input {
+        --md-chip-outline-color: var(--md-input-chip-outline-color, var(--m3-color-outline, #79747e));
+        --md-chip-outline-width: var(--md-input-chip-outline-width, 1px);
+        --md-chip-label-text-color: var(--md-input-chip-label-text-color, var(--m3-color-on-surface-variant, #49454f));
+        --md-chip-leading-icon-color: var(--md-input-chip-leading-icon-color, var(--m3-color-primary, #6750a4));
+
+        color: var(--md-chip-label-text-color);
+
+        > svg,
+        > span[aria-hidden="true"] {
+            color: var(--md-chip-leading-icon-color);
+        }
+
+        /* ─── Hover ─────────────────────────────────────────────────────────── */
+        &:hover:not(.disabled):not(.selected) {
+            color: var(--md-input-chip-hover-label-text-color, var(--m3-color-on-surface-variant, #49454f));
+            background-color: color-mix(in srgb, var(--m3-color-on-surface-variant, #49454f) 8%, transparent);
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: var(--md-input-chip-hover-leading-icon-color, var(--m3-color-primary, #6750a4));
+            }
+        }
+
+        /* ─── Focus ─────────────────────────────────────────────────────────── */
+        &:focus-visible:not(.disabled):not(.selected) {
+            color: var(--md-input-chip-focus-label-text-color, var(--m3-color-on-surface-variant, #49454f));
+            border-color: var(--md-input-chip-focus-outline-color, var(--m3-color-on-surface-variant, #49454f));
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: var(--md-input-chip-focus-leading-icon-color, var(--m3-color-primary, #6750a4));
+            }
+        }
+
+        /* ─── Pressed ───────────────────────────────────────────────────────── */
+        &:active:not(.disabled):not(.selected) {
+            color: var(--md-input-chip-pressed-label-text-color, var(--m3-color-on-surface-variant, #49454f));
+            background-color: color-mix(in srgb, var(--m3-color-on-surface-variant, #49454f) 12%, transparent);
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: var(--md-input-chip-pressed-leading-icon-color, var(--m3-color-primary, #6750a4));
+            }
+        }
+
+        /* ─── Selected ──────────────────────────────────────────────────────── */
+        &.selected {
+            border-width: var(--md-input-chip-selected-outline-width, 0px);
+            background-color: var(--md-input-chip-selected-container-color, var(--m3-color-secondary-container, #e8def8));
+            color: var(--md-input-chip-selected-label-text-color, var(--m3-color-on-secondary-container, #1d192b));
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: var(--md-input-chip-selected-leading-icon-color, var(--m3-color-primary, #6750a4));
+            }
+
+            &:hover:not(.disabled) {
+                color: var(--md-input-chip-selected-hover-label-text-color, var(--m3-color-on-secondary-container, #1d192b));
+                background-color: color-mix(in srgb, var(--m3-color-on-secondary-container, #1d192b) 8%, var(--md-input-chip-selected-container-color, var(--m3-color-secondary-container, #e8def8)));
+
+                > svg,
+                > span[aria-hidden="true"] {
+                    color: var(--md-input-chip-selected-hover-leading-icon-color, var(--m3-color-primary, #6750a4));
+                }
+            }
+
+            &:focus-visible:not(.disabled) {
+                color: var(--md-input-chip-selected-focus-label-text-color, var(--m3-color-on-secondary-container, #1d192b));
+
+                > svg,
+                > span[aria-hidden="true"] {
+                    color: var(--md-input-chip-selected-focus-leading-icon-color, var(--m3-color-primary, #6750a4));
+                }
+            }
+
+            &:active:not(.disabled) {
+                color: var(--md-input-chip-selected-pressed-label-text-color, var(--m3-color-on-secondary-container, #1d192b));
+                background-color: color-mix(in srgb, var(--m3-color-on-secondary-container, #1d192b) 12%, var(--md-input-chip-selected-container-color, var(--m3-color-secondary-container, #e8def8)));
+
+                > svg,
+                > span[aria-hidden="true"] {
+                    color: var(--md-input-chip-selected-pressed-leading-icon-color, var(--m3-color-primary, #6750a4));
+                }
+            }
+
+            &.disabled {
+                background-color: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 12%, transparent);
+            }
+        }
+
+        /* ─── Trailing icon (remove button) colors ──────────────────────────── */
+        .md-chip__remove {
+            color: var(--md-input-chip-trailing-icon-color, var(--m3-color-on-surface-variant, #49454f));
+        }
+
+        &:hover:not(.disabled) .md-chip__remove {
+            color: var(--md-input-chip-hover-trailing-icon-color, var(--m3-color-on-surface-variant, #49454f));
+        }
+
+        &:focus-visible:not(.disabled) .md-chip__remove {
+            color: var(--md-input-chip-focus-trailing-icon-color, var(--m3-color-on-surface-variant, #49454f));
+        }
+
+        &:active:not(.disabled) .md-chip__remove {
+            color: var(--md-input-chip-pressed-trailing-icon-color, var(--m3-color-on-surface-variant, #49454f));
+        }
+
+        &.selected .md-chip__remove {
+            color: var(--md-input-chip-selected-trailing-icon-color, var(--m3-color-on-secondary-container, #1d192b));
+        }
+
+        &.selected:hover:not(.disabled) .md-chip__remove {
+            color: var(--md-input-chip-selected-hover-trailing-icon-color, var(--m3-color-on-secondary-container, #1d192b));
+        }
+
+        &.selected:focus-visible:not(.disabled) .md-chip__remove {
+            color: var(--md-input-chip-selected-focus-trailing-icon-color, var(--m3-color-on-secondary-container, #1d192b));
+        }
+
+        &.selected:active:not(.disabled) .md-chip__remove {
+            color: var(--md-input-chip-selected-pressed-trailing-icon-color, var(--m3-color-on-secondary-container, #1d192b));
+        }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════════════
+       DISABLED STATE (shared across all variants)
+       ═════════════════════════════════════════════════════════════════════════ */
 
     &.disabled {
-        cursor: not-allowed;
-        opacity: 0.38;
+        cursor: default;
         pointer-events: none;
-    }
 
-    &:hover:not(.disabled) {
-        background: var(--m3-color-on-surface-variant, rgba(73, 69, 78, 0.08));
-    }
+        color: var(--md-chip-disabled-label-text-color, var(--m3-color-on-surface, #1d1b20));
+        opacity: 1;
 
-    &:focus-visible {
-        outline: 2px solid var(--m3-color-primary, #6750A4);
-        outline-offset: 1px;
-    }
-
-    /* ─── SELECTED STATE ───────────────────────────────────────────────────────── */
-
-    &.selected {
-        border: none;
-        background: var(--m3-color-secondary-container, rgba(139, 92, 246, 0.12));
-        color: var(--m3-color-on-secondary-container, #1d192b);
-
-        &:hover:not(.disabled) {
-            box-shadow: var(--m3-elevation-1);
+        > span {
+            opacity: var(--md-chip-disabled-label-text-opacity, 0.38);
         }
-    }
 
-    /* ─── ELEVATED ─────────────────────────────────────────────────────────────── */
-
-    &.elevated {
-        border: none;
-        background: var(--m3-color-surface-container-low, rgba(255, 255, 255, 0.55));
-        box-shadow: var(--m3-elevation-1);
-
-        &:hover:not(.disabled) {
-            box-shadow: var(--m3-elevation-2);
+        > svg,
+        > span[aria-hidden="true"] {
+            opacity: var(--md-chip-disabled-leading-icon-opacity, 0.38);
         }
+
+        /* Disabled outline */
+        border-color: var(--md-chip-disabled-outline-color, var(--m3-color-on-surface, #1d1b20));
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            border: inherit;
+            border-color: inherit;
+            opacity: var(--md-chip-disabled-outline-opacity, 0.12);
+            pointer-events: none;
+        }
+        /* Hide real border, show the opacity-reduced one */
+        border-color: transparent;
     }
 
-    /* ─── LABEL VARIANT (pill badge) ───────────────────────────────────────────── */
+    /* ═════════════════════════════════════════════════════════════════════════
+       WITH LEADING ICON — adjust left padding
+       ═════════════════════════════════════════════════════════════════════════ */
+
+    &:has(> svg:first-child),
+    &:has(> span[aria-hidden="true"]:first-child) {
+        padding-inline-start: var(--md-chip-with-leading-icon-leading-space, 8px);
+    }
+
+    /* ═════════════════════════════════════════════════════════════════════════
+       LABEL VARIANT (pill badge — custom extension)
+       ═════════════════════════════════════════════════════════════════════════ */
 
     &.label {
         height: auto;
         padding: 4px 12px;
         border-radius: var(--m3-shape-full, 9999px);
-        font-size: 12px;
+        font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -106,68 +586,144 @@
         &,
         &[data-color="default"],
         &[data-color="primary"] {
-            background: var(--m3-color-primary-container, rgba(91, 95, 237, 0.12));
-            color: var(--m3-color-on-primary-container, #1a1a4a);
-            border: 1px solid color-mix(in srgb, var(--m3-color-primary) 20%, transparent);
+            background-color: var(--m3-color-primary-container, #eaddff);
+            color: var(--m3-color-on-primary-container, #21005d);
+            border: 1px solid color-mix(in srgb, var(--m3-color-primary, #6750a4) 20%, transparent);
         }
 
         &[data-color="secondary"] {
-            background: var(--m3-color-secondary-container, rgba(142, 51, 255, 0.12));
+            background-color: var(--m3-color-secondary-container, #e8def8);
             color: var(--m3-color-on-secondary-container, #1d192b);
-            border: 1px solid color-mix(in srgb, var(--m3-color-secondary) 20%, transparent);
+            border: 1px solid color-mix(in srgb, var(--m3-color-secondary, #625b71) 20%, transparent);
         }
 
         &[data-color="info"] {
-            background: var(--m3-color-tertiary-container, rgba(0, 184, 217, 0.12));
-            color: var(--m3-color-on-tertiary-container, #006C9C);
-            border: 1px solid color-mix(in srgb, var(--m3-color-tertiary) 20%, transparent);
+            background-color: var(--m3-color-tertiary-container, #ffd8e4);
+            color: var(--m3-color-on-tertiary-container, #31111d);
+            border: 1px solid color-mix(in srgb, var(--m3-color-tertiary, #7d5260) 20%, transparent);
         }
 
         &[data-color="success"] {
-            background: var(--m3-color-success-container, rgba(34, 197, 94, 0.12));
-            color: var(--m3-color-success, #22C55E);
-            border: 1px solid color-mix(in srgb, var(--m3-color-success, #22C55E) 20%, transparent);
+            background-color: var(--m3-color-success-container, #6bff8f);
+            color: var(--m3-color-success-dark, #118d57);
+            border: 1px solid color-mix(in srgb, var(--m3-color-success, #22c55e) 20%, transparent);
         }
 
         &[data-color="warning"] {
-            background: var(--m3-color-warning-container, rgba(255, 171, 0, 0.12));
-            color: var(--m3-color-warning, #FFAB00);
-            border: 1px solid color-mix(in srgb, var(--m3-color-warning, #FFAB00) 20%, transparent);
+            background-color: var(--m3-color-warning-container, #ffddb3);
+            color: var(--m3-color-warning-dark, #b76e00);
+            border: 1px solid color-mix(in srgb, var(--m3-color-warning, #ffab00) 20%, transparent);
         }
 
         &[data-color="error"] {
-            background: var(--m3-color-error-container, rgba(255, 86, 48, 0.12));
-            color: var(--m3-color-error, #FF5630);
-            border: 1px solid color-mix(in srgb, var(--m3-color-error, #FF5630) 20%, transparent);
+            background-color: var(--m3-color-error-container, #f9dedc);
+            color: var(--m3-color-error-dark, #b71d18);
+            border: 1px solid color-mix(in srgb, var(--m3-color-error, #b3261e) 20%, transparent);
         }
     }
 
-    /* ─── GLASS CHIP ───────────────────────────────────────────────────────────── */
+    /* ═════════════════════════════════════════════════════════════════════════
+       GLASS CHIP (custom extension)
+       ═════════════════════════════════════════════════════════════════════════ */
 
     &.glass {
-        background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+        background-color: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
         border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
         backdrop-filter: blur(var(--glass-blur, 20px));
         -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
-        box-shadow: var(--glass-shadow, 0 4px 16px rgba(0,0,0,0.06));
+        box-shadow: var(--glass-shadow, 0 4px 16px rgba(0, 0, 0, 0.06));
     }
 }
 
-/* ─── REMOVE BUTTON (input chips) ──────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════════
+   REMOVE BUTTON (input chips) — maps to trailing action
+   ═══════════════════════════════════════════════════════════════════════════════ */
 
 .md-chip__remove {
     display: flex;
+    align-items: center;
+    justify-content: center;
     background: none;
     border: none;
     padding: 0;
     cursor: pointer;
     color: inherit;
-    margin-left: 4px;
-    margin-right: -8px;
+    margin-inline-start: 4px;
+    margin-inline-end: -8px;
     border-radius: 50%;
-    transition: opacity var(--m3-motion-duration-short, 100ms);
+    z-index: 1;
+    position: relative;
+    transition: color 150ms cubic-bezier(0.2, 0, 0, 1),
+                opacity 150ms cubic-bezier(0.2, 0, 0, 1);
+
+    > svg {
+        width: var(--md-chip-icon-size, 18px);
+        height: var(--md-chip-icon-size, 18px);
+    }
 
     &:hover {
         opacity: 0.7;
+    }
+
+    .disabled & {
+        cursor: default;
+        opacity: var(--md-chip-disabled-trailing-icon-opacity, 0.38);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   FORCED COLORS (High Contrast Mode)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (forced-colors: active) {
+    .md-chip {
+        border-color: ButtonText;
+        color: ButtonText;
+
+        &.disabled {
+            border-color: GrayText;
+            color: GrayText;
+            opacity: 1;
+
+            &::after {
+                opacity: 1;
+            }
+
+            > span,
+            > svg,
+            > span[aria-hidden="true"] {
+                color: GrayText;
+                opacity: 1;
+            }
+
+            .md-chip__remove {
+                color: GrayText;
+                opacity: 1;
+            }
+        }
+
+        &.selected {
+            background-color: Highlight;
+            color: HighlightText;
+            border-color: Highlight;
+
+            > svg,
+            > span[aria-hidden="true"] {
+                color: HighlightText;
+            }
+
+            .md-chip__remove {
+                color: HighlightText;
+            }
+        }
+
+        > svg,
+        > span[aria-hidden="true"] {
+            color: ButtonText;
+        }
+
+        .md-chip__remove {
+            color: ButtonText;
+        }
     }
 }

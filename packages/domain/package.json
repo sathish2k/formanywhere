@@ -1,0 +1,26 @@
+{
+    "name": "@formanywhere/domain",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "./form/index.ts",
+    "types": "./form/index.ts",
+    "exports": {
+        "./form": {
+            "import": "./form/index.ts",
+            "types": "./form/index.ts"
+        },
+        "./submission": {
+            "import": "./submission/index.ts",
+            "types": "./submission/index.ts"
+        }
+    },
+    "scripts": {
+        "dev": "tsc --watch",
+        "build": "tsc",
+        "lint": "echo 'No linter configured'"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "typescript": "^5.7.0"
+    }
+}

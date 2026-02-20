@@ -8,7 +8,9 @@
             ],
             "outputs": [
                 "dist/**",
-                ".astro/**"
+                ".astro/**",
+                ".output/**",
+                ".vinxi/**"
             ]
         },
         "dev": {

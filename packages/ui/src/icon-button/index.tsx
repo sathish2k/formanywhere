@@ -8,7 +8,7 @@
  * - filled-tonal: Tonal filled background
  * - outlined: Outlined border
  */
-import { JSX, splitProps, Component } from 'solid-js';
+import { JSX, splitProps, Component, createSignal } from 'solid-js';
 import { Ripple } from '../ripple';
 import './styles.scss';
 
@@ -17,9 +17,12 @@ import './styles.scss';
 export interface IconButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
     variant?: 'standard' | 'filled' | 'filled-tonal' | 'outlined' | 'text';
     icon: JSX.Element;
+    selectedIcon?: JSX.Element;
     size?: 'sm' | 'md' | 'lg';
     selected?: boolean;
+    defaultSelected?: boolean;
     toggle?: boolean;
+    onSelectedChange?: (selected: boolean) => void;
     style?: JSX.CSSProperties;
     href?: string;
 }
@@ -28,22 +31,39 @@ export interface IconButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButto
 
 export const IconButton: Component<IconButtonProps> = (props) => {
     const [local, others] = splitProps(props, [
-        'variant', 'icon', 'size', 'selected', 'toggle', 'disabled', 'style', 'href', 'class'
+        'variant', 'icon', 'selectedIcon', 'size', 'selected', 'defaultSelected', 'toggle', 'onSelectedChange', 'disabled', 'style', 'href', 'class', 'onClick'
     ]);
+
+    const [internalSelected, setInternalSelected] = createSignal(local.defaultSelected ?? false);
+    const isSelected = () => local.selected ?? internalSelected();
 
     const rootClass = () => {
         const classes = ['md-icon-button'];
         classes.push(local.variant || 'standard');
         classes.push(`size-${local.size || 'md'}`);
-        if (local.selected) classes.push('selected');
+        if (isSelected()) classes.push('selected');
         if (local.class) classes.push(local.class);
         return classes.join(' ');
+    };
+
+    const handleToggle = () => {
+        if (!local.toggle || local.disabled) return;
+        const next = !isSelected();
+        if (local.selected === undefined) {
+            setInternalSelected(next);
+        }
+        local.onSelectedChange?.(next);
+    };
+
+    const handleClick: JSX.EventHandlerUnion<HTMLButtonElement | HTMLAnchorElement, MouseEvent> = (e) => {
+        handleToggle();
+        (local.onClick as ((event: MouseEvent) => void) | undefined)?.(e);
     };
 
     const iconEl = () => (
         <>
             <Ripple disabled={local.disabled} />
-            <span class="md-icon-button__icon">{local.icon}</span>
+            <span class="md-icon-button__icon">{local.toggle && local.selectedIcon && isSelected() ? local.selectedIcon : local.icon}</span>
         </>
     );
 
@@ -53,6 +73,8 @@ export const IconButton: Component<IconButtonProps> = (props) => {
                 href={local.href}
                 class={rootClass()}
                 style={local.style}
+                onClick={handleClick}
+                aria-pressed={local.toggle ? isSelected() : undefined}
                 {...(others as JSX.AnchorHTMLAttributes<HTMLAnchorElement>)}
             >
                 {iconEl()}
@@ -67,7 +89,9 @@ export const IconButton: Component<IconButtonProps> = (props) => {
             disabled={local.disabled}
             class={rootClass()}
             style={local.style}
+            onClick={handleClick}
             data-component="icon-button"
+            aria-pressed={local.toggle ? isSelected() : undefined}
         >
             {iconEl()}
         </button>

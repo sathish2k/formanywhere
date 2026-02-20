@@ -1,0 +1,80 @@
+// M3 Focus Ring — matches material-web/focus/internal/_focus-ring.scss
+// Tokens from _md-comp-focus-ring.scss:
+//   color: secondary (#625b71)
+//   width: 3px
+//   active-width: 8px (keyframe animation peak)
+//   outward-offset: 2px
+//   inward-offset: 0px
+//   duration: duration-long4 = 600ms
+//   shape: corner-full (9999px), inherits from parent
+
+.md-focus-ring {
+    position: absolute;
+    pointer-events: none;
+    box-sizing: border-box;
+    display: none;
+    color: var(--md-focus-ring-color, var(--m3-color-secondary, #625b71));
+
+    // Animation: 25% grow + 75% shrink of duration-long4 (600ms)
+    animation-delay: 0s, 150ms;
+    animation-duration: 150ms, 450ms;
+    animation-timing-function: var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
+
+    // Outward (default): uses outline so it doesn't affect layout
+    &:not(.inward) {
+        animation-name: outward-grow, outward-shrink;
+        border-radius: inherit;
+        inset: calc(-1 * var(--md-focus-ring-outward-offset, 2px));
+        outline: var(--md-focus-ring-width, 3px) solid currentColor;
+    }
+
+    // Inward: uses border inside the element
+    &.inward {
+        animation-name: inward-grow, inward-shrink;
+        border-radius: inherit;
+        border: var(--md-focus-ring-width, 3px) solid currentColor;
+        inset: var(--md-focus-ring-inward-offset, 0px);
+    }
+
+    &.visible {
+        display: flex;
+    }
+}
+
+// Outward keyframes: outline grows from 0 → active-width, then shrinks back to width
+@keyframes outward-grow {
+    from {
+        outline-width: 0;
+    }
+    to {
+        outline-width: var(--md-focus-ring-active-width, 8px);
+    }
+}
+
+@keyframes outward-shrink {
+    from {
+        outline-width: var(--md-focus-ring-active-width, 8px);
+    }
+}
+
+// Inward keyframes: border grows from 0 → active-width, then shrinks back to width
+@keyframes inward-grow {
+    from {
+        border-width: 0;
+    }
+    to {
+        border-width: var(--md-focus-ring-active-width, 8px);
+    }
+}
+
+@keyframes inward-shrink {
+    from {
+        border-width: var(--md-focus-ring-active-width, 8px);
+    }
+}
+
+@media (prefers-reduced-motion) {
+    .md-focus-ring {
+        animation: none;
+    }
+}

@@ -5,9 +5,9 @@
  */
 
 // ── Import shared builder styles from form-editor ──────────────
-@use '../../../../../form-editor/src/components/header/header';
-@use '../../../../../form-editor/src/components/layout/styles' as editor-layout;
-@use '../../../../../form-editor/src/components/panels/styles' as editor-panels;
+@use '../../../../../features/form-editor/src/components/header/header';
+@use '../../../../../features/form-editor/src/components/layout/styles' as editor-layout;
+@use '../../../../../features/form-editor/src/components/panels/styles' as editor-panels;
 
 // ── Dialog backdrop & container ────────────────────────────────
 

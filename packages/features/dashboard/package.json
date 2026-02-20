@@ -1,0 +1,28 @@
+{
+    "name": "@formanywhere/dashboard",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.tsx",
+    "exports": {
+        ".": {
+            "solid": "./src/index.tsx",
+            "import": "./src/index.tsx",
+            "types": "./src/index.tsx"
+        }
+    },
+    "scripts": {
+        "build": "tsc",
+        "lint": "echo 'No linter configured'"
+    },
+    "dependencies": {
+        "@formanywhere/shared": "workspace:*",
+        "@formanywhere/ui": "workspace:*"
+    },
+    "devDependencies": {
+        "typescript": "^5.8.3"
+    },
+    "peerDependencies": {
+        "solid-js": "^1.9.0"
+    }
+}

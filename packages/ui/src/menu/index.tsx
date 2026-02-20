@@ -3,7 +3,7 @@
  * Based on https://github.com/material-components/material-web
  * Uses Floating UI for robust positioning
  */
-import { JSX, Component, Show, createEffect, onCleanup, ParentComponent } from 'solid-js';
+import { JSX, Component, Show, createEffect, onCleanup, ParentComponent, createContext, useContext } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { computePosition, flip, shift, offset, autoUpdate, Placement } from '@floating-ui/dom';
 import { Ripple } from '../ripple';
@@ -14,6 +14,7 @@ import './styles.scss';
 export interface MenuProps {
     open: boolean;
     onClose: () => void;
+    closeOnSelect?: boolean;
     anchorEl?: HTMLElement;
     position?: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
     style?: JSX.CSSProperties;
@@ -27,10 +28,20 @@ export interface MenuItemProps {
     trailingIcon?: JSX.Element;
     trailingText?: string;
     disabled?: boolean;
+    selected?: boolean;
+    type?: 'item' | 'checkbox' | 'radio';
+    closeOnSelect?: boolean;
     onClick?: (e: MouseEvent) => void;
     style?: JSX.CSSProperties;
     class?: string;
 }
+
+interface MenuContextValue {
+    onClose: () => void;
+    closeOnSelect: boolean;
+}
+
+const MenuContext = createContext<MenuContextValue>();
 
 // ─── Convert position to Floating UI placement ─────────────────────────────────
 
@@ -48,6 +59,13 @@ const getPlacement = (position?: string): Placement => {
 
 export const Menu: ParentComponent<MenuProps> = (props) => {
     let menuRef: HTMLDivElement | undefined;
+
+    const closeOnSelect = () => props.closeOnSelect ?? true;
+
+    const focusItems = () => {
+        if (!menuRef) return [] as HTMLElement[];
+        return Array.from(menuRef.querySelectorAll<HTMLElement>('[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]')).filter((el) => !el.hasAttribute('disabled'));
+    };
 
     createEffect(() => {
         if (!props.open || !props.anchorEl || !menuRef) return;
@@ -87,17 +105,53 @@ export const Menu: ParentComponent<MenuProps> = (props) => {
             }
         };
 
+        const handleNavigation = (e: KeyboardEvent) => {
+            if (!props.open || !menuRef) return;
+            const items = focusItems();
+            if (!items.length) return;
+
+            const activeIndex = items.findIndex((item) => item === document.activeElement);
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = activeIndex < 0 ? 0 : (activeIndex + 1) % items.length;
+                items[next]?.focus();
+            }
+
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const next = activeIndex <= 0 ? items.length - 1 : activeIndex - 1;
+                items[next]?.focus();
+            }
+
+            if (e.key === 'Home') {
+                e.preventDefault();
+                items[0]?.focus();
+            }
+
+            if (e.key === 'End') {
+                e.preventDefault();
+                items[items.length - 1]?.focus();
+            }
+        };
+
         const clickTimeoutId = setTimeout(() => {
             document.addEventListener('click', handleClick);
         }, 100);
 
         document.addEventListener('keydown', handleEscape);
+        document.addEventListener('keydown', handleNavigation);
+
+        requestAnimationFrame(() => {
+            focusItems()[0]?.focus();
+        });
 
         onCleanup(() => {
             clearTimeout(clickTimeoutId);
             cleanup();
             document.removeEventListener('click', handleClick);
             document.removeEventListener('keydown', handleEscape);
+            document.removeEventListener('keydown', handleNavigation);
         });
     });
 
@@ -110,24 +164,46 @@ export const Menu: ParentComponent<MenuProps> = (props) => {
     return (
         <Show when={props.open}>
             <Portal>
-                <div ref={menuRef} role="menu" class={rootClass()} style={props.style} data-component="menu">
-                    {props.children}
-                </div>
+                <MenuContext.Provider value={{ onClose: props.onClose, closeOnSelect: closeOnSelect() }}>
+                    <div ref={menuRef} role="menu" class={rootClass()} style={props.style} data-component="menu">
+                        {props.children}
+                    </div>
+                </MenuContext.Provider>
             </Portal>
         </Show>
     );
 };
 
 export const MenuItem: Component<MenuItemProps> = (props) => {
+    const menu = useContext(MenuContext);
+
+    const role = () => {
+        if (props.type === 'checkbox') return 'menuitemcheckbox';
+        if (props.type === 'radio') return 'menuitemradio';
+        return 'menuitem';
+    };
+
+    const shouldCloseOnSelect = () => props.closeOnSelect ?? menu?.closeOnSelect ?? true;
+
+    const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (e) => {
+        if (props.disabled) return;
+        props.onClick?.(e);
+        if (shouldCloseOnSelect()) {
+            menu?.onClose();
+        }
+    };
+
     return (
         <button
             type="button"
-            role="menuitem"
+            role={role()}
+            aria-checked={props.type === 'checkbox' || props.type === 'radio' ? !!props.selected : undefined}
             disabled={props.disabled}
-            onClick={props.disabled ? undefined : props.onClick}
-            class={`md-menu-item ${props.class || ''}`}
+            onClick={handleClick}
+            class={`md-menu-item ${props.selected ? 'selected' : ''} ${props.class || ''}`}
             style={props.style}
             data-component="menu-item"
+            tabIndex={0}
         >
             <Ripple disabled={props.disabled} />
             <Show when={props.leadingIcon}>

@@ -12,7 +12,9 @@ export interface DialogProps {
     /** Open state */
     open: boolean;
     /** Close handler */
-    onClose: () => void;
+    onClose?: (reason?: 'escape-key' | 'backdrop-click' | 'programmatic') => void;
+    /** Open state callback */
+    onOpenChange?: (open: boolean) => void;
     /** Dialog title */
     title?: string;
     /** Dialog icon */
@@ -23,6 +25,12 @@ export interface DialogProps {
     closeOnBackdropClick?: boolean;
     /** Whether to close on escape */
     closeOnEscape?: boolean;
+    /** Dialog role */
+    role?: 'dialog' | 'alertdialog';
+    /** ARIA label when no title is provided */
+    ariaLabel?: string;
+    /** Accessible description id (falls back to internal content id) */
+    ariaDescribedBy?: string;
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -40,16 +48,24 @@ export const Dialog: Component<DialogProps> = (props) => {
     let dialogRef: HTMLDivElement | undefined;
     const dialogId = `dialog-${Math.random().toString(36).substr(2, 9)}`;
     const titleId = `${dialogId}-title`;
+    const contentId = `${dialogId}-content`;
+
+    const emitClose = (reason: 'escape-key' | 'backdrop-click' | 'programmatic') => {
+        props.onClose?.(reason);
+        props.onOpenChange?.(false);
+    };
 
     createEffect(() => {
         if (!props.open) return;
+
+        props.onOpenChange?.(true);
 
         // Focus trap: focus the dialog when opened
         setTimeout(() => dialogRef?.focus(), 0);
 
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && closeOnEsc()) {
-                props.onClose();
+                emitClose('escape-key');
             }
 
             // Simple focus trap (Tab key)
@@ -81,7 +97,7 @@ export const Dialog: Component<DialogProps> = (props) => {
 
     const handleBackdropClick = (e: MouseEvent) => {
         if (e.target === e.currentTarget && closeOnBackdrop()) {
-            props.onClose();
+            emitClose('backdrop-click');
         }
     };
 
@@ -101,9 +117,11 @@ export const Dialog: Component<DialogProps> = (props) => {
                 >
                     <div
                         ref={dialogRef}
-                        role="dialog"
+                        role={props.role ?? 'dialog'}
                         aria-modal="true"
+                        aria-label={props.ariaLabel}
                         aria-labelledby={props.title ? titleId : undefined}
+                        aria-describedby={props.ariaDescribedBy ?? contentId}
                         tabIndex={-1}
                         class={dialogClass()}
                         style={props.style}
@@ -120,7 +138,7 @@ export const Dialog: Component<DialogProps> = (props) => {
                                 {props.title && <h2 id={titleId} class="md-dialog__title">{props.title}</h2>}
                             </div>
                         </Show>
-                        <div class="md-dialog__content">
+                        <div id={contentId} class="md-dialog__content">
                             {props.children}
                         </div>
                         <Show when={props.actions}>

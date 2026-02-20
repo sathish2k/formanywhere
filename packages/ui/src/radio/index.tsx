@@ -41,10 +41,20 @@ export interface RadioProps {
     value: string;
     /** Disabled state */
     disabled?: boolean;
+    /** Standalone checked state */
+    checked?: boolean;
+    /** Standalone default checked state */
+    defaultChecked?: boolean;
+    /** Name for standalone form usage */
+    name?: string;
     /** Size variant */
     size?: 'sm' | 'md';
     /** Label text */
     label?: string;
+    /** Accessibility label */
+    ariaLabel?: string;
+    /** Standalone change callback */
+    onChange?: (checked: boolean, value: string) => void;
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -87,15 +97,29 @@ export const RadioGroup: ParentComponent<RadioGroupProps> = (props) => {
 // ─── Radio Component ────────────────────────────────────────────────────────────
 
 export const Radio: Component<RadioProps> = (props) => {
-    const [local] = splitProps(props, ['value', 'disabled', 'size', 'label', 'style', 'class']);
+    const [local] = splitProps(props, ['value', 'disabled', 'checked', 'defaultChecked', 'name', 'size', 'label', 'ariaLabel', 'onChange', 'style', 'class']);
     const group = useContext(RadioGroupContext);
 
-    const isChecked = () => group?.value() === local.value;
+    const [internalChecked, setInternalChecked] = createSignal(local.defaultChecked ?? false);
+
+    const isChecked = () => {
+        if (group) return group.value() === local.value;
+        return local.checked ?? internalChecked();
+    };
     const isDisabled = () => local.disabled || group?.disabled;
+    const radioName = () => group?.name ?? local.name;
 
     const handleClick = () => {
         if (isDisabled()) return;
-        group?.onChange(local.value);
+        if (group) {
+            group.onChange(local.value);
+            return;
+        }
+
+        if (local.checked === undefined) {
+            setInternalChecked(true);
+        }
+        local.onChange?.(true, local.value);
     };
 
     const wrapperClass = () => {
@@ -113,7 +137,7 @@ export const Radio: Component<RadioProps> = (props) => {
                 type="button"
                 role="radio"
                 aria-checked={isChecked()}
-                aria-label={local.label}
+                aria-label={local.ariaLabel || local.label}
                 disabled={isDisabled()}
                 onClick={handleClick}
                 class="md-radio-container"
@@ -126,8 +150,8 @@ export const Radio: Component<RadioProps> = (props) => {
             {local.label && (
                 <span class="md-radio__label">{local.label}</span>
             )}
-            {group?.name && (
-                <input type="hidden" name={group.name} value={isChecked() ? local.value : ''} />
+            {radioName() && (
+                <input type="hidden" name={radioName()} value={isChecked() ? local.value : ''} />
             )}
         </label>
     );

@@ -57,18 +57,18 @@
     /* ─── COLOR MODIFIERS ─────────────────────────────────────────────────────── */
 
     &.error {
-        background: var(--m3-color-error, #FF5630);
-        color: var(--m3-color-on-error, #fff);
+        background: var(--m3-color-error, #b3261e);
+        color: var(--m3-color-on-error, #ffffff);
     }
 
     &.primary {
-        background: var(--m3-color-primary, #6366f1);
-        color: var(--m3-color-on-primary, #fff);
+        background: var(--m3-color-primary, #6750a4);
+        color: var(--m3-color-on-primary, #ffffff);
     }
 
     &.secondary {
-        background: var(--m3-color-secondary, #14b8a6);
-        color: var(--m3-color-on-secondary, #fff);
+        background: var(--m3-color-secondary, #625b71);
+        color: var(--m3-color-on-secondary, #ffffff);
     }
 
     /* ─── POSITION MODIFIERS ──────────────────────────────────────────────────── */

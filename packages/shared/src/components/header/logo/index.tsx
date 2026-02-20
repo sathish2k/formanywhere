@@ -3,7 +3,7 @@
  * Brand logo with optional text for FormAnywhere
  */
 import { Component, Show } from 'solid-js';
-import { HStack } from '@formanywhere/ui/stack';
+import { Stack } from '@formanywhere/ui/stack';
 import { Typography } from '@formanywhere/ui/typography';
 import { Box } from '@formanywhere/ui/box';
 import LogoIcon from '../../../icons/svg/logo-icon.svg';
@@ -32,7 +32,7 @@ export const Logo: Component<LogoProps> = (props) => {
                 style={{
                     width: '32px',
                     height: '32px',
-                    background: 'linear-gradient(135deg, var(--m3-color-primary, #00A76F), var(--m3-color-primary-dark, #007867))',
+                    background: 'linear-gradient(135deg, var(--m3-color-primary, #00A76F), color-mix(in srgb, var(--m3-color-primary, #00A76F) 85%, black))',
                     'align-items': 'center',
                     'justify-content': 'center',
                 }}
@@ -40,7 +40,7 @@ export const Logo: Component<LogoProps> = (props) => {
                 <LogoIcon
                     width={20}
                     height={20}
-                    style={{ color: 'white' }}
+                    style={{ color: 'var(--m3-color-on-primary)' }}
                 />
             </Box>
             <Show when={props.showText !== false}>

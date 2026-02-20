@@ -8,6 +8,7 @@
     pointer-events: none;
     overflow: hidden;
     border-radius: inherit;
+    -webkit-tap-highlight-color: transparent;
 
     /* Hover state layer */
     &::before {
@@ -15,28 +16,34 @@
         position: absolute;
         inset: 0;
         opacity: 0;
-        background-color: var(--ripple-color, currentColor);
-        transition: opacity 75ms linear;
+        background-color: var(--ripple-color, var(--m3-color-on-surface, #1d1b20));
+        transition: opacity 15ms linear, background-color 15ms linear;
     }
 
     &.hovered::before {
-        opacity: 0.08;
-    }
-
-    &.pressed::before {
-        opacity: 0.1;
+        background-color: var(--ripple-color, var(--m3-color-on-surface, #1d1b20));
+        opacity: var(--ripple-hover-opacity, 0.08);
     }
 
     /* Ripple circle (animated via Web Animations API) */
     &::after {
         content: '';
         position: absolute;
-        border-radius: 50%;
         opacity: 0;
-        background: radial-gradient(closest-side, var(--ripple-color, currentColor) max(calc(100% - 70px), 65%), transparent 100%);
+        background: radial-gradient(closest-side, var(--ripple-color, var(--m3-color-on-surface, #1d1b20)) max(calc(100% - 70px), 65%), transparent 100%);
+        transform-origin: center center;
+        transition: opacity 375ms linear;
     }
 
     &.pressed::after {
-        opacity: 0.1;
+        opacity: var(--ripple-pressed-opacity, 0.12);
+        transition-duration: 105ms;
+    }
+}
+
+/* Hide ripple in High-Contrast Mode */
+@media (forced-colors: active) {
+    .m3-ripple-surface {
+        display: none;
     }
 }

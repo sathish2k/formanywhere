@@ -12,6 +12,10 @@
     "build": "turbo build",
     "lint": "turbo lint",
     "test": "turbo test",
+    "storybook": "bun --filter @formanywhere/ui run storybook",
+    "storybook:build": "bun --filter @formanywhere/ui run storybook:build",
+    "run:storybook": "bun --filter @formanywhere/ui run run:storybook",
+    "build:storybook": "bun --filter @formanywhere/ui run build:storybook",
     "dev:web": "turbo dev --filter=@formanywhere/web",
     "dev:desktop": "turbo dev --filter=@formanywhere/desktop",
     "build:web": "turbo build --filter=@formanywhere/web",
@@ -21,6 +25,7 @@
   "workspaces": [
     "apps/*",
     "packages/*",
+    "packages/features/*",
     "backend/*"
   ],
   "dependencies": {

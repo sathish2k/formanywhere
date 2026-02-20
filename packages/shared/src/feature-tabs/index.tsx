@@ -12,10 +12,10 @@ const features = [
         title: "AI Generation",
         subtitle: "Build in Seconds",
         desc: "Don't start from scratch. Tell FormAnywhere what you need, and watch it generate fields, rules, and workflows instantly.",
-        color: "var(--m3-sys-color-primary)",
+        color: "var(--m3-color-primary)",
         bgGradient: "from-primary/20",
         icon: (
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" /></svg>
+            <svg style={{ width: '16px', height: '16px' }} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" /></svg>
         ),
         mockup: (
             <Box display="flex" style={{ width: '100%', height: '100%', 'align-items': 'center', 'justify-content': 'center', padding: '2rem' }}>
@@ -52,18 +52,18 @@ const features = [
                         <Box style={{
                             position: 'absolute',
                             inset: '0',
-                            background: 'linear-gradient(to bottom, rgba(var(--m3-color-primary-rgb, 99, 102, 241), 0.05), transparent)',
+                            background: 'linear-gradient(to bottom, color-mix(in srgb, var(--m3-color-primary, #6750a4) 5%, transparent), transparent)',
                             'pointer-events': 'none'
                         }} />
 
                         {/* AI message */}
-                        <Box display="flex" style={{ gap: '1rem', 'max-width': '80%' }} class="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <Box display="flex" style={{ gap: '1rem', 'max-width': '80%' }}>
                             <Avatar
                                 size="md"
                                 icon={
-                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" /></svg>
+                                    <svg style={{ width: '20px', height: '20px' }} viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" /></svg>
                                 }
-                                style={{ background: 'rgba(var(--m3-color-primary-rgb, 99, 102, 241), 0.1)', color: 'var(--m3-color-primary)' }}
+                                style={{ background: 'color-mix(in srgb, var(--m3-color-primary, #6750a4) 10%, transparent)', color: 'var(--m3-color-primary)' }}
                             />
                             <Card variant="glass-subtle" padding="md" style={{ 'border-radius': '1rem', 'border-top-left-radius': '0.25rem' }}>
                                 <Typography variant="body-medium">What kind of form do you need today?</Typography>
@@ -71,7 +71,7 @@ const features = [
                         </Box>
 
                         {/* User message */}
-                        <Box display="flex" style={{ gap: '1rem', 'max-width': '80%', 'align-self': 'flex-end', 'flex-direction': 'row-reverse' }} class="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+                        <Box display="flex" style={{ gap: '1rem', 'max-width': '80%', 'align-self': 'flex-end', 'flex-direction': 'row-reverse' }}>
                             <Avatar size="md" initials="ME" style={{ background: 'var(--m3-color-surface-variant)' }} />
                             <Card variant="filled" padding="md" style={{
                                 'border-radius': '1rem',
@@ -94,9 +94,9 @@ const features = [
                         }}>
                             <Card variant="filled" padding="md" style={{ 'border-radius': '18px', display: 'flex', 'align-items': 'center', gap: '1rem' }}>
                                 <Box display="flex" style={{ gap: '0.25rem' }}>
-                                    <Box style={{ width: '8px', height: '8px', 'border-radius': '50%', background: 'var(--m3-color-primary)' }} class="animate-bounce" />
-                                    <Box style={{ width: '8px', height: '8px', 'border-radius': '50%', background: 'var(--m3-color-primary)' }} class="animate-bounce delay-150" />
-                                    <Box style={{ width: '8px', height: '8px', 'border-radius': '50%', background: 'var(--m3-color-primary)' }} class="animate-bounce delay-300" />
+                                    <Box style={{ width: '8px', height: '8px', 'border-radius': '50%', background: 'var(--m3-color-primary)', animation: 'bounce 1s infinite' }} />
+                                    <Box style={{ width: '8px', height: '8px', 'border-radius': '50%', background: 'var(--m3-color-primary)', animation: 'bounce 1s infinite 0.15s' }} />
+                                    <Box style={{ width: '8px', height: '8px', 'border-radius': '50%', background: 'var(--m3-color-primary)', animation: 'bounce 1s infinite 0.3s' }} />
                                 </Box>
                                 <Typography variant="label-medium" style={{
                                     background: 'linear-gradient(to right, var(--m3-color-primary), var(--m3-color-tertiary))',
@@ -117,10 +117,10 @@ const features = [
         title: "Offline-First",
         subtitle: "Works Everywhere",
         desc: "Field teams can collect data without internet. Data is encrypted locally and auto-synced when connection is restored.",
-        color: "var(--m3-sys-color-tertiary)",
+        color: "var(--m3-color-tertiary)",
         bgGradient: "from-tertiary/20",
         icon: (
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z" /></svg>
+            <svg style={{ width: '16px', height: '16px' }} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z" /></svg>
         ),
         mockup: (
             <Box display="flex" style={{ width: '100%', height: '100%', 'align-items': 'center', 'justify-content': 'center', position: 'relative' }}>
@@ -158,7 +158,7 @@ const features = [
                             'justify-content': 'center',
                             color: 'var(--m3-color-on-surface-variant)'
                         }}>
-                            <svg class="w-16 h-16 mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.64 7c-.45-.34-4.93-4-11.64-4-1.5 0-2.89.19-4.15.48L18.18 13.8l5.46-6.8zM3.27 1.44 2 2.72l2.05 2.06C1.91 5.17 .51 6.13 .36 6.27l5.46 6.8 6.18 7.7 2.1-2.62 4.17 4.17 1.27-1.27L3.27 1.44zM7.88 7.88 12 12l2.43-2.43-6.55-1.69z" /></svg>
+                            <svg style={{ width: '64px', height: '64px', 'margin-bottom': '1rem', opacity: '0.5' }} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.64 7c-.45-.34-4.93-4-11.64-4-1.5 0-2.89.19-4.15.48L18.18 13.8l5.46-6.8zM3.27 1.44 2 2.72l2.05 2.06C1.91 5.17 .51 6.13 .36 6.27l5.46 6.8 6.18 7.7 2.1-2.62 4.17 4.17 1.27-1.27L3.27 1.44zM7.88 7.88 12 12l2.43-2.43-6.55-1.69z" /></svg>
                         </Box>
 
                         {/* Data saved notification */}
@@ -169,10 +169,10 @@ const features = [
                             display: 'flex',
                             'align-items': 'center',
                             gap: '0.75rem'
-                        }} class="animate-[bounce_3s_infinite]">
+                        }} style={{ animation: 'bounce 3s infinite' }}>
                             <Avatar
                                 size="sm"
-                                icon={<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg>}
+                                icon={<svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg>}
                                 style={{ background: 'rgba(var(--m3-color-success-rgb, 54, 179, 126), 0.2)', color: 'var(--m3-color-success, #36B37E)' }}
                             />
                             <Box>
@@ -192,14 +192,14 @@ const features = [
                     display: 'flex',
                     'align-items': 'center',
                     gap: '1rem'
-                }} class="animate-[float_4s_ease-in-out_infinite]">
+                }} style={{ animation: 'float 4s ease-in-out infinite' }}>
                     <Box style={{
                         width: '3rem',
                         height: '3rem',
                         'border-radius': '50%',
                         border: '4px solid var(--m3-color-tertiary)',
                         'border-top-color': 'transparent'
-                    }} class="animate-spin" />
+                    }} style={{ animation: 'spin 1s linear infinite' }} />
                     <Box>
                         <Typography variant="title-medium" as="span" style={{ 'font-weight': 'bold' }}>Syncing...</Typography>
                         <Typography variant="body-small" style={{ opacity: 0.6 }}>Restoring connection</Typography>
@@ -213,10 +213,10 @@ const features = [
         title: "Smart Logic",
         subtitle: "No-Code Rules",
         desc: "Visual flowchart builder for complex branching logic. Show/hide fields, calculate values, and trigger webhooks.",
-        color: "var(--m3-sys-color-secondary)",
+        color: "var(--m3-color-secondary)",
         bgGradient: "from-secondary/20",
         icon: (
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z" /></svg>
+            <svg style={{ width: '16px', height: '16px' }} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z" /></svg>
         ),
         mockup: (
             <Box display="flex" style={{ width: '100%', height: '100%', 'align-items': 'center', 'justify-content': 'center', padding: '3rem', position: 'relative' }}>
@@ -289,9 +289,9 @@ const features = [
                     </Card>
 
                     {/* SVG connector lines */}
-                    <svg class="absolute inset-0 pointer-events-none" aria-hidden="true">
-                        <path d="M350,210 C350,250 200,250 200,300" stroke="var(--m3-sys-color-secondary)" stroke-width="2" fill="none" stroke-dasharray="8 4" class="animate-[dash_1s_linear_infinite]" />
-                        <path d="M350,210 C350,250 500,250 500,300" stroke="var(--m3-sys-color-outline)" stroke-width="2" fill="none" />
+                    <svg style={{ position: 'absolute', inset: '0', 'pointer-events': 'none', width: '100%', height: '100%' }} aria-hidden="true">
+                        <path d="M350,210 C350,250 200,250 200,300" stroke="var(--m3-color-secondary)" stroke-width="2" fill="none" stroke-dasharray="8 4" style={{ animation: 'dash 1s linear infinite' }} />
+                        <path d="M350,210 C350,250 500,250 500,300" stroke="var(--m3-color-outline)" stroke-width="2" fill="none" />
                     </svg>
 
                     {/* VP Approval node */}
@@ -391,7 +391,13 @@ export const FeatureTabs = () => {
                 </Card>
             </Box>
 
-            <Card variant="glass" class="w-full h-auto md:h-[600px] overflow-hidden relative rounded-[48px]">
+            <Card variant="glass" style={{
+                width: '100%',
+                height: 'auto',
+                overflow: 'hidden',
+                position: 'relative',
+                'border-radius': '48px',
+            }}>
                 {/* Background gradient */}
                 <Box style={{
                     position: 'absolute',
@@ -409,19 +415,25 @@ export const FeatureTabs = () => {
                 }} />
 
                 <Box
-                    class="flex flex-col md:flex-row"
+                    display="flex"
                     style={{
                         height: '100%',
                         width: '100%',
                         position: 'relative',
-                        'z-index': 10
+                        'z-index': 10,
+                        'flex-direction': 'column',
                     }}
+                    class="feature-tabs-layout"
                 >
                     <Box display="flex" style={{
                         'flex-direction': 'column',
                         'justify-content': 'center',
-                        position: 'relative'
-                    }} class="w-full feature-tab-left feature-tab-min-h-content shrink-0 min-w-0 p-8 md:p-0">
+                        position: 'relative',
+                        width: '100%',
+                        'flex-shrink': '0',
+                        'min-width': '0',
+                        padding: '2rem',
+                    }} class="feature-tab-left feature-tab-min-h-content">
                         <For each={features}>
                             {(feature, index) => {
                                 const isActive = () => active() === index();
@@ -460,15 +472,22 @@ export const FeatureTabs = () => {
                                         <Typography
                                             variant="display-medium"
                                             as="p"
-                                            class="mb-6 leading-tight tracking-tight"
-                                            style={{ color: 'var(--m3-color-on-surface)' }}
+                                            style={{
+                                                color: 'var(--m3-color-on-surface)',
+                                                'margin-bottom': '1.5rem',
+                                                'line-height': '1.1',
+                                                'letter-spacing': '-0.02em',
+                                            }}
                                         >
                                             {feature.title}
                                         </Typography>
                                         <Typography
                                             variant="body-large"
-                                            class="leading-relaxed"
-                                            style={{ color: 'var(--m3-color-on-surface)', opacity: 0.8 }}
+                                            style={{
+                                                color: 'var(--m3-color-on-surface)',
+                                                opacity: 0.8,
+                                                'line-height': '1.7',
+                                            }}
                                         >
                                             {feature.desc}
                                         </Typography>
@@ -479,7 +498,7 @@ export const FeatureTabs = () => {
                                                 style={{ color: feature.color, padding: 0, gap: '0.5rem' }}
                                             >
                                                 Learn more
-                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true">
+                                                <svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true">
                                                     <path d="M5 12h14M12 5l7 7-7 7" />
                                                 </svg>
                                             </Button>
@@ -495,8 +514,11 @@ export const FeatureTabs = () => {
                         background: 'rgba(var(--m3-color-surface-variant-rgb, 200, 200, 200), 0.05)',
                         'border-top': '1px solid rgba(255, 255, 255, 0.1)',
                         'backdrop-filter': 'blur(8px)',
-                        overflow: 'hidden'
-                    }} class="w-full feature-tab-right feature-tab-min-h-preview shrink-0 min-w-0 md:border-t-0 md:border-l" aria-hidden="true">
+                        overflow: 'hidden',
+                        width: '100%',
+                        'flex-shrink': '0',
+                        'min-width': '0',
+                    }} class="feature-tab-right feature-tab-min-h-preview" aria-hidden="true">
                         {/* Noise texture */}
                         <Box style={{
                             position: 'absolute',
@@ -537,21 +559,19 @@ export const FeatureTabs = () => {
             <style>{`
                 .feature-tab-min-h-content { min-height: 300px; }
                 .feature-tab-min-h-preview { min-height: 350px; }
+                .feature-tabs-layout { flex-direction: column; }
                 @media (min-width: 768px) {
-                    .feature-tab-left { width: 41.666667% !important; min-height: 450px !important; }
-                    .feature-tab-right { width: 58.333333% !important; min-height: 450px !important; }
+                    .feature-tabs-layout { flex-direction: row !important; }
+                    .feature-tab-left { width: 41.666667% !important; min-height: 450px !important; padding: 0 !important; }
+                    .feature-tab-right { width: 58.333333% !important; min-height: 450px !important; border-top: none !important; border-left: 1px solid rgba(255, 255, 255, 0.1) !important; }
                 }
                 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
                 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
                 @keyframes dash { to { stroke-dashoffset: -24; } }
+                @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25%); } }
+                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                 @media (prefers-reduced-motion: reduce) {
-                    .animate-in,
-                    .animate-[shimmer_3s_linear_infinite],
-                    .animate-[float_4s_ease-in-out_infinite],
-                    .animate-[dash_1s_linear_infinite] {
-                        animation: none !important;
-                    }
-                }
+                    * { animation: none !important; }
             `}</style>
         </Box>
     );

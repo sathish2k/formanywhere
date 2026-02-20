@@ -1,5 +1,2 @@
-$ tauri build
-        Info Looking up installed tauri packages to check mismatched versions...
-You must change the bundle identifier in `{bundle_identifier_source} identifier`. The default value `com.tauri.dev` is not allowed as it must be unique across applications.
-       Error You must change the bundle identifier in `{bundle_identifier_source} identifier`. The default value `com.tauri.dev` is not allowed as it must be unique across applications.
-error: script "build" exited with code 1
+
+[0m[2m[35m$[0m [2m[1mtauri build[0m

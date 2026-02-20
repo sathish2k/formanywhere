@@ -64,10 +64,16 @@ export const Ripple: Component<RippleProps> = (props) => {
     let surfaceRef: HTMLDivElement | undefined;
     let growAnimation: Animation | undefined;
     let rippleStartEvent: PointerEvent | undefined;
+    let checkBoundsAfterContextMenu = false;
 
     const [hovered, setHovered] = createSignal(false);
     const [pressed, setPressed] = createSignal(false);
     const [state, setState] = createSignal(State.INACTIVE);
+
+    // Forced colors media query — skip ripple in high-contrast mode
+    const forcedColors = typeof window !== 'undefined'
+        ? window.matchMedia('(forced-colors: active)')
+        : null;
 
     // Ripple sizing
     let initialSize = 0;
@@ -76,7 +82,9 @@ export const Ripple: Component<RippleProps> = (props) => {
 
     const shouldReactToEvent = (event: PointerEvent, checkButton = false) => {
         if (local.disabled) return false;
-        if (checkButton && event.button !== 0) return false; // Only primary button
+        if (forcedColors?.matches) return false;
+        if (!event.isPrimary) return false;
+        if (checkButton && event.button !== 0) return false;
         return true;
     };
 
@@ -92,6 +100,7 @@ export const Ripple: Component<RippleProps> = (props) => {
             SOFT_EDGE_MINIMUM_SIZE
         );
 
+        const cssZoom = (surfaceRef as any).currentCSSZoom ?? 1;
         initialSize = Math.floor(maxDim * INITIAL_ORIGIN_SCALE);
         const hypotenuse = Math.sqrt(width ** 2 + height ** 2);
         const maxRadius = hypotenuse + PADDING;
@@ -172,6 +181,7 @@ export const Ripple: Component<RippleProps> = (props) => {
     };
 
     const endPressAnimation = async () => {
+        rippleStartEvent = undefined;
         setState(State.INACTIVE);
 
         const animation = growAnimation;
@@ -203,11 +213,13 @@ export const Ripple: Component<RippleProps> = (props) => {
     // Event handlers
     const handlePointerenter = (event: PointerEvent) => {
         if (!shouldReactToEvent(event)) return;
+        if (isTouch(event)) return; // No hover on touch
         setHovered(true);
     };
 
     const handlePointerleave = (event: PointerEvent) => {
         if (!shouldReactToEvent(event)) return;
+        if (isTouch(event)) return; // No hover on touch
         setHovered(false);
 
         if (state() !== State.INACTIVE) {
@@ -225,6 +237,9 @@ export const Ripple: Component<RippleProps> = (props) => {
             startPressAnimation(event);
             return;
         }
+
+        // Check that the pointer ID hasn't changed (multi-touch safety)
+        checkBoundsAfterContextMenu = false;
 
         // Touch: wait for delay
         setState(State.TOUCH_DELAY);
@@ -271,6 +286,12 @@ export const Ripple: Component<RippleProps> = (props) => {
         endPressAnimation();
     };
 
+    const handleContextmenu = () => {
+        if (local.disabled) return;
+        checkBoundsAfterContextMenu = true;
+        endPressAnimation();
+    };
+
     // Setup event listeners on parent
     onMount(() => {
         const parent = surfaceRef?.parentElement;
@@ -289,6 +310,7 @@ export const Ripple: Component<RippleProps> = (props) => {
         parent.addEventListener('pointerup', handlePointerup);
         parent.addEventListener('pointercancel', handlePointercancel);
         parent.addEventListener('click', handleClick);
+        parent.addEventListener('contextmenu', handleContextmenu);
 
         onCleanup(() => {
             parent.removeEventListener('pointerenter', handlePointerenter);
@@ -297,6 +319,7 @@ export const Ripple: Component<RippleProps> = (props) => {
             parent.removeEventListener('pointerup', handlePointerup);
             parent.removeEventListener('pointercancel', handlePointercancel);
             parent.removeEventListener('click', handleClick);
+            parent.removeEventListener('contextmenu', handleContextmenu);
         });
     });
 

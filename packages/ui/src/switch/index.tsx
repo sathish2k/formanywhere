@@ -24,6 +24,10 @@ export interface SwitchProps {
     onChange?: (checked: boolean) => void;
     /** Icons in handle */
     icons?: boolean;
+    /** Show icon only when selected (checked) */
+    showOnlySelectedIcon?: boolean;
+    /** Accessibility label */
+    ariaLabel?: string;
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -34,7 +38,7 @@ export interface SwitchProps {
 
 export const Switch: Component<SwitchProps> = (props) => {
     const [local] = splitProps(props, [
-        'checked', 'defaultChecked', 'disabled', 'size', 'name', 'value', 'onChange', 'icons', 'style', 'class'
+        'checked', 'defaultChecked', 'disabled', 'size', 'name', 'value', 'onChange', 'icons', 'showOnlySelectedIcon', 'ariaLabel', 'style', 'class'
     ]);
 
     const [internalChecked, setInternalChecked] = createSignal(local.defaultChecked ?? false);
@@ -53,6 +57,8 @@ export const Switch: Component<SwitchProps> = (props) => {
         const classes = ['md-switch'];
         if (local.size === 'sm') classes.push('md-switch--sm');
         if (isChecked()) classes.push('checked');
+        if (local.icons) classes.push('icons');
+        if (local.showOnlySelectedIcon) classes.push('show-only-selected-icon');
         if (local.disabled) classes.push('disabled');
         if (local.class) classes.push(local.class);
         return classes.join(' ');
@@ -63,11 +69,13 @@ export const Switch: Component<SwitchProps> = (props) => {
             type="button"
             role="switch"
             aria-checked={isChecked()}
+            aria-label={local.ariaLabel}
             disabled={local.disabled}
             onClick={toggle}
             class={rootClass()}
             style={local.style}
             data-component="switch"
+            data-checked={isChecked()}
         >
             <div class="md-switch__track">
                 <div class="md-switch__handle">
@@ -76,11 +84,11 @@ export const Switch: Component<SwitchProps> = (props) => {
                             <svg class="md-switch__icon" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                             </svg>
-                        ) : (
+                        ) : !local.showOnlySelectedIcon ? (
                             <svg class="md-switch__icon" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                             </svg>
-                        )
+                        ) : null
                     )}
                 </div>
             </div>

@@ -1,45 +1,53 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   M3 DIVIDER
+   M3 DIVIDER — matches material-web/divider/internal/divider-styles.css
+   Uses color + ::before pattern for forced-colors support
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 .md-divider {
     margin: 0;
     border: none;
-    background: var(--m3-color-outline-variant, rgba(200, 195, 200, 0.3));
+    box-sizing: border-box;
+    color: var(--m3-color-outline-variant, #cac4d0);
+    display: flex;
 
     /* ─── HORIZONTAL (default) ────────────────────────────────────────────────── */
 
     &:not(.vertical) {
         width: 100%;
-        height: 1px;
+        height: var(--m3-divider-thickness, 1px);
     }
 
-    /* ─── VERTICAL ────────────────────────────────────────────────────────────── */
+    /* ─── VERTICAL (custom extension — not in M3 compiled CSS) ────────────────── */
 
     &.vertical {
-        width: 1px;
+        width: var(--m3-divider-thickness, 1px);
         height: 100%;
         align-self: stretch;
-
-        &.inset {
-            margin-left: 16px;
-            margin-right: 0;
-        }
-
-        &.inset-both {
-            margin-left: 16px;
-            margin-right: 16px;
-        }
     }
 
     /* ─── INSET MODIFIERS ─────────────────────────────────────────────────────── */
 
     &.inset {
-        margin-left: 16px;
+        padding-inline-start: 16px;
     }
 
     &.inset-both {
-        margin-left: 16px;
-        margin-right: 16px;
+        padding-inline-start: 16px;
+        padding-inline-end: 16px;
+    }
+
+    /* ─── Line rendered via ::before for forced-colors support ────────────────── */
+
+    &::before {
+        content: '';
+        background: currentColor;
+        width: 100%;
+        height: 100%;
+    }
+
+    @media (forced-colors: active) {
+        &::before {
+            background: CanvasText;
+        }
     }
 }

@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
    M3 RADIO - Based on material-components/material-web
+   Spec: outer 20px / 2px border, inner 10px dot, 40px state layer, 48px touch
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 .md-radio-group {
@@ -8,115 +9,235 @@
     gap: 8px;
 }
 
-/* Label wrapper */
+/* ─── LABEL WRAPPER (:host equivalent) ──────────────────────────────────────── */
+
 .md-radio-wrapper {
     display: inline-flex;
     align-items: center;
     gap: 4px;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 
-    /* ─── SIZE VARIANTS ────────────────────────────────────────────────────────── */
+    /* ─── HOVER (unselected) ────────────────────────────────────────────────── */
 
-    &.size-sm {
-        .md-radio-container { width: 32px; height: 32px; }
-        .md-radio__outer { width: 16px; height: 16px; }
-        &.checked .md-radio__inner { width: 8px; height: 8px; }
-        .md-radio__label { font-size: 12px; line-height: 16px; }
+    &:not(.checked):not(.disabled):hover .md-radio__outer {
+        border-color: var(--m3-color-on-surface, #1d1b20);
     }
 
-    &.disabled {
-        cursor: not-allowed;
-        opacity: 0.38;
-
-        .md-radio__label {
-            color: var(--m3-color-on-surface-variant, #49454E);
-        }
-    }
+    /* ─── CHECKED STATE ────────────────────────────────────────────────────── */
 
     &.checked {
-        .md-radio-container:hover:not(:disabled)::before {
-            background: var(--m3-color-primary, #6750A4);
-            opacity: 0.08;
-        }
-
         .md-radio__outer {
-            border-color: var(--m3-color-primary, #6750A4);
+            border-color: var(--m3-color-primary, #6750a4);
         }
 
         .md-radio__inner {
-            width: 10px;
-            height: 10px;
+            animation: radio-inner-circle-grow 300ms cubic-bezier(0.05, 0.7, 0.1, 1) forwards;
+            opacity: 1;
         }
+
+        /* Selected state layer uses primary */
+        .md-radio-container:hover:not(:disabled)::before {
+            background: var(--m3-color-primary, #6750a4);
+            opacity: 0.08;
+        }
+
+        .md-radio-container:focus-visible::before {
+            background: var(--m3-color-primary, #6750a4);
+            opacity: 0.12;
+        }
+
+        /* M3: selected pressed uses on-surface */
+        .md-radio-container:active:not(:disabled)::before {
+            background: var(--m3-color-on-surface, #1d1b20);
+            opacity: 0.12;
+        }
+
+        /* Selected hover/focus/pressed: border stays primary */
+        &:hover .md-radio__outer,
+        &:focus-within .md-radio__outer {
+            border-color: var(--m3-color-primary, #6750a4);
+        }
+    }
+
+    /* ─── DISABLED ─────────────────────────────────────────────────────────── */
+
+    &.disabled {
+        cursor: default;
+        pointer-events: none;
+
+        .md-radio__outer {
+            border-color: var(--m3-color-on-surface, #1d1b20);
+            opacity: 0.38;
+        }
+
+        .md-radio__inner {
+            animation-duration: 0s;
+            transition-duration: 0s;
+        }
+
+        .md-radio__label {
+            color: var(--m3-color-on-surface, #1d1b20);
+            opacity: 0.38;
+        }
+
+        .md-radio-container::before {
+            display: none;
+        }
+
+        /* Disabled + selected */
+        &.checked .md-radio__inner {
+            background: var(--m3-color-on-surface, #1d1b20);
+            opacity: 0.38;
+        }
+
+        &.checked .md-radio__outer {
+            border-color: var(--m3-color-on-surface, #1d1b20);
+        }
+    }
+
+    /* ─── SIZE VARIANTS ────────────────────────────────────────────────────── */
+
+    &.size-sm {
+        .md-radio-container { width: 36px; height: 36px; }
+
+        .md-radio-container::before { width: 32px; height: 32px; }
+
+        .md-radio__outer { width: 16px; height: 16px; }
+
+        .md-radio__inner { width: 8px; height: 8px; }
+
+        .md-radio__label { font-size: 12px; line-height: 16px; }
     }
 }
 
-/* Touch target / state layer container */
+/* ─── TOUCH TARGET / BUTTON CONTAINER ───────────────────────────────────────── */
+
 .md-radio-container {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     cursor: inherit;
-    overflow: hidden;
+    overflow: visible;
     border: none;
     background: transparent;
     padding: 0;
 
-    /* State layer on hover */
-    &:hover:not(:disabled)::before {
+    /* State layer – 40px round, centered in 48px touch target */
+    &::before {
         content: '';
         position: absolute;
-        inset: 0;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        background: var(--m3-color-on-surface, #1C1B1F);
+        background: var(--m3-color-on-surface, #1d1b20);
+        opacity: 0;
+        transition: opacity 150ms linear, background 150ms linear;
+        pointer-events: none;
+    }
+
+    /* Unselected hover */
+    &:hover:not(:disabled)::before {
         opacity: 0.08;
     }
 
-    /* Focus ring */
+    /* Unselected focus */
+    &:focus-visible::before {
+        opacity: 0.12;
+    }
+
+    /* Unselected pressed */
+    &:active:not(:disabled)::before {
+        background: var(--m3-color-primary, #6750a4);
+        opacity: 0.12;
+    }
+
+    /* Focus ring – 3px solid secondary */
     &:focus-visible {
-        outline: 2px solid var(--m3-color-primary, #6750A4);
-        outline-offset: -2px;
+        outline: 3px solid var(--m3-color-secondary, #625b71);
+        outline-offset: 2px;
     }
 }
 
-/* Outer circle */
+/* ─── OUTER CIRCLE ──────────────────────────────────────────────────────────── */
+
 .md-radio__outer {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    border: 2px solid var(--m3-color-on-surface-variant, #49454E);
+    border: 2px solid var(--m3-color-on-surface-variant, #49454f);
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     z-index: 1;
-    transition: border-color var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    transition: border-color 50ms linear;
 }
 
-/* Inner circle (fill) */
+/* ─── INNER DOT ─────────────────────────────────────────────────────────────── */
+
 .md-radio__inner {
-    width: 0;
-    height: 0;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background: var(--m3-color-primary, #6750A4);
-    transition: width var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)),
-               height var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)),
-               background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
+    background: var(--m3-color-primary, #6750a4);
+    transform: scale(0);
+    transform-origin: center;
+    opacity: 0;
+    /* Deselect: M3 reference uses opacity-only 50ms linear fade */
+    transition: opacity 50ms linear;
 }
 
-/* Label text */
+/* Select animation: 300ms decelerate-in (matches M3 reference) */
+@keyframes radio-inner-circle-grow {
+    from { transform: scale(0); }
+    to   { transform: scale(1); }
+}
+
+/* ─── LABEL TEXT (custom extension — not in M3 radio spec) ──────────────────── */
+
 .md-radio__label {
     font-size: 14px;
     line-height: 20px;
     font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    color: var(--m3-color-on-surface, #1C1B1F);
+    color: var(--m3-color-on-surface, #1d1b20);
     user-select: none;
 }
 
-/* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
+/* ─── FORCED-COLORS / HIGH CONTRAST ─────────────────────────────────────────── */
+
+@media (forced-colors: active) {
+    .md-radio__outer {
+        border-color: CanvasText;
+    }
+
+    .md-radio__inner {
+        background: CanvasText;
+    }
+
+    .md-radio-wrapper.disabled {
+        .md-radio__outer {
+            border-color: GrayText;
+            opacity: 1;
+        }
+
+        .md-radio__inner {
+            background: GrayText;
+            opacity: 1;
+        }
+
+        .md-radio__label {
+            color: GrayText;
+            opacity: 1;
+        }
+    }
+}
+
+/* ─── LIQUID GLASS VARIANT ──────────────────────────────────────────────────── */
 
 .md-radio-wrapper.glass {
     .md-radio__outer {

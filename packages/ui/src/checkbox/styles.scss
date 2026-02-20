@@ -1,19 +1,60 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   M3 CHECKBOX - Based on material-components/material-web
+   M3 CHECKBOX — Based on material-components/material-web checkbox-styles.css
+   Mapped from Shadow DOM (:host/.container/.outline/.background/.icon)
+   to flat class architecture (.md-checkbox-wrapper/.md-checkbox-container/etc.)
    ═══════════════════════════════════════════════════════════════════════════════ */
 
-@keyframes md-checkbox-check {
-    0% { stroke-dashoffset: 30; }
-    100% { stroke-dashoffset: 0; }
-}
+/* ─── WRAPPER (maps to :host) ──────────────────────────────────────────────── */
 
 .md-checkbox-wrapper {
+    border-start-start-radius: var(--md-checkbox-container-shape-start-start, var(--md-checkbox-container-shape, 2px));
+    border-start-end-radius: var(--md-checkbox-container-shape-start-end, var(--md-checkbox-container-shape, 2px));
+    border-end-end-radius: var(--md-checkbox-container-shape-end-end, var(--md-checkbox-container-shape, 2px));
+    border-end-start-radius: var(--md-checkbox-container-shape-end-start, var(--md-checkbox-container-shape, 2px));
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    min-height: var(--md-checkbox-container-size, 18px);
+    position: relative;
+    vertical-align: top;
+    width: auto;
+    -webkit-tap-highlight-color: transparent;
     cursor: pointer;
 
-    /* ─── SIZE VARIANTS ────────────────────────────────────────────────────────── */
+    /* ─── DISABLED (maps to :host([disabled])) ──────────────────────────────── */
+
+    &.disabled {
+        cursor: default;
+        pointer-events: none;
+
+        .md-checkbox-box {
+            border-color: var(--md-checkbox-disabled-outline-color, var(--m3-color-on-surface, #1d1b20));
+            border-width: var(--md-checkbox-disabled-outline-width, 2px);
+            opacity: var(--md-checkbox-disabled-container-opacity, 0.38);
+
+            &.checked {
+                border-color: transparent;
+                background: var(--md-checkbox-selected-disabled-container-color, var(--m3-color-on-surface, #1d1b20));
+                opacity: var(--md-checkbox-selected-disabled-container-opacity, 0.38);
+            }
+        }
+
+        .md-checkbox-icon {
+            fill: var(--md-checkbox-selected-disabled-icon-color, var(--m3-color-surface, #fef7ff));
+        }
+
+        .md-checkbox-icon,
+        .md-checkbox-box {
+            animation-duration: 0s;
+            transition-duration: 0s;
+        }
+
+        .md-checkbox-label {
+            color: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 38%, transparent);
+        }
+    }
+
+    /* ─── SIZE VARIANTS (custom extension) ─────────────────────────────────── */
 
     &.size-sm {
         .md-checkbox-container { width: 32px; height: 32px; }
@@ -22,16 +63,7 @@
         .md-checkbox-label { font-size: 12px; line-height: 16px; }
     }
 
-    &.disabled {
-        cursor: not-allowed;
-        opacity: 0.38;
-
-        .md-checkbox-label {
-            color: var(--m3-color-on-surface-variant, #49454E);
-        }
-    }
-
-    /* ─── LIQUID GLASS VARIANT ─────────────────────────────────────────────────── */
+    /* ─── LIQUID GLASS VARIANT (custom extension) ──────────────────────────── */
 
     &.glass {
         .md-checkbox-box {
@@ -53,83 +85,256 @@
     }
 }
 
-/* Touch target / state layer container */
+/* ─── CONTAINER / TOUCH TARGET (maps to .container + input overlay) ────────── */
+
 .md-checkbox-container {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: inherit;
-    overflow: hidden;
+    width: var(--md-checkbox-state-layer-size, 40px);
+    height: var(--md-checkbox-state-layer-size, 40px);
+    border-radius: var(--md-checkbox-state-layer-shape, var(--m3-shape-corner-full, 9999px));
     border: none;
     background: transparent;
     padding: 0;
+    cursor: inherit;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+
+    /* Touch target = 48px */
+    &::after {
+        content: '';
+        position: absolute;
+        width: 48px;
+        height: 48px;
+        inset: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    /* Focus ring — 44px like M3 md-focus-ring */
+    &:focus-visible::before {
+        content: '';
+        position: absolute;
+        width: 44px;
+        height: 44px;
+        border-radius: var(--m3-shape-corner-full, 9999px);
+        outline: 3px solid var(--m3-color-secondary, #625b71);
+        outline-offset: 2px;
+        inset: unset;
+    }
+
+    /* ─── HOVER STATE LAYER (unselected) ───────────────────────────────────── */
 
     &:hover:not(:disabled)::before {
         content: '';
         position: absolute;
         inset: 0;
-        border-radius: 50%;
-        background: var(--m3-color-on-surface, #1C1B1F);
-        opacity: 0.08;
+        border-radius: inherit;
+        background: var(--md-checkbox-hover-state-layer-color, var(--m3-color-on-surface, #1d1b20));
+        opacity: var(--md-checkbox-hover-state-layer-opacity, 0.08);
+        pointer-events: none;
     }
 
-    &:focus-visible {
-        outline: 2px solid var(--m3-color-primary, #6750A4);
-        outline-offset: -2px;
+    /* Hover — outline changes to on-surface */
+    &:hover:not(:disabled) .md-checkbox-box {
+        border-color: var(--md-checkbox-hover-outline-color, var(--m3-color-on-surface, #1d1b20));
+    }
+
+    /* Hover — selected container stays primary */
+    &:hover:not(:disabled) .md-checkbox-box.checked {
+        background: var(--md-checkbox-selected-hover-container-color, var(--m3-color-primary, #6750a4));
+        border-color: var(--md-checkbox-selected-hover-container-color, var(--m3-color-primary, #6750a4));
+    }
+
+    /* Hover — selected icon stays on-primary */
+    &:hover:not(:disabled) .md-checkbox-icon {
+        fill: var(--md-checkbox-selected-hover-icon-color, var(--m3-color-on-primary, #fff));
+    }
+
+    /* ─── FOCUS STATE (maps to :focus-within) ──────────────────────────────── */
+
+    &:focus-within:not(:disabled) .md-checkbox-box {
+        border-color: var(--md-checkbox-focus-outline-color, var(--m3-color-on-surface, #1d1b20));
+    }
+
+    &:focus-within:not(:disabled) .md-checkbox-box.checked {
+        background: var(--md-checkbox-selected-focus-container-color, var(--m3-color-primary, #6750a4));
+        border-color: var(--md-checkbox-selected-focus-container-color, var(--m3-color-primary, #6750a4));
+    }
+
+    &:focus-within:not(:disabled) .md-checkbox-icon {
+        fill: var(--md-checkbox-selected-focus-icon-color, var(--m3-color-on-primary, #fff));
+    }
+
+    /* ─── PRESSED/ACTIVE STATE (maps to :active) ───────────────────────────── */
+
+    &:active:not(:disabled) .md-checkbox-box {
+        border-color: var(--md-checkbox-pressed-outline-color, var(--m3-color-on-surface, #1d1b20));
+    }
+
+    &:active:not(:disabled) .md-checkbox-box.checked {
+        background: var(--md-checkbox-selected-pressed-container-color, var(--m3-color-primary, #6750a4));
+        border-color: var(--md-checkbox-selected-pressed-container-color, var(--m3-color-primary, #6750a4));
+    }
+
+    &:active:not(:disabled) .md-checkbox-icon {
+        fill: var(--md-checkbox-selected-pressed-icon-color, var(--m3-color-on-primary, #fff));
+    }
+
+    .m3-ripple-surface {
+        --ripple-color: var(--md-checkbox-hover-state-layer-color, var(--m3-color-on-surface, #1d1b20));
+        --ripple-hover-opacity: var(--md-checkbox-hover-state-layer-opacity, 0.08);
+        --ripple-pressed-opacity: var(--md-checkbox-pressed-state-layer-opacity, 0.12);
+    }
+
+    .m3-ripple-surface.selected {
+        --ripple-color: var(--md-checkbox-selected-hover-state-layer-color, var(--m3-color-primary, #6750a4));
+        --ripple-hover-opacity: var(--md-checkbox-selected-hover-state-layer-opacity, 0.08);
+    }
+
+    .m3-ripple-surface.selected.pressed {
+        --ripple-color: var(--md-checkbox-selected-pressed-state-layer-color, var(--m3-color-on-surface, #1d1b20));
+        --ripple-pressed-opacity: var(--md-checkbox-selected-pressed-state-layer-opacity, 0.12);
     }
 }
 
-/* Checkbox box */
+/* ─── CHECKBOX BOX (maps to .outline + .background) ────────────────────────── */
+
 .md-checkbox-box {
-    width: 18px;
-    height: 18px;
-    border-radius: 2px;
-    border: 2px solid var(--m3-color-on-surface-variant, #49454E);
+    width: var(--md-checkbox-container-size, 18px);
+    height: var(--md-checkbox-container-size, 18px);
+    border-radius: var(--md-checkbox-container-shape, 2px);
+    border: var(--md-checkbox-outline-width, 2px) solid var(--md-checkbox-outline-color, var(--m3-color-on-surface-variant, #49454f));
     background: transparent;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                border-color var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
     position: relative;
     z-index: 1;
 
+    /* Deselect transition (M3: accelerate out) */
+    transition-property: background-color, border-color;
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.3, 0, 0.8, 0.15);
+
+    /* ─── CHECKED / SELECTED STATE ─────────────────────────────────────────── */
+
     &.checked {
-        background: var(--m3-color-primary, #6750A4);
-        border-color: var(--m3-color-primary, #6750A4);
+        background: var(--md-checkbox-selected-container-color, var(--m3-color-primary, #6750a4));
+        border-color: var(--md-checkbox-selected-container-color, var(--m3-color-primary, #6750a4));
+
+        /* Select transition (M3: decelerate in) */
+        transition-duration: 350ms;
+        transition-timing-function: cubic-bezier(0.05, 0.7, 0.1, 1);
     }
 
+    /* ─── ERROR STATE (custom extension, not in M3 checkbox) ───────────────── */
+
     &.error {
-        border-color: var(--m3-color-error, #B3261E);
+        border-color: var(--m3-color-error, #b3261e);
 
         &.checked {
-            background: var(--m3-color-error, #B3261E);
-            border-color: var(--m3-color-error, #B3261E);
+            background: var(--m3-color-error, #b3261e);
+            border-color: var(--m3-color-error, #b3261e);
         }
     }
 }
 
-.md-checkbox-container:hover:not(:disabled) .md-checkbox-box.checked::before {
-    background: var(--m3-color-primary, #6750A4);
-    opacity: 0.08;
+/* ─── BACKGROUND FILL (maps to .background — scale+opacity animation) ──────── */
+
+.md-checkbox-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-color: var(--md-checkbox-selected-container-color, var(--m3-color-primary, #6750a4));
+    opacity: 0;
+    transform: scale(0.6);
+    /* Exit: 150ms scale (accelerate), 50ms opacity (linear) */
+    transition-property: transform, opacity;
+    transition-duration: 150ms, 50ms;
+    transition-timing-function: cubic-bezier(0.3, 0, 0.8, 0.15), linear;
 }
 
-/* Check mark icon */
+.md-checkbox-box.checked .md-checkbox-bg,
+.md-checkbox-box.indeterminate .md-checkbox-bg {
+    opacity: 1;
+    transform: scale(1);
+    /* Enter: 350ms scale (decelerate), 50ms opacity (linear) */
+    transition-duration: 350ms, 50ms;
+    transition-timing-function: cubic-bezier(0.05, 0.7, 0.1, 1), linear;
+}
+
+/* ─── CHECK MARK ICON (maps to .icon — scale+opacity animation like M3) ────── */
+
 .md-checkbox-icon {
-    width: 14px;
-    height: 14px;
-    fill: var(--m3-color-on-primary, #fff);
+    width: var(--md-checkbox-icon-size, 18px);
+    height: var(--md-checkbox-icon-size, 18px);
+    fill: var(--md-checkbox-selected-icon-color, var(--m3-color-on-primary, #fff));
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: scale(0.6);
+    /* Exit: 150ms scale (accelerate), 50ms opacity (linear) */
+    transition-property: transform, opacity;
+    transition-duration: 150ms, 50ms;
+    transition-timing-function: cubic-bezier(0.3, 0, 0.8, 0.15), linear;
 }
 
-/* Label */
+.md-checkbox-box.checked .md-checkbox-icon,
+.md-checkbox-box.indeterminate .md-checkbox-icon {
+    opacity: 1;
+    transform: scale(1);
+    /* Enter: 350ms scale (decelerate), 50ms opacity (linear) */
+    transition-duration: 350ms, 50ms;
+    transition-timing-function: cubic-bezier(0.05, 0.7, 0.1, 1), linear;
+}
+
+/* Checkmark draw animation: long mark grows from width: 0 */
+@keyframes md-checkbox-mark-grow {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+}
+
+.md-checkbox-box.checked .md-checkbox-icon.animate-check {
+    animation: md-checkbox-mark-grow 350ms cubic-bezier(0.05, 0.7, 0.1, 1) forwards;
+}
+
+/* ─── LABEL (custom extension, not in M3 checkbox) ─────────────────────────── */
+
 .md-checkbox-label {
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 16px;
+    line-height: 24px;
     font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    color: var(--m3-color-on-surface, #1C1B1F);
+    color: var(--m3-color-on-surface, #1d1b20);
     user-select: none;
+}
+
+/* ─── FORCED COLORS ACCESSIBILITY ──────────────────────────────────────────── */
+
+@media (forced-colors: active) {
+    .md-checkbox-box {
+        border-color: CanvasText;
+
+        &.checked {
+            background-color: CanvasText;
+        }
+    }
+
+    .md-checkbox-wrapper.disabled .md-checkbox-box {
+        border-color: GrayText;
+        opacity: 1;
+
+        &.checked {
+            background-color: GrayText;
+            opacity: 1;
+        }
+    }
+
+    .md-checkbox-icon {
+        fill: Canvas;
+    }
 }

@@ -3,16 +3,17 @@
  * Based on https://github.com/material-components/material-web
  *
  * Provides M3-compliant button variants:
- * - filled: Primary actions
- * - secondary: Secondary color actions
- * - tonal: Filled tonal buttons
- * - outlined: Secondary actions with outline
- * - text: Low-emphasis actions
- * - ghost: Minimal styling
- * - danger: Destructive actions
- * - glass: Liquid glass effect button
+ * - filled: High emphasis — primary bg, on-primary text
+ * - tonal: Medium emphasis — secondary-container bg
+ * - elevated: Medium emphasis — surface-container-low bg, level1 shadow
+ * - outlined: Medium emphasis — transparent bg, outline border
+ * - text: Low emphasis — transparent bg, reduced padding
+ * - secondary: Secondary color filled (custom extension)
+ * - ghost: Minimal styling (custom extension)
+ * - danger: Destructive actions (custom extension)
+ * - glass: Liquid glass effect (custom extension)
  */
-import { JSX, splitProps, Component, children, createMemo } from 'solid-js';
+import { JSX, splitProps, Component, children, createMemo, For, Show } from 'solid-js';
 import { Ripple } from '../ripple';
 import './styles.scss';
 
@@ -20,7 +21,7 @@ import './styles.scss';
 
 export interface ButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
     /** Button variant following M3 button types */
-    variant?: 'filled' | 'secondary' | 'tonal' | 'outlined' | 'text' | 'ghost' | 'danger' | 'glass';
+    variant?: 'filled' | 'tonal' | 'elevated' | 'outlined' | 'text' | 'secondary' | 'ghost' | 'danger' | 'glass';
     /** Button size */
     size?: 'sm' | 'md' | 'lg';
     /** Color - overrides default variant colors */
@@ -31,6 +32,10 @@ export interface ButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonEle
     disableRipple?: boolean;
     /** For link-style buttons */
     href?: string;
+    /** Leading icon (rendered before label) */
+    icon?: JSX.Element;
+    /** Trailing icon (rendered after label) */
+    trailingIcon?: JSX.Element;
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -43,6 +48,7 @@ export const Button: Component<ButtonProps> = (props) => {
     const [local, others] = splitProps(props, [
         'variant', 'size', 'color', 'loading', 'disabled',
         'disableRipple', 'children', 'style', 'href', 'class',
+        'icon', 'trailingIcon',
     ]);
 
     const resolvedChildren = children(() => local.children);
@@ -52,6 +58,8 @@ export const Button: Component<ButtonProps> = (props) => {
         const classes = ['md-button'];
         classes.push(local.variant || 'filled');
         classes.push(`size-${local.size || 'md'}`);
+        if (local.icon) classes.push('has-leading-icon');
+        if (local.trailingIcon) classes.push('has-trailing-icon');
         if (local.disabled) classes.push('disabled');
         if (local.loading) classes.push('loading');
         if (local.class) classes.push(local.class);
@@ -74,7 +82,11 @@ export const Button: Component<ButtonProps> = (props) => {
                     </svg>
                 </span>
             ) : (
-                resolvedChildren()
+                <>
+                    {local.icon && <span class="md-button__icon">{local.icon}</span>}
+                    {resolvedChildren()}
+                    {local.trailingIcon && <span class="md-button__icon">{local.trailingIcon}</span>}
+                </>
             )}
         </>
     );

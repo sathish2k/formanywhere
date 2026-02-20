@@ -22,10 +22,10 @@
     align-items: center;
     gap: 8px;
     padding: 14px 16px;
-    background: var(--m3-color-inverse-surface, #313033);
-    color: var(--m3-color-inverse-on-surface, #F4EFF4);
+    background: var(--m3-color-inverse-surface, #322f35);
+    color: var(--m3-color-inverse-on-surface, #f5eff7);
     border-radius: var(--m3-shape-extra-small, 4px);
-    box-shadow: var(--m3-elevation-3, 0 4px 8px rgba(0,0,0,0.1), 0 16px 48px rgba(0,0,0,0.15));
+    box-shadow: var(--m3-elevation-3, 0 1px 3px 0 rgba(0,0,0,0.30), 0 4px 8px 3px rgba(0,0,0,0.15));
     font-size: 14px;
     font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
     z-index: 1100;
@@ -59,7 +59,7 @@
     padding: 0 8px;
     background: none;
     border: none;
-    color: var(--m3-color-inverse-primary, #D0BCFF);
+    color: var(--m3-color-inverse-primary, #d0bcff);
     font-size: 14px;
     font-weight: 500;
     font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
@@ -78,7 +78,7 @@
     padding: 8px;
     background: none;
     border: none;
-    color: var(--m3-color-inverse-on-surface, #F4EFF4);
+    color: var(--m3-color-inverse-on-surface, #f5eff7);
     cursor: pointer;
     margin-right: -8px;
     border-radius: 50%;

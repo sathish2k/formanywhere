@@ -1,124 +1,232 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   M3 FAB - Based on material-components/material-web
+   M3 FAB (Floating Action Button) — Material Design 3
+   Based on material-components/material-web compiled CSS
    ═══════════════════════════════════════════════════════════════════════════════ */
 
+// ─── M3 Elevation Shadows ────────────────────────────────────────────────────
+$_elevation-1: 0 1px 2px 0 rgba(0, 0, 0, 0.30), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+$_elevation-2: 0 1px 2px 0 rgba(0, 0, 0, 0.30), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+$_elevation-3: 0 1px 3px 0 rgba(0, 0, 0, 0.30), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+$_elevation-4: 0 2px 3px 0 rgba(0, 0, 0, 0.30), 0 6px 10px 4px rgba(0, 0, 0, 0.15);
+
 .md-fab {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    cursor: pointer;
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    font-size: 14px;
-    font-weight: 500;
-    overflow: hidden;
-    text-decoration: none;
-    -webkit-tap-highlight-color: transparent;
-    box-shadow: var(--m3-elevation-3, 0 4px 8px rgba(0,0,0,0.06), 0 8px 16px rgba(0,0,0,0.1));
-    transition: box-shadow var(--m3-motion-duration-medium, 250ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-                transform var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+  // ─── Internal token defaults (surface variant = M3 default) ───────────
+  --_container-color: var(--md-fab-container-color, var(--m3-color-surface-container-high, #ece6f0));
+  --_icon-color: var(--md-fab-icon-color, var(--m3-color-primary, #6750a4));
+  --_label-color: var(--md-fab-label-text-color, var(--m3-color-primary, #6750a4));
+  --_state-layer-color: var(--md-fab-hover-state-layer-color, var(--m3-color-primary, #6750a4));
+  --_container-elevation: var(--m3-elevation-3, #{$_elevation-3});
+  --_hover-elevation: var(--m3-elevation-4, #{$_elevation-4});
+  --_focus-elevation: var(--m3-elevation-3, #{$_elevation-3});
+  --_pressed-elevation: var(--m3-elevation-3, #{$_elevation-3});
+  --_icon-size: var(--md-fab-icon-size, 24px);
 
-    &:disabled {
-        cursor: not-allowed;
-        opacity: 0.38;
-        pointer-events: none;
+  // ─── Layout ──────────────────────────────────────────────────────────────
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  z-index: 0;
+  overflow: hidden;
+  text-decoration: none;
+  text-transform: inherit;
+  -webkit-tap-highlight-color: transparent;
+
+  // ─── Typography (extended FAB label) ──────────────────────────────────
+  font-family: var(--md-fab-label-text-font, var(--m3-font-label-large, var(--m3-font-body, 'Inter', system-ui, sans-serif)));
+  font-size: var(--md-fab-label-text-size, 0.875rem);
+  font-weight: var(--md-fab-label-text-weight, 500);
+  line-height: var(--md-fab-label-text-line-height, 1.25rem);
+
+  // ─── Default size (56px, corner-large 16px) ───────────────────────────
+  height: var(--md-fab-container-height, 56px);
+  width: var(--md-fab-container-width, 56px);
+  border-radius: var(--md-fab-container-shape, var(--m3-shape-corner-large, 16px));
+
+  // ─── Colors & elevation ──────────────────────────────────────────────────
+  background-color: var(--_container-color);
+  color: var(--_icon-color);
+  --ripple-color: var(--_state-layer-color);
+  box-shadow: var(--_container-elevation);
+
+  // ─── Transitions (NEVER use `transition: all`) ──────────────────────────
+  transition-property: box-shadow, background-color;
+  transition-duration: 280ms;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+
+  // ─── Interactive states ──────────────────────────────────────────────────
+  // Hover — M3 elevation level 4
+  &:hover:not(:disabled) {
+    box-shadow: var(--_hover-elevation);
+  }
+
+  // Focus — M3 elevation level 3, secondary focus ring
+  &:focus-visible {
+    box-shadow: var(--_focus-elevation);
+    outline: 3px solid var(--m3-color-secondary, #625b71);
+    outline-offset: 2px;
+  }
+
+  // Pressed — M3 elevation level 3
+  &:active:not(:disabled) {
+    box-shadow: var(--_pressed-elevation);
+  }
+
+  // Disabled — M3: cursor default, NOT not-allowed
+  &:disabled {
+    cursor: default;
+    opacity: 0.38;
+    box-shadow: none;
+    pointer-events: none;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Lowered modifier
+  // ═══════════════════════════════════════════════════════════════════════════
+  &.md-fab--lowered {
+    --_container-elevation: var(--m3-elevation-1, #{$_elevation-1});
+    --_hover-elevation: var(--m3-elevation-2, #{$_elevation-2});
+    --_focus-elevation: var(--m3-elevation-1, #{$_elevation-1});
+    --_pressed-elevation: var(--m3-elevation-1, #{$_elevation-1});
+    background-color: var(--md-fab-lowered-container-color, var(--m3-color-surface-container-low, #f7f2fa));
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Size variants
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Small — 40px, corner-medium (12px)
+  &.md-fab--small {
+    height: var(--md-fab-small-container-height, 40px);
+    width: var(--md-fab-small-container-width, 40px);
+    border-radius: var(--md-fab-small-container-shape, var(--m3-shape-corner-medium, 12px));
+
+    .md-fab__icon,
+    .md-fab__icon > * {
+      width: var(--md-fab-small-icon-size, 24px);
+      height: var(--md-fab-small-icon-size, 24px);
+      font-size: var(--md-fab-small-icon-size, 24px);
     }
+  }
 
-    &:hover:not(:disabled) {
-        box-shadow: var(--m3-elevation-4, 0 6px 12px rgba(0,0,0,0.08), 0 12px 24px rgba(0,0,0,0.12));
-        transform: translateY(-1px);
+  // Large — 96px, corner-extra-large (28px)
+  &.md-fab--large {
+    height: var(--md-fab-large-container-height, 96px);
+    width: var(--md-fab-large-container-width, 96px);
+    border-radius: var(--md-fab-large-container-shape, var(--m3-shape-corner-extra-large, 28px));
+
+    .md-fab__icon,
+    .md-fab__icon > * {
+      width: var(--md-fab-large-icon-size, 36px);
+      height: var(--md-fab-large-icon-size, 36px);
+      font-size: var(--md-fab-large-icon-size, 36px);
     }
+  }
 
-    &:active:not(:disabled) {
-        transform: translateY(0);
-    }
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Extended FAB
+  // ═══════════════════════════════════════════════════════════════════════════
+  &.md-fab--extended {
+    width: auto;
+    box-sizing: border-box;
+    padding-inline-start: 16px;
+    padding-inline-end: 20px;
+    gap: 12px;
+    border-radius: var(--md-fab-container-shape, var(--m3-shape-corner-large, 16px));
+  }
 
-    &:focus-visible {
-        outline: 2px solid var(--m3-color-primary, #6750A4);
-        outline-offset: 2px;
-    }
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Color variants
+  // ═══════════════════════════════════════════════════════════════════════════
 
-    /* Lowered elevation */
-    &.lowered {
-        box-shadow: var(--m3-elevation-1, 0 1px 2px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1));
+  // Surface (explicit class — same as base defaults)
+  &.md-fab--surface {
+    --_container-color: var(--md-fab-container-color, var(--m3-color-surface-container-high, #ece6f0));
+    --_icon-color: var(--md-fab-icon-color, var(--m3-color-primary, #6750a4));
+    --_label-color: var(--md-fab-label-text-color, var(--m3-color-primary, #6750a4));
+    --_state-layer-color: var(--md-fab-hover-state-layer-color, var(--m3-color-primary, #6750a4));
+  }
 
-        &:hover:not(:disabled) {
-            box-shadow: var(--m3-elevation-2, 0 2px 6px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.15));
-        }
-    }
+  // Primary
+  &.md-fab--primary {
+    --_container-color: var(--md-fab-primary-container-color, var(--m3-color-primary-container, #eaddff));
+    --_icon-color: var(--md-fab-primary-icon-color, var(--m3-color-on-primary-container, #21005d));
+    --_label-color: var(--md-fab-primary-label-text-color, var(--m3-color-on-primary-container, #21005d));
+    --_state-layer-color: var(--md-fab-primary-hover-state-layer-color, var(--m3-color-on-primary-container, #21005d));
+  }
 
-    /* ─── SIZES ────────────────────────────────────────────────────────────────── */
+  // Secondary
+  &.md-fab--secondary {
+    --_container-color: var(--md-fab-secondary-container-color, var(--m3-color-secondary-container, #e8def8));
+    --_icon-color: var(--md-fab-secondary-icon-color, var(--m3-color-on-secondary-container, #1d192b));
+    --_label-color: var(--md-fab-secondary-label-text-color, var(--m3-color-on-secondary-container, #1d192b));
+    --_state-layer-color: var(--md-fab-secondary-hover-state-layer-color, var(--m3-color-on-secondary-container, #1d192b));
+  }
 
-    &.size-sm {
-        height: 40px;
-        width: 40px;
-        padding: 8px;
-        border-radius: var(--m3-shape-medium, 12px);
+  // Tertiary
+  &.md-fab--tertiary {
+    --_container-color: var(--md-fab-tertiary-container-color, var(--m3-color-tertiary-container, #ffd8e4));
+    --_icon-color: var(--md-fab-tertiary-icon-color, var(--m3-color-on-tertiary-container, #31111d));
+    --_label-color: var(--md-fab-tertiary-label-text-color, var(--m3-color-on-tertiary-container, #31111d));
+    --_state-layer-color: var(--md-fab-tertiary-hover-state-layer-color, var(--m3-color-on-tertiary-container, #31111d));
+  }
 
-        .md-fab__icon { width: 24px; height: 24px; }
-    }
-
-    &.size-md {
-        height: 56px;
-        width: 56px;
-        padding: 16px;
-        border-radius: var(--m3-shape-large, 16px);
-
-        .md-fab__icon { width: 24px; height: 24px; }
-    }
-
-    &.size-lg {
-        height: 96px;
-        width: 96px;
-        padding: 30px;
-        border-radius: var(--m3-shape-extra-large, 28px);
-
-        .md-fab__icon { width: 36px; height: 36px; }
-    }
-
-    /* Extended overrides */
-    &.extended {
-        width: auto;
-        min-width: 80px;
-        gap: 12px;
-        padding: 0 20px 0 16px;
-        border-radius: var(--m3-shape-large, 16px);
-    }
-
-    /* ─── COLOR VARIANTS ───────────────────────────────────────────────────────── */
-
-    &.surface {
-        background: var(--m3-color-surface-container-high, rgba(236, 230, 240, 0.95));
-        color: var(--m3-color-primary, #6750A4);
-    }
-
-    &.primary {
-        background: var(--m3-color-primary-container, rgba(99, 102, 241, 0.12));
-        color: var(--m3-color-on-primary-container, #3730a3);
-    }
-
-    &.secondary {
-        background: var(--m3-color-secondary-container, rgba(20, 184, 166, 0.12));
-        color: var(--m3-color-on-secondary-container, #0d9488);
-    }
-
-    &.tertiary {
-        background: var(--m3-color-tertiary-container, rgba(0, 184, 217, 0.12));
-        color: var(--m3-color-on-tertiary-container, #006C9C);
-    }
-
-    /* ─── GLASS FAB ────────────────────────────────────────────────────────────── */
-
-    &.glass {
-        background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
-        color: var(--m3-color-on-surface, #1f1f1f);
-        backdrop-filter: blur(var(--glass-blur, 20px));
-        -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
-        border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
-    }
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Glass variant (custom extension)
+  // ═══════════════════════════════════════════════════════════════════════════
+  &.md-fab--glass {
+    --_container-color: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+    --_icon-color: var(--m3-color-on-surface, #1d1b20);
+    --_label-color: var(--m3-color-on-surface, #1d1b20);
+    --_state-layer-color: var(--m3-color-on-surface, #1d1b20);
+    backdrop-filter: blur(var(--glass-blur, 20px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+    border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
+  }
 }
 
+// ─── Icon container ──────────────────────────────────────────────────────────
 .md-fab__icon {
-    display: flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--_icon-size, 24px);
+  height: var(--_icon-size, 24px);
+  font-size: var(--_icon-size, 24px);
+  color: inherit;
+}
+
+// ─── Label (extended FAB) ────────────────────────────────────────────────────
+.md-fab__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--_label-color, inherit);
+}
+
+// ─── Touch target ────────────────────────────────────────────────────────────
+.md-fab__touch {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 48px;
+  height: 48px;
+  transform: translate(-50%, -50%);
+}
+
+// ─── Forced colors (high-contrast mode) ──────────────────────────────────────
+@media (forced-colors: active) {
+  .md-fab {
+    border: 1px solid ButtonText;
+
+    &:disabled {
+      border-color: GrayText;
+      color: GrayText;
+    }
+  }
 }

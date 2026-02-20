@@ -1,220 +1,447 @@
-/* ═══════════════════════════════════════════════════════════════════════════════
-   M3 BUTTON - Based on material-components/material-web
-   ═══════════════════════════════════════════════════════════════════════════════ */
 
-// M3 motion tokens
-$duration-short: var(--m3-motion-duration-short, 150ms);
-$easing-standard: var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
 
 @keyframes md-btn-spin {
     to { transform: rotate(360deg); }
 }
 
 .md-button {
+    // ─── Layout ──────────────────────────────────────────────────────────
     position: relative;
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    font-weight: 500;
-    text-decoration: none;
-    white-space: nowrap;
-    cursor: pointer;
-    outline: none;
-    overflow: hidden;
+
+    // ─── Reset ───────────────────────────────────────────────────────────
     border: none;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
     -webkit-tap-highlight-color: transparent;
-    transition: background $duration-short $easing-standard,
-                box-shadow $duration-short $easing-standard,
-                transform $duration-short $easing-standard,
-                opacity $duration-short $easing-standard;
+    user-select: none;
+    overflow: hidden;
 
-    /* ─── SIZES ──────────────────────────────────────────────────────────── */
+    // ─── M3 Label Large Typography ───────────────────────────────────────
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    letter-spacing: 0.1px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: top;
 
-    &.size-sm {
-        padding: 6px 16px;
-        font-size: 14px;
-        border-radius: var(--m3-shape-small, 8px);
-        min-height: 32px;
+    // ─── M3 Container ──────────────────────────────────────────
+    // container-shape: corner-full (9999px)
+    // container-height: 40px (min, allows content to grow)
+    // padding-block: calc((40px - max(20px, 18px)) / 2) = 10px
+    // padding-inline: 24px (leading-space / trailing-space)
+    border-radius: var(--m3-shape-full, 9999px);
+    min-height: 40px;
+    min-width: calc(64px - 24px - 24px); // M3 requires 64px minimum total width
+    padding-block: 10px;
+    padding-inline: 24px;
+
+    // ─── Icon sizing (M3 spec: 18px) ─────────────────────────────
+    .md-button__icon {
+        display: inline-flex;
+        width: 18px;
+        height: 18px;
+        font-size: 18px;
+        fill: currentColor;
+
+        svg {
+            width: 18px;
+            height: 18px;
+        }
     }
 
-    &.size-md {
-        padding: 10px 24px;
-        font-size: 14px;
-        border-radius: var(--m3-shape-full, 9999px);
-        min-height: 40px;
+    // ─── Icon Padding Adjustments (M3 spec) ─────────────────────
+    &.has-leading-icon {
+        padding-inline-start: 16px;
     }
 
-    &.size-lg {
-        padding: 14px 32px;
-        font-size: 16px;
-        border-radius: var(--m3-shape-full, 9999px);
+    &.has-trailing-icon {
+        padding-inline-end: 16px;
+    }
+
+    // ─── M3 Motion ───────────────────────────────────────────────────────
+    // State layer transitions handled by Ripple component
+    // Only box-shadow (elevation) transitions on the button itself
+    transition: box-shadow 280ms cubic-bezier(0.2, 0, 0, 1);
+
+    // ─── Touch Target ────────────────────────────────────────────────────
+    // M3 requires 48px minimum touch target height
+    // Uses invisible pseudo-element to extend touch area beyond 40px container
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
         min-height: 48px;
-    }
-
-    /* ─── DISABLED ────────────────────────────────────────────────────────── */
-
-    &.disabled {
-        cursor: not-allowed;
-        opacity: 0.38;
         pointer-events: none;
     }
 
-    /* ─── LOADING ─────────────────────────────────────────────────────────── */
+    /* ═══════════════════════════════════════════════════════════════════════
+       SIZES (custom extension — M3 has single 40px size)
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    &.size-sm {
+        padding-block: 6px;
+        padding-inline: 16px;
+        font-size: 12px;
+        line-height: 16px;
+        min-height: 32px;
+    }
+
+    &.size-lg {
+        padding-block: 14px;
+        padding-inline: 32px;
+        font-size: 16px;
+        line-height: 24px;
+        min-height: 48px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       DISABLED (base — variant-specific colors set per-variant)
+       M3: pointer-events: none, cursor: default
+       Must override browser UA styles for button:disabled
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    &.disabled,
+    &:disabled {
+        cursor: default;
+        pointer-events: none;
+        // Reset browser UA disabled styles that can hide the button
+        -webkit-text-fill-color: currentColor;
+        opacity: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       LOADING
+       ═══════════════════════════════════════════════════════════════════════ */
 
     &.loading {
         cursor: wait;
         pointer-events: none;
     }
 
-    /* ─── FOCUS RING ──────────────────────────────────────────────────────── */
+    /* ═══════════════════════════════════════════════════════════════════════
+       FOCUS RING
+       M3 spec: md-focus-ring uses secondary color, 3px width, 2px offset
+       Matches container shape (border-radius: inherit on ring)
+       ═══════════════════════════════════════════════════════════════════════ */
 
     &:focus-visible {
-        outline: 2px solid var(--m3-color-primary, #6750A4);
+        outline: 3px solid var(--m3-color-secondary, #625b71);
         outline-offset: 2px;
     }
 
     /* ═══════════════════════════════════════════════════════════════════════
-       VARIANTS
+       M3 OFFICIAL VARIANTS
        ═══════════════════════════════════════════════════════════════════════ */
 
-    /* ─── FILLED ──────────────────────────────────────────────────────────── */
+    /* ─── FILLED ──────────────────────────────────────────────────────────
+       Source: _md-comp-filled-button.scss
+       container-color:            primary (#6750a4)
+       label-text-color:           on-primary (#ffffff)
+       container-elevation:        level0 (none)
+       hover-container-elevation:  level1
+       hover-state-layer-color:    on-primary @ 0.08 (via Ripple)
+       pressed-state-layer-color:  on-primary @ 0.12 (via Ripple)
+       focus-container-elevation:  level0
+       pressed-container-elevation: level0
+       ──────────────────────────────────────────────────────────────────── */
 
     &.filled {
-        background: var(--m3-color-primary, #6750A4);
-        color: var(--m3-color-on-primary, #fff);
-        box-shadow: var(--m3-elevation-1, 0 1px 2px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1));
+        background: var(--m3-color-primary, #6750a4);
+        color: var(--m3-color-on-primary, #ffffff);
+        --ripple-color: var(--m3-color-on-primary, #ffffff);
+        // level0 — no box-shadow by default
 
         &:hover:not(.disabled) {
-            box-shadow: var(--m3-elevation-2, 0 2px 4px rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.1));
-            filter: brightness(1.08);
+            // level0 → level1
+            box-shadow: var(--m3-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15));
         }
 
         &:active:not(.disabled) {
-            box-shadow: var(--m3-elevation-1);
-            transform: scale(0.98);
+            // level1 → level0 (pressed)
+            box-shadow: none;
+        }
+
+        // disabled-container-color: on-surface, disabled-container-opacity: 0.12
+        // disabled-label-text-color: on-surface, disabled-label-text-opacity: 0.38
+        &.disabled,
+        &:disabled {
+            background: rgba(29, 27, 32, 0.12);
+            color: rgba(29, 27, 32, 0.38);
+            -webkit-text-fill-color: rgba(29, 27, 32, 0.38);
+            box-shadow: none;
         }
     }
 
-    /* ─── SECONDARY ───────────────────────────────────────────────────────── */
-
-    &.secondary {
-        background: var(--m3-color-secondary, #14b8a6);
-        color: var(--m3-color-on-secondary, #fff);
-        box-shadow: var(--m3-elevation-1, 0 1px 2px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1));
-
-        &:hover:not(.disabled) {
-            box-shadow: var(--m3-elevation-2);
-            filter: brightness(1.08);
-        }
-
-        &:active:not(.disabled) {
-            transform: scale(0.98);
-        }
-    }
-
-    /* ─── TONAL ───────────────────────────────────────────────────────────── */
+    /* ─── TONAL (Filled Tonal) ────────────────────────────────────────────
+       Source: _md-comp-filled-tonal-button.scss
+       container-color:            secondary-container (#e8def8)
+       label-text-color:           on-secondary-container (#1d192b)
+       container-elevation:        level0 (none)
+       hover-container-elevation:  level1
+       hover-state-layer-color:    on-secondary-container @ 0.08 (via Ripple)
+       pressed-state-layer-color:  on-secondary-container @ 0.12 (via Ripple)
+       ──────────────────────────────────────────────────────────────────── */
 
     &.tonal {
-        background: var(--m3-color-secondary-container, rgba(139, 92, 246, 0.12));
-        color: var(--m3-color-on-secondary-container, #6750A4);
+        background: var(--m3-color-secondary-container, #e8def8);
+        color: var(--m3-color-on-secondary-container, #1d192b);
+        --ripple-color: var(--m3-color-on-secondary-container, #1d192b);
 
         &:hover:not(.disabled) {
-            box-shadow: var(--m3-elevation-1);
-            filter: brightness(0.96);
+            box-shadow: var(--m3-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15));
         }
 
         &:active:not(.disabled) {
-            transform: scale(0.98);
+            box-shadow: none;
+        }
+
+        &.disabled,
+        &:disabled {
+            background: rgba(29, 27, 32, 0.12);
+            color: rgba(29, 27, 32, 0.38);
+            -webkit-text-fill-color: rgba(29, 27, 32, 0.38);
+            box-shadow: none;
         }
     }
 
-    /* ─── OUTLINED ────────────────────────────────────────────────────────── */
+    /* ─── ELEVATED ────────────────────────────────────────────────────────
+       Source: _md-comp-elevated-button.scss
+       container-color:            surface-container-low (#f7f2fa)
+       label-text-color:           primary (#6750a4)
+       container-elevation:        level1
+       hover-container-elevation:  level2
+       focus-container-elevation:  level1
+       pressed-container-elevation: level1
+       container-shadow-color:     shadow
+       hover-state-layer-color:    primary @ 0.08 (via Ripple)
+       pressed-state-layer-color:  primary @ 0.12 (via Ripple)
+       disabled-container-elevation: level0
+       ──────────────────────────────────────────────────────────────────── */
+
+    &.elevated {
+        background: var(--m3-color-surface-container-low, #f7f2fa);
+        color: var(--m3-color-primary, #6750a4);
+        --ripple-color: var(--m3-color-primary, #6750a4);
+        // level1 — starts with elevation
+        box-shadow: var(--m3-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+
+        &:hover:not(.disabled) {
+            // level1 → level2
+            box-shadow: var(--m3-elevation-2, 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15));
+        }
+
+        &:active:not(.disabled) {
+            // level2 → level1 (pressed)
+            box-shadow: var(--m3-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+        }
+
+        &.disabled,
+        &:disabled {
+            background: rgba(29, 27, 32, 0.12);
+            color: rgba(29, 27, 32, 0.38);
+            -webkit-text-fill-color: rgba(29, 27, 32, 0.38);
+            // disabled-container-elevation: level0
+            box-shadow: none;
+        }
+    }
+
+    /* ─── OUTLINED ────────────────────────────────────────────────────────
+       Source: _md-comp-outlined-button.scss
+       container-color:            transparent (none)
+       label-text-color:           primary (#6750a4)
+       outline-color:              outline (#79747e)
+       outline-width:              1px
+       hover-state-layer-color:    primary @ 0.08 (via Ripple)
+       pressed-state-layer-color:  primary @ 0.12 (via Ripple)
+       pressed-outline-color:      outline (unchanged)
+       disabled-container-color:   transparent
+       disabled-container-opacity: 0 (no container)
+       disabled-outline-color:     on-surface
+       disabled-outline-opacity:   0.12
+       ──────────────────────────────────────────────────────────────────── */
 
     &.outlined {
         background: transparent;
-        color: var(--m3-color-primary, #6750A4);
-        border: 1px solid var(--m3-color-outline, rgba(120, 117, 121, 0.4));
+        color: var(--m3-color-primary, #6750a4);
+        --ripple-color: var(--m3-color-primary, #6750a4);
+        border: 1px solid var(--m3-color-outline, #79747e);
 
-        &:hover:not(.disabled) {
-            background: var(--m3-color-primary-container, rgba(99, 102, 241, 0.08));
-        }
+        // State layer handled by Ripple (hover-state-layer: primary @ 0.08)
+        // No elevation changes
 
         &:active:not(.disabled) {
-            background: var(--m3-color-primary-container, rgba(99, 102, 241, 0.12));
-            transform: scale(0.98);
+            border-color: var(--m3-color-outline, #79747e);
+        }
+
+        &.disabled,
+        &:disabled {
+            background: transparent;
+            color: rgba(29, 27, 32, 0.38);
+            -webkit-text-fill-color: rgba(29, 27, 32, 0.38);
+            border-color: rgba(29, 27, 32, 0.12);
         }
     }
 
-    /* ─── TEXT ─────────────────────────────────────────────────────────────── */
+    /* ─── TEXT ─────────────────────────────────────────────────────────────
+       Source: _md-comp-text-button.scss
+       container-color:            transparent (none)
+       label-text-color:           primary (#6750a4)
+       leading-space:              12px (reduced from 24px)
+       trailing-space:             12px
+       hover-state-layer-color:    primary @ 0.08 (via Ripple)
+       pressed-state-layer-color:  primary @ 0.12 (via Ripple)
+       no container-elevation
+       no disabled-container (transparent)
+       ──────────────────────────────────────────────────────────────────── */
 
     &.text {
         background: transparent;
-        color: var(--m3-color-primary, #6750A4);
-        padding-left: 12px;
-        padding-right: 12px;
+        color: var(--m3-color-primary, #6750a4);
+        --ripple-color: var(--m3-color-primary, #6750a4);
+        padding-inline: 12px;
 
-        &:hover:not(.disabled) {
-            background: var(--m3-color-primary-container, rgba(99, 102, 241, 0.08));
+        // Icon padding adjustments for text variant
+        &.has-leading-icon {
+            padding-inline-start: 12px;
+            padding-inline-end: 16px;
         }
 
-        &:active:not(.disabled) {
-            background: var(--m3-color-primary-container, rgba(99, 102, 241, 0.12));
+        &.has-trailing-icon {
+            padding-inline-start: 16px;
+            padding-inline-end: 12px;
+        }
+
+        // State layer handled by Ripple
+        // No elevation changes
+
+        &.disabled,
+        &:disabled {
+            background: transparent;
+            color: rgba(29, 27, 32, 0.38);
+            -webkit-text-fill-color: rgba(29, 27, 32, 0.38);
         }
     }
 
-    /* ─── GHOST ────────────────────────────────────────────────────────────── */
+    /* ═══════════════════════════════════════════════════════════════════════
+       CUSTOM EXTENSIONS (not in official M3 spec)
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    /* ─── SECONDARY ───────────────────────────────────────────────────────
+       Like filled but uses secondary color role
+       ──────────────────────────────────────────────────────────────────── */
+
+    &.secondary {
+        background: var(--m3-color-secondary, #625b71);
+        color: var(--m3-color-on-secondary, #ffffff);
+        --ripple-color: var(--m3-color-on-secondary, #ffffff);
+
+        &:hover:not(.disabled) {
+            box-shadow: var(--m3-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15));
+        }
+
+        &:active:not(.disabled) {
+            box-shadow: none;
+        }
+
+        &.disabled,
+        &:disabled {
+            background: rgba(29, 27, 32, 0.12);
+            color: rgba(29, 27, 32, 0.38);
+            -webkit-text-fill-color: rgba(29, 27, 32, 0.38);
+            box-shadow: none;
+        }
+    }
+
+    /* ─── GHOST ────────────────────────────────────────────────────────────
+       Minimal emphasis, on-surface text, surface-container hover
+       ──────────────────────────────────────────────────────────────────── */
 
     &.ghost {
         background: transparent;
-        color: var(--m3-color-on-surface, #1f1f1f);
+        color: var(--m3-color-on-surface, #1d1b20);
 
         &:hover:not(.disabled) {
-            background: var(--m3-color-surface-container, rgba(255, 255, 255, 0.7));
+            background: color-mix(in srgb, var(--m3-color-on-surface, #1d1b20) 8%, transparent);
+        }
+
+        &.disabled,
+        &:disabled {
+            background: transparent;
+            color: rgba(29, 27, 32, 0.38);
+            -webkit-text-fill-color: rgba(29, 27, 32, 0.38);
         }
     }
 
-    /* ─── DANGER ───────────────────────────────────────────────────────────── */
+    /* ─── DANGER ───────────────────────────────────────────────────────────
+       Like filled but uses error color role
+       ──────────────────────────────────────────────────────────────────── */
 
     &.danger {
-        background: var(--m3-color-error, #B3261E);
-        color: var(--m3-color-on-error, #fff);
-        box-shadow: var(--m3-elevation-1);
+        background: var(--m3-color-error, #b3261e);
+        color: var(--m3-color-on-error, #ffffff);
+        --ripple-color: var(--m3-color-on-error, #ffffff);
 
         &:hover:not(.disabled) {
-            box-shadow: var(--m3-elevation-2);
-            filter: brightness(1.08);
+            box-shadow: var(--m3-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15));
         }
 
         &:active:not(.disabled) {
-            transform: scale(0.98);
+            box-shadow: none;
+        }
+
+        &.disabled,
+        &:disabled {
+            background: rgba(29, 27, 32, 0.12);
+            color: rgba(29, 27, 32, 0.38);
+            -webkit-text-fill-color: rgba(29, 27, 32, 0.38);
+            box-shadow: none;
         }
     }
 
-    /* ─── GLASS (Liquid Glass) ─────────────────────────────────────────────── */
+    /* ─── GLASS (Liquid Glass) ─────────────────────────────────────────────
+       Glass morphism effect — custom extension
+       ──────────────────────────────────────────────────────────────────── */
 
     &.glass {
         background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
-        color: var(--m3-color-on-surface, #1f1f1f);
+        color: var(--m3-color-on-surface, #1d1b20);
         border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
         backdrop-filter: blur(var(--glass-blur, 20px));
         -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
-        box-shadow: var(--glass-shadow, 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04));
+        box-shadow: var(--glass-shadow, 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04));
 
         &:hover:not(.disabled) {
             background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
-            box-shadow: var(--glass-shadow-elevated, 0 16px 48px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06));
-            transform: translateY(-1px);
+            box-shadow: var(--glass-shadow-elevated, 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06));
         }
 
-        &:active:not(.disabled) {
-            transform: translateY(0) scale(0.98);
+        &.disabled,
+        &:disabled {
+            background: rgba(29, 27, 32, 0.12);
+            color: rgba(29, 27, 32, 0.38);
+            -webkit-text-fill-color: rgba(29, 27, 32, 0.38);
+            border-color: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            box-shadow: none;
         }
     }
 }
 
-/* ─── SPINNER ──────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SPINNER
+   ═══════════════════════════════════════════════════════════════════════════════ */
 
 .md-btn-spinner {
     display: flex;
@@ -227,65 +454,110 @@ $easing-standard: var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
-   COLOR OVERRIDES - apply via data-color attribute
+   COLOR OVERRIDES — data-color attribute
    ═══════════════════════════════════════════════════════════════════════════════ */
 
-// Filled/Secondary/Tonal/Danger color overrides
+// Filled-style variants (filled/secondary/danger) — bg swaps to color, text to on-color
 .md-button.filled,
 .md-button.secondary,
-.md-button.danger,
-.md-button.tonal {
+.md-button.danger {
     &[data-color="secondary"] {
-        background: var(--m3-color-secondary, #8E33FF);
-        color: var(--m3-color-on-secondary, #fff);
+        background: var(--m3-color-secondary, #625b71);
+        color: var(--m3-color-on-secondary, #ffffff);
     }
 
     &[data-color="info"] {
-        background: var(--m3-color-tertiary, #00B8D9);
-        color: var(--m3-color-on-tertiary, #fff);
+        background: var(--m3-color-tertiary, #7d5260);
+        color: var(--m3-color-on-tertiary, #ffffff);
     }
 
     &[data-color="success"] {
-        background: var(--m3-color-success, #22C55E);
-        color: #fff;
+        background: var(--m3-color-success, #22c55e);
+        color: #ffffff;
     }
 
     &[data-color="warning"] {
-        background: var(--m3-color-warning, #FFAB00);
-        color: var(--m3-color-on-surface, #1f1f1f);
+        background: var(--m3-color-warning, #ffab00);
+        color: var(--m3-color-on-surface, #1d1b20);
     }
 
     &[data-color="error"] {
-        background: var(--m3-color-error, #FF5630);
-        color: #fff;
+        background: var(--m3-color-error, #b3261e);
+        color: var(--m3-color-on-error, #ffffff);
     }
 }
 
-// Outlined/Text color overrides
-.md-button.outlined,
-.md-button.text {
+// Tonal variant — bg swaps to color-container, text to on-color-container
+.md-button.tonal {
     &[data-color="secondary"] {
-        color: var(--m3-color-secondary, #8E33FF);
-        border-color: var(--m3-color-secondary, #8E33FF);
-    }
-
-    &[data-color="error"] {
-        color: var(--m3-color-error, #FF5630);
-        border-color: var(--m3-color-error, #FF5630);
-    }
-
-    &[data-color="success"] {
-        color: var(--m3-color-success, #22C55E);
-        border-color: var(--m3-color-success, #22C55E);
+        background: var(--m3-color-secondary-container, #e8def8);
+        color: var(--m3-color-on-secondary-container, #1d192b);
     }
 
     &[data-color="info"] {
-        color: var(--m3-color-tertiary, #00B8D9);
-        border-color: var(--m3-color-tertiary, #00B8D9);
+        background: var(--m3-color-tertiary-container, #ffd8e4);
+        color: var(--m3-color-on-tertiary-container, #31111d);
+    }
+
+    &[data-color="error"] {
+        background: var(--m3-color-error-container, #f9dedc);
+        color: var(--m3-color-on-error-container, #410e0b);
+    }
+
+    &[data-color="success"] {
+        background: var(--m3-color-success-container, #6bff8f);
+        color: var(--m3-color-on-success-container, #002107);
     }
 
     &[data-color="warning"] {
-        color: var(--m3-color-warning, #FFAB00);
-        border-color: var(--m3-color-warning, #FFAB00);
+        background: var(--m3-color-warning-container, #ffddb3);
+        color: var(--m3-color-on-warning-container, #281900);
+    }
+}
+
+// Outlined/Text variants — only text color + border color swap
+.md-button.outlined,
+.md-button.text {
+    &[data-color="secondary"] {
+        color: var(--m3-color-secondary, #625b71);
+        border-color: var(--m3-color-secondary, #625b71);
+    }
+
+    &[data-color="error"] {
+        color: var(--m3-color-error, #b3261e);
+        border-color: var(--m3-color-error, #b3261e);
+    }
+
+    &[data-color="success"] {
+        color: var(--m3-color-success, #22c55e);
+        border-color: var(--m3-color-success, #22c55e);
+    }
+
+    &[data-color="info"] {
+        color: var(--m3-color-tertiary, #7d5260);
+        border-color: var(--m3-color-tertiary, #7d5260);
+    }
+
+    &[data-color="warning"] {
+        color: var(--m3-color-warning, #ffab00);
+        border-color: var(--m3-color-warning, #ffab00);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FORCED COLORS (High-Contrast Mode) — accessibility compliance
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (forced-colors: active) {
+    .md-button {
+        border: 1px solid CanvasText;
+
+        &.disabled,
+        &:disabled {
+            border-color: GrayText;
+            color: GrayText;
+            -webkit-text-fill-color: GrayText;
+            opacity: 1;
+        }
     }
 }

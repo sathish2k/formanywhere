@@ -12,8 +12,8 @@
     z-index: 1200;
     padding: 4px 8px;
     border-radius: var(--m3-shape-extra-small, 4px);
-    background: var(--m3-color-inverse-surface, #313033);
-    color: var(--m3-color-inverse-on-surface, #F4EFF4);
+    background: var(--m3-color-inverse-surface, #322f35);
+    color: var(--m3-color-inverse-on-surface, #f5eff7);
     font-size: var(--m3-label-medium-size, 12px);
     font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
     white-space: nowrap;
@@ -81,7 +81,7 @@
         backdrop-filter: blur(var(--glass-blur, 20px));
         -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
         border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
-        color: var(--m3-color-on-surface, #1D1B20);
+        color: var(--m3-color-on-surface, #1d1b20);
         box-shadow: var(--glass-shadow, 0 8px 32px rgba(0, 0, 0, 0.08));
     }
 }

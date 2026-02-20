@@ -18,6 +18,8 @@ export * from './switch';
 export * from './card';
 export * from './chip';
 export * from './divider';
+export * from './elevation';
+export * from './focus-ring';
 export * from './avatar';
 export * from './badge';
 export * from './tag';

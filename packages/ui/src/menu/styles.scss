@@ -1,27 +1,64 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   M3 MENU - Based on material-components/material-web
+   M3 MENU — Based on material-components/material-web menu-styles.css
+   & menu-item-styles.css. Flat-class architecture (no Shadow DOM).
    ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Animation ────────────────────────────────────────────────────────────── */
 
 @keyframes md-menu-open {
     from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    to   { opacity: 1; transform: scale(1); }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MENU CONTAINER  (.md-menu → maps to :host + .menu + .items)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
 .md-menu {
+    // ─── Layout ──────────────────────────────────────────────────────────
     position: fixed;
+    display: block;
     min-width: 112px;
     max-width: 280px;
     max-height: 256px;
     overflow-y: auto;
-    background: var(--m3-color-surface-container, rgba(255, 255, 255, 0.95));
-    border-radius: var(--m3-shape-extra-small, 4px);
-    box-shadow: var(--m3-elevation-2, 0 2px 6px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.15));
-    padding: 8px 0;
     z-index: 1000;
-    transform-origin: top left;
-    animation: md-menu-open var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
+    user-select: none;
+    box-sizing: border-box;
+    scrollbar-width: thin;
 
-    /* Glass menu */
+    // ─── Shape & Surface ─────────────────────────────────────────────────
+    border-radius: var(--m3-shape-extra-small, 4px);
+    background-color: var(--m3-color-surface-container, #f3edf7);
+    color: inherit;
+
+    // ─── Elevation (Level 2) ─────────────────────────────────────────────
+    box-shadow: var(
+        --m3-elevation-2,
+        0 1px 2px 0 rgba(0, 0, 0, 0.30),
+        0 2px 6px 2px rgba(0, 0, 0, 0.15)
+    );
+
+    // ─── Spacing ─────────────────────────────────────────────────────────
+    padding-block: 8px;
+    padding-inline: 0;
+    margin: 0;
+    border: none;
+    list-style-type: none;
+
+    // ─── Motion ──────────────────────────────────────────────────────────
+    transform-origin: top left;
+    animation: md-menu-open
+        var(--m3-motion-duration-short, 150ms)
+        var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
+
+    // ─── Focus ring on the container itself ──────────────────────────────
+    &:focus-visible {
+        outline: 3px solid var(--m3-color-secondary, #625b71);
+        outline-offset: 2px;
+    }
+
+    /* ─── Glass variant ───────────────────────────────────────────────── */
     &.glass {
         background: var(--glass-tint-light, rgba(255, 255, 255, 0.75));
         backdrop-filter: blur(var(--glass-blur, 20px));
@@ -31,59 +68,164 @@
     }
 }
 
-/* ─── MENU ITEM ────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MENU ITEM  (.md-menu-item → maps to :host + .list-item + md-item)
+   ═══════════════════════════════════════════════════════════════════════════════ */
 
 .md-menu-item {
+    // ─── Reset ───────────────────────────────────────────────────────────
     position: relative;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 12px 12px 16px;
-    min-height: 48px;
-    background: transparent;
     border: none;
+    margin: 0;
     width: 100%;
-    text-align: left;
-    cursor: pointer;
-    font-size: 14px;
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    color: var(--m3-color-on-surface, #1D1B20);
+    text-align: start;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
     overflow: hidden;
-    transition: background var(--m3-motion-duration-short, 100ms);
+    box-sizing: border-box;
 
+    // ─── Sizing (M3: one-line 56 px, min 48 px) ─────────────────────────
+    min-height: var(--md-menu-item-one-line-container-height, 56px);
+    gap: 12px;
+    padding-block: var(--md-menu-item-top-space, 12px) var(--md-menu-item-bottom-space, 12px);
+    padding-inline: var(--md-menu-item-leading-space, 16px) var(--md-menu-item-trailing-space, 16px);
+
+    // ─── Surface ─────────────────────────────────────────────────────────
+    background-color: var(--md-menu-item-container-color, transparent);
+    border-radius: inherit;
+    cursor: pointer;
+
+    // ─── Typography — body-large (16 / 1.5rem / 400) ────────────────────
+    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+    font-size: var(--md-menu-item-label-text-size, 1rem);
+    line-height: var(--md-menu-item-label-text-line-height, 1.5rem);
+    font-weight: var(--md-menu-item-label-text-weight, 400);
+    color: var(--m3-color-on-surface, #1d1b20);
+
+    // ─── Motion ──────────────────────────────────────────────────────────
+    transition: background-color var(--m3-motion-duration-short, 100ms) ease;
+
+    /* ─── States ──────────────────────────────────────────────────────── */
+
+    // Hover — on-surface @ 0.08
     &:hover:not(:disabled) {
-        background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 8%, transparent);
+        background-color: color-mix(
+            in srgb,
+            var(--m3-color-on-surface, #1d1b20) 8%,
+            transparent
+        );
     }
 
+    // Focus — on-surface @ 0.12 + focus ring
     &:focus-visible {
-        background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 12%, transparent);
-        outline: none;
+        background-color: color-mix(
+            in srgb,
+            var(--m3-color-on-surface, #1d1b20) 12%,
+            transparent
+        );
+        outline: 3px solid var(--m3-color-secondary, #625b71);
+        outline-offset: -3px;
     }
 
+    // Pressed — on-surface @ 0.12 (handled by Ripple, but keep fallback)
+    &:active:not(:disabled) {
+        background-color: color-mix(
+            in srgb,
+            var(--m3-color-on-surface, #1d1b20) 12%,
+            transparent
+        );
+    }
+
+    // Disabled — 0.38 opacity on text, 0.12 on container; no pointer events
     &:disabled {
-        cursor: not-allowed;
+        cursor: default;
         opacity: 0.38;
+        pointer-events: none;
+    }
+
+    // Selected
+    &.selected {
+        background-color: var(
+            --md-menu-item-selected-container-color,
+            var(--m3-color-secondary-container, #e8def8)
+        );
+
+        .md-menu-item__label,
+        .md-menu-item__icon {
+            color: var(
+                --md-menu-item-selected-label-text-color,
+                var(--m3-color-on-secondary-container, #1d192b)
+            );
+        }
     }
 }
 
+/* ─── Item sub-elements ────────────────────────────────────────────────────── */
+
 .md-menu-item__icon {
     display: flex;
-    color: var(--m3-color-on-surface-variant, #49454E);
+    align-items: center;
+    flex-shrink: 0;
+    fill: currentColor;
+    color: var(--m3-color-on-surface-variant, #49454f);
 }
 
 .md-menu-item__label {
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .md-menu-item__trailing {
-    font-size: 12px;
-    color: var(--m3-color-on-surface-variant, #49454E);
+    // Trailing supporting text — label-small (11 px / 500)
+    font-size: var(--md-menu-item-trailing-supporting-text-size, 0.6875rem);
+    line-height: var(--md-menu-item-trailing-supporting-text-line-height, 1rem);
+    font-weight: var(--md-menu-item-trailing-supporting-text-weight, 500);
+    color: var(--m3-color-on-surface-variant, #49454f);
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
-/* ─── DIVIDER ──────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════════
+   DIVIDER  (.md-menu-divider → maps to md-divider / [role=separator])
+   ═══════════════════════════════════════════════════════════════════════════════ */
 
 .md-menu-divider {
     height: 1px;
-    background: var(--m3-color-outline-variant, rgba(200, 195, 200, 0.5));
+    background-color: var(--m3-color-outline-variant, #cac4d0);
     margin: 8px 0;
+    border: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   HIGH-CONTRAST / FORCED-COLORS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (forced-colors: active) {
+    .md-menu {
+        border: 1px solid CanvasText;
+    }
+
+    .md-menu-item:disabled,
+    .md-menu-item:disabled .md-menu-item__label,
+    .md-menu-item:disabled .md-menu-item__icon,
+    .md-menu-item:disabled .md-menu-item__trailing {
+        color: GrayText;
+        opacity: 1;
+    }
+
+    .md-menu-item.selected::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        box-sizing: border-box;
+        border-radius: inherit;
+        pointer-events: none;
+        border: 3px double CanvasText;
+    }
 }

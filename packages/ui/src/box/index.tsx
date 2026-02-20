@@ -9,7 +9,7 @@ import { JSX, splitProps, ParentComponent } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import './styles.scss';
 
-export interface BoxProps {
+export interface BoxProps extends JSX.HTMLAttributes<HTMLDivElement> {
     /** Padding preset or custom value */
     padding?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
     /** Padding X (horizontal) */

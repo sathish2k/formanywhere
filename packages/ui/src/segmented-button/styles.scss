@@ -4,7 +4,7 @@
 
 .md-segmented-button {
     display: inline-flex;
-    border: 1px solid var(--m3-color-outline, rgba(120, 117, 121, 0.4));
+    border: 1px solid var(--m3-color-outline);
     border-radius: var(--m3-shape-full, 9999px);
     overflow: hidden;
     font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
@@ -64,9 +64,9 @@
     padding: 10px 24px;
     min-height: 40px;
     border: none;
-    border-right: 1px solid var(--m3-color-outline, rgba(120, 117, 121, 0.4));
+    border-right: 1px solid var(--m3-color-outline);
     background: transparent;
-    color: var(--m3-color-on-surface, #1D1B20);
+    color: var(--m3-color-on-surface, #1d1b20);
     font-size: var(--m3-label-large-size, 14px);
     font-weight: 500;
     cursor: pointer;
@@ -83,11 +83,11 @@
     }
 
     &.selected {
-        background: var(--m3-color-secondary-container, rgba(232, 222, 248, 0.38));
-        color: var(--m3-color-on-secondary-container, #1D192B);
+        background: var(--m3-color-secondary-container, #e8def8);
+        color: var(--m3-color-on-secondary-container, #1d192b);
 
         &:hover {
-            background: color-mix(in srgb, var(--m3-color-on-secondary-container) 8%, var(--m3-color-secondary-container, rgba(232, 222, 248, 0.38)));
+            background: color-mix(in srgb, var(--m3-color-on-secondary-container) 8%, var(--m3-color-secondary-container, #e8def8));
         }
 
         .md-segmented-button__check {

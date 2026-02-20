@@ -1,92 +1,172 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   M3 DIALOG - Based on material-components/material-web
+   M3 DIALOG — Based on material-components/material-web dialog-styles.css
+   Flat CSS class mapping (no Shadow DOM)
    ═══════════════════════════════════════════════════════════════════════════════ */
 
-@keyframes md-dialog-fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+// ─── Keyframes ────────────────────────────────────────────────────────────────
+
+@keyframes md-dialog-scrim-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-@keyframes md-dialog-scale-in {
-    from { opacity: 0; transform: scale(0.85); }
-    to { opacity: 1; transform: scale(1); }
+@keyframes md-dialog-open {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
+
+// ─── Scrim / Backdrop ─────────────────────────────────────────────────────────
 
 .md-dialog-backdrop {
-    position: fixed;
-    inset: 0;
-    background: var(--m3-color-scrim, rgba(0, 0, 0, 0.32));
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: md-dialog-fade-in var(--m3-motion-duration-medium, 250ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+  position: fixed;
+  inset: 0;
+  // M3: scrim color #000 at 32% opacity
+  background: var(--m3-color-scrim, rgba(0, 0, 0, 0.32));
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: md-dialog-scrim-fade-in
+    var(--m3-motion-duration-medium, 250ms)
+    var(--m3-motion-easing-emphasized-decelerate, cubic-bezier(0.05, 0.7, 0.1, 1.0))
+    forwards;
 }
+
+// ─── Dialog Container ─────────────────────────────────────────────────────────
 
 .md-dialog {
-    position: relative;
-    min-width: 280px;
-    max-width: 560px;
-    max-height: calc(100vh - 48px);
-    background: var(--m3-color-surface-container-high, rgba(236, 230, 240, 0.95));
-    border-radius: var(--m3-shape-extra-large, 28px);
-    box-shadow: var(--m3-elevation-3, 0 4px 8px rgba(0,0,0,0.1), 0 16px 48px rgba(0,0,0,0.15));
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    outline: none;
-    animation: md-dialog-scale-in var(--m3-motion-duration-medium, 250ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
+  position: relative;
+  min-width: 280px;
+  max-width: min(560px, calc(100% - 48px));
+  max-height: min(560px, calc(100% - 48px));
+  min-height: 140px;
+  width: fit-content;
+  height: fit-content;
+  background: var(--m3-color-surface-container-high, #ece6f0);
+  border-radius: var(--m3-shape-extra-large, 28px);
+  box-shadow: var(
+    --m3-elevation-3,
+    0 1px 3px 0 rgba(0, 0, 0, 0.30),
+    0 4px 8px 3px rgba(0, 0, 0, 0.15)
+  );
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+  padding: 0;
+  border: none;
+  // M3 emphasized-decelerate for opening
+  animation: md-dialog-open
+    var(--m3-motion-duration-medium, 250ms)
+    var(--m3-motion-easing-emphasized-decelerate, cubic-bezier(0.05, 0.7, 0.1, 1.0))
+    forwards;
+  transform-origin: top;
 
-    /* Glass dialog */
-    &.glass {
-        background: var(--glass-tint-light, rgba(255, 255, 255, 0.75));
-        backdrop-filter: blur(var(--glass-blur-strong, 40px));
-        -webkit-backdrop-filter: blur(var(--glass-blur-strong, 40px));
-        border: 1px solid var(--glass-border-light, rgba(255, 255, 255, 0.5));
-        box-shadow: var(--glass-shadow-elevated, 0 16px 48px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06));
-    }
+  // Focus ring — 3px solid secondary
+  &:focus-visible {
+    outline: 3px solid var(--m3-color-secondary, #625b71);
+    outline-offset: 2px;
+  }
+
+  // ── Glass variant ─────────────────────────────────────────────────────────
+  &.glass {
+    background: var(--glass-tint-light, rgba(255, 255, 255, 0.75));
+    backdrop-filter: blur(var(--glass-blur-strong, 40px));
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong, 40px));
+    border: 1px solid var(--glass-border-light, rgba(255, 255, 255, 0.5));
+    box-shadow: var(
+      --glass-shadow-elevated,
+      0 16px 48px rgba(0, 0, 0, 0.12),
+      0 4px 16px rgba(0, 0, 0, 0.06)
+    );
+  }
 }
 
-/* ─── HEADER ───────────────────────────────────────────────────────────────── */
+// ─── Header (icon + headline) ─────────────────────────────────────────────────
 
 .md-dialog__header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    padding: 24px 24px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 24px 0;
+  position: relative;
+
+  // Only center title when icon is present
+  &:has(.md-dialog__icon) .md-dialog__title {
+    text-align: center;
+  }
 }
 
 .md-dialog__icon {
-    color: var(--m3-color-secondary, #625B71);
+  display: flex;
+  color: var(--m3-color-secondary, #625b71);
+  fill: currentColor;
+  font-size: var(--m3-dialog-icon-size, 24px);
+  height: var(--m3-dialog-icon-size, 24px);
+  width: var(--m3-dialog-icon-size, 24px);
 }
 
 .md-dialog__title {
-    font-size: 24px;
-    font-weight: 400;
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    color: var(--m3-color-on-surface, #1D1B20);
-    text-align: center;
-    margin: 0;
+  all: unset;
+  display: block;
+  align-self: stretch;
+  font-family: var(--m3-font-headline, var(--m3-font-body, 'Inter', system-ui, sans-serif));
+  font-size: var(--m3-typescale-headline-small-size, 1.5rem);
+  line-height: var(--m3-typescale-headline-small-line-height, 2rem);
+  font-weight: var(--m3-typescale-headline-small-weight, 400);
+  color: var(--m3-color-on-surface, #1d1b20);
+  text-align: start;
+  margin: 0;
 }
 
-/* ─── CONTENT ──────────────────────────────────────────────────────────────── */
+// ─── Content ──────────────────────────────────────────────────────────────────
 
 .md-dialog__content {
-    padding: 16px 24px 24px;
-    font-size: 14px;
-    font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    color: var(--m3-color-on-surface-variant, #49454E);
-    overflow-y: auto;
+  flex: 1;
+  padding: 24px;
+  font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
+  font-size: var(--m3-typescale-body-medium-size, 0.875rem);
+  line-height: var(--m3-typescale-body-medium-line-height, 1.25rem);
+  font-weight: var(--m3-typescale-body-medium-weight, 400);
+  color: var(--m3-color-on-surface-variant, #49454f);
+  overflow-y: auto;
+  position: relative;
+  height: min-content;
 }
 
-/* ─── ACTIONS ──────────────────────────────────────────────────────────────── */
+// M3: content top padding stays 24px when headline is present (not 16px)
+.md-dialog__header + .md-dialog__content {
+  padding-top: 24px;
+}
+
+// M3: reduce content bottom padding when actions follow
+.md-dialog__content:has(+ .md-dialog__actions) {
+  padding-bottom: 8px;
+}
+
+// ─── Actions ──────────────────────────────────────────────────────────────────
 
 .md-dialog__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    padding: 0 24px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px 24px;
+  position: relative;
+}
+
+// ─── Forced-colors (high contrast mode) ──────────────────────────────────────
+
+@media (forced-colors: active) {
+  .md-dialog {
+    outline: 2px solid WindowText;
+  }
 }

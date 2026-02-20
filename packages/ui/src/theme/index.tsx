@@ -3,11 +3,37 @@
  * 
  * Provides theme context and syncs with CSS via data-theme attribute.
  * CSS variables are loaded from @formanywhere/ui/styles/theme.css
+ * 
+ * Color tokens are pre-computed at build time — no runtime dependency
+ * on @material/material-color-utilities (saves ~15 KB gzipped).
  */
 import { createSignal, createContext, useContext, createEffect, onMount, ParentComponent, Accessor } from 'solid-js';
+import { PRECOMPUTED_TOKENS } from './precomputed-tokens';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type ColorScheme = 'green' | 'purple' | 'blue' | 'pink' | 'orange' | 'red';
+
+const applyRuntimeMaterialTheme = (scheme: ColorScheme, isDark: boolean) => {
+    if (typeof document === 'undefined') return;
+
+    const mode = isDark ? 'dark' : 'light';
+    const tokens = PRECOMPUTED_TOKENS[scheme]?.[mode];
+    if (!tokens) return;
+
+    const root = document.documentElement;
+    for (const [token, value] of Object.entries(tokens)) {
+        root.style.setProperty(`--md-sys-color-${token}`, value);
+        root.style.setProperty(`--m3-color-${token}`, value);
+    }
+
+    const onSurface = tokens['on-surface'];
+    if (onSurface?.startsWith('#') && onSurface.length === 7) {
+        const r = parseInt(onSurface.slice(1, 3), 16);
+        const g = parseInt(onSurface.slice(3, 5), 16);
+        const b = parseInt(onSurface.slice(5, 7), 16);
+        root.style.setProperty('--m3-color-on-surface-rgb', `${r}, ${g}, ${b}`);
+    }
+};
 
 interface ThemeContextValue {
     /** Current theme setting */
@@ -63,11 +89,13 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
 
     const [theme, setThemeInternal] = createSignal<Theme>(getInitialTheme());
     const [colorScheme, setColorSchemeInternal] = createSignal<ColorScheme>(getInitialColorScheme());
+    const [systemPrefersDark, setSystemPrefersDark] = createSignal<boolean>(
+        typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)').matches : false
+    );
 
     const resolvedTheme = (): 'light' | 'dark' => {
         if (theme() === 'system') {
-            if (typeof window === 'undefined') return 'light';
-            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            return systemPrefersDark() ? 'dark' : 'light';
         }
         return theme() as 'light' | 'dark';
     };
@@ -91,7 +119,11 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
         if (typeof document === 'undefined') return;
 
         const resolved = resolvedTheme();
+        const scheme = colorScheme();
         document.documentElement.setAttribute('data-mode', resolved);
+        document.documentElement.setAttribute('data-theme', scheme);
+
+        applyRuntimeMaterialTheme(scheme, resolved === 'dark');
 
         // Also toggle .dark class for Tailwind
         if (resolved === 'dark') {
@@ -101,22 +133,12 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
         }
     });
 
-    // Sync color scheme with document
-    createEffect(() => {
-        if (typeof document === 'undefined') return;
-        document.documentElement.setAttribute('data-theme', colorScheme());
-    });
-
     // Listen for system preference changes
     onMount(() => {
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const handleChange = () => {
-            // Trigger reactivity update when system preference changes
-            if (theme() === 'system') {
-                setThemeInternal('system'); // Force re-evaluation
-            }
-        };
+        const handleChange = () => setSystemPrefersDark(mediaQuery.matches);
         mediaQuery.addEventListener('change', handleChange);
+        setSystemPrefersDark(mediaQuery.matches);
         return () => mediaQuery.removeEventListener('change', handleChange);
     });
 

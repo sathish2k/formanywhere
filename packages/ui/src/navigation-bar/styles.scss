@@ -7,11 +7,11 @@
     justify-content: space-between;
     width: 100%;
     height: 80px;
-    background: var(--m3-color-surface-container, #F3EDF7);
-    color: var(--m3-color-on-surface-variant, #49454F);
+    background: var(--m3-color-surface-container, #f3edf7);
+    color: var(--m3-color-on-surface-variant, #49454f);
     padding: 0 8px;
     box-sizing: border-box;
-    border-top: 1px solid var(--m3-color-outline-variant, #CAC4D0);
+    border-top: 1px solid var(--m3-color-outline-variant, #cac4d0);
 
     /* Liquid Glass variant */
     &.glass {
@@ -34,7 +34,7 @@
     height: 100%;
     cursor: pointer;
     position: relative;
-    color: var(--m3-color-on-surface-variant, #49454F);
+    color: var(--m3-color-on-surface-variant, #49454f);
     gap: 4px;
     background: none;
     border: none;
@@ -43,16 +43,16 @@
     transition: color var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
 
     &:focus-visible {
-        outline: 2px solid var(--m3-color-primary, #6750A4);
+        outline: 2px solid var(--m3-color-primary, #6750a4);
         outline-offset: -2px;
         border-radius: var(--m3-shape-small, 8px);
     }
 
     &.selected {
-        color: var(--m3-color-on-surface, #1D1B20);
+        color: var(--m3-color-on-surface, #1d1b20);
 
         .md-nav-bar-item__indicator {
-            background: var(--m3-color-secondary-container, #E8DEF8);
+            background: var(--m3-color-secondary-container, #e8def8);
         }
 
         .md-nav-bar-item__label {

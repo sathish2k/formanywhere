@@ -2,7 +2,7 @@
  * Material 3 Checkbox Component for SolidJS
  * Based on https://github.com/material-components/material-web
  */
-import { JSX, splitProps, Component, createSignal } from 'solid-js';
+import { JSX, splitProps, Component, createSignal, createEffect, on } from 'solid-js';
 import { Ripple } from '../ripple';
 import './styles.scss';
 
@@ -47,6 +47,19 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
 
     const [internalChecked, setInternalChecked] = createSignal(local.defaultChecked ?? false);
     const isChecked = () => local.checked ?? internalChecked();
+    const [prevChecked, setPrevChecked] = createSignal(isChecked());
+    const [animateCheck, setAnimateCheck] = createSignal(false);
+
+    // Track transitions for checkmark draw animation
+    createEffect(on(isChecked, (current) => {
+        const prev = prevChecked();
+        if (!prev && current && !local.indeterminate) {
+            setAnimateCheck(true);
+            // Remove animation class after it completes
+            setTimeout(() => setAnimateCheck(false), 350);
+        }
+        setPrevChecked(current);
+    }));
 
     const toggle = () => {
         if (local.disabled) return;
@@ -59,15 +72,29 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
 
     const wrapperClass = () => {
         const classes = ['md-checkbox-wrapper'];
+        if (isChecked() || local.indeterminate) classes.push('selected');
+        else classes.push('unselected');
+        if (local.indeterminate) classes.push('indeterminate');
         if (local.size === 'sm') classes.push('size-sm');
         if (local.disabled) classes.push('disabled');
         if (local.class) classes.push(local.class);
         return classes.join(' ');
     };
 
+    const containerClass = () => {
+        const classes = ['md-checkbox-container'];
+        if (isChecked() || local.indeterminate) classes.push('selected');
+        else classes.push('unselected');
+        if (local.indeterminate) classes.push('indeterminate');
+        if (local.disabled) classes.push('disabled');
+        return classes.join(' ');
+    };
+
     const boxClass = () => {
         const classes = ['md-checkbox-box'];
-        if (isChecked() || local.indeterminate) classes.push('checked');
+        if (isChecked() || local.indeterminate) classes.push('checked', 'selected');
+        else classes.push('unselected');
+        if (local.indeterminate) classes.push('indeterminate');
         if (local.error) classes.push('error');
         return classes.join(' ');
     };
@@ -81,19 +108,25 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
                 aria-label={local.ariaLabel || (typeof local.label === 'string' ? local.label : undefined)}
                 disabled={local.disabled}
                 onClick={toggle}
-                class="md-checkbox-container"
+                class={containerClass()}
             >
-                <Ripple disabled={local.disabled} />
+                <Ripple
+                    disabled={local.disabled}
+                    class={isChecked() || local.indeterminate ? 'selected' : 'unselected'}
+                />
                 <div class={boxClass()}>
-                    {(isChecked() || local.indeterminate) && (
-                        <svg class="md-checkbox-icon" viewBox="0 0 24 24" aria-hidden="true">
-                            {local.indeterminate ? (
-                                <path d="M19 13H5v-2h14v2z" />
-                            ) : (
-                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                            )}
-                        </svg>
-                    )}
+                    <div class="md-checkbox-bg" />
+                    <svg
+                        class={`md-checkbox-icon${animateCheck() ? ' animate-check' : ''}`}
+                        viewBox="0 0 18 18"
+                        aria-hidden="true"
+                    >
+                        {local.indeterminate ? (
+                            <rect x="4" y="8" width="10" height="2" rx="0" />
+                        ) : (
+                            <path d="M6.75 12.127 3.623 9l-.873.87L6.75 13.87l9-9-.87-.87z" />
+                        )}
+                    </svg>
                 </div>
             </button>
             {local.label && (

@@ -1,5 +1,9 @@
 # build output
 dist/
+.vinxi/
+.output/
+storybook-static/
+tsconfig.tsbuildinfo
 # generated types
 .astro/
 

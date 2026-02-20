@@ -35,10 +35,11 @@ export const FAB: Component<FABProps> = (props) => {
 
     const rootClass = () => {
         const classes = ['md-fab'];
-        classes.push(local.variant || 'primary');
-        classes.push(`size-${local.size || 'md'}`);
-        if (isExtended()) classes.push('extended');
-        if (local.lowered) classes.push('lowered');
+        classes.push(`md-fab--${local.variant || 'surface'}`);
+        if (local.size === 'sm') classes.push('md-fab--small');
+        else if (local.size === 'lg') classes.push('md-fab--large');
+        if (isExtended()) classes.push('md-fab--extended');
+        if (local.lowered) classes.push('md-fab--lowered');
         return classes.join(' ');
     };
 

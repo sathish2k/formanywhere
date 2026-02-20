@@ -1,0 +1,101 @@
+{
+    "name": "@formanywhere/marketing",
+    "version": "0.0.1",
+    "type": "module",
+    "sideEffects": [
+        "**/*.css",
+        "**/*.scss"
+    ],
+    "main": "./src/index.tsx",
+    "types": "./src/index.tsx",
+    "exports": {
+        ".": {
+            "solid": "./src/index.tsx",
+            "import": "./src/index.tsx",
+            "types": "./src/index.tsx"
+        },
+        "./hero": {
+            "solid": "./src/hero/hero-section.tsx",
+            "import": "./src/hero/hero-section.tsx"
+        },
+        "./demo-teaser": {
+            "solid": "./src/demo-teaser/demo-teaser.tsx",
+            "import": "./src/demo-teaser/demo-teaser.tsx"
+        },
+        "./stats": {
+            "solid": "./src/stats/stats-section.tsx",
+            "import": "./src/stats/stats-section.tsx"
+        },
+        "./features": {
+            "solid": "./src/features/features-section.tsx",
+            "import": "./src/features/features-section.tsx"
+        },
+        "./how-it-works": {
+            "solid": "./src/how-it-works/how-it-works-section.tsx",
+            "import": "./src/how-it-works/how-it-works-section.tsx"
+        },
+        "./use-cases": {
+            "solid": "./src/use-cases/use-cases-section.tsx",
+            "import": "./src/use-cases/use-cases-section.tsx"
+        },
+        "./integrations": {
+            "solid": "./src/integrations/integrations-section.tsx",
+            "import": "./src/integrations/integrations-section.tsx"
+        },
+        "./testimonials": {
+            "solid": "./src/testimonials/testimonials-section.tsx",
+            "import": "./src/testimonials/testimonials-section.tsx"
+        },
+        "./cta": {
+            "solid": "./src/cta/cta-section.tsx",
+            "import": "./src/cta/cta-section.tsx"
+        },
+        "./about/config": "./src/about/config.ts",
+        "./pricing/config": "./src/pricing/config.ts",
+        "./templates/config": "./src/templates/config.ts",
+        "./pricing-table": {
+            "solid": "./src/pricing-table/index.tsx",
+            "import": "./src/pricing-table/index.tsx"
+        },
+        "./faq-section": {
+            "solid": "./src/faq-section/index.tsx",
+            "import": "./src/faq-section/index.tsx"
+        },
+        "./contact-sales-card": {
+            "solid": "./src/contact-sales-card/index.tsx",
+            "import": "./src/contact-sales-card/index.tsx"
+        },
+        "./cta-section": {
+            "solid": "./src/cta/cta-section.tsx",
+            "import": "./src/cta/cta-section.tsx"
+        },
+        "./template-card": {
+            "solid": "./src/template-card/index.tsx",
+            "import": "./src/template-card/index.tsx"
+        },
+        "./category-filter": {
+            "solid": "./src/category-filter/index.tsx",
+            "import": "./src/category-filter/index.tsx"
+        },
+        "./template-browser": {
+            "solid": "./src/template-browser/index.tsx",
+            "import": "./src/template-browser/index.tsx"
+        }
+    },
+    "scripts": {
+        "dev": "tsc --watch",
+        "build": "tsc",
+        "lint": "echo 'No linter configured'"
+    },
+    "dependencies": {
+        "@formanywhere/ui": "workspace:*",
+        "@formanywhere/shared": "workspace:*",
+        "solid-js": "^1.9.11"
+    },
+    "devDependencies": {
+        "typescript": "^5.7.0"
+    },
+    "peerDependencies": {
+        "solid-js": "^1.9.0"
+    }
+}

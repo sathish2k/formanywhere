@@ -64,21 +64,21 @@
 
     /* ─── BACKGROUND ───────────────────────────────────────────────────────────── */
 
-    &.bg-surface { background-color: var(--m3-color-surface, #fff); }
-    &.bg-surface-variant { background-color: var(--m3-color-surface-variant, #e0e0e0); }
-    &.bg-surface-dim { background-color: var(--m3-color-surface-dim, #f5f5f5); }
-    &.bg-primary { background-color: var(--m3-color-primary, #6200EE); }
-    &.bg-secondary { background-color: var(--m3-color-secondary, #8E33FF); }
-    &.bg-tertiary { background-color: var(--m3-color-tertiary, #00B8D9); }
+    &.bg-surface { background-color: var(--m3-color-surface, #fef7ff); }
+    &.bg-surface-variant { background-color: var(--m3-color-surface-variant, #e7e0ec); }
+    &.bg-surface-dim { background-color: var(--m3-color-surface-dim, #ded8e1); }
+    &.bg-primary { background-color: var(--m3-color-primary, #6750a4); }
+    &.bg-secondary { background-color: var(--m3-color-secondary, #625b71); }
+    &.bg-tertiary { background-color: var(--m3-color-tertiary, #7d5260); }
     &.bg-transparent { background-color: transparent; }
 
     /* ─── TEXT COLOR ────────────────────────────────────────────────────────────── */
 
-    &.text-on-surface { color: var(--m3-color-on-surface, #1a1a1a); }
-    &.text-on-surface-variant { color: var(--m3-color-on-surface-variant, #666); }
-    &.text-primary { color: var(--m3-color-primary, #6200EE); }
-    &.text-secondary { color: var(--m3-color-secondary, #8E33FF); }
-    &.text-tertiary { color: var(--m3-color-tertiary, #00B8D9); }
+    &.text-on-surface { color: var(--m3-color-on-surface, #1d1b20); }
+    &.text-on-surface-variant { color: var(--m3-color-on-surface-variant, #49454f); }
+    &.text-primary { color: var(--m3-color-primary, #6750a4); }
+    &.text-secondary { color: var(--m3-color-secondary, #625b71); }
+    &.text-tertiary { color: var(--m3-color-tertiary, #7d5260); }
     &.text-on-primary { color: var(--m3-color-on-primary, #fff); }
     &.text-on-secondary { color: var(--m3-color-on-secondary, #fff); }
     &.text-on-tertiary { color: var(--m3-color-on-tertiary, #fff); }
