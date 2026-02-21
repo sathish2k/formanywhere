@@ -19,12 +19,12 @@ interface ColorPreset {
 }
 
 const colorPresets: ColorPreset[] = [
-    { name: 'Green', scheme: 'green', primary: '#00A76F', secondary: '#212B36' },
-    { name: 'Purple', scheme: 'purple', primary: '#7635DC', secondary: '#00A76F' },
-    { name: 'Blue', scheme: 'blue', primary: '#078DEE', secondary: '#FF5630' },
-    { name: 'Cyan', scheme: 'pink', primary: '#2065D1', secondary: '#FF6B6B' },
-    { name: 'Orange', scheme: 'orange', primary: '#FDA92D', secondary: '#5D4037' },
-    { name: 'Red', scheme: 'red', primary: '#FF3030', secondary: '#FDA92D' },
+    { name: 'Cobalt', scheme: 'green', primary: '#3366FF', secondary: '#FF6B35' },
+    { name: 'Plum', scheme: 'purple', primary: '#9B59B6', secondary: '#1ABC9C' },
+    { name: 'Teal', scheme: 'blue', primary: '#00897B', secondary: '#FF5722' },
+    { name: 'Coral', scheme: 'pink', primary: '#FF6F61', secondary: '#5B5EA6' },
+    { name: 'Gold', scheme: 'orange', primary: '#D4A017', secondary: '#6A1B9A' },
+    { name: 'Cyan', scheme: 'red', primary: '#00ACC1', secondary: '#E91E63' },
 ];
 
 export const ThemeToggle: Component = () => {
@@ -68,18 +68,19 @@ export const ThemeToggle: Component = () => {
                 onClose={() => setIsOpen(false)}
                 anchorEl={anchorEl()}
                 position="bottom-end"
+                glass
                 style={{
                     'min-width': '340px',
+                    'max-width': '400px',
+                    'max-height': 'none',
                     padding: '20px',
+                    'border-radius': '20px',
                     background: isDark()
-                        ? 'rgba(30, 30, 30, 0.92)'
-                        : 'rgba(255, 255, 255, 0.92)',
-                    'backdrop-filter': 'blur(24px)',
-                    '-webkit-backdrop-filter': 'blur(24px)',
+                        ? 'rgba(30, 30, 30, 0.65)'
+                        : 'rgba(255, 255, 255, 0.65)',
                     border: isDark()
                         ? '1px solid rgba(255, 255, 255, 0.08)'
                         : '1px solid rgba(0, 0, 0, 0.06)',
-                    'border-radius': '20px',
                     'box-shadow': isDark()
                         ? '0 12px 40px rgba(0, 0, 0, 0.4)'
                         : '0 12px 40px rgba(0, 0, 0, 0.12)',

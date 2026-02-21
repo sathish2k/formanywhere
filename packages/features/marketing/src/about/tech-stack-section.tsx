@@ -81,7 +81,7 @@ export default function TechStackSection() {
           <For each={techStack}>
             {(tech) => (
               <Card
-                variant="outlined"
+                variant="glass"
                 style={{
                   padding: "1.5rem",
                   "border-radius": "1rem",

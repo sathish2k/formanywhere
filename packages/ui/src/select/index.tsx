@@ -32,7 +32,7 @@ export const SelectOptionItem: Component<SelectOptionItemProps> = (props) => {
 
 export interface SelectProps {
     /** Select variant */
-    variant?: 'filled' | 'outlined';
+    variant?: 'filled' | 'outlined' | 'glass';
     /** Size variant */
     size?: 'sm' | 'md' | 'lg';
     /** Label text */

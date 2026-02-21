@@ -51,7 +51,7 @@ export default function TestimonialsSection() {
                     <For each={testimonials}>
                         {(testimonial, i) => (
                             <Card
-                                variant="elevated"
+                                variant="glass"
                                 style={{ padding: "32px", transition: "transform 0.3s ease, box-shadow 0.3s ease" }}
                             >
                                 {/* Use Case Badge */}

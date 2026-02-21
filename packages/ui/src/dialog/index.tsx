@@ -31,6 +31,8 @@ export interface DialogProps {
     ariaLabel?: string;
     /** Accessible description id (falls back to internal content id) */
     ariaDescribedBy?: string;
+    /** Glass morphism style */
+    glass?: boolean;
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -103,6 +105,7 @@ export const Dialog: Component<DialogProps> = (props) => {
 
     const dialogClass = () => {
         const classes = ['md-dialog'];
+        if (props.glass) classes.push('glass');
         if (props.class) classes.push(props.class);
         return classes.join(' ');
     };

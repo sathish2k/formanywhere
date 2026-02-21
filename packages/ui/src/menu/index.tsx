@@ -17,6 +17,8 @@ export interface MenuProps {
     closeOnSelect?: boolean;
     anchorEl?: HTMLElement;
     position?: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
+    /** Glass morphism style */
+    glass?: boolean;
     style?: JSX.CSSProperties;
     class?: string;
     children: JSX.Element;
@@ -157,6 +159,7 @@ export const Menu: ParentComponent<MenuProps> = (props) => {
 
     const rootClass = () => {
         const classes = ['md-menu'];
+        if (props.glass) classes.push('glass');
         if (props.class) classes.push(props.class);
         return classes.join(' ');
     };

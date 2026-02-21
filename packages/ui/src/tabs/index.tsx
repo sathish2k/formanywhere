@@ -21,6 +21,7 @@ interface TabsContextValue {
     activeTab: Accessor<string>;
     setActiveTab: (id: string, prevTabEl?: HTMLElement) => void;
     variant: 'primary' | 'secondary';
+    glass?: boolean;
     registerTab: (id: string, el: HTMLElement) => void;
     unregisterTab: (id: string) => void;
     getTabElement: (id: string) => HTMLElement | undefined;
@@ -37,6 +38,8 @@ export interface TabsProps {
     variant?: 'primary' | 'secondary';
     /** Auto-activate tabs on focus (like M3 auto-activate) */
     autoActivate?: boolean;
+    /** Glass morphism style */
+    glass?: boolean;
     /** Change handler */
     onChange?: (tabId: string) => void;
     /** Custom style */
@@ -166,7 +169,7 @@ export const Tabs: ParentComponent<TabsProps> = (props) => {
     };
 
     return (
-        <TabsContext.Provider value={{ activeTab, setActiveTab, variant: variant(), registerTab, unregisterTab, getTabElement }}>
+        <TabsContext.Provider value={{ activeTab, setActiveTab, variant: variant(), glass: props.glass, registerTab, unregisterTab, getTabElement }}>
             <div style={props.style} class={props.class}>
                 {props.children}
             </div>
@@ -223,6 +226,7 @@ export const TabList: ParentComponent<TabListProps> = (props) => {
     const listClass = () => {
         const classes = ['md-tab-list'];
         if (props.scrollable) classes.push('scrollable');
+        if (context?.glass) classes.push('glass');
         if (props.class) classes.push(props.class);
         return classes.join(' ');
     };

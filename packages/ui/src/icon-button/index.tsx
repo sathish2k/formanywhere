@@ -15,7 +15,7 @@ import './styles.scss';
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
 export interface IconButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
-    variant?: 'standard' | 'filled' | 'filled-tonal' | 'outlined' | 'text';
+    variant?: 'standard' | 'filled' | 'filled-tonal' | 'outlined' | 'text' | 'glass';
     icon: JSX.Element;
     selectedIcon?: JSX.Element;
     size?: 'sm' | 'md' | 'lg';

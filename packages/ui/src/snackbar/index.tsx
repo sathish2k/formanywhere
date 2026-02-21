@@ -23,6 +23,8 @@ export interface SnackbarProps {
     duration?: number;
     /** Position */
     position?: 'bottom' | 'top';
+    /** Glass morphism style */
+    glass?: boolean;
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -48,6 +50,7 @@ export const Snackbar: Component<SnackbarProps> = (props) => {
     const rootClass = () => {
         const classes = ['md-snackbar'];
         classes.push(position());
+        if (props.glass) classes.push('glass');
         if (props.class) classes.push(props.class);
         return classes.join(' ');
     };

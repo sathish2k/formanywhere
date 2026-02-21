@@ -42,7 +42,7 @@ export type TextFieldType =
 
 export interface TextFieldProps {
     /** Text field variant */
-    variant?: 'filled' | 'outlined';
+    variant?: 'filled' | 'outlined' | 'glass';
     /** Size variant */
     size?: 'sm' | 'md' | 'lg';
     /** Label text */

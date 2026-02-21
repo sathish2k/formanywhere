@@ -55,6 +55,8 @@ export interface RadioProps {
     ariaLabel?: string;
     /** Standalone change callback */
     onChange?: (checked: boolean, value: string) => void;
+    /** Glass morphism style */
+    glass?: boolean;
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -97,7 +99,7 @@ export const RadioGroup: ParentComponent<RadioGroupProps> = (props) => {
 // ─── Radio Component ────────────────────────────────────────────────────────────
 
 export const Radio: Component<RadioProps> = (props) => {
-    const [local] = splitProps(props, ['value', 'disabled', 'checked', 'defaultChecked', 'name', 'size', 'label', 'ariaLabel', 'onChange', 'style', 'class']);
+    const [local] = splitProps(props, ['value', 'disabled', 'checked', 'defaultChecked', 'name', 'size', 'label', 'ariaLabel', 'onChange', 'glass', 'style', 'class']);
     const group = useContext(RadioGroupContext);
 
     const [internalChecked, setInternalChecked] = createSignal(local.defaultChecked ?? false);
@@ -127,6 +129,7 @@ export const Radio: Component<RadioProps> = (props) => {
         if (local.size === 'sm') classes.push('size-sm');
         if (isChecked()) classes.push('checked');
         if (isDisabled()) classes.push('disabled');
+        if (local.glass) classes.push('glass');
         if (local.class) classes.push(local.class);
         return classes.join(' ');
     };

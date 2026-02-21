@@ -15,7 +15,7 @@ import './styles.scss';
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
 export interface FABProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
-    variant?: 'surface' | 'primary' | 'secondary' | 'tertiary';
+    variant?: 'surface' | 'primary' | 'secondary' | 'tertiary' | 'glass';
     size?: 'sm' | 'md' | 'lg';
     icon: JSX.Element;
     label?: string;

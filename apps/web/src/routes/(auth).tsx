@@ -21,12 +21,12 @@ export default function AuthLayout(props: RouteSectionProps) {
                 {/* Left Side — Branding Panel */}
                 <div class="auth-branding" style={{ flex: 1, "background-image": "linear-gradient(to bottom right, var(--m3-color-primary), var(--m3-color-primary-dark))", position: "relative", overflow: "hidden", "flex-direction": "column", "justify-content": "space-between", padding: "4rem" }}>
                     {/* Decorative circles */}
-                    <div style={{ position: "absolute", top: "-6rem", right: "-6rem", width: "24rem", height: "24rem", "border-radius": "9999px", border: "1px solid rgba(255,255,255,0.1)" }} />
-                    <div style={{ position: "absolute", bottom: "-9rem", left: "-9rem", width: "500px", height: "500px", "border-radius": "9999px", border: "1px solid rgba(255,255,255,0.1)" }} />
+                    <div style={{ position: "absolute", top: "-6rem", right: "-6rem", width: "24rem", height: "24rem", "border-radius": "9999px", border: "1px solid rgba(255, 255, 255, 0.1)" }} />
+                    <div style={{ position: "absolute", bottom: "-9rem", left: "-9rem", width: "500px", height: "500px", "border-radius": "9999px", border: "1px solid rgba(255, 255, 255, 0.1)" }} />
 
                     {/* Logo */}
                     <a href="/" style={{ position: "relative", "z-index": 10, display: "flex", "align-items": "center", gap: "0.75rem" }}>
-                        <div style={{ width: "2.5rem", height: "2.5rem", "border-radius": "0.75rem", background: "rgba(255,255,255,0.2)", "backdrop-filter": "blur(4px)", display: "flex", "align-items": "center", "justify-content": "center" }}>
+                        <div style={{ width: "2.5rem", height: "2.5rem", "border-radius": "0.75rem", background: "rgba(255,255,255,0.2)", display: "flex", "align-items": "center", "justify-content": "center" }}>
                             <img src="/icons/sparkles.svg" alt="" style={{ width: "1.25rem", height: "1.25rem", filter: "invert(1)" }} aria-hidden="true" />
                         </div>
                         <span style={{ color: "white", "font-size": "1.125rem", "font-weight": 600 }}>FormAnywhere</span>
@@ -50,7 +50,7 @@ export default function AuthLayout(props: RouteSectionProps) {
                                 "Real-time analytics dashboard",
                             ].map((feature) => (
                                 <div style={{ display: "flex", "align-items": "center", gap: "1rem" }}>
-                                    <div style={{ width: "1.5rem", height: "1.5rem", "border-radius": "9999px", background: "rgba(255,255,255,0.2)", "backdrop-filter": "blur(4px)", display: "flex", "align-items": "center", "justify-content": "center", "flex-shrink": 0 }}>
+                                    <div style={{ width: "1.5rem", height: "1.5rem", "border-radius": "9999px", background: "rgba(255,255,255,0.2)", display: "flex", "align-items": "center", "justify-content": "center", "flex-shrink": 0 }}>
                                         <img src="/icons/check.svg" alt="" style={{ width: "0.875rem", height: "0.875rem", filter: "invert(1)" }} aria-hidden="true" />
                                     </div>
                                     <span style={{ color: "rgba(255,255,255,0.95)", "font-size": "1rem" }}>{feature}</span>

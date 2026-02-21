@@ -21,7 +21,7 @@ interface FeatureCardProps {
 const FeatureCard: Component<FeatureCardProps> = (props) => {
     return (
         <Card
-            variant="outlined"
+            variant="glass"
             class="feature-card"
             style={{
                 animation: `fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) ${props.delay}ms forwards`,

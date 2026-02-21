@@ -31,6 +31,8 @@ export interface CheckboxProps {
     label?: string | JSX.Element;
     /** Accessibility label (required if label is JSX) */
     ariaLabel?: string;
+    /** Glass morphism style */
+    glass?: boolean;
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -42,7 +44,7 @@ export interface CheckboxProps {
 export const Checkbox: Component<CheckboxProps> = (props) => {
     const [local] = splitProps(props, [
         'checked', 'defaultChecked', 'indeterminate', 'disabled', 'size',
-        'name', 'value', 'onChange', 'error', 'label', 'ariaLabel', 'style', 'class'
+        'name', 'value', 'onChange', 'error', 'label', 'ariaLabel', 'glass', 'style', 'class'
     ]);
 
     const [internalChecked, setInternalChecked] = createSignal(local.defaultChecked ?? false);
@@ -77,6 +79,7 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
         if (local.indeterminate) classes.push('indeterminate');
         if (local.size === 'sm') classes.push('size-sm');
         if (local.disabled) classes.push('disabled');
+        if (local.glass) classes.push('glass');
         if (local.class) classes.push(local.class);
         return classes.join(' ');
     };

@@ -1,122 +1,122 @@
 /* Theme Presets - Loaded on demand */
-/* ═══ PURPLE THEME ═════════════════════════════════════════════════════════ */
+/* ═══ PLUM — Creative luxury aesthetic ═════════════════════════════════════ */
 [data-theme="purple"] {
-    --m3-color-primary-lighter: #EBD6FD;
-    --m3-color-primary-light: #B985F4;
-    --m3-color-primary: #7635DC;
-    --m3-color-primary-dark: #4319A5;
-    --m3-color-primary-darker: #200A69;
+    --m3-color-primary-lighter: #F0E0F7;
+    --m3-color-primary-light: #BB8FCF;
+    --m3-color-primary: #9B59B6;
+    --m3-color-primary-dark: #7B3F96;
+    --m3-color-primary-darker: #5B2576;
     --m3-color-on-primary: #ffffff;
-    --m3-color-primary-container: #ebdcff;
-    --m3-color-on-primary-container: #260058;
+    --m3-color-primary-container: #F0E0F7;
+    --m3-color-on-primary-container: #2A0845;
 
-    --m3-color-secondary: #00A76F;
-    --m3-color-secondary-dark: #007867;
+    --m3-color-secondary: #1ABC9C;
+    --m3-color-secondary-dark: #148F77;
     --m3-color-on-secondary: #ffffff;
-    --m3-color-secondary-container: #79fabb;
-    --m3-color-on-secondary-container: #002112;
+    --m3-color-secondary-container: #C8F7ED;
+    --m3-color-on-secondary-container: #003D32;
 
-    --m3-color-tertiary: #00B8D9;
-    --m3-color-tertiary-dark: #006C9C;
+    --m3-color-tertiary: #E67E22;
+    --m3-color-tertiary-dark: #BA6219;
     --m3-color-on-tertiary: #ffffff;
-    --m3-color-tertiary-container: #afecff;
-    --m3-color-on-tertiary-container: #001f27;
+    --m3-color-tertiary-container: #FDEBD0;
+    --m3-color-on-tertiary-container: #3E2000;
 }
 
-/* ═══ BLUE THEME ═══════════════════════════════════════════════════════════ */
+/* ═══ TEAL — Calm yet bold aesthetic ═══════════════════════════════════════ */
 [data-theme="blue"] {
-    --m3-color-primary-lighter: #CCF4FE;
-    --m3-color-primary-light: #68CDF9;
-    --m3-color-primary: #078DEE;
-    --m3-color-primary-dark: #0351AB;
-    --m3-color-primary-darker: #012972;
+    --m3-color-primary-lighter: #B2DFDB;
+    --m3-color-primary-light: #26A69A;
+    --m3-color-primary: #00897B;
+    --m3-color-primary-dark: #00695C;
+    --m3-color-primary-darker: #004D40;
     --m3-color-on-primary: #ffffff;
-    --m3-color-primary-container: #d2e4ff;
-    --m3-color-on-primary-container: #001c37;
+    --m3-color-primary-container: #B2DFDB;
+    --m3-color-on-primary-container: #00251E;
 
-    --m3-color-secondary: #FF5630;
-    --m3-color-secondary-dark: #B71833;
+    --m3-color-secondary: #FF5722;
+    --m3-color-secondary-dark: #D84315;
     --m3-color-on-secondary: #ffffff;
-    --m3-color-secondary-container: #ffdad2;
-    --m3-color-on-secondary-container: #3d0600;
+    --m3-color-secondary-container: #FFCCBC;
+    --m3-color-on-secondary-container: #3E0E00;
 
-    --m3-color-tertiary: #00A76F;
-    --m3-color-tertiary-dark: #007867;
-    --m3-color-on-tertiary: #ffffff;
-    --m3-color-tertiary-container: #79fabb;
-    --m3-color-on-tertiary-container: #002112;
+    --m3-color-tertiary: #FFC107;
+    --m3-color-tertiary-dark: #FFA000;
+    --m3-color-on-tertiary: #3E2E00;
+    --m3-color-tertiary-container: #FFF8E1;
+    --m3-color-on-tertiary-container: #261A00;
 }
 
-/* ═══ CYAN THEME ═══════════════════════════════════════════════════════════ */
+/* ═══ CORAL — Pantone-inspired warm aesthetic ═════════════════════════════ */
 [data-theme="pink"] {
-    --m3-color-primary-lighter: #D1E9FC;
-    --m3-color-primary-light: #76B0F1;
-    --m3-color-primary: #2065D1;
-    --m3-color-primary-dark: #103996;
-    --m3-color-primary-darker: #061B64;
+    --m3-color-primary-lighter: #FFD6D1;
+    --m3-color-primary-light: #FF9A8D;
+    --m3-color-primary: #FF6F61;
+    --m3-color-primary-dark: #E5554A;
+    --m3-color-primary-darker: #B33B32;
     --m3-color-on-primary: #ffffff;
-    --m3-color-primary-container: #d9e2ff;
-    --m3-color-on-primary-container: #001a43;
+    --m3-color-primary-container: #FFD6D1;
+    --m3-color-on-primary-container: #3D0E08;
 
-    --m3-color-secondary: #FF6B6B;
-    --m3-color-secondary-dark: #C92A2A;
+    --m3-color-secondary: #5B5EA6;
+    --m3-color-secondary-dark: #3F4285;
     --m3-color-on-secondary: #ffffff;
-    --m3-color-secondary-container: #ffdad8;
-    --m3-color-on-secondary-container: #410006;
+    --m3-color-secondary-container: #DDDEFF;
+    --m3-color-on-secondary-container: #1A1C4E;
 
-    --m3-color-tertiary: #00A76F;
-    --m3-color-tertiary-dark: #007867;
+    --m3-color-tertiary: #88B04B;
+    --m3-color-tertiary-dark: #6A8E37;
     --m3-color-on-tertiary: #ffffff;
-    --m3-color-tertiary-container: #79fabb;
-    --m3-color-on-tertiary-container: #002112;
+    --m3-color-tertiary-container: #E2F0C9;
+    --m3-color-on-tertiary-container: #1E3A00;
 }
 
-/* ═══ ORANGE THEME ═════════════════════════════════════════════════════════ */
+/* ═══ GOLD — Premium warm aesthetic ════════════════════════════════════════ */
 [data-theme="orange"] {
-    --m3-color-primary-lighter: #FEF4D4;
-    --m3-color-primary-light: #FED680;
-    --m3-color-primary: #FDA92D;
-    --m3-color-primary-dark: #B66816;
-    --m3-color-primary-darker: #793908;
-    --m3-color-on-primary: #1C252E;
-    --m3-color-primary-container: #ffddb7;
-    --m3-color-on-primary-container: #2a1700;
+    --m3-color-primary-lighter: #F5E6A3;
+    --m3-color-primary-light: #E6C133;
+    --m3-color-primary: #D4A017;
+    --m3-color-primary-dark: #AA8012;
+    --m3-color-primary-darker: #80600E;
+    --m3-color-on-primary: #ffffff;
+    --m3-color-primary-container: #F5E6A3;
+    --m3-color-on-primary-container: #3D2E00;
 
-    --m3-color-secondary: #5D4037;
-    --m3-color-secondary-dark: #3E2723;
+    --m3-color-secondary: #6A1B9A;
+    --m3-color-secondary-dark: #4A1270;
     --m3-color-on-secondary: #ffffff;
-    --m3-color-secondary-container: #ffdbd0;
-    --m3-color-on-secondary-container: #2c160e;
+    --m3-color-secondary-container: #E1BEE7;
+    --m3-color-on-secondary-container: #270038;
 
-    --m3-color-tertiary: #8E33FF;
-    --m3-color-tertiary-dark: #5119B7;
+    --m3-color-tertiary: #00838F;
+    --m3-color-tertiary-dark: #006064;
     --m3-color-on-tertiary: #ffffff;
-    --m3-color-tertiary-container: #eddcff;
-    --m3-color-on-tertiary-container: #280056;
+    --m3-color-tertiary-container: #B2EBF2;
+    --m3-color-on-tertiary-container: #002124;
 }
 
-/* ═══ RED THEME ════════════════════════════════════════════════════════════ */
+/* ═══ CYAN — Fresh modern tech aesthetic ═══════════════════════════════════ */
 [data-theme="red"] {
-    --m3-color-primary-lighter: #FFE3D5;
-    --m3-color-primary-light: #FF8983;
-    --m3-color-primary: #FF3030;
-    --m3-color-primary-dark: #B71833;
-    --m3-color-primary-darker: #7A0930;
+    --m3-color-primary-lighter: #B2EBF2;
+    --m3-color-primary-light: #26C6DA;
+    --m3-color-primary: #00ACC1;
+    --m3-color-primary-dark: #00838F;
+    --m3-color-primary-darker: #006064;
     --m3-color-on-primary: #ffffff;
-    --m3-color-primary-container: #ffdad6;
-    --m3-color-on-primary-container: #410002;
+    --m3-color-primary-container: #B2EBF2;
+    --m3-color-on-primary-container: #00363D;
 
-    --m3-color-secondary: #FDA92D;
-    --m3-color-secondary-dark: #B66816;
+    --m3-color-secondary: #E91E63;
+    --m3-color-secondary-dark: #C2185B;
     --m3-color-on-secondary: #ffffff;
-    --m3-color-secondary-container: #ffddb7;
-    --m3-color-on-secondary-container: #2a1700;
+    --m3-color-secondary-container: #FCE4EC;
+    --m3-color-on-secondary-container: #3E0018;
 
-    --m3-color-tertiary: #00A76F;
-    --m3-color-tertiary-dark: #007867;
+    --m3-color-tertiary: #8BC34A;
+    --m3-color-tertiary-dark: #689F38;
     --m3-color-on-tertiary: #ffffff;
-    --m3-color-tertiary-container: #79fabb;
-    --m3-color-on-tertiary-container: #002112;
+    --m3-color-tertiary-container: #DCEDC8;
+    --m3-color-on-tertiary-container: #1B3A00;
 }
 /* ═══════════════════════════════════════════════════════════════════════════
    DARK MODE + THEME COMBINATIONS
@@ -124,62 +124,62 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 
-/* Purple + Dark */
+/* Plum + Dark */
 [data-theme="purple"].dark,
 .dark [data-theme="purple"],
 [data-theme="purple"][class*="dark"] {
-    --m3-color-primary-container: #5c02c2;
-    --m3-color-on-primary-container: #d4bbff;
-    --m3-color-secondary-container: #005234;
-    --m3-color-on-secondary-container: #5adda0;
-    --m3-color-tertiary-container: #004e5d;
-    --m3-color-on-tertiary-container: #48d7f9;
+    --m3-color-primary-container: #5B2576;
+    --m3-color-on-primary-container: #D4A5E8;
+    --m3-color-secondary-container: #0A524A;
+    --m3-color-on-secondary-container: #7DDECF;
+    --m3-color-tertiary-container: #5C3000;
+    --m3-color-on-tertiary-container: #F5C882;
 }
 
-/* Blue + Dark */
+/* Teal + Dark */
 [data-theme="blue"].dark,
 .dark [data-theme="blue"],
 [data-theme="blue"][class*="dark"] {
-    --m3-color-primary-container: #00497f;
-    --m3-color-on-primary-container: #a0c9ff;
-    --m3-color-secondary-container: #8b1a00;
-    --m3-color-on-secondary-container: #ffb4a3;
-    --m3-color-tertiary-container: #005234;
-    --m3-color-on-tertiary-container: #5adda0;
+    --m3-color-primary-container: #004D40;
+    --m3-color-on-primary-container: #80CBC4;
+    --m3-color-secondary-container: #BF360C;
+    --m3-color-on-secondary-container: #FFAB91;
+    --m3-color-tertiary-container: #5C3D00;
+    --m3-color-on-tertiary-container: #FFE082;
 }
 
-/* Pink + Dark */
+/* Coral + Dark */
 [data-theme="pink"].dark,
 .dark [data-theme="pink"],
 [data-theme="pink"][class*="dark"] {
-    --m3-color-primary-container: #004398;
-    --m3-color-on-primary-container: #afc6ff;
-    --m3-color-secondary-container: #8c1520;
-    --m3-color-on-secondary-container: #ffb3b0;
-    --m3-color-tertiary-container: #005234;
-    --m3-color-on-tertiary-container: #5adda0;
+    --m3-color-primary-container: #B33B32;
+    --m3-color-on-primary-container: #FFBCB5;
+    --m3-color-secondary-container: #2A2D6E;
+    --m3-color-on-secondary-container: #B0B3E6;
+    --m3-color-tertiary-container: #3C5A1B;
+    --m3-color-on-tertiary-container: #C5DE93;
 }
 
-/* Orange + Dark */
+/* Gold + Dark */
 [data-theme="orange"].dark,
 .dark [data-theme="orange"],
 [data-theme="orange"][class*="dark"] {
-    --m3-color-primary-container: #653e00;
-    --m3-color-on-primary-container: #ffb95e;
-    --m3-color-secondary-container: #5d4037;
-    --m3-color-on-secondary-container: #e7bdb1;
-    --m3-color-tertiary-container: #6100be;
-    --m3-color-on-tertiary-container: #d7baff;
+    --m3-color-primary-container: #80600E;
+    --m3-color-on-primary-container: #F0D56A;
+    --m3-color-secondary-container: #38006B;
+    --m3-color-on-secondary-container: #CE93D8;
+    --m3-color-tertiary-container: #004D54;
+    --m3-color-on-tertiary-container: #80DEEA;
 }
 
-/* Red + Dark */
+/* Cyan + Dark */
 [data-theme="red"].dark,
 .dark [data-theme="red"],
 [data-theme="red"][class*="dark"] {
-    --m3-color-primary-container: #93000c;
-    --m3-color-on-primary-container: #ffb4ab;
-    --m3-color-secondary-container: #653e00;
-    --m3-color-on-secondary-container: #ffb95e;
-    --m3-color-tertiary-container: #005234;
-    --m3-color-on-tertiary-container: #5adda0;
+    --m3-color-primary-container: #006064;
+    --m3-color-on-primary-container: #80DEEA;
+    --m3-color-secondary-container: #880E4F;
+    --m3-color-on-secondary-container: #F48FB1;
+    --m3-color-tertiary-container: #33691E;
+    --m3-color-on-tertiary-container: #AED581;
 }

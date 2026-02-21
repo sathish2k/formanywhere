@@ -22,6 +22,8 @@ export interface CircularProgressProps {
     strokeWidth?: number;
     /** Custom color */
     color?: string;
+    /** Glass morphism style */
+    glass?: boolean;
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -37,6 +39,8 @@ export interface LinearProgressProps {
     indeterminate?: boolean;
     /** Custom color */
     color?: string;
+    /** Glass morphism style */
+    glass?: boolean;
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -62,6 +66,7 @@ export const CircularProgress: Component<CircularProgressProps> = (props) => {
     const rootClass = () => {
         const classes = ['md-circular-progress'];
         if (isIndeterminate()) classes.push('indeterminate');
+        if (props.glass) classes.push('glass');
         if (props.class) classes.push(props.class);
         return classes.join(' ');
     };
@@ -108,6 +113,7 @@ export const LinearProgress: Component<LinearProgressProps> = (props) => {
 
     const rootClass = () => {
         const classes = ['md-linear-progress'];
+        if (props.glass) classes.push('glass');
         if (props.class) classes.push(props.class);
         return classes.join(' ');
     };

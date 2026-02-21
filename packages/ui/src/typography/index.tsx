@@ -61,25 +61,25 @@ const typographyStyles: Record<TypographyVariant, JSX.CSSProperties> = {
     'headline-large': {
         'font-size': 'var(--m3-headline-large-size, 32px)',
         'line-height': '1.25',
-        'font-weight': '600',
+        'font-weight': '400',
         'letter-spacing': '0',
     },
     'headline-medium': {
         'font-size': 'var(--m3-headline-medium-size, 28px)',
         'line-height': '1.28',
-        'font-weight': '600',
+        'font-weight': '400',
         'letter-spacing': '0',
     },
     'headline-small': {
         'font-size': 'var(--m3-headline-small-size, 24px)',
         'line-height': '1.33',
-        'font-weight': '600',
+        'font-weight': '400',
         'letter-spacing': '0',
     },
     'title-large': {
         'font-size': 'var(--m3-title-large-size, 22px)',
         'line-height': '1.27',
-        'font-weight': '500',
+        'font-weight': '400',
         'letter-spacing': '0',
     },
     'title-medium': {

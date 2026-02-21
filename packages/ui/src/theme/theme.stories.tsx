@@ -12,10 +12,13 @@ const ThemeControls = () => {
         <button onClick={() => setTheme('system')}>System</button>
       </div>
       <div>Color: {colorScheme()}</div>
-      <div style={{ display: 'flex', gap: '8px' }}>
-        <button onClick={() => setColorScheme('green')}>Green</button>
-        <button onClick={() => setColorScheme('blue')}>Blue</button>
-        <button onClick={() => setColorScheme('purple')}>Purple</button>
+      <div style={{ display: 'flex', gap: '8px', 'flex-wrap': 'wrap' }}>
+        <button onClick={() => setColorScheme('green')}>Cobalt</button>
+        <button onClick={() => setColorScheme('purple')}>Plum</button>
+        <button onClick={() => setColorScheme('blue')}>Teal</button>
+        <button onClick={() => setColorScheme('pink')}>Coral</button>
+        <button onClick={() => setColorScheme('orange')}>Gold</button>
+        <button onClick={() => setColorScheme('red')}>Cyan</button>
       </div>
     </div>
   );

@@ -107,13 +107,10 @@ export const CTASection: Component<CTASectionProps> = (props) => {
                     <Show when={props.primaryCta}>
                         <Button
                             href={props.primaryCta!.href}
-                            variant="tonal"
+                            variant="glass"
                             size="lg"
                             style={{
-                                background: 'var(--m3-color-surface-container-highest, #e6e0e9)',
-                                color: 'var(--m3-color-tertiary)',
                                 'font-weight': '600',
-                                'box-shadow': '0 8px 24px rgba(0, 0, 0, 0.25)',
                             }}
                         >
                             {props.primaryCta!.label}
@@ -134,9 +131,10 @@ export const CTASection: Component<CTASectionProps> = (props) => {
                             variant="outlined"
                             size="lg"
                             style={{
-                                background: 'color-mix(in srgb, var(--m3-color-on-secondary) 10%, transparent)',
-                                color: 'var(--m3-color-on-secondary)',
-                                'border-color': 'color-mix(in srgb, var(--m3-color-on-secondary) 50%, transparent)',
+                                background: 'rgba(255, 255, 255, 0.12)',
+                                color: 'white',
+                                'border-color': 'rgba(255, 255, 255, 0.4)',
+                                'backdrop-filter': 'blur(12px)',
                             }}
                         >
                             <Show when={props.secondaryCta!.icon}>

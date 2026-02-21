@@ -67,14 +67,12 @@ export default function AboutPage() {
           }}
         >
           <Chip
-            variant="label"
+            variant="glass"
             label="About FormAnywhere"
             style={{
               display: "inline-flex",
               margin: "0 0 1.5rem 0",
-              background: "rgba(255, 255, 255, 0.2)",
               color: "white",
-              "backdrop-filter": "blur(8px)",
               border: "none",
               height: "auto",
               "border-radius": "9999px",

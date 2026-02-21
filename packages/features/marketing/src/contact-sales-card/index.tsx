@@ -115,6 +115,7 @@ export const ContactSalesCard: Component<ContactSalesCardProps> = (props) => {
                         style={{
                             background: 'var(--m3-color-tertiary, #8b5cf6)',
                             color: 'var(--m3-color-on-tertiary, #fff)',
+                            'box-shadow': '0 4px 16px rgba(0, 0, 0, 0.15)',
                         }}
                     >
                         {props.ctaLabel || 'Contact Sales'}

@@ -19,6 +19,11 @@
     cursor: pointer;
     text-decoration: none;
     -webkit-tap-highlight-color: transparent;
+
+    // Prevent underline on hover when rendered as <a>
+    &:hover, &:focus, &:active {
+        text-decoration: none;
+    }
     user-select: none;
     overflow: hidden;
 

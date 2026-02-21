@@ -1,8 +1,11 @@
 /**
  * 404 Catch-all — SolidStart route
+ * Faithful conversion of original Astro 404.astro (Tailwind → inline styles)
+ * Uses @formanywhere/ui components (Button, Icon)
  */
 import PageLayout from "~/components/PageLayout";
 import { Button } from "@formanywhere/ui/button";
+import { Icon } from "@formanywhere/ui/icon";
 
 export default function NotFoundPage() {
   return (
@@ -33,7 +36,7 @@ export default function NotFoundPage() {
             perhaps it never existed in this dimension.
           </p>
 
-          <div style={{ display: "flex", "flex-direction": "column", "align-items": "center", "justify-content": "center", gap: "1rem" }}>
+          <div class="not-found-buttons" style={{ display: "flex", "flex-direction": "column", "align-items": "center", "justify-content": "center", gap: "1rem" }}>
             <Button
               href="/"
               variant="filled"
@@ -46,6 +49,14 @@ export default function NotFoundPage() {
               Contact Support
             </Button>
           </div>
+        </div>
+
+        {/* Decorative Floating Elements (glass blur) */}
+        <div class="not-found-float not-found-decor" style={{ position: "absolute", top: "25%", left: "25%", padding: "1rem", "border-radius": "1rem", background: "rgba(255, 255, 255, 0.05)", "backdrop-filter": "blur(12px)", "-webkit-backdrop-filter": "blur(12px)", border: "1px solid rgba(255, 255, 255, 0.1)", transform: "rotate(-12deg)", "animation-delay": "0.1s" }}>
+          <Icon name="file-text" size={48} color="rgba(var(--m3-color-on-surface-rgb, 28, 37, 46), 0.4)" />
+        </div>
+        <div class="not-found-float not-found-decor" style={{ position: "absolute", bottom: "25%", right: "25%", padding: "1.5rem", "border-radius": "9999px", background: "rgba(255, 255, 255, 0.05)", "backdrop-filter": "blur(12px)", "-webkit-backdrop-filter": "blur(12px)", border: "1px solid rgba(255, 255, 255, 0.1)", transform: "rotate(12deg)", "animation-delay": "0.3s" }}>
+          <Icon name="search" size={40} color="rgba(var(--m3-color-on-surface-rgb, 28, 37, 46), 0.4)" />
         </div>
       </main>
 
@@ -67,6 +78,13 @@ export default function NotFoundPage() {
         }
         .not-found-pulse-slow {
           animation: not-found-pulse-kf 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .not-found-decor {
+          display: none;
+        }
+        @media (min-width: 768px) {
+          .not-found-decor { display: block; }
+          .not-found-buttons { flex-direction: row !important; }
         }
       `}</style>
     </PageLayout>

@@ -17,7 +17,7 @@ import './styles.scss';
 
 export interface ChipProps {
     /** Chip variant */
-    variant?: 'assist' | 'filter' | 'input' | 'suggestion' | 'label';
+    variant?: 'assist' | 'filter' | 'input' | 'suggestion' | 'label' | 'glass';
     /** Size variant */
     size?: 'sm' | 'md' | 'lg';
     /** Chip label */

@@ -55,14 +55,12 @@ export default function TemplatesPage() {
           }}
         >
           <Chip
-            variant="label"
+            variant="glass"
             label="Form Templates"
             style={{
               display: "inline-flex",
               margin: "0 0 1.5rem 0",
-              background: "rgba(255, 255, 255, 0.2)",
               color: "white",
-              "backdrop-filter": "blur(8px)",
               border: "none",
             }}
           />
@@ -100,12 +98,10 @@ export default function TemplatesPage() {
             <SearchBar
               id="search-input"
               placeholder="Search templates..."
+              variant="glass"
               style={{
                 width: "100%",
                 "border-radius": "16px",
-                background: "rgba(255, 255, 255, 0.1)",
-                "backdrop-filter": "blur(12px)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
                 color: "white",
               }}
             />

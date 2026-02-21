@@ -101,7 +101,7 @@ export default function ValuesSection() {
               const color = valueColorTokens[i() % valueColorTokens.length];
               return (
                 <Card
-                  variant="outlined"
+                  variant="glass"
                   style={{
                     padding: "2rem",
                     "border-radius": "1rem",

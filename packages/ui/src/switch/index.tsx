@@ -28,6 +28,8 @@ export interface SwitchProps {
     showOnlySelectedIcon?: boolean;
     /** Accessibility label */
     ariaLabel?: string;
+    /** Glass morphism style */
+    glass?: boolean;
     /** Custom style */
     style?: JSX.CSSProperties;
     /** Custom class */
@@ -38,7 +40,7 @@ export interface SwitchProps {
 
 export const Switch: Component<SwitchProps> = (props) => {
     const [local] = splitProps(props, [
-        'checked', 'defaultChecked', 'disabled', 'size', 'name', 'value', 'onChange', 'icons', 'showOnlySelectedIcon', 'ariaLabel', 'style', 'class'
+        'checked', 'defaultChecked', 'disabled', 'size', 'name', 'value', 'onChange', 'icons', 'showOnlySelectedIcon', 'ariaLabel', 'glass', 'style', 'class'
     ]);
 
     const [internalChecked, setInternalChecked] = createSignal(local.defaultChecked ?? false);
@@ -60,6 +62,7 @@ export const Switch: Component<SwitchProps> = (props) => {
         if (local.icons) classes.push('icons');
         if (local.showOnlySelectedIcon) classes.push('show-only-selected-icon');
         if (local.disabled) classes.push('disabled');
+        if (local.glass) classes.push('glass');
         if (local.class) classes.push(local.class);
         return classes.join(' ');
     };

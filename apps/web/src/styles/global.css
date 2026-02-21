@@ -39,30 +39,10 @@ input, button, textarea, select {
     padding: 80px 0;
 }
 
-/* === LIQUID GLASS UTILITIES === */
-.lg-glass {
-    background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
-    backdrop-filter: blur(var(--glass-blur, 20px));
-    -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
-    border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-.lg-glass-strong {
-    background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
-    backdrop-filter: blur(var(--glass-blur-strong, 40px));
-    -webkit-backdrop-filter: blur(var(--glass-blur-strong, 40px));
-    border: 1px solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
-}
-
-.lg-glass-subtle {
-    background: var(--glass-tint-subtle, rgba(255, 255, 255, 0.3));
-    backdrop-filter: blur(var(--glass-blur-subtle, 12px));
-    -webkit-backdrop-filter: blur(var(--glass-blur-subtle, 12px));
-    border: 1px solid var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-}
+/* === LIQUID GLASS UTILITIES ===
+   Defined in @formanywhere/ui/styles/glass.css — no duplicates here.
+   Use .lg-glass, .lg-glass-strong, .lg-glass-subtle, .lg-card from glass.css
+   =================================================== */
 
 /* === ACCESSIBILITY — FOCUS INDICATORS === */
 .lg-focus-visible:focus-visible,

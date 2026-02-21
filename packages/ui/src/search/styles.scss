@@ -11,6 +11,7 @@
     padding: 0 16px;
     border-radius: var(--m3-shape-full, 9999px);
     background: var(--m3-color-surface-container-high);
+    color: var(--m3-color-on-surface, #1d1b20);
     box-sizing: border-box;
     transition: background var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
                 box-shadow var(--m3-motion-duration-short, 150ms) var(--m3-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
@@ -43,7 +44,8 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: var(--m3-color-on-surface-variant, #49454f);
+    color: inherit;
+    opacity: 0.7;
 }
 
 /* ─── INPUT ───────────────────────────────────────────────────────────────── */
@@ -55,7 +57,7 @@
     background: transparent;
     font-size: var(--m3-body-large-size, 16px);
     font-family: var(--m3-font-body, 'Inter', system-ui, sans-serif);
-    color: var(--m3-color-on-surface, #1d1b20);
+    color: inherit;
     padding: 0;
     min-width: 0;
 
@@ -68,6 +70,7 @@
     }
 
     &::placeholder {
-        color: var(--m3-color-on-surface-variant, #49454f);
+        color: inherit;
+        opacity: 0.6;
     }
 }
