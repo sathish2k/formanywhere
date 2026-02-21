@@ -1,0 +1,360 @@
+/* ===============================================
+   LIQUID GLASS M3 DESIGN SYSTEM - THEME
+   Centralized M3 Design Tokens for @formanywhere/ui
+   Inspired by MUI Minimal Dashboard Color System
+   =============================================== */
+
+/* === MUI MINIMAL GREY SCALE (Foundation for all neutrals) === */
+:root {
+    --grey-50: #FCFDFD;
+    --grey-100: #F9FAFB;
+    --grey-200: #F4F6F8;
+    --grey-300: #DFE3E8;
+    --grey-400: #C4CDD5;
+    --grey-500: #919EAB;
+    --grey-600: #637381;
+    --grey-700: #454F5B;
+    --grey-800: #1C252E;
+    --grey-900: #141A21;
+
+    /* === COMMON COLORS === */
+    --common-white: #FFFFFF;
+    --common-black: #000000;
+
+    /* === PRIMARY (5 Variants) - Default: Blue === */
+    --m3-color-primary-lighter: #CCF4FE;
+    --m3-color-primary-light: #68CDF9;
+    --m3-color-primary: #078DEE;
+    --m3-color-primary-dark: #0351AB;
+    --m3-color-primary-darker: #012972;
+    --m3-color-on-primary: #ffffff;
+    --m3-color-primary-container: #d2e4ff;
+    --m3-color-on-primary-container: #001c37;
+
+    /* === SECONDARY (5 Variants) - Purple === */
+    --m3-color-secondary-lighter: #EFD6FF;
+    --m3-color-secondary-light: #C684FF;
+    --m3-color-secondary: #8E33FF;
+    --m3-color-secondary-dark: #5119B7;
+    --m3-color-secondary-darker: #27097A;
+    --m3-color-on-secondary: #ffffff;
+    --m3-color-secondary-container: #eddcff;
+    --m3-color-on-secondary-container: #280056;
+
+    /* === TERTIARY (Using Info color for consistency) === */
+    --m3-color-tertiary: #00B8D9;
+    --m3-color-on-tertiary: #ffffff;
+    --m3-color-tertiary-container: #afecff;
+    --m3-color-on-tertiary-container: #001f27;
+
+    /* === INFO (5 Variants) === */
+    --m3-color-info-lighter: #CAFDF5;
+    --m3-color-info-light: #61F3F3;
+    --m3-color-info: #00B8D9;
+    --m3-color-info-dark: #006C9C;
+    --m3-color-info-darker: #003768;
+    --m3-color-on-info: #ffffff;
+    --m3-color-info-container: #afecff;
+
+    /* === SUCCESS (5 Variants) === */
+    --m3-color-success-lighter: #D3FCD2;
+    --m3-color-success-light: #77ED8B;
+    --m3-color-success: #22C55E;
+    --m3-color-success-dark: #118D57;
+    --m3-color-success-darker: #065E49;
+    --m3-color-on-success: #ffffff;
+    --m3-color-success-container: #6bff8f;
+    --m3-color-on-success-container: #002106;
+
+    /* === WARNING (5 Variants) === */
+    --m3-color-warning-lighter: #FFF5CC;
+    --m3-color-warning-light: #FFD666;
+    --m3-color-warning: #FFAB00;
+    --m3-color-warning-dark: #B76E00;
+    --m3-color-warning-darker: #7A4100;
+    --m3-color-on-warning: #1C252E;
+    --m3-color-warning-container: #ffddb3;
+    --m3-color-on-warning-container: #261900;
+
+    /* === ERROR (5 Variants) === */
+    --m3-color-error-lighter: #FFE9D5;
+    --m3-color-error-light: #FFAC82;
+    --m3-color-error: #FF5630;
+    --m3-color-error-dark: #B71D18;
+    --m3-color-error-darker: #7A0916;
+    --m3-color-on-error: #ffffff;
+    --m3-color-error-container: #ffdad2;
+    --m3-color-on-error-container: #410e0b;
+
+    /* === TEXT COLORS === */
+    --text-primary: var(--grey-800);
+    --text-secondary: var(--grey-600);
+    --text-disabled: var(--grey-500);
+
+    /* === BACKGROUND COLORS === */
+    --background-default: var(--common-white);
+    --background-paper: var(--common-white);
+    --background-neutral: var(--grey-200);
+
+    /* === SURFACE (M3 Compatibility) === */
+    --m3-color-surface: rgba(255, 255, 255, 0.95);
+    --m3-color-surface-dim: var(--grey-100);
+    --m3-color-surface-bright: var(--common-white);
+    --m3-color-surface-container-lowest: var(--grey-50);
+    --m3-color-surface-container-low: var(--grey-100);
+    --m3-color-surface-container: var(--grey-200);
+    --m3-color-surface-container-high: var(--grey-300);
+    --m3-color-surface-container-highest: var(--grey-400);
+    --m3-color-on-surface: var(--grey-800);
+    --m3-color-on-surface-variant: var(--grey-600);
+    --m3-color-outline: var(--grey-500);
+    --m3-color-outline-variant: var(--grey-300);
+    --m3-color-surface-variant: var(--grey-200);
+    --m3-color-inverse-surface: var(--grey-800);
+    --m3-color-inverse-on-surface: var(--grey-100);
+    --m3-color-inverse-primary: #68CDF9;
+    --m3-color-on-surface-rgb: 28, 37, 46;
+    --m3-color-scrim: rgba(0, 0, 0, 0.32);
+
+    /* === M3 SYS ALIASES (compatibility) === */
+    --m3-sys-color-primary: var(--m3-color-primary);
+    --m3-sys-color-secondary: var(--m3-color-secondary);
+    --m3-sys-color-tertiary: var(--m3-color-tertiary);
+    --m3-sys-color-primary-container: var(--m3-color-primary-container);
+    --m3-sys-color-on-primary-container: var(--m3-color-on-primary-container);
+    --m3-sys-color-secondary-container: var(--m3-color-secondary-container);
+    --m3-sys-color-on-secondary-container: var(--m3-color-on-secondary-container);
+    --m3-sys-color-tertiary-container: var(--m3-color-tertiary-container);
+    --m3-sys-color-on-tertiary-container: var(--m3-color-on-tertiary-container);
+    --m3-sys-color-surface: var(--m3-color-surface);
+    --m3-sys-color-on-surface: var(--m3-color-on-surface);
+    --m3-sys-color-on-surface-variant: var(--m3-color-on-surface-variant);
+    --m3-sys-color-outline: var(--m3-color-outline);
+    --m3-sys-color-outline-variant: var(--m3-color-outline-variant);
+
+    /* === DIVIDER === */
+    --divider: rgba(145, 158, 171, 0.2);
+
+    /* === LIQUID GLASS TOKENS === */
+    --glass-blur: 20px;
+    --glass-blur-strong: 40px;
+    --glass-blur-subtle: 12px;
+
+    --glass-tint-light: rgba(255, 255, 255, 0.7);
+    --glass-tint-medium: rgba(255, 255, 255, 0.5);
+    --glass-tint-subtle: rgba(255, 255, 255, 0.3);
+
+    --glass-border-light: rgba(255, 255, 255, 0.6);
+    --glass-border-medium: rgba(255, 255, 255, 0.4);
+    --glass-border-subtle: rgba(255, 255, 255, 0.2);
+
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    --glass-shadow-elevated: 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
+
+    /* === M3 TYPOGRAPHY === */
+    --m3-font-display: 'Inter', system-ui, sans-serif;
+    --m3-font-headline: 'Inter', system-ui, sans-serif;
+    --m3-font-body: 'Inter', system-ui, sans-serif;
+    --m3-font-label: 'Inter', system-ui, sans-serif;
+    --m3-font-label-large: 'Inter', system-ui, sans-serif;
+    --m3-font-plain: 'Inter', system-ui, sans-serif;
+
+    --m3-display-large-size: 57px;
+    --m3-display-medium-size: 45px;
+    --m3-display-small-size: 36px;
+    --m3-headline-large-size: 32px;
+    --m3-headline-medium-size: 28px;
+    --m3-headline-small-size: 24px;
+    --m3-headline-small-line-height: 32px;
+    --m3-title-large-size: 22px;
+    --m3-title-large-line-height: 28px;
+    --m3-title-medium-size: 16px;
+    --m3-body-large-size: 16px;
+    --m3-body-medium-size: 14px;
+    --m3-body-medium-line-height: 20px;
+    --m3-body-small-size: 12px;
+    --m3-label-large-size: 14px;
+    --m3-label-medium-size: 12px;
+    --m3-label-medium-line-height: 16px;
+    --m3-label-medium-weight: 500;
+
+    /* === M3 TYPESCALE (Full specification) === */
+    --m3-typescale-body-large-font: var(--m3-font-body);
+    --m3-typescale-body-large-size: 1rem;
+    --m3-typescale-body-large-line-height: 1.5rem;
+    --m3-typescale-body-large-weight: 400;
+    --m3-typescale-body-medium-font: var(--m3-font-body);
+    --m3-typescale-body-medium-size: 0.875rem;
+    --m3-typescale-body-medium-line-height: 1.25rem;
+    --m3-typescale-body-medium-weight: 400;
+    --m3-typescale-body-small-size: 0.75rem;
+    --m3-typescale-body-small-line-height: 1rem;
+    --m3-typescale-body-small-weight: 400;
+    --m3-typescale-headline-small-size: 1.5rem;
+    --m3-typescale-headline-small-line-height: 2rem;
+    --m3-typescale-headline-small-weight: 400;
+    --m3-typescale-label-small-font: var(--m3-font-label);
+    --m3-typescale-label-small-size: 0.6875rem;
+    --m3-typescale-label-small-line-height: 1rem;
+    --m3-typescale-label-small-weight: 500;
+
+    /* === M3 SHAPE === */
+    --m3-shape-extra-small: 4px;
+    --m3-shape-small: 8px;
+    --m3-shape-medium: 12px;
+    --m3-shape-large: 16px;
+    --m3-shape-extra-large: 28px;
+    --m3-shape-full: 9999px;
+    /* M3 corner aliases (matches --md-sys-shape-corner-*) */
+    --m3-shape-corner-medium: var(--m3-shape-medium);
+    --m3-shape-corner-large: var(--m3-shape-large);
+    --m3-shape-corner-extra-large: var(--m3-shape-extra-large);
+    --m3-shape-corner-full: var(--m3-shape-full);
+
+    /* === M3 MOTION === */
+    --m3-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+    --m3-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+    --m3-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+    --m3-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --m3-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+    --m3-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+    --m3-motion-duration-short: 150ms;
+    --m3-motion-duration-medium: 300ms;
+    --m3-motion-duration-long: 450ms;
+
+    /* === M3 ELEVATION === */
+    --m3-elevation-0: none;
+    --m3-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    --m3-elevation-2: 0 2px 4px rgba(0, 0, 0, 0.05), 0 4px 8px rgba(0, 0, 0, 0.1);
+    --m3-elevation-3: 0 4px 8px rgba(0, 0, 0, 0.06), 0 8px 16px rgba(0, 0, 0, 0.1);
+    --m3-elevation-4: 0 6px 12px rgba(0, 0, 0, 0.08), 0 12px 24px rgba(0, 0, 0, 0.12);
+    --m3-elevation-5: 0 8px 16px rgba(0, 0, 0, 0.1), 0 16px 32px rgba(0, 0, 0, 0.14);
+
+    /* === M3 COMPONENT TOKENS === */
+    --m3-divider-thickness: 1px;
+    --m3-dialog-icon-size: 24px;
+    --m3-linear-progress-track-height: 4px;
+    --m3-linear-progress-track-shape: 0px;
+    --m3-list-item-one-line-height: 56px;
+    --m3-list-item-two-line-height: 72px;
+}
+
+/* === DARK MODE (MUI Minimal) === */
+[data-theme="dark"],
+.dark {
+    /* Text colors invert */
+    --text-primary: var(--common-white);
+    --text-secondary: var(--grey-500);
+    --text-disabled: var(--grey-600);
+
+    /* Background colors invert */
+    --background-default: var(--grey-900);
+    --background-paper: var(--grey-800);
+    --background-neutral: var(--grey-700);
+
+    /* Surface updates */
+    --m3-color-surface: var(--grey-900);
+    --m3-color-surface-dim: var(--grey-800);
+    --m3-color-surface-bright: var(--grey-700);
+    --m3-color-surface-container-lowest: #0a0a0a;
+    --m3-color-surface-container-low: var(--grey-900);
+    --m3-color-surface-container: var(--grey-800);
+    --m3-color-surface-container-high: var(--grey-700);
+    --m3-color-surface-container-highest: var(--grey-600);
+    --m3-color-on-surface: var(--common-white);
+    --m3-color-on-surface-variant: var(--grey-400);
+    --m3-color-outline: var(--grey-400);
+    --m3-color-outline-variant: var(--grey-700);
+    --m3-color-surface-variant: var(--grey-700);
+    --m3-color-inverse-surface: var(--grey-100);
+    --m3-color-inverse-on-surface: var(--grey-800);
+    --m3-color-inverse-primary: #078DEE;
+    --m3-color-on-surface-rgb: 255, 255, 255;
+
+    /* Container colors: flip to dark tones (tone 30 = container, tone 80 = on-container) */
+    /* Default = blue/purple/cyan root theme */
+    --m3-color-primary-container: #00497f;
+    --m3-color-on-primary-container: #a0c9ff;
+    --m3-color-secondary-container: #6100be;
+    --m3-color-on-secondary-container: #d7baff;
+    --m3-color-tertiary-container: #004e5d;
+    --m3-color-on-tertiary-container: #48d7f9;
+    --m3-color-error-container: #8b1a00;
+    --m3-color-on-error-container: #ffdad2;
+    --m3-color-success-container: #005321;
+    --m3-color-on-success-container: #6bff8f;
+    --m3-color-warning-container: #624000;
+    --m3-color-on-warning-container: #ffddb3;
+    --m3-color-info-container: #004e5d;
+
+    /* === M3 SYS ALIASES (compatibility) === */
+    --m3-sys-color-primary: var(--m3-color-primary);
+    --m3-sys-color-secondary: var(--m3-color-secondary);
+    --m3-sys-color-tertiary: var(--m3-color-tertiary);
+    --m3-sys-color-primary-container: var(--m3-color-primary-container);
+    --m3-sys-color-on-primary-container: var(--m3-color-on-primary-container);
+    --m3-sys-color-secondary-container: var(--m3-color-secondary-container);
+    --m3-sys-color-on-secondary-container: var(--m3-color-on-secondary-container);
+    --m3-sys-color-tertiary-container: var(--m3-color-tertiary-container);
+    --m3-sys-color-on-tertiary-container: var(--m3-color-on-tertiary-container);
+    --m3-sys-color-surface: var(--m3-color-surface);
+    --m3-sys-color-on-surface: var(--m3-color-on-surface);
+    --m3-sys-color-on-surface-variant: var(--m3-color-on-surface-variant);
+    --m3-sys-color-outline: var(--m3-color-outline);
+    --m3-sys-color-outline-variant: var(--m3-color-outline-variant);
+
+    /* Divider */
+    --divider: rgba(145, 158, 171, 0.24);
+
+    /* Glass tokens for dark mode */
+    --glass-tint-light: rgba(60, 54, 70, 0.6);
+    --glass-tint-medium: rgba(50, 45, 58, 0.5);
+    --glass-tint-subtle: rgba(40, 36, 46, 0.4);
+
+    --glass-border-light: rgba(255, 255, 255, 0.15);
+    --glass-border-medium: rgba(255, 255, 255, 0.1);
+    --glass-border-subtle: rgba(255, 255, 255, 0.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THEME PRESETS - MUI Minimal Dashboard Inspired
+   Each theme includes 5 variants: Lighter, Light, Main, Dark, Darker
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ═══ GREEN THEME (Default) - MUI Minimal Default ══════════════════════════ */
+[data-theme="green"],
+:root:not([data-theme]) {
+    --m3-color-primary-lighter: #C8FAD6;
+    --m3-color-primary-light: #5BE49B;
+    --m3-color-primary: #00A76F;
+    --m3-color-primary-dark: #007867;
+    --m3-color-primary-darker: #004B50;
+    --m3-color-on-primary: #ffffff;
+    --m3-color-primary-container: #79fabb;
+    --m3-color-on-primary-container: #002112;
+
+    --m3-color-secondary: #212B36;
+    --m3-color-secondary-dark: #161C24;
+    --m3-color-on-secondary: #ffffff;
+    --m3-color-secondary-container: #d9e3f2;
+    --m3-color-on-secondary-container: #121c27;
+
+    --m3-color-tertiary: #00B8D9;
+    --m3-color-tertiary-dark: #006C9C;
+    --m3-color-on-tertiary: #ffffff;
+    --m3-color-tertiary-container: #afecff;
+    --m3-color-on-tertiary-container: #001f27;
+}
+
+
+/* Green + Dark */
+[data-theme="green"].dark,
+.dark [data-theme="green"],
+[data-theme="green"][class*="dark"] {
+    --m3-color-primary-container: #005234;
+    --m3-color-on-primary-container: #5adda0;
+    --m3-color-secondary-container: #3e4854;
+    --m3-color-on-secondary-container: #bdc7d6;
+    --m3-color-tertiary-container: #004e5d;
+    --m3-color-on-tertiary-container: #48d7f9;
+}

@@ -1,6 +1,5 @@
+$ bun build src/index.ts --outdir dist --target bun
+Bundled 1100 modules in 222ms
 
-[0m[2m[35m$[0m [2m[1mbun build src/index.ts --outdir dist --target bun[0m
-[32mBundled 1100 modules in 124ms[0m
-
-  [34mindex.js[33m  2.92 MB  [2m(entry point)[0m
+  index.js  2.92 MB  (entry point)
 

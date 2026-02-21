@@ -15,11 +15,11 @@ export default function SignInPage() {
     <PageLayout title="Sign In | FormAnywhere" description="Sign in to your FormAnywhere account">
 
       {/* Header */}
-      <div class="mb-8">
+      <div style={{ "margin-bottom": "2rem" }}>
         <Typography variant="headline-large" color="on-surface" as="h1">
           Welcome back
         </Typography>
-        <Typography variant="body-large" color="on-surface-variant" class="mt-2">
+        <Typography variant="body-large" color="on-surface-variant" style={{ "margin-top": "0.5rem" }}>
           Sign in to your account to continue
         </Typography>
       </div>

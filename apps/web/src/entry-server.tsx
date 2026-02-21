@@ -26,7 +26,7 @@ export default createHandler(() => (
           `}</script>
           {assets}
         </head>
-        <body class="bg-background-default font-sans antialiased">
+        <body>
           <a href="#main-content" class="skip-link">Skip to main content</a>
           <div id="app">{children}</div>
           {scripts}

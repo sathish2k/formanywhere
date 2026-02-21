@@ -1,21 +1,27 @@
 /**
  * Pricing Page — SolidStart route
  * Layout: (marketing) — Header + Footer provided by layout
+ *
+ * Route-level lazy loading:
+ * - Hero section SSR'd (above fold)
+ * - PricingTable, Enterprise, FAQ, CTA use clientOnly() + LazySection
  */
-import { lazy, Suspense } from "solid-js";
+import { clientOnly } from "@solidjs/start";
 import PageLayout from "~/components/PageLayout";
+import { LazySection } from "~/components/LazySection";
 import { Typography } from "@formanywhere/ui/typography";
 import { Chip } from "@formanywhere/ui/chip";
-import { pricingPlans, enterpriseFeatures, faqs } from "@formanywhere/marketing/pricing/config";
 
-const PricingTable = lazy(() => import("@formanywhere/marketing/pricing-table").then((m) => ({ default: m.PricingTable })));
-const FAQSection = lazy(() => import("@formanywhere/marketing/faq-section").then((m) => ({ default: m.FAQSection })));
-const ContactSalesCard = lazy(() => import("@formanywhere/marketing/contact-sales-card").then((m) => ({ default: m.ContactSalesCard })));
-const CTASection = lazy(() => import("@formanywhere/marketing/cta-section").then((m) => ({ default: m.CTASection })));
+// Below-fold: clientOnly prevents SSR, config data co-located in each wrapper
+const PricingTableSection = clientOnly(() => import("@formanywhere/marketing/pricing/table"));
+const EnterpriseSection = clientOnly(() => import("@formanywhere/marketing/pricing/enterprise"));
+const FAQWrapperSection = clientOnly(() => import("@formanywhere/marketing/pricing/faq"));
+const CTASection = clientOnly(() => import("@formanywhere/marketing/cta"));
 
 export default function PricingPage() {
   return (
     <PageLayout title="Pricing | FormAnywhere" description="Simple pricing for FormAnywhere">
+      {/* Hero — SSR'd (above fold) */}
       <section
         style={{
           "padding-top": "6rem",
@@ -68,63 +74,17 @@ export default function PricingPage() {
         </div>
       </section>
 
-      <section
-        style={{
-          "padding-bottom": "4rem",
-          padding: "0 1rem 4rem 1rem",
-        }}
-      >
-        <Suspense>
-          <PricingTable plans={pricingPlans} showBillingToggle={true} savingsPercent={17} />
-        </Suspense>
-      </section>
-
-      <section
-        style={{
-          padding: "4rem 0",
-          background: "var(--m3-color-surface)",
-        }}
-      >
-        <div
-          style={{
-            "max-width": "56rem",
-            margin: "0 auto",
-            padding: "0 1rem",
-          }}
-        >
-          <Suspense>
-            <ContactSalesCard
-              badge="Enterprise"
-              title="For organizations with custom requirements"
-              features={enterpriseFeatures}
-              ctaLabel="Contact Sales"
-              ctaHref="mailto:enterprise@formanywhere.com"
-              iconName="building"
-            />
-          </Suspense>
-        </div>
-      </section>
-
-      <section
-        style={{
-          padding: "4rem 0",
-          background: "var(--m3-color-surface-container-lowest, var(--m3-color-surface))",
-        }}
-      >
-        <div
-          style={{
-            "max-width": "48rem",
-            margin: "0 auto",
-            padding: "0 1rem",
-          }}
-        >
-          <Suspense>
-            <FAQSection title="Frequently Asked Questions" faqs={faqs} />
-          </Suspense>
-        </div>
-      </section>
-
-      <Suspense>
+      {/* Below-fold: lazy-loaded on scroll */}
+      <LazySection>
+        <PricingTableSection />
+      </LazySection>
+      <LazySection>
+        <EnterpriseSection />
+      </LazySection>
+      <LazySection>
+        <FAQWrapperSection />
+      </LazySection>
+      <LazySection>
         <CTASection
           title="Ready to build offline-first forms?"
           description="Start collecting data anywhere. No credit card required."
@@ -138,7 +98,7 @@ export default function PricingPage() {
             href: "mailto:hello@formanywhere.com",
           }}
         />
-      </Suspense>
+      </LazySection>
     </PageLayout>
   );
 }

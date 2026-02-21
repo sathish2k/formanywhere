@@ -9,89 +9,82 @@ import type { RouteSectionProps } from "@solidjs/router";
 export default function AuthLayout(props: RouteSectionProps) {
     return (
         <>
-            <div class="min-h-screen flex bg-surface">
-                {/* Left Side — Branding Panel (hidden on mobile) */}
-                <div class="hidden md:flex flex-1 bg-gradient-to-br from-primary to-primary-dark relative overflow-hidden flex-col justify-between p-16">
+            <style>{`
+                .auth-branding { display: none; }
+                .auth-mobile-logo { display: flex; }
+                @media (min-width: 768px) {
+                    .auth-branding { display: flex; }
+                    .auth-mobile-logo { display: none; }
+                }
+            `}</style>
+            <div style={{ "min-height": "100vh", display: "flex", background: "var(--m3-color-surface)" }}>
+                {/* Left Side — Branding Panel */}
+                <div class="auth-branding" style={{ flex: 1, "background-image": "linear-gradient(to bottom right, var(--m3-color-primary), var(--m3-color-primary-dark))", position: "relative", overflow: "hidden", "flex-direction": "column", "justify-content": "space-between", padding: "4rem" }}>
                     {/* Decorative circles */}
-                    <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full border border-white/10" />
-                    <div class="absolute -bottom-36 -left-36 w-[500px] h-[500px] rounded-full border border-white/10" />
+                    <div style={{ position: "absolute", top: "-6rem", right: "-6rem", width: "24rem", height: "24rem", "border-radius": "9999px", border: "1px solid rgba(255,255,255,0.1)" }} />
+                    <div style={{ position: "absolute", bottom: "-9rem", left: "-9rem", width: "500px", height: "500px", "border-radius": "9999px", border: "1px solid rgba(255,255,255,0.1)" }} />
 
                     {/* Logo */}
-                    <a href="/" class="relative z-10 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                            <img
-                                src="/icons/sparkles.svg"
-                                alt=""
-                                class="w-5 h-5 invert"
-                                aria-hidden="true"
-                            />
+                    <a href="/" style={{ position: "relative", "z-index": 10, display: "flex", "align-items": "center", gap: "0.75rem" }}>
+                        <div style={{ width: "2.5rem", height: "2.5rem", "border-radius": "0.75rem", background: "rgba(255,255,255,0.2)", "backdrop-filter": "blur(4px)", display: "flex", "align-items": "center", "justify-content": "center" }}>
+                            <img src="/icons/sparkles.svg" alt="" style={{ width: "1.25rem", height: "1.25rem", filter: "invert(1)" }} aria-hidden="true" />
                         </div>
-                        <span class="text-white text-lg font-semibold">FormAnywhere</span>
+                        <span style={{ color: "white", "font-size": "1.125rem", "font-weight": 600 }}>FormAnywhere</span>
                     </a>
 
                     {/* Marketing Content */}
-                    <div class="relative z-10 max-w-md">
-                        <h2 class="text-4xl font-bold text-white mb-4 leading-tight">
+                    <div style={{ position: "relative", "z-index": 10, "max-width": "28rem" }}>
+                        <h2 style={{ "font-size": "2.25rem", "font-weight": 700, color: "white", "margin-bottom": "1rem", "line-height": 1.2 }}>
                             Build powerful forms{" "}
-                            <span class="text-white/80">that work anywhere</span>
+                            <span style={{ color: "rgba(255,255,255,0.8)" }}>that work anywhere</span>
                         </h2>
-                        <p class="text-lg text-white/90 mb-10 leading-relaxed">
+                        <p style={{ "font-size": "1.125rem", color: "rgba(255,255,255,0.9)", "margin-bottom": "2.5rem", "line-height": 1.625 }}>
                             Join thousands of teams using FormAnywhere to create beautiful,
                             intelligent forms with drag-and-drop simplicity.
                         </p>
-                        <div class="flex flex-col gap-5">
+                        <div style={{ display: "flex", "flex-direction": "column", gap: "1.25rem" }}>
                             {[
                                 "AI-powered form generation",
                                 "100% offline-first architecture",
                                 "Advanced conditional logic",
                                 "Real-time analytics dashboard",
                             ].map((feature) => (
-                                <div class="flex items-center gap-4">
-                                    <div class="w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                                        <img
-                                            src="/icons/check.svg"
-                                            alt=""
-                                            class="w-3.5 h-3.5 invert"
-                                            aria-hidden="true"
-                                        />
+                                <div style={{ display: "flex", "align-items": "center", gap: "1rem" }}>
+                                    <div style={{ width: "1.5rem", height: "1.5rem", "border-radius": "9999px", background: "rgba(255,255,255,0.2)", "backdrop-filter": "blur(4px)", display: "flex", "align-items": "center", "justify-content": "center", "flex-shrink": 0 }}>
+                                        <img src="/icons/check.svg" alt="" style={{ width: "0.875rem", height: "0.875rem", filter: "invert(1)" }} aria-hidden="true" />
                                     </div>
-                                    <span class="text-white/95 text-base">{feature}</span>
+                                    <span style={{ color: "rgba(255,255,255,0.95)", "font-size": "1rem" }}>{feature}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
 
                     {/* Stats */}
-                    <div class="relative z-10 flex gap-16">
+                    <div style={{ position: "relative", "z-index": 10, display: "flex", gap: "4rem" }}>
                         <div>
-                            <div class="text-4xl font-bold text-white mb-1">10K+</div>
-                            <div class="text-white/80 text-sm">Active Users</div>
+                            <div style={{ "font-size": "2.25rem", "font-weight": 700, color: "white", "margin-bottom": "0.25rem" }}>10K+</div>
+                            <div style={{ color: "rgba(255,255,255,0.8)", "font-size": "0.875rem" }}>Active Users</div>
                         </div>
                         <div>
-                            <div class="text-4xl font-bold text-white mb-1">500K+</div>
-                            <div class="text-white/80 text-sm">Forms Created</div>
+                            <div style={{ "font-size": "2.25rem", "font-weight": 700, color: "white", "margin-bottom": "0.25rem" }}>500K+</div>
+                            <div style={{ color: "rgba(255,255,255,0.8)", "font-size": "0.875rem" }}>Forms Created</div>
                         </div>
                         <div>
-                            <div class="text-4xl font-bold text-white mb-1">99.9%</div>
-                            <div class="text-white/80 text-sm">Uptime</div>
+                            <div style={{ "font-size": "2.25rem", "font-weight": 700, color: "white", "margin-bottom": "0.25rem" }}>99.9%</div>
+                            <div style={{ color: "rgba(255,255,255,0.8)", "font-size": "0.875rem" }}>Uptime</div>
                         </div>
                     </div>
                 </div>
 
                 {/* Right Side — Form Content (from child route) */}
-                <div class="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background-default">
-                    <div class="w-full max-w-[480px]">
-                        {/* Mobile Logo (hidden on desktop) */}
-                        <a href="/" class="md:hidden flex items-center gap-3 mb-8">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-lg">
-                                <img
-                                    src="/icons/sparkles.svg"
-                                    alt=""
-                                    class="w-5 h-5 invert"
-                                    aria-hidden="true"
-                                />
+                <div style={{ flex: 1, display: "flex", "align-items": "center", "justify-content": "center", padding: "1.5rem", background: "var(--m3-color-background)" }}>
+                    <div style={{ width: "100%", "max-width": "480px" }}>
+                        {/* Mobile Logo */}
+                        <a href="/" class="auth-mobile-logo" style={{ "align-items": "center", gap: "0.75rem", "margin-bottom": "2rem" }}>
+                            <div style={{ width: "2.5rem", height: "2.5rem", "border-radius": "0.75rem", "background-image": "linear-gradient(to bottom right, var(--m3-color-primary), var(--m3-color-primary-dark))", display: "flex", "align-items": "center", "justify-content": "center", "box-shadow": "0 10px 15px -3px rgba(0,0,0,0.1)" }}>
+                                <img src="/icons/sparkles.svg" alt="" style={{ width: "1.25rem", height: "1.25rem", filter: "invert(1)" }} aria-hidden="true" />
                             </div>
-                            <span class="text-on-surface text-lg font-semibold">
+                            <span style={{ color: "var(--m3-color-on-surface)", "font-size": "1.125rem", "font-weight": 600 }}>
                                 FormAnywhere
                             </span>
                         </a>

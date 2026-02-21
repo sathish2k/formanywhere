@@ -168,8 +168,9 @@ const features = [
                             'border-radius': '12px',
                             display: 'flex',
                             'align-items': 'center',
-                            gap: '0.75rem'
-                        }} style={{ animation: 'bounce 3s infinite' }}>
+                            gap: '0.75rem',
+                            animation: 'bounce 3s infinite'
+                        }}>
                             <Avatar
                                 size="sm"
                                 icon={<svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" /></svg>}
@@ -191,15 +192,17 @@ const features = [
                     'border-radius': '24px',
                     display: 'flex',
                     'align-items': 'center',
-                    gap: '1rem'
-                }} style={{ animation: 'float 4s ease-in-out infinite' }}>
+                    gap: '1rem',
+                    animation: 'float 4s ease-in-out infinite'
+                }}>
                     <Box style={{
                         width: '3rem',
                         height: '3rem',
                         'border-radius': '50%',
                         border: '4px solid var(--m3-color-tertiary)',
-                        'border-top-color': 'transparent'
-                    }} style={{ animation: 'spin 1s linear infinite' }} />
+                        'border-top-color': 'transparent',
+                        animation: 'spin 1s linear infinite'
+                    }} />
                     <Box>
                         <Typography variant="title-medium" as="span" style={{ 'font-weight': 'bold' }}>Syncing...</Typography>
                         <Typography variant="body-small" style={{ opacity: 0.6 }}>Restoring connection</Typography>

@@ -1,0 +1,185 @@
+/* Theme Presets - Loaded on demand */
+/* ═══ PURPLE THEME ═════════════════════════════════════════════════════════ */
+[data-theme="purple"] {
+    --m3-color-primary-lighter: #EBD6FD;
+    --m3-color-primary-light: #B985F4;
+    --m3-color-primary: #7635DC;
+    --m3-color-primary-dark: #4319A5;
+    --m3-color-primary-darker: #200A69;
+    --m3-color-on-primary: #ffffff;
+    --m3-color-primary-container: #ebdcff;
+    --m3-color-on-primary-container: #260058;
+
+    --m3-color-secondary: #00A76F;
+    --m3-color-secondary-dark: #007867;
+    --m3-color-on-secondary: #ffffff;
+    --m3-color-secondary-container: #79fabb;
+    --m3-color-on-secondary-container: #002112;
+
+    --m3-color-tertiary: #00B8D9;
+    --m3-color-tertiary-dark: #006C9C;
+    --m3-color-on-tertiary: #ffffff;
+    --m3-color-tertiary-container: #afecff;
+    --m3-color-on-tertiary-container: #001f27;
+}
+
+/* ═══ BLUE THEME ═══════════════════════════════════════════════════════════ */
+[data-theme="blue"] {
+    --m3-color-primary-lighter: #CCF4FE;
+    --m3-color-primary-light: #68CDF9;
+    --m3-color-primary: #078DEE;
+    --m3-color-primary-dark: #0351AB;
+    --m3-color-primary-darker: #012972;
+    --m3-color-on-primary: #ffffff;
+    --m3-color-primary-container: #d2e4ff;
+    --m3-color-on-primary-container: #001c37;
+
+    --m3-color-secondary: #FF5630;
+    --m3-color-secondary-dark: #B71833;
+    --m3-color-on-secondary: #ffffff;
+    --m3-color-secondary-container: #ffdad2;
+    --m3-color-on-secondary-container: #3d0600;
+
+    --m3-color-tertiary: #00A76F;
+    --m3-color-tertiary-dark: #007867;
+    --m3-color-on-tertiary: #ffffff;
+    --m3-color-tertiary-container: #79fabb;
+    --m3-color-on-tertiary-container: #002112;
+}
+
+/* ═══ CYAN THEME ═══════════════════════════════════════════════════════════ */
+[data-theme="pink"] {
+    --m3-color-primary-lighter: #D1E9FC;
+    --m3-color-primary-light: #76B0F1;
+    --m3-color-primary: #2065D1;
+    --m3-color-primary-dark: #103996;
+    --m3-color-primary-darker: #061B64;
+    --m3-color-on-primary: #ffffff;
+    --m3-color-primary-container: #d9e2ff;
+    --m3-color-on-primary-container: #001a43;
+
+    --m3-color-secondary: #FF6B6B;
+    --m3-color-secondary-dark: #C92A2A;
+    --m3-color-on-secondary: #ffffff;
+    --m3-color-secondary-container: #ffdad8;
+    --m3-color-on-secondary-container: #410006;
+
+    --m3-color-tertiary: #00A76F;
+    --m3-color-tertiary-dark: #007867;
+    --m3-color-on-tertiary: #ffffff;
+    --m3-color-tertiary-container: #79fabb;
+    --m3-color-on-tertiary-container: #002112;
+}
+
+/* ═══ ORANGE THEME ═════════════════════════════════════════════════════════ */
+[data-theme="orange"] {
+    --m3-color-primary-lighter: #FEF4D4;
+    --m3-color-primary-light: #FED680;
+    --m3-color-primary: #FDA92D;
+    --m3-color-primary-dark: #B66816;
+    --m3-color-primary-darker: #793908;
+    --m3-color-on-primary: #1C252E;
+    --m3-color-primary-container: #ffddb7;
+    --m3-color-on-primary-container: #2a1700;
+
+    --m3-color-secondary: #5D4037;
+    --m3-color-secondary-dark: #3E2723;
+    --m3-color-on-secondary: #ffffff;
+    --m3-color-secondary-container: #ffdbd0;
+    --m3-color-on-secondary-container: #2c160e;
+
+    --m3-color-tertiary: #8E33FF;
+    --m3-color-tertiary-dark: #5119B7;
+    --m3-color-on-tertiary: #ffffff;
+    --m3-color-tertiary-container: #eddcff;
+    --m3-color-on-tertiary-container: #280056;
+}
+
+/* ═══ RED THEME ════════════════════════════════════════════════════════════ */
+[data-theme="red"] {
+    --m3-color-primary-lighter: #FFE3D5;
+    --m3-color-primary-light: #FF8983;
+    --m3-color-primary: #FF3030;
+    --m3-color-primary-dark: #B71833;
+    --m3-color-primary-darker: #7A0930;
+    --m3-color-on-primary: #ffffff;
+    --m3-color-primary-container: #ffdad6;
+    --m3-color-on-primary-container: #410002;
+
+    --m3-color-secondary: #FDA92D;
+    --m3-color-secondary-dark: #B66816;
+    --m3-color-on-secondary: #ffffff;
+    --m3-color-secondary-container: #ffddb7;
+    --m3-color-on-secondary-container: #2a1700;
+
+    --m3-color-tertiary: #00A76F;
+    --m3-color-tertiary-dark: #007867;
+    --m3-color-on-tertiary: #ffffff;
+    --m3-color-tertiary-container: #79fabb;
+    --m3-color-on-tertiary-container: #002112;
+}
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK MODE + THEME COMBINATIONS
+   Container tokens flip to tone 30 (dark container) / tone 80 (on-container)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+
+/* Purple + Dark */
+[data-theme="purple"].dark,
+.dark [data-theme="purple"],
+[data-theme="purple"][class*="dark"] {
+    --m3-color-primary-container: #5c02c2;
+    --m3-color-on-primary-container: #d4bbff;
+    --m3-color-secondary-container: #005234;
+    --m3-color-on-secondary-container: #5adda0;
+    --m3-color-tertiary-container: #004e5d;
+    --m3-color-on-tertiary-container: #48d7f9;
+}
+
+/* Blue + Dark */
+[data-theme="blue"].dark,
+.dark [data-theme="blue"],
+[data-theme="blue"][class*="dark"] {
+    --m3-color-primary-container: #00497f;
+    --m3-color-on-primary-container: #a0c9ff;
+    --m3-color-secondary-container: #8b1a00;
+    --m3-color-on-secondary-container: #ffb4a3;
+    --m3-color-tertiary-container: #005234;
+    --m3-color-on-tertiary-container: #5adda0;
+}
+
+/* Pink + Dark */
+[data-theme="pink"].dark,
+.dark [data-theme="pink"],
+[data-theme="pink"][class*="dark"] {
+    --m3-color-primary-container: #004398;
+    --m3-color-on-primary-container: #afc6ff;
+    --m3-color-secondary-container: #8c1520;
+    --m3-color-on-secondary-container: #ffb3b0;
+    --m3-color-tertiary-container: #005234;
+    --m3-color-on-tertiary-container: #5adda0;
+}
+
+/* Orange + Dark */
+[data-theme="orange"].dark,
+.dark [data-theme="orange"],
+[data-theme="orange"][class*="dark"] {
+    --m3-color-primary-container: #653e00;
+    --m3-color-on-primary-container: #ffb95e;
+    --m3-color-secondary-container: #5d4037;
+    --m3-color-on-secondary-container: #e7bdb1;
+    --m3-color-tertiary-container: #6100be;
+    --m3-color-on-tertiary-container: #d7baff;
+}
+
+/* Red + Dark */
+[data-theme="red"].dark,
+.dark [data-theme="red"],
+[data-theme="red"][class*="dark"] {
+    --m3-color-primary-container: #93000c;
+    --m3-color-on-primary-container: #ffb4ab;
+    --m3-color-secondary-container: #653e00;
+    --m3-color-on-secondary-container: #ffb95e;
+    --m3-color-tertiary-container: #005234;
+    --m3-color-on-tertiary-container: #5adda0;
+}

@@ -1,167 +1,115 @@
 /* ===============================================
    FORMANYWHERE WEB - GLOBAL CSS
+   All colors use --m3-color-* tokens directly from theme.css.
+   No intermediary bridge layer.
    =============================================== */
 
-/* === TAILWIND === */
-@import "tailwindcss";
-
-/* === TAILWIND 4 THEME COLORS === */
-@theme {
-    --color-primary: #5B5FED;
-    --color-primary-dark: #4A4ED4;
-    --color-primary-light: rgba(91, 95, 237, 0.1);
-    --color-on-primary: #ffffff;
-    --color-primary-container: rgba(91, 95, 237, 0.12);
-    --color-on-primary-container: #1a1a4a;
-
-    --color-secondary: #8E33FF;
-    --color-secondary-dark: #7A1FEB;
-    --color-secondary-light: rgba(142, 51, 255, 0.1);
-    --color-on-secondary: #ffffff;
-    --color-secondary-container: rgba(142, 51, 255, 0.12);
-    --color-on-secondary-container: #7A1FEB;
-
-    --color-tertiary: #00B8D9;
-    --color-tertiary-dark: #0098B3;
-    --color-tertiary-light: rgba(0, 184, 217, 0.1);
-    --color-on-tertiary: #ffffff;
-    --color-tertiary-container: rgba(0, 184, 217, 0.12);
-    --color-on-tertiary-container: #0098B3;
-
-    --color-success: #22C55E;
-    --color-success-light: rgba(34, 197, 94, 0.1);
-    --color-warning: #FFAB00;
-    --color-warning-light: rgba(255, 171, 0, 0.1);
-    --color-error: #FF5630;
-    --color-error-light: rgba(255, 86, 48, 0.1);
-
-    --color-surface: rgba(255, 255, 255, 0.95);
-    --color-on-surface: #1f1f1f;
-    --color-on-surface-variant: #637381;
-    --color-outline: rgba(145, 158, 171, 0.32);
-    --color-outline-variant: rgba(145, 158, 171, 0.2);
-
-    --color-background-default: #FCFDFD;
-    --color-background-paper: #FFFFFF;
-    --color-background-neutral: #F4F6F8;
-
-    --color-surface-dim: #F9FAFB;
-    --color-surface-variant: #F4F6F8;
-    --color-surface-container-lowest: #FCFDFD;
-    --color-surface-container-low: #F9FAFB;
-    --color-surface-container: #F4F6F8;
-    --color-surface-container-high: #DFE3E8;
-    --color-surface-container-highest: #C4CDD5;
-
-    /* === ANIMATION TIMING === */
-    --animate-duration-short: 150ms;
-    --animate-duration-medium: 300ms;
-    --animate-duration-long: 450ms;
-
-    /* === EASING CURVES === */
-    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-    --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
-    --ease-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
-    --ease-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+/* === RESET / NORMALIZE === */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
 }
 
-/* === TAILWIND ↔ M3 BRIDGE ===
-   Derive --color-* (Tailwind utilities) from --m3-color-* (theme.css tokens).
-   theme.css is the single source of truth for all theme-specific colors. */
-:root,
-[data-theme] {
-    --color-primary: var(--m3-color-primary);
-    --color-primary-dark: var(--m3-color-primary-dark);
-    --color-primary-light: var(--m3-color-primary-container);
-    --color-on-primary: var(--m3-color-on-primary, #ffffff);
-    --color-primary-container: var(--m3-color-primary-container);
-    --color-on-primary-container: var(--m3-color-on-primary-container);
-
-    --color-secondary: var(--m3-color-secondary);
-    --color-secondary-dark: var(--m3-color-secondary-dark);
-    --color-secondary-light: var(--m3-color-secondary-container);
-    --color-on-secondary: var(--m3-color-on-secondary, #ffffff);
-    --color-secondary-container: var(--m3-color-secondary-container);
-    --color-on-secondary-container: var(--m3-color-on-secondary-container);
-
-    --color-tertiary: var(--m3-color-tertiary);
-    --color-tertiary-dark: var(--m3-color-tertiary-dark);
-    --color-tertiary-light: var(--m3-color-tertiary-container);
-    --color-on-tertiary: var(--m3-color-on-tertiary, #ffffff);
-    --color-tertiary-container: var(--m3-color-tertiary-container);
-    --color-on-tertiary-container: var(--m3-color-on-tertiary-container);
+html {
+    -webkit-text-size-adjust: 100%;
+    -moz-tab-size: 4;
+    tab-size: 4;
 }
 
-/* === UTILITY CLASSES === */
-@layer components {
-    .section {
-        padding: 80px 0;
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--m3-color-background);
+    color: var(--m3-color-on-surface);
+}
+
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+
+input, button, textarea, select {
+    font: inherit;
+}
+
+/* === SECTIONS === */
+.section {
+    padding: 80px 0;
+}
+
+/* === LIQUID GLASS UTILITIES === */
+.lg-glass {
+    background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(var(--glass-blur, 20px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+    border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.lg-glass-strong {
+    background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(var(--glass-blur-strong, 40px));
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong, 40px));
+    border: 1px solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.lg-glass-subtle {
+    background: var(--glass-tint-subtle, rgba(255, 255, 255, 0.3));
+    backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+    -webkit-backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+    border: 1px solid var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* === ACCESSIBILITY — FOCUS INDICATORS === */
+.lg-focus-visible:focus-visible,
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--m3-color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* === REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
+}
 
+/* === ANIMATIONS === */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
 
+/* === LINK HOVER UTILITIES === */
+a:hover {
+    text-decoration: underline;
+}
 
-
-    /* === LIQUID GLASS UTILITIES === */
-    /* Standard glass effect - cards, panels */
-    .lg-glass {
-        background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
-        backdrop-filter: blur(var(--glass-blur, 20px));
-        -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
-        border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
-    }
-
-    /* Strong glass effect - modals, dialogs, important cards */
-    .lg-glass-strong {
-        background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
-        backdrop-filter: blur(var(--glass-blur-strong, 40px));
-        -webkit-backdrop-filter: blur(var(--glass-blur-strong, 40px));
-        border: 1px solid var(--glass-border-light, rgba(255, 255, 255, 0.6));
-        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
-    }
-
-    /* Subtle glass effect - background elements, secondary surfaces */
-    .lg-glass-subtle {
-        background: var(--glass-tint-subtle, rgba(255, 255, 255, 0.3));
-        backdrop-filter: blur(var(--glass-blur-subtle, 12px));
-        -webkit-backdrop-filter: blur(var(--glass-blur-subtle, 12px));
-        border: 1px solid var(--glass-border-subtle, rgba(255, 255, 255, 0.2));
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-    }
-
-    /* === ACCESSIBILITY - FOCUS INDICATORS === */
-    /* Visible focus indicator for keyboard navigation - WCAG 2.1 Level AA */
-    .lg-focus-visible:focus-visible,
-    button:focus-visible,
-    a:focus-visible,
-    input:focus-visible,
-    select:focus-visible,
-    textarea:focus-visible,
-    [tabindex]:focus-visible {
-        outline: 2px solid var(--color-primary);
-        outline-offset: 2px;
-        border-radius: 4px;
-    }
-
-
-    /* === REDUCED MOTION === */
-    /* Respect user's motion preferences - WCAG 2.1 Level AAA */
-    @media (prefers-reduced-motion: reduce) {
-
-        *,
-        *::before,
-        *::after {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-            scroll-behavior: auto !important;
-        }
-    }
-
-
-    /* === TYPOGRAPHY ===
-     * Typography classes have been moved to @formanywhere/ui/styles/typography.css
-     * Import it in your layout: import "@formanywhere/ui/styles/typography.css";
-     * Or use the Typography component: import { Typography } from "@formanywhere/ui";
-     */
+/* === SKIP LINK === */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 16px;
+    z-index: 9999;
+    padding: 8px 16px;
+    background: var(--m3-color-primary);
+    color: var(--m3-color-on-primary);
+    border-radius: var(--m3-shape-small, 8px);
+    text-decoration: none;
+    font-weight: 600;
+}
+.skip-link:focus {
+    top: 16px;
 }

@@ -51,8 +51,44 @@
             "import": "./src/cta/cta-section.tsx"
         },
         "./about/config": "./src/about/config.ts",
+        "./about/mission": {
+            "solid": "./src/about/mission-section.tsx",
+            "import": "./src/about/mission-section.tsx"
+        },
+        "./about/values": {
+            "solid": "./src/about/values-section.tsx",
+            "import": "./src/about/values-section.tsx"
+        },
+        "./about/tech-stack": {
+            "solid": "./src/about/tech-stack-section.tsx",
+            "import": "./src/about/tech-stack-section.tsx"
+        },
         "./pricing/config": "./src/pricing/config.ts",
+        "./pricing/table": {
+            "solid": "./src/pricing/pricing-table-section.tsx",
+            "import": "./src/pricing/pricing-table-section.tsx"
+        },
+        "./pricing/enterprise": {
+            "solid": "./src/pricing/enterprise-section.tsx",
+            "import": "./src/pricing/enterprise-section.tsx"
+        },
+        "./pricing/faq": {
+            "solid": "./src/pricing/faq-wrapper-section.tsx",
+            "import": "./src/pricing/faq-wrapper-section.tsx"
+        },
         "./templates/config": "./src/templates/config.ts",
+        "./templates/popular": {
+            "solid": "./src/templates/popular-templates-section.tsx",
+            "import": "./src/templates/popular-templates-section.tsx"
+        },
+        "./templates/cta": {
+            "solid": "./src/templates/cta-section.tsx",
+            "import": "./src/templates/cta-section.tsx"
+        },
+        "./templates/browser": {
+            "solid": "./src/templates/browser-section.tsx",
+            "import": "./src/templates/browser-section.tsx"
+        },
         "./pricing-table": {
             "solid": "./src/pricing-table/index.tsx",
             "import": "./src/pricing-table/index.tsx"

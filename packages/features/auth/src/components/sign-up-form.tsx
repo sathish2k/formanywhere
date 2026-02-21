@@ -85,9 +85,9 @@ export function SignUpForm(props: SignUpFormProps) {
     };
 
     return (
-        <div class="w-full">
+        <div style={{ width: '100%' }}>
             {/* Social Login Buttons */}
-            <div class="flex flex-col gap-3 mb-6">
+            <div style={{ display: 'flex', 'flex-direction': 'column', gap: '0.75rem', 'margin-bottom': '1.5rem' }}>
                 <Button
                     variant="outlined"
                     onClick={handleGoogleSignUp}
@@ -108,22 +108,22 @@ export function SignUpForm(props: SignUpFormProps) {
             </div>
 
             {/* Divider */}
-            <div class="flex items-center gap-4 my-6">
-                <div class="flex-1"><Divider /></div>
+            <div style={{ display: 'flex', 'align-items': 'center', gap: '1rem', 'margin-top': '1.5rem', 'margin-bottom': '1.5rem' }}>
+                <div style={{ flex: 1 }}><Divider /></div>
                 <Typography variant="body-small" color="on-surface-variant">or</Typography>
-                <div class="flex-1"><Divider /></div>
+                <div style={{ flex: 1 }}><Divider /></div>
             </div>
 
             {/* Error Message */}
             <Show when={error()}>
-                <div class="mb-4 p-3 rounded-lg bg-error/10 border border-error/20">
+                <div style={{ 'margin-bottom': '1rem', padding: '0.75rem', 'border-radius': '0.5rem', background: 'color-mix(in srgb, var(--m3-color-error) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--m3-color-error) 20%, transparent)' }}>
                     <Typography variant="body-small" color="error">{error()}</Typography>
                 </div>
             </Show>
 
             {/* Sign Up Form */}
             <Form onSubmit={handleSubmit}>
-                <div class="flex flex-col gap-5">
+                <div style={{ display: 'flex', 'flex-direction': 'column', gap: '1.25rem' }}>
                     <TextField
                         name="fullName"
                         type="text"
@@ -160,7 +160,7 @@ export function SignUpForm(props: SignUpFormProps) {
                     <Checkbox
                         label={
                             <span>
-                                I agree to the <a href="/terms" class="text-tertiary hover:underline">Terms of Service</a> and <a href="/privacy" class="text-tertiary hover:underline">Privacy Policy</a>
+                                I agree to the <a href="/terms" style={{ color: 'var(--m3-color-tertiary)' }}>Terms of Service</a> and <a href="/privacy" style={{ color: 'var(--m3-color-tertiary)' }}>Privacy Policy</a>
                             </span>
                         }
                         ariaLabel="I agree to the Terms of Service and Privacy Policy"
@@ -182,9 +182,9 @@ export function SignUpForm(props: SignUpFormProps) {
             </Form>
 
             {/* Sign In Link */}
-            <Typography variant="body-medium" color="on-surface-variant" align="center" class="mt-8">
+            <Typography variant="body-medium" color="on-surface-variant" align="center" style={{ 'margin-top': '2rem' }}>
                 Already have an account?{' '}
-                <a href="/signin" class="text-primary font-semibold hover:underline">Sign in</a>
+                <a href="/signin" style={{ color: 'var(--m3-color-primary)', 'font-weight': 600 }}>Sign in</a>
             </Typography>
         </div>
     );

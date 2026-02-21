@@ -5,6 +5,7 @@ export default defineConfig({
   middleware: "./src/middleware.ts",
   server: {
     preset: "bun",
+    compressPublicAssets: { gzip: true, brotli: true },
   },
   vite: {
     plugins: [

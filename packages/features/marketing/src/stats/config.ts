@@ -9,8 +9,8 @@ export const stats = [
 ] as const;
 
 export const iconColors: Record<string, string> = {
-    offline: "text-tertiary",
-    sync: "text-secondary",
-    platforms: "text-primary",
-    privacy: "text-tertiary",
+    offline: "var(--m3-color-tertiary)",
+    sync: "var(--m3-color-secondary)",
+    platforms: "var(--m3-color-primary)",
+    privacy: "var(--m3-color-tertiary)",
 };

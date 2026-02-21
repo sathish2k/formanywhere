@@ -86,9 +86,9 @@ export function SignInForm(props: SignInFormProps) {
     };
 
     return (
-        <div class="w-full">
+        <div style={{ width: '100%' }}>
             {/* Social Login Buttons */}
-            <div class="flex flex-col gap-3 mb-6">
+            <div style={{ display: 'flex', 'flex-direction': 'column', gap: '0.75rem', 'margin-bottom': '1.5rem' }}>
                 <Button
                     variant="outlined"
                     onClick={handleGoogleSignIn}
@@ -109,22 +109,22 @@ export function SignInForm(props: SignInFormProps) {
             </div>
 
             {/* Divider */}
-            <div class="flex items-center gap-4 my-6">
-                <div class="flex-1"><Divider /></div>
+            <div style={{ display: 'flex', 'align-items': 'center', gap: '1rem', 'margin-top': '1.5rem', 'margin-bottom': '1.5rem' }}>
+                <div style={{ flex: 1 }}><Divider /></div>
                 <Typography variant="body-small" color="on-surface-variant">or</Typography>
-                <div class="flex-1"><Divider /></div>
+                <div style={{ flex: 1 }}><Divider /></div>
             </div>
 
             {/* Error Message */}
             <Show when={error()}>
-                <div class="mb-4 p-3 rounded-lg bg-error/10 border border-error/20">
+                <div style={{ 'margin-bottom': '1rem', padding: '0.75rem', 'border-radius': '0.5rem', background: 'color-mix(in srgb, var(--m3-color-error) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--m3-color-error) 20%, transparent)' }}>
                     <Typography variant="body-small" color="error">{error()}</Typography>
                 </div>
             </Show>
 
             {/* Email Sign In Form */}
             <Form onSubmit={handleSubmit}>
-                <div class="flex flex-col gap-5">
+                <div style={{ display: 'flex', 'flex-direction': 'column', gap: '1.25rem' }}>
                     <TextField
                         name="email"
                         type="email"
@@ -134,9 +134,9 @@ export function SignInForm(props: SignInFormProps) {
                     />
 
                     <div>
-                        <div class="flex justify-between items-center mb-2">
+                        <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', 'margin-bottom': '0.5rem' }}>
                             <Typography variant="label-large" color="on-surface">Password</Typography>
-                            <a href="/forgot-password" class="text-sm text-tertiary hover:underline">Forgot?</a>
+                            <a href="/forgot-password" style={{ 'font-size': '0.875rem', color: 'var(--m3-color-tertiary)' }}>Forgot?</a>
                         </div>
                         <TextField
                             name="password"
@@ -165,17 +165,17 @@ export function SignInForm(props: SignInFormProps) {
             </Form>
 
             {/* Sign Up Link */}
-            <Typography variant="body-medium" color="on-surface-variant" align="center" class="mt-8">
+            <Typography variant="body-medium" color="on-surface-variant" align="center" style={{ 'margin-top': '2rem' }}>
                 Don't have an account?{' '}
-                <a href="/signup" class="text-primary font-semibold hover:underline">Sign up for free</a>
+                <a href="/signup" style={{ color: 'var(--m3-color-primary)', 'font-weight': 600 }}>Sign up for free</a>
             </Typography>
 
             {/* Terms */}
-            <Typography variant="body-small" color="on-surface-variant" align="center" class="mt-6">
+            <Typography variant="body-small" color="on-surface-variant" align="center" style={{ 'margin-top': '1.5rem' }}>
                 By signing in, you agree to our{' '}
-                <span class="text-tertiary cursor-pointer hover:underline">Terms of Service</span>{' '}
+                <span style={{ color: 'var(--m3-color-tertiary)', cursor: 'pointer' }}>Terms of Service</span>{' '}
                 and{' '}
-                <span class="text-tertiary cursor-pointer hover:underline">Privacy Policy</span>
+                <span style={{ color: 'var(--m3-color-tertiary)', cursor: 'pointer' }}>Privacy Policy</span>
             </Typography>
         </div>
     );

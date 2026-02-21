@@ -9,13 +9,6 @@ import { Box } from "@formanywhere/ui/box";
 import { Stack } from "@formanywhere/ui/stack";
 import { stats, iconColors } from "./config";
 
-const iconColorMap: Record<string, string> = {
-    "text-primary": "var(--m3-color-primary)",
-    "text-secondary": "var(--m3-color-secondary)",
-    "text-tertiary": "var(--m3-color-tertiary)",
-    "text-success": "var(--m3-color-secondary)",
-};
-
 function StatIcon(props: { icon: string }) {
     return (
         <>
@@ -43,8 +36,7 @@ export default function StatsSection() {
                 }}>
                     <For each={[...stats]}>
                         {(stat, i) => {
-                            const colorClass = iconColors[stat.id] || "text-primary";
-                            const color = iconColorMap[colorClass] || "var(--m3-color-primary)";
+                            const color = iconColors[stat.id] || "var(--m3-color-primary)";
                             return (
                                 <div style={{
                                     position: "relative",

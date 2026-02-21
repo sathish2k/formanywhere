@@ -1,22 +1,28 @@
 /**
  * Home Page - FormAnywhere Landing
  * Layout: (marketing) — Header + Footer provided by layout
+ *
+ * Optimized for <50 KB initial load:
+ * - Hero is SSR'd (above fold)
+ * - All below-fold sections use clientOnly() — NOT SSR'd, loaded on-demand
+ * - IntersectionObserver triggers loading only when sections near viewport
  */
-import { lazy, Suspense } from "solid-js";
+import { clientOnly } from "@solidjs/start";
 import PageLayout from "~/components/PageLayout";
+import { LazySection } from "~/components/LazySection";
 
-// Hero loads eagerly (above the fold)
+// Hero loads eagerly (above the fold, SSR'd)
 import HeroSection from "@formanywhere/marketing/hero";
 
-// Below-the-fold sections lazy-loaded for faster FCP
-const DemoTeaser = lazy(() => import("@formanywhere/marketing/demo-teaser"));
-const StatsSection = lazy(() => import("@formanywhere/marketing/stats"));
-const FeaturesSection = lazy(() => import("@formanywhere/marketing/features"));
-const HowItWorksSection = lazy(() => import("@formanywhere/marketing/how-it-works"));
-const UseCasesSection = lazy(() => import("@formanywhere/marketing/use-cases"));
-const IntegrationsSection = lazy(() => import("@formanywhere/marketing/integrations"));
-const TestimonialsSection = lazy(() => import("@formanywhere/marketing/testimonials"));
-const CTASection = lazy(() => import("@formanywhere/marketing/cta"));
+// Below-fold: clientOnly prevents SSR (no HTML emitted until client hydrates)
+const DemoTeaser = clientOnly(() => import("@formanywhere/marketing/demo-teaser"));
+const StatsSection = clientOnly(() => import("@formanywhere/marketing/stats"));
+const FeaturesSection = clientOnly(() => import("@formanywhere/marketing/features"));
+const HowItWorksSection = clientOnly(() => import("@formanywhere/marketing/how-it-works"));
+const UseCasesSection = clientOnly(() => import("@formanywhere/marketing/use-cases"));
+const IntegrationsSection = clientOnly(() => import("@formanywhere/marketing/integrations"));
+const TestimonialsSection = clientOnly(() => import("@formanywhere/marketing/testimonials"));
+const CTASection = clientOnly(() => import("@formanywhere/marketing/cta"));
 
 export default function Home() {
   return (
@@ -25,21 +31,35 @@ export default function Home() {
       description="Create multi-step forms, surveys, and questionnaires with drag-and-drop simplicity. Works offline, syncs when connected."
     >
       <HeroSection />
-      <Suspense>
+      <LazySection>
         <DemoTeaser />
+      </LazySection>
+      <LazySection>
         <StatsSection />
+      </LazySection>
+      <LazySection>
         <FeaturesSection />
+      </LazySection>
+      <LazySection>
         <HowItWorksSection />
+      </LazySection>
+      <LazySection>
         <UseCasesSection />
+      </LazySection>
+      <LazySection>
         <IntegrationsSection />
+      </LazySection>
+      <LazySection>
         <TestimonialsSection />
+      </LazySection>
+      <LazySection>
         <CTASection
           title="Ready to Build Forms That Work Anywhere?"
           description="Start building powerful offline-first forms in minutes. No credit card required."
           primaryCta={{ label: "Get Started Free", href: "/signup", icon: "arrow_forward" }}
           secondaryCta={{ label: "Contact Sales", href: "/contact", icon: "mail" }}
         />
-      </Suspense>
+      </LazySection>
     </PageLayout>
   );
 }

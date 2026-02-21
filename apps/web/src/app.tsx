@@ -6,7 +6,7 @@ import { MetaProvider, Title, Meta, Link } from "@solidjs/meta";
 import { ThemeProvider } from "@formanywhere/ui/theme";
 
 import "./styles/global.css";
-import "@formanywhere/ui/styles/theme.css";
+import "@formanywhere/ui/styles/theme-base.css";
 import "@formanywhere/ui/styles/glass.css";
 import "@formanywhere/ui/styles/accessibility.css";
 import "@formanywhere/ui/styles/typography.css";
@@ -25,13 +25,6 @@ export default function App() {
             content="Create multi-step forms, surveys, and questionnaires with drag-and-drop simplicity. Works offline, syncs when connected."
           />
           <Link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-          <Link
-            rel="preload"
-            href="/fonts/inter-latin.woff2"
-            as="font"
-            type="font/woff2"
-            crossorigin=""
-          />
           <ThemeProvider>
             <Suspense>{props.children}</Suspense>
           </ThemeProvider>

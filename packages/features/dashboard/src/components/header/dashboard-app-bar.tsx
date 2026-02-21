@@ -163,22 +163,24 @@ export const DashboardAppBar: Component<DashboardAppBarProps> = (props) => {
                 }}
             >
                 <div
-                    class="dashboard-appbar__inner transition-all duration-500 ease-out"
+                    class="dashboard-appbar__inner"
                     style={{
                         ...headerInnerStyle(),
                         width: '100%',
+                        transition: 'all 500ms ease-out',
                     }}
                 >
                     <div
-                        class="dashboard-appbar__container transition-all duration-500 ease-out"
+                        class="dashboard-appbar__container"
                         style={{
                             ...headerContainerStyle(),
                             'margin-left': 'auto',
                             'margin-right': 'auto',
+                            transition: 'all 500ms ease-out',
                         }}
                     >
                         <nav
-                            class="dashboard-appbar__nav transition-all duration-500 ease-out"
+                            class="dashboard-appbar__nav"
                             style={{
                                 ...navStyle(),
                                 ...(isDesktop() && !isScrolled()
@@ -189,6 +191,7 @@ export const DashboardAppBar: Component<DashboardAppBarProps> = (props) => {
                                     : {}),
                                 'align-items': 'center',
                                 'flex-wrap': 'nowrap',
+                                transition: 'all 500ms ease-out',
                             }}
                         >
                             {/* Logo — hidden when scrolled on desktop */}

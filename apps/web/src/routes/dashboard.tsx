@@ -25,7 +25,7 @@ export default function DashboardPage() {
 
   return (
     <PageLayout title="Dashboard | FormAnywhere">
-      <Suspense fallback={<div class="min-h-screen flex items-center justify-center"><div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" /></div>}>
+      <Suspense fallback={<div style={{ "min-height": "100vh", display: "flex", "align-items": "center", "justify-content": "center" }}><div style={{ width: "2rem", height: "2rem", border: "2px solid var(--m3-color-primary)", "border-top-color": "transparent", "border-radius": "9999px", animation: "spin 1s linear infinite" }} /></div>}>
         <AuthProvider>
           <Show
             when={session()}

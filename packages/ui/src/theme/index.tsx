@@ -125,7 +125,6 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
 
         applyRuntimeMaterialTheme(scheme, resolved === 'dark');
 
-        // Also toggle .dark class for Tailwind
         if (resolved === 'dark') {
             document.documentElement.classList.add('dark');
         } else {

@@ -230,7 +230,7 @@ export const Header: Component<HeaderProps> = (props) => {
             </div>
 
             {/* Spacer for fixed header */}
-            <div class="h-16" />
+            <div style={{ height: '64px' }} />
 
             {/* Mobile Navigation Drawer — lazy-loaded (only needed on hamburger click) */}
             <Suspense>

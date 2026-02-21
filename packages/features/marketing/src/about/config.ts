@@ -45,8 +45,8 @@ export const iconPaths: Record<string, string> = {
 };
 
 export const valueColors = [
-    { bg: "bg-primary/10", text: "text-primary" },
-    { bg: "bg-secondary/10", text: "text-secondary" },
-    { bg: "bg-tertiary/10", text: "text-tertiary" },
-    { bg: "bg-primary/10", text: "text-primary" },
+    { bg: "color-mix(in srgb, var(--m3-color-primary) 10%, transparent)", text: "var(--m3-color-primary)" },
+    { bg: "color-mix(in srgb, var(--m3-color-secondary) 10%, transparent)", text: "var(--m3-color-secondary)" },
+    { bg: "color-mix(in srgb, var(--m3-color-tertiary) 10%, transparent)", text: "var(--m3-color-tertiary)" },
+    { bg: "color-mix(in srgb, var(--m3-color-primary) 10%, transparent)", text: "var(--m3-color-primary)" },
 ];

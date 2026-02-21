@@ -15,11 +15,11 @@ export default function SignUpPage() {
     <PageLayout title="Create Account | FormAnywhere" description="Create your FormAnywhere account and start building forms">
 
       {/* Header */}
-      <div class="mb-8">
+      <div style={{ "margin-bottom": "2rem" }}>
         <Typography variant="headline-large" color="on-surface" as="h1">
           Create your account
         </Typography>
-        <Typography variant="body-large" color="on-surface-variant" class="mt-2">
+        <Typography variant="body-large" color="on-surface-variant" style={{ "margin-top": "0.5rem" }}>
           Start building beautiful forms in minutes
         </Typography>
       </div>
