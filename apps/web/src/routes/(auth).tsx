@@ -4,9 +4,24 @@
  *
  * Routes:  /signin  /signup
  */
-import type { RouteSectionProps } from "@solidjs/router";
+import { type RouteSectionProps, createAsync, useNavigate, type RouteDefinition } from "@solidjs/router";
+import { createEffect } from "solid-js";
+import { getSession } from "~/server/session";
+
+export const route = {
+    preload: () => getSession(),
+} satisfies RouteDefinition;
 
 export default function AuthLayout(props: RouteSectionProps) {
+    const navigate = useNavigate();
+    const session = createAsync(() => getSession());
+
+    // Redirect authenticated users away from auth pages
+    createEffect(() => {
+        if (session()) {
+            navigate('/dashboard', { replace: true });
+        }
+    });
     return (
         <>
             <style>{`

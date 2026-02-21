@@ -1,38 +1,30 @@
 /**
  * FormBuilderWrapper — Island wrapper
- * Reads URL query params on the client and passes them
+ * Reads URL query params via useSearchParams and passes them
  * to the FormBuilderPage component.
  */
-import { createSignal, onMount, Show } from 'solid-js';
 import type { Component } from 'solid-js';
+import { useSearchParams } from '@solidjs/router';
 import { FormBuilderPage } from './FormBuilderPage';
 import type { BuilderMode } from './FormBuilderPage';
 
 export const FormBuilderWrapper: Component = () => {
-    const [mode, setMode] = createSignal<BuilderMode>('blank');
-    const [formId, setFormId] = createSignal<string | undefined>(undefined);
-    const [initialName, setInitialName] = createSignal<string | undefined>(undefined);
-    const [initialDesc, setInitialDesc] = createSignal<string | undefined>(undefined);
-    const [ready, setReady] = createSignal(false);
+    const [searchParams] = useSearchParams();
 
-    onMount(() => {
-        const params = new URLSearchParams(window.location.search);
-        const m = params.get('mode');
+    const mode = (): BuilderMode => {
+        const m = searchParams.mode;
         if (m === 'ai' || m === 'blank' || m === 'template' || m === 'import') {
-            setMode(m);
+            return m;
         }
-        const fid = params.get('form');
-        if (fid) setFormId(fid);
-        const name = params.get('name');
-        if (name) setInitialName(name);
-        const desc = params.get('desc');
-        if (desc) setInitialDesc(desc);
-        setReady(true);
-    });
+        return 'blank';
+    };
 
     return (
-        <Show when={ready()}>
-            <FormBuilderPage mode={mode()} formId={formId()} initialName={initialName()} initialDescription={initialDesc()} />
-        </Show>
+        <FormBuilderPage
+            mode={mode()}
+            formId={(searchParams.form as string) || undefined}
+            initialName={(searchParams.name as string) || undefined}
+            initialDescription={(searchParams.desc as string) || undefined}
+        />
     );
 };

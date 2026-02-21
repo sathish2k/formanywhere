@@ -15,13 +15,12 @@ import {
     batch,
 } from 'solid-js';
 import type { JSX } from 'solid-js';
-import { fetchForms, deleteForm, duplicateForm } from '../services/dashboard-datasource';
+import { fetchForms, createForm, deleteForm, duplicateForm } from '../services/dashboard-datasource';
 import { go } from '@formanywhere/shared/utils';
 import {
     defaultFilters,
     formCardColors,
     itemsPerPage,
-    MOCK_FORMS,
 } from '../config/dashboard-types';
 import type { FilterState, SortOption, DashboardFormData, FormCardData } from '../config/dashboard-types';
 
@@ -143,45 +142,14 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
         return { sortBy: field, sortOrder: order as 'asc' | 'desc' };
     };
 
-    // ── Mock data with client-side filtering/sorting/pagination ─
-
-    const loadMockData = () => {
-        const mockData = MOCK_FORMS.map((form, index) => ({
-            ...form,
-            color: formCardColors[index % formCardColors.length],
-        }));
-
-        const search = debouncedSearch().toLowerCase();
-        let filtered = search
-            ? mockData.filter((f) => f.title.toLowerCase().includes(search))
-            : mockData;
-
-        const [field, order] = currentSort().split('-');
-        filtered = [...filtered].sort((a, b) => {
-            let cmp = 0;
-            if (field === 'name') cmp = a.title.localeCompare(b.title);
-            else if (field === 'responses') cmp = a.submissions - b.submissions;
-            else cmp = a.createdAt.getTime() - b.createdAt.getTime();
-            return order === 'desc' ? -cmp : cmp;
-        });
-
-        const start = (page() - 1) * itemsPerPage;
-        const paged = filtered.slice(start, start + itemsPerPage);
-
-        batch(() => {
-            setRawForms(paged);
-            setTotalPages(Math.ceil(filtered.length / itemsPerPage));
-        });
-    };
-
-    // ── Fetch forms from API (fallback to mock) ────────────────
+    // ── Fetch forms from API ──────────────────────────────────
 
     const loadForms = async (showLoading = false) => {
         if (showLoading) setLoading(true);
         try {
             const { sortBy, sortOrder } = getSortParams(untrack(currentSort));
             const f = untrack(filters);
-            const result = await fetchForms(userId(), {
+            const result = await fetchForms({
                 search: untrack(debouncedSearch) || undefined,
                 sortBy,
                 sortOrder,
@@ -190,28 +158,28 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
                 dateFrom: f.dateFrom || undefined,
                 dateTo: f.dateTo || undefined,
                 responseRanges: f.responseRanges.length > 0 ? f.responseRanges : undefined,
-                creators: f.creators.length > 0 ? f.creators : undefined,
+                statuses: f.statuses.length > 0 ? f.statuses : undefined,
             });
 
-            if (result.forms.length > 0) {
-                batch(() => {
-                    setRawForms(
-                        result.forms.map((form, index) => ({
-                            id: form.id,
-                            title: form.title,
-                            submissions: form.submissions,
-                            createdAt: new Date(form.createdAt),
-                            color: formCardColors[index % formCardColors.length],
-                            creator: userName(),
-                        }))
-                    );
-                    setTotalPages(result.totalPages);
-                });
-            } else {
-                loadMockData();
-            }
-        } catch {
-            loadMockData();
+            batch(() => {
+                setRawForms(
+                    result.forms.map((form, index) => ({
+                        id: form.id,
+                        title: form.title,
+                        submissions: form.submissions,
+                        createdAt: new Date(form.createdAt),
+                        color: formCardColors[index % formCardColors.length],
+                        creator: userName(),
+                    }))
+                );
+                setTotalPages(result.totalPages);
+            });
+        } catch (err) {
+            console.error('Failed to load forms:', err);
+            batch(() => {
+                setRawForms([]);
+                setTotalPages(0);
+            });
         } finally {
             setLoading(false);
         }
@@ -234,7 +202,7 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
         f.dateFrom;
         f.dateTo;
         f.responseRanges;
-        f.creators;
+        f.statuses;
 
         if (initialized()) {
             loadForms(false);
@@ -311,12 +279,25 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
 
     const closeNewFormDialog = () => setNewFormDialogOpen(false);
 
-    const confirmNewForm = (name: string, description: string) => {
+    const confirmNewForm = async (name: string, description: string) => {
         setNewFormDialogOpen(false);
-        const params = new URLSearchParams({ mode: pendingMode() });
-        if (name) params.set('name', name);
-        if (description) params.set('desc', description);
-        go(`/app?${params.toString()}`);
+
+        // Create the form via backend API
+        const result = await createForm({
+            title: name || 'Untitled Form',
+            description: description || undefined,
+        });
+
+        if (result.success && result.form) {
+            // Navigate to the form editor with the new form's ID
+            go(`/app?form=${result.form.id}&mode=${pendingMode()}`);
+        } else {
+            // Fallback: navigate without a persisted form
+            const params = new URLSearchParams({ mode: pendingMode() });
+            if (name) params.set('name', name);
+            if (description) params.set('desc', description);
+            go(`/app?${params.toString()}`);
+        }
     };
 
     const handleEditForm = (formId: string) => {
@@ -324,8 +305,7 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
     };
 
     const handleDuplicateForm = async (formId: string) => {
-        if (!userId()) return;
-        const result = await duplicateForm(formId, userId());
+        const result = await duplicateForm(formId);
         if (result.success) {
             loadForms();
         }

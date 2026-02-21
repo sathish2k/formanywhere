@@ -2,6 +2,7 @@ import { Elysia } from 'elysia';
 import { cors } from '@elysiajs/cors';
 import { swagger } from '@elysiajs/swagger';
 import { auth } from './lib/auth';
+import { formsRoutes } from './routes/forms.elysia';
 
 /**
  * Better Auth handler for Elysia.
@@ -31,9 +32,7 @@ const app = new Elysia()
     .use(swagger())
     .get('/', () => ({ status: 'ok', name: 'FormAnywhere API' }))
     .use(betterAuthView)
-    // .use(formsRoutes) // TODO: Migrate forms routes
-    // .use(submissionsRoutes) // TODO: Migrate submissions routes
-    // .use(syncRoutes) // TODO: Migrate sync routes
+    .use(formsRoutes)
     .listen(process.env.PORT || 3001);
 
 console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`);

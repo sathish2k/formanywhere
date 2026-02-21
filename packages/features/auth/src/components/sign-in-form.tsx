@@ -3,11 +3,12 @@
  * Handles email/password authentication with type-safe validation
  * Uses Better Auth client SDK + @formanywhere/ui components
  */
-import { createForm, zodForm } from '@modular-forms/solid';
+import { createForm, zodForm, type FieldElementProps } from '@modular-forms/solid';
 import { z } from 'zod';
 import { Show, createSignal } from 'solid-js';
+import { useNavigate, useSearchParams, revalidate } from '@solidjs/router';
 import { Button } from '@formanywhere/ui/button';
-import { TextField } from '@formanywhere/ui/input';
+import { TextField, type TextFieldProps } from '@formanywhere/ui/input';
 import { Divider } from '@formanywhere/ui/divider';
 import { Typography } from '@formanywhere/ui/typography';
 import { Checkbox } from '@formanywhere/ui/checkbox';
@@ -29,6 +30,19 @@ const SignInSchema = z.object({
 
 type SignInFormData = z.infer<typeof SignInSchema>;
 
+/** Adapt modular-forms FieldElementProps to our UI TextField props */
+function adaptFieldProps(
+    fp: FieldElementProps<SignInFormData, keyof SignInFormData>,
+): Pick<TextFieldProps, 'ref' | 'name' | 'onInput' | 'onChange' | 'onBlur'> {
+    return {
+        ref: fp.ref as TextFieldProps['ref'],
+        name: fp.name,
+        onInput: (e: InputEvent) => (fp.onInput as (e: InputEvent) => void)(e),
+        onChange: (e: Event) => (fp.onChange as (e: Event) => void)(e),
+        onBlur: (e: FocusEvent) => (fp.onBlur as (e: FocusEvent) => void)(e),
+    };
+}
+
 interface SignInFormProps {
     onSuccess?: () => void;
     /** URL to redirect to after successful login (from ?returnTo= query param) */
@@ -40,15 +54,13 @@ export function SignInForm(props: SignInFormProps) {
         validate: zodForm(SignInSchema),
     });
     const [error, setError] = createSignal<string | null>(null);
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     /** Get redirect URL — check props, then query param, then default */
     const getRedirectUrl = () => {
         if (props.returnTo) return props.returnTo;
-        if (typeof window !== 'undefined') {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('returnTo') || '/dashboard';
-        }
-        return '/dashboard';
+        return (searchParams.returnTo as string) || '/dashboard';
     };
 
     const handleSubmit = async (values: SignInFormData) => {
@@ -64,7 +76,9 @@ export function SignInForm(props: SignInFormProps) {
                 return;
             }
 
-            window.location.href = getRedirectUrl();
+            // Invalidate the cached session query so the header picks up the new auth state
+            await revalidate("session");
+            navigate(getRedirectUrl());
             props.onSuccess?.();
         } catch (err: any) {
             setError(err.message || 'Sign in failed. Please try again.');
@@ -125,25 +139,39 @@ export function SignInForm(props: SignInFormProps) {
             {/* Email Sign In Form */}
             <Form onSubmit={handleSubmit}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: '1.25rem' }}>
-                    <TextField
-                        name="email"
-                        type="email"
-                        label="Email"
-                        placeholder="you@company.com"
-                        variant="outlined"
-                    />
+                    <Field name="email">
+                        {(field, fieldProps) => (
+                            <TextField
+                                {...adaptFieldProps(fieldProps)}
+                                type="email"
+                                label="Email"
+                                placeholder="you@company.com"
+                                variant="outlined"
+                                value={field.value ?? ''}
+                                error={!!field.error}
+                                errorText={field.error}
+                            />
+                        )}
+                    </Field>
 
                     <div>
                         <div style={{ display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', 'margin-bottom': '0.5rem' }}>
                             <Typography variant="label-large" color="on-surface">Password</Typography>
                             <a href="/forgot-password" style={{ 'font-size': '0.875rem', color: 'var(--m3-color-tertiary)' }}>Forgot?</a>
                         </div>
-                        <TextField
-                            name="password"
-                            type="password"
-                            placeholder="Enter your password"
-                            variant="outlined"
-                        />
+                        <Field name="password">
+                            {(field, fieldProps) => (
+                                <TextField
+                                    {...adaptFieldProps(fieldProps)}
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    variant="outlined"
+                                    value={field.value ?? ''}
+                                    error={!!field.error}
+                                    errorText={field.error}
+                                />
+                            )}
+                        </Field>
                     </div>
 
                     {/* Remember Me Checkbox */}

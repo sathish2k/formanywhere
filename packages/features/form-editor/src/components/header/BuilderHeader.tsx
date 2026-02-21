@@ -70,8 +70,10 @@ export const BuilderHeader: Component<BuilderHeaderProps> = (props) => {
         }
     };
 
-    onMount(() => document.addEventListener('click', handleClickOutside));
-    onCleanup(() => document.removeEventListener('click', handleClickOutside));
+    onMount(() => {
+        document.addEventListener('click', handleClickOutside);
+        onCleanup(() => document.removeEventListener('click', handleClickOutside));
+    });
 
     const startEditingName = () => {
         if (!local.onFormNameChange) return;

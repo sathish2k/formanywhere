@@ -1,23 +1,24 @@
 /**
  * FormPreviewPage — Standalone preview page
- * Reads ?form= query param, fetches the schema, and renders FormPreview.
+ * Reads ?form= query param via useSearchParams, fetches the schema, and renders FormPreview.
  */
 import { createSignal, onMount, Show } from 'solid-js';
 import type { Component } from 'solid-js';
+import { useSearchParams, useNavigate } from '@solidjs/router';
 import { FormPreview } from '@formanywhere/form-runtime';
 import { Typography } from '@formanywhere/ui/typography';
 import { CircularProgress } from '@formanywhere/ui/progress';
 import type { FormSchema } from '@formanywhere/shared/types';
-import { go } from '@formanywhere/shared/utils';
 
 export const FormPreviewPage: Component = () => {
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const [schema, setSchema] = createSignal<FormSchema | null>(null);
     const [loading, setLoading] = createSignal(true);
     const [error, setError] = createSignal('');
 
     onMount(async () => {
-        const params = new URLSearchParams(window.location.search);
-        const formId = params.get('form');
+        const formId = searchParams.form;
 
         if (!formId) {
             setError('No form ID provided.');
@@ -26,8 +27,8 @@ export const FormPreviewPage: Component = () => {
         }
 
         try {
-            const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:4000';
-            const res = await fetch(`${API_URL}/forms/${formId}`);
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+            const res = await fetch(`${API_URL}/api/forms/${formId}`, { credentials: 'include' });
             const data = await res.json();
 
             if (data.success && data.form?.schema) {
@@ -64,8 +65,7 @@ export const FormPreviewPage: Component = () => {
                     <FormPreview
                         schema={s()}
                         onBackToEditor={() => {
-                            const params = new URLSearchParams(window.location.search);
-                            go(`/app?form=${params.get('form')}`);
+                            navigate(`/app?form=${searchParams.form}`);
                         }}
                     />
                 )}

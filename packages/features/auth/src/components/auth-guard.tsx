@@ -12,6 +12,7 @@
  *   </AuthProvider>
  */
 import { Show, createEffect, type ParentComponent } from 'solid-js';
+import { useNavigate } from '@solidjs/router';
 import { useAuth } from '../state/auth-provider';
 import { CircularProgress } from '@formanywhere/ui/progress';
 import { Typography } from '@formanywhere/ui/typography';
@@ -25,12 +26,13 @@ export interface AuthGuardProps {
 
 export const AuthGuard: ParentComponent<AuthGuardProps> = (props) => {
     const auth = useAuth();
+    const navigate = useNavigate();
     const redirectTo = () => props.redirectTo || '/signin';
 
     // Redirect when loading is done and user is not authenticated
     createEffect(() => {
         if (!auth.loading() && !auth.isAuthenticated()) {
-            window.location.href = redirectTo();
+            navigate(redirectTo());
         }
     });
 

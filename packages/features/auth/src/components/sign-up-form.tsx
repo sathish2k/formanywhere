@@ -3,11 +3,12 @@
  * Handles user registration with type-safe validation
  * Uses Better Auth client SDK + @formanywhere/ui components
  */
-import { createForm, zodForm } from '@modular-forms/solid';
+import { createForm, zodForm, type FieldElementProps } from '@modular-forms/solid';
 import { z } from 'zod';
 import { Show, createSignal } from 'solid-js';
+import { useNavigate } from '@solidjs/router';
 import { Button } from '@formanywhere/ui/button';
-import { TextField } from '@formanywhere/ui/input';
+import { TextField, type TextFieldProps } from '@formanywhere/ui/input';
 import { Divider } from '@formanywhere/ui/divider';
 import { Typography } from '@formanywhere/ui/typography';
 import { Checkbox } from '@formanywhere/ui/checkbox';
@@ -39,6 +40,19 @@ const SignUpSchema = z.object({
 
 type SignUpFormData = z.infer<typeof SignUpSchema>;
 
+/** Adapt modular-forms FieldElementProps to our UI TextField props */
+function adaptFieldProps(
+    fp: FieldElementProps<SignUpFormData, keyof SignUpFormData>,
+): Pick<TextFieldProps, 'ref' | 'name' | 'onInput' | 'onChange' | 'onBlur'> {
+    return {
+        ref: fp.ref as TextFieldProps['ref'],
+        name: fp.name,
+        onInput: (e: InputEvent) => (fp.onInput as (e: InputEvent) => void)(e),
+        onChange: (e: Event) => (fp.onChange as (e: Event) => void)(e),
+        onBlur: (e: FocusEvent) => (fp.onBlur as (e: FocusEvent) => void)(e),
+    };
+}
+
 interface SignUpFormProps {
     onSuccess?: () => void;
 }
@@ -48,6 +62,7 @@ export function SignUpForm(props: SignUpFormProps) {
         validate: zodForm(SignUpSchema),
     });
     const [error, setError] = createSignal<string | null>(null);
+    const navigate = useNavigate();
 
     const handleSubmit = async (values: SignUpFormData) => {
         setError(null);
@@ -63,7 +78,7 @@ export function SignUpForm(props: SignUpFormProps) {
                 return;
             }
 
-            window.location.href = '/dashboard';
+            navigate('/signin');
             props.onSuccess?.();
         } catch (err: any) {
             setError(err.message || 'Registration failed. Please try again.');
@@ -124,37 +139,65 @@ export function SignUpForm(props: SignUpFormProps) {
             {/* Sign Up Form */}
             <Form onSubmit={handleSubmit}>
                 <div style={{ display: 'flex', 'flex-direction': 'column', gap: '1.25rem' }}>
-                    <TextField
-                        name="fullName"
-                        type="text"
-                        label="Full Name"
-                        placeholder="Enter your full name"
-                        variant="outlined"
-                    />
+                    <Field name="fullName">
+                        {(field, fieldProps) => (
+                            <TextField
+                                {...adaptFieldProps(fieldProps)}
+                                type="text"
+                                label="Full Name"
+                                placeholder="Enter your full name"
+                                variant="outlined"
+                                value={field.value ?? ''}
+                                error={!!field.error}
+                                errorText={field.error}
+                            />
+                        )}
+                    </Field>
 
-                    <TextField
-                        name="email"
-                        type="email"
-                        label="Email Address"
-                        placeholder="Enter your email"
-                        variant="outlined"
-                    />
+                    <Field name="email">
+                        {(field, fieldProps) => (
+                            <TextField
+                                {...adaptFieldProps(fieldProps)}
+                                type="email"
+                                label="Email Address"
+                                placeholder="Enter your email"
+                                variant="outlined"
+                                value={field.value ?? ''}
+                                error={!!field.error}
+                                errorText={field.error}
+                            />
+                        )}
+                    </Field>
 
-                    <TextField
-                        name="password"
-                        type="password"
-                        label="Password"
-                        placeholder="Create a password"
-                        variant="outlined"
-                    />
+                    <Field name="password">
+                        {(field, fieldProps) => (
+                            <TextField
+                                {...adaptFieldProps(fieldProps)}
+                                type="password"
+                                label="Password"
+                                placeholder="Create a password"
+                                variant="outlined"
+                                value={field.value ?? ''}
+                                error={!!field.error}
+                                errorText={field.error}
+                            />
+                        )}
+                    </Field>
 
-                    <TextField
-                        name="confirmPassword"
-                        type="password"
-                        label="Confirm Password"
-                        placeholder="Confirm your password"
-                        variant="outlined"
-                    />
+                    <Field name="confirmPassword">
+                        {(field, fieldProps) => (
+                            <TextField
+                                {...adaptFieldProps(fieldProps)}
+                                type="password"
+                                label="Confirm Password"
+                                placeholder="Confirm your password"
+                                variant="outlined"
+                                value={field.value ?? ''}
+                                error={!!field.error}
+                                errorText={field.error}
+                            />
+                        )}
+                    </Field>
 
                     {/* Terms Checkbox */}
                     <Checkbox

@@ -1,8 +1,9 @@
 /**
  * Form Setup Page — SolidStart route
- * Reads URL query params and passes them to FormSetupPage.
+ * Reads URL query params via useSearchParams and passes them to FormSetupPage.
  */
-import { createSignal, lazy, onMount, Show, Suspense } from "solid-js";
+import { lazy, Suspense } from "solid-js";
+import { useSearchParams } from "@solidjs/router";
 import PageLayout from "~/components/PageLayout";
 import type { FormSetupPageProps } from "@formanywhere/shared/form-setup";
 
@@ -11,25 +12,21 @@ const FormSetupPage = lazy(() =>
 );
 
 export default function FormSetupRoute() {
-  const [mode, setMode] = createSignal<FormSetupPageProps["mode"]>("blank");
-  const [ready, setReady] = createSignal(false);
+  const [searchParams] = useSearchParams();
 
-  onMount(() => {
-    const params = new URLSearchParams(window.location.search);
-    const m = params.get("mode");
+  const mode = (): FormSetupPageProps["mode"] => {
+    const m = searchParams.mode;
     if (m === "ai" || m === "blank" || m === "template" || m === "import") {
-      setMode(m);
+      return m;
     }
-    setReady(true);
-  });
+    return "blank";
+  };
 
   return (
     <PageLayout title="Form Setup - FormAnywhere">
-      <Show when={ready()}>
-        <Suspense>
-          <FormSetupPage mode={mode()} />
-        </Suspense>
-      </Show>
+      <Suspense>
+        <FormSetupPage mode={mode()} />
+      </Suspense>
     </PageLayout>
   );
 }

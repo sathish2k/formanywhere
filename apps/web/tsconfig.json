@@ -11,7 +11,11 @@
     "isolatedModules": true,
     "strict": true,
     "noEmit": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*", "app.config.ts"],
   "exclude": ["dist", "node_modules"]

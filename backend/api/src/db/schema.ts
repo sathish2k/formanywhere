@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, integer, jsonb } from 'drizzle-orm/pg-core';
 
 // ─── Better Auth Core Tables ────────────────────────────────────────────────
 // These tables are required by Better Auth for user management,
@@ -63,4 +63,22 @@ export const verification = pgTable('verification', {
     expiresAt: timestamp('expires_at').notNull(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// ─── Application Tables ─────────────────────────────────────────────────────
+
+/**
+ * Forms table — stores user-created forms with their full schema.
+ */
+export const form = pgTable('form', {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+    title: text('title').notNull().default('Untitled Form'),
+    description: text('description'),
+    /** Full form schema (elements, settings, rules) stored as JSONB */
+    schema: jsonb('schema'),
+    status: text('status').notNull().default('draft'), // draft | published | archived
+    submissions: integer('submissions').notNull().default(0),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });

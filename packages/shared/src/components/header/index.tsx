@@ -4,7 +4,7 @@
  *   Layer 1: Full-width bar (visible at top of page)
  *   Layer 2: Floating pill (slides down on scroll)
  */
-import { Component, createSignal, onMount, onCleanup, For, lazy, Suspense } from 'solid-js';
+import { Component, createSignal, onMount, onCleanup, For, Show, lazy, Suspense } from 'solid-js';
 import { Button } from '@formanywhere/ui/button';
 import { IconButton } from '@formanywhere/ui/icon-button';
 import { Divider } from '@formanywhere/ui/divider';
@@ -46,6 +46,7 @@ const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
 export interface HeaderProps {
     class?: string;
+    isAuthenticated?: boolean;
 }
 
 export const Header: Component<HeaderProps> = (props) => {
@@ -138,31 +139,50 @@ export const Header: Component<HeaderProps> = (props) => {
                             gap: '1rem',
                         }}
                     >
-                        <Button
-                            href="/signin"
-                            variant="text"
-                            style={{
-                                display: isDesktop() ? 'inline-flex' : 'none',
-                                'font-size': '15px',
-                                'white-space': 'nowrap',
-                            }}
+                        <Show
+                            when={!props.isAuthenticated}
+                            fallback={
+                                <Button
+                                    href="/dashboard"
+                                    variant="filled"
+                                    style={{
+                                        display: isDesktop() ? 'inline-flex' : 'none',
+                                        'font-size': '15px',
+                                        padding: '10px 24px',
+                                        'border-radius': '12px',
+                                        'white-space': 'nowrap',
+                                    }}
+                                >
+                                    Dashboard
+                                </Button>
+                            }
                         >
-                            Sign in
-                        </Button>
+                            <Button
+                                href="/signin"
+                                variant="text"
+                                style={{
+                                    display: isDesktop() ? 'inline-flex' : 'none',
+                                    'font-size': '15px',
+                                    'white-space': 'nowrap',
+                                }}
+                            >
+                                Sign in
+                            </Button>
 
-                        <Button
-                            href="/signup"
-                            variant="filled"
-                            style={{
-                                display: isDesktop() ? 'inline-flex' : 'none',
-                                'font-size': '15px',
-                                padding: '10px 24px',
-                                'border-radius': '12px',
-                                'white-space': 'nowrap',
-                            }}
-                        >
-                            Get Started Free
-                        </Button>
+                            <Button
+                                href="/signup"
+                                variant="filled"
+                                style={{
+                                    display: isDesktop() ? 'inline-flex' : 'none',
+                                    'font-size': '15px',
+                                    padding: '10px 24px',
+                                    'border-radius': '12px',
+                                    'white-space': 'nowrap',
+                                }}
+                            >
+                                Get Started Free
+                            </Button>
+                        </Show>
 
                         {/* Theme Toggle — lazy-loaded to defer floating-ui */}
                         <Suspense>
@@ -214,7 +234,7 @@ export const Header: Component<HeaderProps> = (props) => {
                         {(link) => <NavLink href={link.href}>{link.label}</NavLink>}
                     </For>
                     <Button
-                        href="/signup"
+                        href={props.isAuthenticated ? '/dashboard' : '/signup'}
                         variant="filled"
                         style={{
                             'font-size': '14px',
@@ -224,7 +244,7 @@ export const Header: Component<HeaderProps> = (props) => {
                             'margin-left': '4px',
                         }}
                     >
-                        Get Started
+                        {props.isAuthenticated ? 'Dashboard' : 'Get Started'}
                     </Button>
                 </nav>
             </div>
@@ -300,26 +320,43 @@ export const Header: Component<HeaderProps> = (props) => {
                             gap: '12px',
                         }}
                     >
-                        <Button
-                            href="/signin"
-                            variant="outlined"
-                            style={{
-                                width: '100%',
-                                'justify-content': 'center',
-                            }}
+                        <Show
+                            when={!props.isAuthenticated}
+                            fallback={
+                                <Button
+                                    href="/dashboard"
+                                    variant="filled"
+                                    style={{
+                                        width: '100%',
+                                        'justify-content': 'center',
+                                    }}
+                                    onClick={closeMobileMenu}
+                                >
+                                    Dashboard
+                                </Button>
+                            }
                         >
-                            Sign in
-                        </Button>
-                        <Button
-                            href="/signup"
-                            variant="filled"
-                            style={{
-                                width: '100%',
-                                'justify-content': 'center',
-                            }}
-                        >
-                            Get Started Free
-                        </Button>
+                            <Button
+                                href="/signin"
+                                variant="outlined"
+                                style={{
+                                    width: '100%',
+                                    'justify-content': 'center',
+                                }}
+                            >
+                                Sign in
+                            </Button>
+                            <Button
+                                href="/signup"
+                                variant="filled"
+                                style={{
+                                    width: '100%',
+                                    'justify-content': 'center',
+                                }}
+                            >
+                                Get Started Free
+                            </Button>
+                        </Show>
                     </div>
                 </LazyDrawer>
             </Suspense>

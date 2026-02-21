@@ -3,6 +3,8 @@
  *
  * Server-side session validation using Better Auth.
  * Runs on every request before the page renders.
+ * Sets event.locals.user and event.locals.isAuthenticated
+ * which can be read in server functions via getRequestEvent().
  */
 import { createMiddleware } from "@solidjs/start/middleware";
 
@@ -13,9 +15,10 @@ export default createMiddleware({
     async (event) => {
       const { pathname } = new URL(event.request.url);
 
-      // Skip middleware for static assets, API calls
+      // Skip middleware for static assets, API calls — but NOT /_server RPCs
+      // (SolidStart server functions use /_server/* during client-side navigation)
       if (
-        pathname.startsWith("/_") ||
+        (pathname.startsWith("/_") && !pathname.startsWith("/_server")) ||
         pathname.startsWith("/api/") ||
         pathname.includes(".")
       ) {
@@ -43,11 +46,9 @@ export default createMiddleware({
         console.error("[Auth Middleware] Failed to validate session:", err);
       }
 
-      // Store user in request context via locals
-      (event as any).locals = {
-        user: sessionUser,
-        isAuthenticated: !!sessionUser,
-      };
+      // Store user in request context via typed locals
+      event.locals.user = sessionUser;
+      event.locals.isAuthenticated = !!sessionUser;
     },
   ],
 });

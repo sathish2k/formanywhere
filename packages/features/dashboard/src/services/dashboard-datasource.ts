@@ -1,16 +1,17 @@
 /**
  * Dashboard Datasource
- * API calls for dashboard data
+ * API calls for dashboard data — talks to Elysia backend via session cookies.
  */
 
-const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:4000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export interface FormData {
     id: string;
     title: string;
-    description?: string;
+    description?: string | null;
+    schema?: unknown;
+    status: string;
     submissions: number;
-    isPublished: boolean;
     createdAt: string;
     updatedAt: string;
 }
@@ -24,7 +25,7 @@ export interface FetchFormsOptions {
     dateFrom?: string;
     dateTo?: string;
     responseRanges?: string[];
-    creators?: string[];
+    statuses?: string[];
 }
 
 export interface FetchFormsResult {
@@ -35,14 +36,14 @@ export interface FetchFormsResult {
 }
 
 /**
- * Fetch user's forms from API
+ * Fetch authenticated user's forms from API.
+ * User is identified via session cookie — no userId param needed.
  */
 export async function fetchForms(
-    userId: string,
     options?: FetchFormsOptions
 ): Promise<FetchFormsResult> {
     try {
-        const params = new URLSearchParams({ userId });
+        const params = new URLSearchParams();
 
         if (options?.search) params.append('search', options.search);
         if (options?.sortBy) params.append('sortBy', options.sortBy);
@@ -53,25 +54,31 @@ export async function fetchForms(
         if (options?.dateTo) params.append('dateTo', options.dateTo);
         if (options?.responseRanges?.length)
             params.append('responseRanges', options.responseRanges.join(','));
-        if (options?.creators?.length) params.append('creators', options.creators.join(','));
+        if (options?.statuses?.length)
+            params.append('statuses', options.statuses.join(','));
 
-        const response = await fetch(`${API_URL}/forms?${params.toString()}`);
+        const qs = params.toString();
+        const url = `${API_URL}/api/forms${qs ? `?${qs}` : ''}`;
+
+        const response = await fetch(url, { credentials: 'include' });
+
+        if (!response.ok) {
+            console.error('Failed to fetch forms:', response.status);
+            return { forms: [], total: 0, page: 1, totalPages: 0 };
+        }
+
         const data = await response.json();
 
         if (data.success) {
             return {
-                forms: data.forms.map((form: FormData) => ({
-                    ...form,
-                    createdAt: new Date(form.createdAt).toISOString(),
-                    updatedAt: new Date(form.updatedAt).toISOString(),
-                })),
+                forms: data.forms,
                 total: data.total || 0,
                 page: data.page || 1,
                 totalPages: data.totalPages || 0,
             };
         }
 
-        console.error('Failed to fetch forms:', data.message);
+        console.error('Failed to fetch forms:', data.error);
         return { forms: [], total: 0, page: 1, totalPages: 0 };
     } catch (error) {
         console.error('Error fetching forms:', error);
@@ -83,24 +90,25 @@ export async function fetchForms(
  * Create a new form
  */
 export async function createForm(data: {
-    userId: string;
     title: string;
     description?: string;
-}): Promise<{ success: boolean; formId?: string }> {
+    schema?: unknown;
+    status?: string;
+}): Promise<{ success: boolean; form?: FormData }> {
     try {
-        const response = await fetch(`${API_URL}/forms`, {
+        const response = await fetch(`${API_URL}/api/forms`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify(data),
         });
 
-        const result = await response.json();
-
-        if (result.success) {
-            return { success: true, formId: result.form?.id };
+        if (!response.ok) {
+            return { success: false };
         }
 
-        return { success: false };
+        const result = await response.json();
+        return { success: result.success, form: result.form };
     } catch (error) {
         console.error('Error creating form:', error);
         return { success: false };
@@ -112,9 +120,12 @@ export async function createForm(data: {
  */
 export async function deleteForm(formId: string): Promise<{ success: boolean }> {
     try {
-        const response = await fetch(`${API_URL}/forms/${formId}`, {
+        const response = await fetch(`${API_URL}/api/forms/${formId}`, {
             method: 'DELETE',
+            credentials: 'include',
         });
+
+        if (!response.ok) return { success: false };
 
         const result = await response.json();
         return { success: result.success };
@@ -125,39 +136,21 @@ export async function deleteForm(formId: string): Promise<{ success: boolean }> 
 }
 
 /**
- * Duplicate a form
+ * Duplicate a form (server-side via dedicated endpoint)
  */
 export async function duplicateForm(
-    formId: string,
-    userId: string
-): Promise<{ success: boolean; newFormId?: string }> {
+    formId: string
+): Promise<{ success: boolean; form?: FormData }> {
     try {
-        const getResponse = await fetch(`${API_URL}/forms/${formId}`);
-        const getData = await getResponse.json();
-
-        if (!getData.success || !getData.form) {
-            return { success: false };
-        }
-
-        const response = await fetch(`${API_URL}/forms`, {
+        const response = await fetch(`${API_URL}/api/forms/${formId}/duplicate`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userId,
-                title: `${getData.form.title} (Copy)`,
-                description: getData.form.description,
-                fields: getData.form.fields,
-                settings: getData.form.settings,
-            }),
+            credentials: 'include',
         });
 
+        if (!response.ok) return { success: false };
+
         const result = await response.json();
-
-        if (result.success) {
-            return { success: true, newFormId: result.form?.id };
-        }
-
-        return { success: false };
+        return { success: result.success, form: result.form };
     } catch (error) {
         console.error('Error duplicating form:', error);
         return { success: false };
@@ -169,19 +162,41 @@ export async function duplicateForm(
  */
 export async function updateForm(
     formId: string,
-    data: Partial<{ title: string; description: string; isPublished: boolean }>
-): Promise<{ success: boolean }> {
+    data: Partial<{ title: string; description: string; schema: unknown; status: string }>
+): Promise<{ success: boolean; form?: FormData }> {
     try {
-        const response = await fetch(`${API_URL}/forms/${formId}`, {
+        const response = await fetch(`${API_URL}/api/forms/${formId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify(data),
         });
 
+        if (!response.ok) return { success: false };
+
         const result = await response.json();
-        return { success: result.success };
+        return { success: result.success, form: result.form };
     } catch (error) {
         console.error('Error updating form:', error);
+        return { success: false };
+    }
+}
+
+/**
+ * Get a single form by ID
+ */
+export async function getForm(formId: string): Promise<{ success: boolean; form?: FormData }> {
+    try {
+        const response = await fetch(`${API_URL}/api/forms/${formId}`, {
+            credentials: 'include',
+        });
+
+        if (!response.ok) return { success: false };
+
+        const result = await response.json();
+        return { success: result.success, form: result.form };
+    } catch (error) {
+        console.error('Error fetching form:', error);
         return { success: false };
     }
 }

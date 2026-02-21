@@ -20,8 +20,13 @@ export default createHandler(() => (
           `}</style>
           <script>{`
             (function() {
-              var t = localStorage.getItem("formanywhere-theme") || "green";
-              document.documentElement.setAttribute("data-theme", t);
+              var d = document.documentElement;
+              var scheme = localStorage.getItem("formanywhere-theme-color") || "green";
+              d.setAttribute("data-theme", scheme);
+              var mode = localStorage.getItem("formanywhere-theme") || "system";
+              var dark = mode === "dark" || (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+              d.setAttribute("data-mode", dark ? "dark" : "light");
+              if (dark) d.classList.add("dark");
             })();
           `}</script>
           {assets}

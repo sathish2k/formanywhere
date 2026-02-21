@@ -100,8 +100,10 @@ export const FormEditorLayout: Component = () => {
         }
     };
 
-    onMount(() => document.addEventListener('keydown', handleKeyDown));
-    onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
+    onMount(() => {
+        document.addEventListener('keydown', handleKeyDown);
+        onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
+    });
 
     return (
         <div class="form-editor-layout">

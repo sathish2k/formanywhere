@@ -29,7 +29,7 @@ export { SortMenu } from './components/sort/sort-menu';
 export { Pagination } from './components/pagination/pagination';
 
 // Services
-export { fetchForms, createForm, deleteForm, duplicateForm, updateForm } from './services/dashboard-datasource';
+export { fetchForms, createForm, deleteForm, duplicateForm, updateForm, getForm } from './services/dashboard-datasource';
 export type { FormData, FetchFormsOptions, FetchFormsResult } from './services/dashboard-datasource';
 
 // Types & Config
@@ -46,6 +46,5 @@ export {
     formCardColors,
     defaultFilters,
     itemsPerPage,
-    MOCK_FORMS,
 } from './config/dashboard-types';
 export { RESPONSE_RANGES, AVAILABLE_STATUSES } from './config/filter-constants';

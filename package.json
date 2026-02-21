@@ -17,6 +17,7 @@
     "run:storybook": "bun --filter @formanywhere/ui run run:storybook",
     "build:storybook": "bun --filter @formanywhere/ui run build:storybook",
     "dev:web": "turbo dev --filter=@formanywhere/web",
+    "dev:api": "bun --filter=@formanywhere/api run dev",
     "dev:desktop": "turbo dev --filter=@formanywhere/desktop",
     "build:web": "turbo build --filter=@formanywhere/web",
     "build:desktop": "turbo build --filter=@formanywhere/desktop"

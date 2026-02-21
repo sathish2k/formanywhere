@@ -131,10 +131,22 @@ export const AuthProvider: ParentComponent = (props) => {
 
     /** Sign out */
     const signOut = async () => {
-        await authClient.signOut();
-        setUser(null);
-        setSession(null);
-        window.location.href = '/signin';
+        try {
+            await authClient.signOut({
+                fetchOptions: {
+                    onSuccess: () => {
+                        setUser(null);
+                        setSession(null);
+                        window.location.href = '/signin';
+                    },
+                },
+            });
+        } catch {
+            // Fallback — force navigate even if sign-out API fails
+            setUser(null);
+            setSession(null);
+            window.location.href = '/signin';
+        }
     };
 
     // Fetch session on mount

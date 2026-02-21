@@ -64,8 +64,10 @@ export const PageToolbar: Component<PageToolbarProps> = (props) => {
         }
     };
 
-    onMount(() => document.addEventListener('click', handleClickOutside));
-    onCleanup(() => document.removeEventListener('click', handleClickOutside));
+    onMount(() => {
+        document.addEventListener('click', handleClickOutside);
+        onCleanup(() => document.removeEventListener('click', handleClickOutside));
+    });
 
     const toggleMenu = (id: string) => {
         setMenuPageId(menuPageId() === id ? null : id);

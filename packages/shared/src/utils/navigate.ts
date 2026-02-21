@@ -1,15 +1,15 @@
 /**
  * Navigation Utility
  *
- * Uses SolidStart router's `useNavigate()` for client-side
- * navigation when available, falls back to `window.location.href`
- * in non-SolidStart environments (e.g. Tauri desktop).
+ * Falls back to window.location.href for contexts outside
+ * the SolidJS router (e.g., Tauri desktop, standalone scripts).
+ * In SolidJS components, prefer using useNavigate() from @solidjs/router directly.
  */
 
 /**
  * Navigate to a path.
- * Falls back to `window.location.href` in all contexts.
- * In SolidJS components, prefer using `useNavigate()` from `@solidjs/router` directly.
+ * Falls back to window.location.href — for use outside SolidJS components.
+ * Inside SolidJS components, use useNavigate() from @solidjs/router instead.
  */
 export async function navigateTo(
     path: string,
@@ -19,8 +19,8 @@ export async function navigateTo(
 }
 
 /**
- * Navigate synchronously — fire-and-forget wrapper around `navigateTo`.
- * Use this in event handlers where you don't need to await the result.
+ * Navigate synchronously — fire-and-forget wrapper around navigateTo.
+ * Use this only in non-component contexts. Inside components, use useNavigate().
  */
 export function go(path: string): void {
     void navigateTo(path);

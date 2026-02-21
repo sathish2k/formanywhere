@@ -136,12 +136,19 @@ export const DashboardAppBar: Component<DashboardAppBarProps> = (props) => {
     const handleLogout = async () => {
         setProfileMenuOpen(false);
         try {
-            await authClient.signOut();
+            await authClient.signOut({
+                fetchOptions: {
+                    onSuccess: () => {
+                        sessionStorage.removeItem('formanywhere-session');
+                        window.location.href = '/signin';
+                    },
+                },
+            });
         } catch {
-            // Best effort — clear any leftover state
+            // Fallback — force navigate even if sign-out API fails
+            sessionStorage.removeItem('formanywhere-session');
+            window.location.href = '/signin';
         }
-        localStorage.removeItem('formanywhere-session');
-        go('/signin');
     };
 
     const navigate = (path: string) => {

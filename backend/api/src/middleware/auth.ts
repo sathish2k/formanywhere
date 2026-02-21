@@ -32,13 +32,22 @@ export const authMiddleware = new Elysia({ name: 'auth-middleware' })
 
         if (!session) {
             set.status = 401;
-            throw new Error('Unauthorized');
+            return {
+                user: null as any,
+                session: null as any,
+            };
         }
 
         return {
             user: session.user,
             session: session.session,
         };
+    })
+    .onBeforeHandle(({ user, set }) => {
+        if (!user) {
+            set.status = 401;
+            return { success: false, error: 'Unauthorized' };
+        }
     });
 
 /**

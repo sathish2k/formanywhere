@@ -18,6 +18,14 @@
         "./signup": {
             "solid": "./src/components/sign-up-form.tsx",
             "import": "./src/components/sign-up-form.tsx"
+        },
+        "./forgot-password": {
+            "solid": "./src/components/forgot-password-form.tsx",
+            "import": "./src/components/forgot-password-form.tsx"
+        },
+        "./reset-password": {
+            "solid": "./src/components/reset-password-form.tsx",
+            "import": "./src/components/reset-password-form.tsx"
         }
     },
     "scripts": {

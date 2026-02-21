@@ -56,7 +56,7 @@ export default function Home() {
         <CTASection
           title="Ready to Build Forms That Work Anywhere?"
           description="Start building powerful offline-first forms in minutes. No credit card required."
-          primaryCta={{ label: "Get Started Free", href: "/signup", icon: "arrow_forward" }}
+          primaryCta={{ label: "Get Started Free", href: "/signup", icon: "arrow-right" }}
           secondaryCta={{ label: "Contact Sales", href: "/contact", icon: "mail" }}
         />
       </LazySection>

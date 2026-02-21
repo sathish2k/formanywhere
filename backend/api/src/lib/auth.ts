@@ -12,6 +12,23 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '../db';
 import * as schema from '../db/schema';
 
+/**
+ * Sends a password reset email.
+ * In development, logs the reset URL to the console.
+ * In production, integrate a real email service (e.g. Resend, SendGrid).
+ */
+async function sendResetPasswordEmail(url: string, user: { email: string; name: string }) {
+    if (process.env.NODE_ENV === 'production') {
+        // TODO: Replace with real email service (Resend, SendGrid, etc.)
+        console.log(`[AUTH] Password reset requested for ${user.email} — email service not configured`);
+    } else {
+        console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+        console.log(`  🔑 Password Reset Link for ${user.email}`);
+        console.log(`  ${url}`);
+        console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+    }
+}
+
 export const auth = betterAuth({
     /**
      * Base URL for the API server.
@@ -41,6 +58,9 @@ export const auth = betterAuth({
         enabled: true,
         minPasswordLength: 8,
         maxPasswordLength: 128,
+        sendResetPassword: async ({ user, url }) => {
+            await sendResetPasswordEmail(url, { email: user.email, name: user.name });
+        },
     },
 
     /**

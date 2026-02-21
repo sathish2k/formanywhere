@@ -3,6 +3,7 @@
  * Faithful conversion of original Astro 404.astro (Tailwind → inline styles)
  * Uses @formanywhere/ui components (Button, Icon)
  */
+import { HttpStatusCode } from "@solidjs/start";
 import PageLayout from "~/components/PageLayout";
 import { Button } from "@formanywhere/ui/button";
 import { Icon } from "@formanywhere/ui/icon";
@@ -10,6 +11,7 @@ import { Icon } from "@formanywhere/ui/icon";
 export default function NotFoundPage() {
   return (
     <PageLayout title="Page Not Found | FormAnywhere">
+      <HttpStatusCode code={404} />
       <main style={{ "min-height": "100vh", display: "flex", "align-items": "center", "justify-content": "center", position: "relative", overflow: "hidden", background: "var(--m3-color-background)" }}>
         {/* Background Elements */}
         <div class="not-found-grid" style={{ position: "absolute", inset: 0, opacity: 0.03, "pointer-events": "none" }} />

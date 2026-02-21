@@ -13,3 +13,5 @@ export { AuthGuard } from './components/auth-guard';
 export type { AuthGuardProps } from './components/auth-guard';
 export { SignInForm } from './components/sign-in-form';
 export { SignUpForm } from './components/sign-up-form';
+export { ForgotPasswordForm } from './components/forgot-password-form';
+export { ResetPasswordForm } from './components/reset-password-form';

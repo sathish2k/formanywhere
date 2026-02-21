@@ -6,16 +6,24 @@
  *
  * Footer is clientOnly — never SSR'd (always below fold).
  */
-import type { RouteSectionProps } from "@solidjs/router";
+import type { RouteSectionProps, RouteDefinition } from "@solidjs/router";
+import { createAsync } from "@solidjs/router";
 import { clientOnly } from "@solidjs/start";
 import { Header } from "@formanywhere/shared/header";
+import { getSession } from "~/server/session";
 
 const Footer = clientOnly(() => import("@formanywhere/shared/footer"));
 
+export const route = {
+    preload: () => getSession(),
+} satisfies RouteDefinition;
+
 export default function MarketingLayout(props: RouteSectionProps) {
+    const session = createAsync(() => getSession());
+
     return (
         <>
-            <Header />
+            <Header isAuthenticated={!!session()} />
             <main id="main-content">{props.children}</main>
             <Footer />
         </>

@@ -198,14 +198,37 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
 
     const loadExistingForm = async (formId: string) => {
         try {
-            const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:4000';
-            const res = await fetch(`${API_URL}/forms/${formId}`);
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+            const res = await fetch(`${API_URL}/api/forms/${formId}`, { credentials: 'include' });
             const data = await res.json();
-            if (data.success && data.form?.schema) {
-                const loadedSchema = JSON.parse(data.form.schema);
+            if (!data.success || !data.form) return;
+
+            if (data.form.schema) {
+                // Form has saved schema JSON — load it
+                const loadedSchema = typeof data.form.schema === 'string'
+                    ? JSON.parse(data.form.schema)
+                    : data.form.schema;
+                // Merge API-level title/description into schema so the header shows the correct name
+                if (data.form.title) loadedSchema.name = data.form.title;
+                if (data.form.description) loadedSchema.description = data.form.description;
                 setSchema(loadedSchema);
-                // Restore rules from schema
                 if (loadedSchema.rules) setFormRules(loadedSchema.rules);
+            } else {
+                // Freshly created form with no schema yet — initialize a blank schema with API title
+                setSchema({
+                    id: formId,
+                    name: data.form.title || 'Untitled Form',
+                    description: data.form.description || '',
+                    elements: [],
+                    settings: {
+                        pages: pages().map((p) => ({ id: p.id, title: p.title, elements: [] })),
+                        submitButtonText: 'Submit',
+                        successMessage: 'Thank you!',
+                    },
+                    version: 1,
+                    createdAt: new Date(data.form.createdAt || Date.now()),
+                    updatedAt: new Date(),
+                } as FormSchema);
             }
         } catch (e) {
             console.error('Failed to load form:', e);
@@ -276,6 +299,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
         // Merge rules and form settings into schema before saving
         const schemaToSave: FormSchema = {
             ...currentSchema,
+            name: currentSchema.name || 'Untitled Form',
             rules: formRules(),
             settings: {
                 ...currentSchema.settings,
@@ -295,13 +319,14 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
 
         setSaving(true);
         try {
-            const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:4000';
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
             const endpoint = local.formId
-                ? `${API_URL}/forms/${local.formId}`
-                : `${API_URL}/forms`;
+                ? `${API_URL}/api/forms/${local.formId}`
+                : `${API_URL}/api/forms`;
             await fetch(endpoint, {
                 method: local.formId ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({
                     title: schemaToSave.name,
                     description: schemaToSave.description,
