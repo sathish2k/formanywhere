@@ -19,8 +19,16 @@
         "build": "tsc",
         "lint": "echo 'No linter configured'"
     },
-    "dependencies": {},
+    "dependencies": {
+        "@formanywhere/shared": "workspace:*",
+        "@formanywhere/ui": "workspace:*",
+        "zod": "3"
+    },
+    "peerDependencies": {
+        "solid-js": "^1.8.0"
+    },
     "devDependencies": {
+        "solid-js": "^1.8.0",
         "typescript": "^5.7.0"
     }
 }

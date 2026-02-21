@@ -5,11 +5,13 @@
 import { splitProps, Show, For, Switch as SwitchFlow, Match, createSignal } from 'solid-js';
 import type { Component } from 'solid-js';
 import type { FormElement } from '@formanywhere/shared/types';
-import { TextField } from '@formanywhere/ui/textfield';
-import { Switch } from '@formanywhere/ui/switch';
 import { Typography } from '@formanywhere/ui/typography';
 import { Icon } from '@formanywhere/ui/icon';
 import { Divider } from '@formanywhere/ui/divider';
+import {
+    TextInputField, TextareaField, SelectField, CheckboxField,
+    RadioField, SwitchField, FileField, RatingField, SignatureField,
+} from '@formanywhere/domain/form';
 
 import { CanvasRegion } from './CanvasRegion';
 import { useFormEditor } from '../FormEditor';
@@ -24,144 +26,108 @@ export interface CanvasElementProps {
 
 export const CanvasElement: Component<CanvasElementProps> = (props) => {
     const [local] = splitProps(props, ['element', 'dragSource', 'onCanvasDragStart', 'onDragEnd']);
+    const { updateElement } = useFormEditor();
     const el = () => local.element;
 
     return (
         <SwitchFlow>
-            {/* ── Text-based inputs ── */}
-            <Match when={['text', 'email', 'phone', 'url'].includes(el().type)}>
-                <TextField
-                    variant="outlined"
-                    label={el().label}
-                    placeholder={el().placeholder || ''}
-                    disabled
-                />
-            </Match>
-
-            <Match when={el().type === 'number'}>
-                <TextField
-                    variant="outlined"
-                    label={el().label}
-                    placeholder={el().placeholder || '0'}
-                    type="number"
-                    disabled
+            {/* ── Form field elements — interactive, updates element.defaultValue ── */}
+            <Match when={['text', 'email', 'phone', 'url', 'number', 'date', 'time'].includes(el().type)}>
+                <TextInputField
+                    mode="editor"
+                    element={el()}
+                    value={() => (el() as any).defaultValue ?? ''}
+                    onValue={(v) => updateElement(el().id, { defaultValue: v })}
                 />
             </Match>
 
             <Match when={el().type === 'textarea'}>
-                <div class="canvas-element__textarea-wrapper">
-                    <Typography variant="body-small" color="on-surface-variant">{el().label}</Typography>
-                    <textarea
-                        class="canvas-element__textarea"
-                        placeholder={el().placeholder || 'Enter text...'}
-                        rows={3}
-                        disabled
-                    />
-                </div>
+                <TextareaField
+                    mode="editor"
+                    element={el()}
+                    value={() => (el() as any).defaultValue ?? ''}
+                    onValue={(v) => updateElement(el().id, { defaultValue: v })}
+                />
             </Match>
 
-            {/* ── Choice elements ── */}
             <Match when={el().type === 'select'}>
-                <div class="canvas-element__select-wrapper">
-                    <Typography variant="body-small" color="on-surface-variant">{el().label}</Typography>
-                    <select class="canvas-element__select" disabled>
-                        <option>{el().placeholder || 'Choose...'}</option>
-                        <For each={el().options ?? []}>
-                            {(opt) => <option value={opt.value}>{opt.label}</option>}
-                        </For>
-                    </select>
-                </div>
+                <SelectField
+                    mode="editor"
+                    element={el()}
+                    value={() => (el() as any).defaultValue ?? ''}
+                    onValue={(v) => updateElement(el().id, { defaultValue: v })}
+                />
             </Match>
 
             <Match when={el().type === 'checkbox'}>
-                <div class="canvas-element__choice-group">
-                    <Typography variant="body-medium">{el().label}</Typography>
-                    <For each={el().options ?? []}>
-                        {(opt) => (
-                            <label class="canvas-element__choice-item">
-                                <input type="checkbox" disabled />
-                                <span>{opt.label}</span>
-                            </label>
-                        )}
-                    </For>
-                </div>
+                <CheckboxField
+                    mode="editor"
+                    element={el()}
+                    value={() => (el() as any).defaultValue ?? ''}
+                    onValue={(v) => updateElement(el().id, { defaultValue: v })}
+                />
             </Match>
 
             <Match when={el().type === 'radio'}>
-                <div class="canvas-element__choice-group">
-                    <Typography variant="body-medium">{el().label}</Typography>
-                    <For each={el().options ?? []}>
-                        {(opt) => (
-                            <label class="canvas-element__choice-item">
-                                <input type="radio" name={el().id} disabled />
-                                <span>{opt.label}</span>
-                            </label>
-                        )}
-                    </For>
-                </div>
+                <RadioField
+                    mode="editor"
+                    element={el()}
+                    value={() => (el() as any).defaultValue ?? ''}
+                    onValue={(v) => updateElement(el().id, { defaultValue: v })}
+                />
             </Match>
 
             <Match when={el().type === 'switch'}>
-                <div class="canvas-element__switch-row">
-                    <Typography variant="body-medium">{el().label}</Typography>
-                    <Switch size="sm" disabled />
-                </div>
-            </Match>
-
-            {/* ── Date / Time ── */}
-            <Match when={el().type === 'date'}>
-                <TextField
-                    variant="outlined"
-                    label={el().label}
-                    type="date"
-                    disabled
+                <SwitchField
+                    mode="editor"
+                    element={el()}
+                    value={() => (el() as any).defaultValue ?? ''}
+                    onValue={(v) => updateElement(el().id, { defaultValue: v })}
                 />
             </Match>
 
-            <Match when={el().type === 'time'}>
-                <TextField
-                    variant="outlined"
-                    label={el().label}
-                    type="time"
-                    disabled
-                />
-            </Match>
-
-            {/* ── Advanced ── */}
             <Match when={el().type === 'file'}>
-                <div class="canvas-element__file-upload">
-                    <Typography variant="body-small" color="on-surface-variant">{el().label}</Typography>
-                    <div class="canvas-element__file-dropzone">
-                        <Icon name="upload" size={24} />
-                        <Typography variant="body-small">Click or drag to upload</Typography>
-                    </div>
-                </div>
+                <FileField
+                    mode="editor"
+                    element={el()}
+                    value={() => (el() as any).defaultValue ?? ''}
+                    onValue={(v) => updateElement(el().id, { defaultValue: v })}
+                />
             </Match>
 
             <Match when={el().type === 'rating'}>
-                <div class="canvas-element__rating">
-                    <Typography variant="body-small" color="on-surface-variant">{el().label}</Typography>
-                    <div class="canvas-element__stars">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                            <Icon name="star" size={20} />
-                        ))}
-                    </div>
-                </div>
+                <RatingField
+                    mode="editor"
+                    element={el()}
+                    value={() => (el() as any).defaultValue ?? ''}
+                    onValue={(v) => updateElement(el().id, { defaultValue: v })}
+                />
             </Match>
 
             <Match when={el().type === 'signature'}>
-                <div class="canvas-element__signature">
-                    <Typography variant="body-small" color="on-surface-variant">{el().label}</Typography>
-                    <div class="canvas-element__signature-pad">
-                        <Icon name="pen-tool" size={20} />
-                        <Typography variant="body-small" color="on-surface-variant">Sign here</Typography>
-                    </div>
-                </div>
+                <SignatureField
+                    mode="editor"
+                    element={el()}
+                    value={() => (el() as any).defaultValue ?? ''}
+                    onValue={(v) => updateElement(el().id, { defaultValue: v })}
+                />
             </Match>
 
             {/* ── Layout elements ── */}
             <Match when={el().type === 'heading'}>
-                <Typography variant="headline-small">{el().label}</Typography>
+                <div
+                    class="canvas-element__heading"
+                    style={{
+                        'font-size': ({ '1': '2rem', '2': '1.5rem', '3': '1.25rem', '4': '1.125rem' } as any)[(el() as any).level ?? '2'] ?? '1.5rem',
+                        'font-weight': String((el() as any).headingWeight ?? '700'),
+                        'text-align': (el() as any).alignment ?? 'left',
+                        color: (el() as any).headingColor || 'inherit',
+                        margin: '0',
+                        'line-height': '1.25',
+                    }}
+                >
+                    {el().label}
+                </div>
             </Match>
 
             <Match when={el().type === 'divider'}>
@@ -173,7 +139,12 @@ export const CanvasElement: Component<CanvasElementProps> = (props) => {
             </Match>
 
             <Match when={el().type === 'text-block'}>
-                <Typography variant="body-medium">{el().label}</Typography>
+                <p
+                    class="canvas-element__text-block"
+                    style={{ 'text-align': (el() as any).alignment ?? 'left', margin: '0', color: 'var(--m3-color-on-surface-variant)' }}
+                >
+                    {el().label}
+                </p>
             </Match>
 
             <Match when={el().type === 'logo'}>
@@ -194,6 +165,11 @@ export const CanvasElement: Component<CanvasElementProps> = (props) => {
                 <div
                     class={`canvas-element__${el().type}`}
                     classList={{ 'canvas-element__nested-region': true }}
+                    style={{
+                        padding: el().type === 'container' ? `${(el() as any).padding ?? 16}px` : undefined,
+                        margin: (el() as any).margin ? `${(el() as any).margin}px` : undefined,
+                        'max-width': el().type === 'container' && (el() as any).maxWidth ? `${(el() as any).maxWidth}px` : undefined,
+                    }}
                 >
                     <CanvasRegion
                         elements={() => el().elements || []}

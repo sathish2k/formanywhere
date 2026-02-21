@@ -1,8 +1,8 @@
-import { splitProps, createSignal, createContext, useContext } from 'solid-js';
+import { splitProps, createSignal, createContext, useContext, createEffect } from 'solid-js';
 import type { Component } from 'solid-js';
 import type { FormSchema, FormElement } from '@formanywhere/shared/types';
 import { generateId } from '@formanywhere/shared/utils';
-import { getElement } from './elements/registry';
+import { getElement } from '../registry';
 
 // Form editor context
 interface FormEditorContextValue {
@@ -141,7 +141,7 @@ const deepCloneElement = (el: FormElement): FormElement => {
 };
 
 export const FormEditor: Component<FormEditorProps> = (props) => {
-    const [local] = splitProps(props, ['initialSchema', 'onChange', 'activePageId', 'children']);
+    const [local] = splitProps(props, ['initialSchema', 'onChange', 'activePageId', 'pages', 'children']);
     const createDefaultSchema = (): FormSchema => ({
         id: generateId(),
         name: 'Untitled Form',
@@ -157,6 +157,42 @@ export const FormEditor: Component<FormEditorProps> = (props) => {
     const [schema, setSchema] = createSignal<FormSchema>(
         local.initialSchema ?? createDefaultSchema()
     );
+
+    /**
+     * Reactively sync page-tab additions / deletions / renames into the internal
+     * schema so that pageElements() and assignToPage() always see the current
+     * page list.  Without this, calling addPage() in FormBuilderPage updated the
+     * outer schema but not FormEditor's own copy, causing page 2 to be invisible
+     * (pageElements returned [] because the new page id was missing from
+     * schema.settings.pages).
+     */
+    createEffect(() => {
+        const tabs = local.pages;
+        if (!tabs || tabs.length === 0) return;
+        setSchema((prev) => {
+            const existingPages = prev.settings.pages ?? [];
+            const newPages = tabs.map((tab) => {
+                const existing = existingPages.find((p) => p.id === tab.id);
+                return { id: tab.id, title: tab.title, elements: existing?.elements ?? [] };
+            });
+            // Skip if nothing actually changed
+            if (
+                existingPages.length === newPages.length &&
+                existingPages.every((p, i) => p.id === newPages[i].id && p.title === newPages[i].title)
+            ) {
+                return prev;
+            }
+            return {
+                ...prev,
+                settings: {
+                    ...prev.settings,
+                    pages: newPages,
+                    multiPage: tabs.length > 1,
+                },
+            };
+        });
+    });
+
     const [selectedElement, setSelectedElement] = createSignal<string | null>(null);
     const [selectedElements, setSelectedElements] = createSignal<Set<string>>(new Set());
     const [clipboard, setClipboard] = createSignal<FormElement | null>(null);

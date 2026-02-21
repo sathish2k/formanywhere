@@ -3,18 +3,13 @@ import { createSignal, Show, type Accessor } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Icon } from '@formanywhere/ui/icon';
 import { IconButton } from '@formanywhere/ui/icon-button';
-import { getElement } from '../elements/registry';
+import { getElement } from '../../registry';
+import { isLayoutElement } from '@formanywhere/domain/form';
 import { CanvasElement } from './CanvasElement';
 import { useFormEditor } from '../FormEditor';
 import type { FormElement } from '@formanywhere/shared/types';
 import { generateId } from '@formanywhere/shared/utils';
 import './styles.scss';
-
-/** Layout types that can be dropped at root level */
-const LAYOUT_TYPES = new Set([
-    'container', 'grid', 'section', 'card', 'grid-column',
-    'divider', 'spacer', 'heading', 'logo', 'text-block',
-]);
 
 export interface CanvasFieldRowProps {
     element: FormElement;
@@ -74,7 +69,7 @@ export const CanvasFieldRow: Component<CanvasFieldRowProps> = (props) => {
 
         if (newType) {
             // At root level (parentId === null), only allow layout elements
-            if (!local.parentId && !LAYOUT_TYPES.has(newType)) {
+            if (!local.parentId && !isLayoutElement(newType)) {
                 return;
             }
             addElement(newType as any, local.parentId, local.index);
@@ -177,20 +172,18 @@ export const CanvasFieldRow: Component<CanvasFieldRowProps> = (props) => {
                 />
             </div>
 
-            {/* Actions — only on select (CSS handles visibility for grid-type) */}
-            <Show when={local.isSelected}>
-                <div class="canvas-field__actions">
-                    <IconButton
-                        variant="standard"
-                        size="sm"
-                        icon={<Icon name="trash" size={14} />}
-                        onClick={(e: MouseEvent) => {
-                            e.stopPropagation();
-                            local.onRemove();
-                        }}
-                    />
-                </div>
-            </Show>
+            {/* Actions — visible on hover or select via CSS */}
+            <div class="canvas-field__actions" onClick={(e) => e.stopPropagation()}>
+                <IconButton
+                    variant="standard"
+                    size="sm"
+                    icon={<Icon name="trash" size={14} />}
+                    onClick={(e: MouseEvent) => {
+                        e.stopPropagation();
+                        local.onRemove();
+                    }}
+                />
+            </div>
 
             {/* Required badge */}
             <Show when={local.element.required}>

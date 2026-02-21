@@ -8,6 +8,10 @@
 export { AuthProvider, useAuth } from './state/auth-provider';
 export type { AuthContextValue } from './state/auth-provider';
 
+// ─── Hooks ──────────────────────────────────────────────────────────────────
+export { useIdleTimeout } from './hooks/useIdleTimeout';
+export type { UseIdleTimeoutOptions } from './hooks/useIdleTimeout';
+
 // ─── Components ─────────────────────────────────────────────────────────────
 export { AuthGuard } from './components/auth-guard';
 export type { AuthGuardProps } from './components/auth-guard';

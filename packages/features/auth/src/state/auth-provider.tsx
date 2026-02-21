@@ -27,7 +27,8 @@ import {
     type ParentComponent,
     type Accessor,
 } from 'solid-js';
-import { authClient, type Session, type User } from '@formanywhere/shared/auth-client';
+import { authClient, onSessionExpired, type Session, type User } from '@formanywhere/shared/auth-client';
+import { useIdleTimeout } from '../hooks/useIdleTimeout';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -152,6 +153,36 @@ export const AuthProvider: ParentComponent = (props) => {
     // Fetch session on mount
     onMount(() => {
         refreshSession();
+    });
+
+    // ── Session expiry & idle timeout ──────────────────────────────────────
+
+    /** Shared handler for both idle timeout & 401 detection */
+    const handleExpired = async () => {
+        // Avoid double-firing
+        if (!isAuthenticated()) return;
+        setUser(null);
+        setSession(null);
+        try {
+            await authClient.signOut();
+        } catch {
+            // ignore — session may already be dead
+        }
+        if (typeof window !== 'undefined') {
+            window.location.href = '/signin';
+        }
+    };
+
+    // Register the global 401 interceptor (fetchWithAuth calls this)
+    onMount(() => {
+        onSessionExpired(handleExpired);
+    });
+
+    // Track user activity — sign out after 15 min idle (configurable via constants)
+    useIdleTimeout({
+        onIdle: handleExpired,
+        onSessionExpired: handleExpired,
+        isAuthenticated,
     });
 
     const value: AuthContextValue = {

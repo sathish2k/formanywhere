@@ -72,8 +72,17 @@
     "packages/domain": {
       "name": "@formanywhere/domain",
       "version": "0.0.1",
+      "dependencies": {
+        "@formanywhere/shared": "workspace:*",
+        "@formanywhere/ui": "workspace:*",
+        "zod": "3",
+      },
       "devDependencies": {
+        "solid-js": "^1.8.0",
         "typescript": "^5.7.0",
+      },
+      "peerDependencies": {
+        "solid-js": "^1.8.0",
       },
     },
     "packages/features/auth": {
@@ -112,6 +121,7 @@
       "name": "@formanywhere/form-editor",
       "version": "0.0.1",
       "dependencies": {
+        "@formanywhere/domain": "workspace:*",
         "@formanywhere/shared": "workspace:*",
         "@formanywhere/ui": "workspace:*",
         "solid-js": "^1.9.11",
@@ -127,6 +137,7 @@
       "name": "@formanywhere/form-runtime",
       "version": "0.0.1",
       "dependencies": {
+        "@formanywhere/domain": "workspace:*",
         "@formanywhere/shared": "workspace:*",
         "@formanywhere/ui": "workspace:*",
         "@modular-forms/solid": "0.25.1",

@@ -20,7 +20,7 @@ import { ImportForm } from './import/ImportForm';
 import { FormPreview } from '@formanywhere/form-runtime';
 import type { FormSchema, FormRule } from '@formanywhere/shared/types';
 import { generateId, go } from '@formanywhere/shared/utils';
-import { validateSchema } from '../engine/schema';
+import { validateSchema } from '@formanywhere/domain/form';
 import { BuilderHeader } from './header/BuilderHeader';
 import { PageToolbar } from './page-toolbar/PageToolbar';
 import type { PageTab } from './page-toolbar/PageToolbar';

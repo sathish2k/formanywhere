@@ -42,16 +42,25 @@ export const FormPreview: Component<FormPreviewProps> = (props) => {
         setPreviewData(null);
     };
 
-    /** Build CSS custom properties from theme settings */
+    /**
+     * Build CSS custom properties from per-form theme settings.
+     * Color tokens (primary, secondary, surface, etc.) are intentionally EXCLUDED
+     * here — they are fully managed by the global `html[data-theme][data-mode]`
+     * CSS class system in theme-schemes.css. Injecting per-form color overrides
+     * would break theme switching.
+     * Only truly per-form customizations (border-radius, custom font) are applied.
+     */
     const themeStyle = createMemo((): JSX.CSSProperties => {
         const theme = local.schema.settings.theme;
         if (!theme) return {};
         const s: Record<string, string> = {};
-        if (theme.primaryColor) s['--m3-color-primary'] = theme.primaryColor;
-        if (theme.secondaryColor) s['--m3-color-secondary'] = theme.secondaryColor;
-        if (theme.backgroundColor) s['--m3-color-background'] = theme.backgroundColor;
-        if (theme.surfaceColor) s['--m3-color-surface-container-lowest'] = theme.surfaceColor;
-        if (theme.borderRadius != null) s['--m3-shape-large'] = `${theme.borderRadius}px`;
+        if (theme.borderRadius != null) {
+            s['--m3-shape-extra-small'] = `${Math.round(theme.borderRadius * 0.33)}px`;
+            s['--m3-shape-small'] = `${Math.round(theme.borderRadius * 0.67)}px`;
+            s['--m3-shape-medium'] = `${theme.borderRadius}px`;
+            s['--m3-shape-large'] = `${Math.round(theme.borderRadius * 1.33)}px`;
+            s['--m3-shape-extra-large'] = `${Math.round(theme.borderRadius * 2.33)}px`;
+        }
         if (theme.fontFamily) s['font-family'] = `'${theme.fontFamily}', sans-serif`;
         return s as JSX.CSSProperties;
     });

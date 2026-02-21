@@ -6,7 +6,7 @@ import { splitProps, For, createSignal, createMemo } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Typography } from '@formanywhere/ui/typography';
 import { Icon } from '@formanywhere/ui/icon';
-import { getElementsByCategory } from '../elements/registry';
+import { getElementsByCategory } from '../../registry';
 import { useFormEditor } from '../FormEditor';
 import './styles.scss';
 

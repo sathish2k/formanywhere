@@ -10,8 +10,8 @@ export { AIFormBuilder } from './components/ai/AIFormBuilder';
 export type { AIFormBuilderProps } from './components/ai/AIFormBuilder';
 export { ImportForm } from './components/import/ImportForm';
 export type { ImportFormProps } from './components/import/ImportForm';
-export { validateSchema, serializeSchema, serializeSchemaCompact, parseSchema, cloneSchema, mergeSchema, findElementById, countElements } from './engine/schema';
-export type { SchemaValidation } from './engine/schema';
+export { validateSchema, serializeSchema, serializeSchemaCompact, parseSchema, cloneSchema, mergeSchema, findElementById, countElements } from '@formanywhere/domain/form';
+export type { SchemaValidation } from '@formanywhere/domain/form';
 
 // ── Migrated from shared/form-builder ──
 export { FormBuilderPage } from './components/FormBuilderPage';

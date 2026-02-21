@@ -24,7 +24,7 @@ import {
     type RuleEvaluation,
     type RuleConflict,
     type EdgeCase,
-} from '../../engine/logic-debugger';
+} from '@formanywhere/domain/form';
 import './dialogs.scss';
 
 // ─── Props ──────────────────────────────────────────────────────────────────────

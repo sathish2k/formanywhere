@@ -8,7 +8,7 @@ import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
 import type { FormSchema } from '@formanywhere/shared/types';
-import { parseSchema } from '../../engine/schema';
+import { parseSchema } from '@formanywhere/domain/form';
 import './styles.scss';
 
 export interface ImportFormProps {

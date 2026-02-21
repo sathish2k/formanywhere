@@ -271,9 +271,9 @@
     position: relative;
 
     &:hover {
-        border-color: var(--m3-color-outline-variant, #C4C7C5);
+        border-color: var(--m3-color-outline, #919EAB);
         box-shadow:
-            0 0 1px rgba(145, 158, 171, 0.2),
+            0 0 0 1px color-mix(in srgb, var(--m3-color-outline, #919EAB) 20%, transparent),
             0 4px 8px -2px rgba(145, 158, 171, 0.12);
     }
 
@@ -431,6 +431,7 @@
             pointer-events: none;
         }
 
+        &:hover .canvas-field__actions,
         &.canvas-field--selected .canvas-field__actions {
             opacity: 1;
             pointer-events: auto;
@@ -467,6 +468,10 @@
     gap: 4px;
     opacity: 0;
     transition: opacity 150ms ease;
+
+    .canvas-field:hover & {
+        opacity: 1;
+    }
 
     .canvas-field--selected & {
         opacity: 1;

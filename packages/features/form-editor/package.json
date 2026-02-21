@@ -41,6 +41,7 @@
         "lint": "echo 'No linter configured'"
     },
     "dependencies": {
+        "@formanywhere/domain": "workspace:*",
         "@formanywhere/ui": "workspace:*",
         "@formanywhere/shared": "workspace:*",
         "solid-js": "^1.9.11"

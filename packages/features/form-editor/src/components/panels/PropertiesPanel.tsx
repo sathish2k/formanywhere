@@ -10,8 +10,8 @@ import { Switch } from '@formanywhere/ui/switch';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
 import { Divider } from '@formanywhere/ui/divider';
-import { getElement } from '../elements/registry';
-import type { PropertyField } from '../elements/types';
+import { getElement } from '../../registry';
+import type { PropertyField } from '../../types';
 import { useFormEditor } from '../FormEditor';
 import './styles.scss';
 
