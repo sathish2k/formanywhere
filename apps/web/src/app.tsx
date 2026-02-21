@@ -7,6 +7,7 @@ import { ThemeProvider } from "@formanywhere/ui/theme";
 
 import "./styles/global.css";
 import "@formanywhere/ui/styles/theme-base.css";
+import "@formanywhere/ui/styles/theme-schemes.css";
 import "@formanywhere/ui/styles/glass.css";
 import "@formanywhere/ui/styles/accessibility.css";
 import "@formanywhere/ui/styles/typography.css";

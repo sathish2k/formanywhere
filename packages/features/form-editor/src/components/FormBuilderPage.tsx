@@ -44,23 +44,51 @@ export interface FormBuilderPageProps {
     formId?: string;
     /** Template schema to pre-fill */
     templateSchema?: FormSchema;
-    /** Initial form name (from URL param) */
+    /** Initial form name (from URL param or setup) */
     initialName?: string;
-    /** Initial form description (from URL param) */
+    /** Initial form description (from URL param or setup) */
     initialDescription?: string;
+    /** Initial pages from FormSetupPage (id + title pairs) */
+    initialPages?: Array<{ id: string; title: string }>;
 }
 
 export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
-    const [local] = splitProps(props, ['formId', 'mode', 'templateSchema', 'initialName', 'initialDescription']);
+    const [local] = splitProps(props, ['formId', 'mode', 'templateSchema', 'initialName', 'initialDescription', 'initialPages']);
     const mode = () => local.mode ?? 'blank';
-    const [schema, setSchema] = createSignal<FormSchema | null>(null);
+
+    // Pre-build the schema from initialName NOW (synchronously) so that
+    // FormEditor receives the correct name on its very first render, rather
+    // than defaulting to 'Untitled Form' and ignoring a later onMount patch.
+    const makeInitialSchema = (): FormSchema | null => {
+        if (!local.initialName) return null;
+        return {
+            id: generateId(),
+            name: local.initialName,
+            description: local.initialDescription ?? '',
+            elements: [],
+            settings: {
+                pages: [],
+                submitButtonText: 'Submit',
+                successMessage: 'Thank you!',
+            },
+            version: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        } as unknown as FormSchema;
+    };
+
+    const [schema, setSchema] = createSignal<FormSchema | null>(makeInitialSchema());
     const [previewing, setPreviewing] = createSignal(false);
     const [saving, setSaving] = createSignal(false);
     const [showOverlay, setShowOverlay] = createSignal<'ai' | 'import' | null>(null);
     const [validationErrors, setValidationErrors] = createSignal<string[]>([]);
 
-    // Page management
-    const [pages, setPages] = createSignal<PageTab[]>([{ id: generateId(), title: 'Page 1' }]);
+    // Page management — seed from initialPages (FormSetupPage) if provided
+    const seedPages = (): PageTab[] =>
+        local.initialPages && local.initialPages.length > 0
+            ? local.initialPages.map((p) => ({ id: p.id, title: p.title }))
+            : [{ id: generateId(), title: 'Page 1' }];
+    const [pages, setPages] = createSignal<PageTab[]>(seedPages());
     const [activePageId, setActivePageId] = createSignal<string>('');
 
     // Layout Builder overlay
@@ -129,6 +157,17 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
         autosaveTimer = setTimeout(saveDraft, AUTOSAVE_INTERVAL);
     });
 
+    /** Sync the pages[] signal (used by PageToolbar) from schema.settings.pages.
+     *  Called after loading an existing form or restoring a draft. */
+    const syncPagesFromSchema = (s: FormSchema) => {
+        const schemaPgs = s.settings.pages;
+        if (schemaPgs && schemaPgs.length > 0) {
+            const tabs: PageTab[] = schemaPgs.map((p) => ({ id: p.id, title: p.title }));
+            setPages(tabs);
+            setActivePageId(tabs[0].id);
+        }
+    };
+
     /** Try to restore a draft from localStorage on mount */
     const restoreDraft = (): boolean => {
         try {
@@ -140,7 +179,11 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                 localStorage.removeItem(AUTOSAVE_KEY);
                 return false;
             }
-            if (draft.schema) setSchema(draft.schema);
+            if (draft.schema) {
+                setSchema(draft.schema);
+                // Bug fix: keep pages signal in sync with restored schema pages
+                syncPagesFromSchema(draft.schema);
+            }
             if (draft.rules) setFormRules(draft.rules);
             if (draft.settings) setFormSettings(draft.settings);
             return true;
@@ -174,13 +217,8 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
         // Ensure schema has pages entry
         syncPagesToSchema();
 
-        // Apply initial name/description from URL params
-        if (local.initialName) {
-            setSchema((prev) => {
-                const base = prev ?? { id: generateId(), name: '', description: '', elements: [], settings: { pages: [], submitButtonText: 'Submit', successMessage: 'Thank you!' }, version: 1, createdAt: new Date(), updatedAt: new Date() } as FormSchema;
-                return { ...base, name: local.initialName!, description: local.initialDescription ?? base.description ?? '' };
-            });
-        }
+        // initialName/initialDescription are now applied synchronously at
+        // signal initialisation (makeInitialSchema) so no onMount patch needed.
 
         if (mode() === 'ai') {
             setShowOverlay('ai');
@@ -212,6 +250,8 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                 if (data.form.title) loadedSchema.name = data.form.title;
                 if (data.form.description) loadedSchema.description = data.form.description;
                 setSchema(loadedSchema);
+                // Bug fix: populate PageToolbar from saved schema pages
+                syncPagesFromSchema(loadedSchema);
                 if (loadedSchema.rules) setFormRules(loadedSchema.rules);
             } else {
                 // Freshly created form with no schema yet — initialize a blank schema with API title
@@ -289,6 +329,8 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
     const renamePage = (pageId: string, newTitle: string) => {
         if (newTitle.trim()) {
             setPages((prev) => prev.map((p) => p.id === pageId ? { ...p, title: newTitle.trim() } : p));
+            // Bug fix: propagate title change into schema.settings.pages
+            syncPagesToSchema();
         }
     };
 
@@ -441,9 +483,14 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                         </Show>
                     }
                 >
+                    {/* For edit mode (formId present) delay mounting FormEditor until the
+                         async loadExistingForm resolves — otherwise FormEditor creates its
+                         own default schema and the loaded data is never applied. */}
+                    <Show when={!local.formId || schema()}>
                     <FormEditor initialSchema={schema() ?? undefined} onChange={handleSchemaChange} activePageId={activePageId()} pages={pages()}>
                         <FormEditorLayout />
                     </FormEditor>
+                    </Show>
                 </Show>
             </Show>
 

@@ -1,39 +1,16 @@
 /**
  * Material 3 Theme Provider for SolidJS
- * 
- * Provides theme context and syncs with CSS via data-theme attribute.
- * CSS variables are loaded from @formanywhere/ui/styles/theme.css
- * 
- * Color tokens are pre-computed at build time — no runtime dependency
- * on @material/material-color-utilities (saves ~15 KB gzipped).
+ *
+ * Industry-standard CSS-only approach:
+ * - All color tokens live in theme-schemes.css as plain CSS custom properties
+ *   under html[data-theme="scheme"][data-mode="light|dark"] selectors.
+ * - This provider only manages the HTML attributes and persists the choice.
+ * - Zero JS inline style manipulation — no flash, no race condition.
  */
 import { createSignal, createContext, useContext, createEffect, onMount, ParentComponent, Accessor } from 'solid-js';
-import { PRECOMPUTED_TOKENS } from './precomputed-tokens';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type ColorScheme = 'green' | 'purple' | 'blue' | 'pink' | 'orange' | 'red';
-
-const applyRuntimeMaterialTheme = (scheme: ColorScheme, isDark: boolean) => {
-    if (typeof document === 'undefined') return;
-
-    const mode = isDark ? 'dark' : 'light';
-    const tokens = PRECOMPUTED_TOKENS[scheme]?.[mode];
-    if (!tokens) return;
-
-    const root = document.documentElement;
-    for (const [token, value] of Object.entries(tokens)) {
-        root.style.setProperty(`--md-sys-color-${token}`, value);
-        root.style.setProperty(`--m3-color-${token}`, value);
-    }
-
-    const onSurface = tokens['on-surface'];
-    if (onSurface?.startsWith('#') && onSurface.length === 7) {
-        const r = parseInt(onSurface.slice(1, 3), 16);
-        const g = parseInt(onSurface.slice(3, 5), 16);
-        const b = parseInt(onSurface.slice(5, 7), 16);
-        root.style.setProperty('--m3-color-on-surface-rgb', `${r}, ${g}, ${b}`);
-    }
-};
 
 interface ThemeContextValue {
     /** Current theme setting */
@@ -63,17 +40,22 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
     const storageKey = props.storageKey ?? 'formanywhere-theme';
     const colorStorageKey = `${storageKey}-color`;
 
-    // Initialize from localStorage or props
+    // Initialize from cookies (preferred — matches what the server read) or localStorage fallback
+    const readPersisted = (key: string): string | null => {
+        if (typeof window === 'undefined') return null;
+        const match = document.cookie.match(new RegExp('(?:^|;)\\s*' + key + '=([^;]*)'));
+        if (match) return decodeURIComponent(match[1]);
+        return localStorage.getItem(key);
+    };
+
     const getInitialTheme = (): Theme => {
-        if (typeof window === 'undefined') return props.defaultTheme ?? 'system';
-        const stored = localStorage.getItem(storageKey);
+        const stored = readPersisted(storageKey);
         if (stored === 'light' || stored === 'dark' || stored === 'system') return stored;
         return props.defaultTheme ?? 'system';
     };
 
     const getInitialColorScheme = (): ColorScheme => {
-        if (typeof window === 'undefined') return props.defaultColorScheme ?? 'green';
-        const stored = localStorage.getItem(colorStorageKey);
+        const stored = readPersisted(colorStorageKey);
         if (
             stored === 'green' ||
             stored === 'purple' ||
@@ -100,21 +82,30 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
         return theme() as 'light' | 'dark';
     };
 
+    /**
+     * Write a client-accessible cookie so the server can read the preference
+     * on the next request and inject the correct theme attrs into the SSR HTML,
+     * eliminating the flash of unstyled content.  The cookie is intentionally
+     * NOT HttpOnly so the blocking <head> script can also read it.
+     */
+    const setPersisted = (key: string, value: string) => {
+        if (typeof window === 'undefined') return;
+        localStorage.setItem(key, value);
+        // 1-year expiry; path=/ so it's sent for every page request
+        document.cookie = `${key}=${encodeURIComponent(value)}; path=/; max-age=31536000; SameSite=Lax`;
+    };
+
     const setTheme = (newTheme: Theme) => {
         setThemeInternal(newTheme);
-        if (typeof window !== 'undefined') {
-            localStorage.setItem(storageKey, newTheme);
-        }
+        setPersisted(storageKey, newTheme);
     };
 
     const setColorScheme = (scheme: ColorScheme) => {
         setColorSchemeInternal(scheme);
-        if (typeof window !== 'undefined') {
-            localStorage.setItem(colorStorageKey, scheme);
-        }
+        setPersisted(colorStorageKey, scheme);
     };
 
-    // Sync theme with document data-theme attribute
+    // Sync HTML attributes — CSS in theme-schemes.css does the rest
     createEffect(() => {
         if (typeof document === 'undefined') return;
 
@@ -122,8 +113,6 @@ export const ThemeProvider: ParentComponent<ThemeProviderProps> = (props) => {
         const scheme = colorScheme();
         document.documentElement.setAttribute('data-mode', resolved);
         document.documentElement.setAttribute('data-theme', scheme);
-
-        applyRuntimeMaterialTheme(scheme, resolved === 'dark');
 
         if (resolved === 'dark') {
             document.documentElement.classList.add('dark');

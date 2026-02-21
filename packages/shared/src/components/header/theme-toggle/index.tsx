@@ -19,12 +19,12 @@ interface ColorPreset {
 }
 
 const colorPresets: ColorPreset[] = [
-    { name: 'Cobalt', scheme: 'green', primary: '#3366FF', secondary: '#FF6B35' },
-    { name: 'Plum', scheme: 'purple', primary: '#9B59B6', secondary: '#1ABC9C' },
-    { name: 'Teal', scheme: 'blue', primary: '#00897B', secondary: '#FF5722' },
-    { name: 'Coral', scheme: 'pink', primary: '#FF6F61', secondary: '#5B5EA6' },
-    { name: 'Gold', scheme: 'orange', primary: '#D4A017', secondary: '#6A1B9A' },
-    { name: 'Cyan', scheme: 'red', primary: '#00ACC1', secondary: '#E91E63' },
+    { name: 'Cobalt',  scheme: 'green',  primary: '#006c46', secondary: '#3a674f' },
+    { name: 'Plum',   scheme: 'purple', primary: '#5d07c3', secondary: '#6a519a' },
+    { name: 'Teal',   scheme: 'blue',   primary: '#005ea2', secondary: '#416086' },
+    { name: 'Coral',  scheme: 'pink',   primary: '#af1a5b', secondary: '#94445e' },
+    { name: 'Gold',   scheme: 'orange', primary: '#855400', secondary: '#7b5729' },
+    { name: 'Cyan',   scheme: 'red',    primary: '#bb0013', secondary: '#ad312b' },
 ];
 
 export const ThemeToggle: Component = () => {

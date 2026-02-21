@@ -10,6 +10,25 @@ import { createMiddleware } from "@solidjs/start/middleware";
 
 const API_URL = process.env.API_URL || "http://localhost:3001";
 
+const VALID_THEME_MODES = new Set(['light', 'dark', 'system']);
+const VALID_THEME_COLORS = new Set(['green', 'purple', 'blue', 'pink', 'orange', 'red']);
+
+/** Parse theme preference cookies from the Cookie header. */
+function parseThemeCookies(cookieHeader: string | null) {
+  const results: Record<string, string> = {};
+  if (!cookieHeader) return results;
+  for (const part of cookieHeader.split(';')) {
+    const idx = part.indexOf('=');
+    if (idx > 0) {
+      const key = part.slice(0, idx).trim();
+      if (key === 'formanywhere-theme' || key === 'formanywhere-theme-color') {
+        results[key] = decodeURIComponent(part.slice(idx + 1).trim());
+      }
+    }
+  }
+  return results;
+}
+
 export default createMiddleware({
   onRequest: [
     async (event) => {
@@ -49,6 +68,18 @@ export default createMiddleware({
       // Store user in request context via typed locals
       event.locals.user = sessionUser;
       event.locals.isAuthenticated = !!sessionUser;
+
+      // Parse theme cookies so entry-server.tsx can set correct <html> attrs for SSR
+      const cookieHeader = event.request.headers.get('cookie');
+      const themeCookies = parseThemeCookies(cookieHeader);
+      const rawMode = themeCookies['formanywhere-theme'];
+      const rawColor = themeCookies['formanywhere-theme-color'];
+      event.locals.themeMode = VALID_THEME_MODES.has(rawMode)
+        ? (rawMode as 'light' | 'dark' | 'system')
+        : 'system';
+      event.locals.themeColor = VALID_THEME_COLORS.has(rawColor)
+        ? (rawColor as 'green' | 'purple' | 'blue' | 'pink' | 'orange' | 'red')
+        : 'green';
     },
   ],
 });
