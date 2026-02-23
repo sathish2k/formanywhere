@@ -55,6 +55,11 @@ const ICON_PATHS: Record<string, { path: string; viewBox?: string; fill?: boolea
         path: 'M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13',
         viewBox: '0 0 24 24',
     },
+    'comment': {
+        path: 'M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z',
+        viewBox: '0 0 24 24',
+        fill: true,
+    },
     'download': {
         path: 'M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3',
         viewBox: '0 0 24 24',
@@ -62,6 +67,36 @@ const ICON_PATHS: Record<string, { path: string; viewBox?: string; fill?: boolea
     'more-vert': {
         path: 'M12 13a1 1 0 100-2 1 1 0 000 2zM12 6a1 1 0 100-2 1 1 0 000 2zM12 20a1 1 0 100-2 1 1 0 000 2z',
         viewBox: '0 0 24 24',
+    },
+    'bookmark': {
+        path: 'M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z',
+        viewBox: '0 0 24 24',
+        fill: true,
+    },
+    'pause': {
+        path: 'M6 19h4V5H6v14zm8-14v14h4V5h-4z',
+        viewBox: '0 0 24 24',
+        fill: true,
+    },
+    'headset': {
+        path: 'M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z',
+        viewBox: '0 0 24 24',
+        fill: true,
+    },
+    'favorite': {
+        path: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z',
+        viewBox: '0 0 24 24',
+        fill: true,
+    },
+    'search': {
+        path: 'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z',
+        viewBox: '0 0 24 24',
+        fill: true,
+    },
+    'sparkle': {
+        path: 'M19 3l-1.5 3.5L14 8l3.5 1.5L19 13l1.5-3.5L24 8l-3.5-1.5L19 3zm-7 2L8.5 12 5 15.5 8.5 19 12 26l3.5-7L19 15.5 15.5 12 12 5zm0 4.8l1.8 3.6 3.6 1.8-3.6 1.8-1.8 3.6-1.8-3.6-3.6-1.8 3.6-1.8 1.8-3.6z',
+        viewBox: '0 0 24 24',
+        fill: true,
     },
     'sort': {
         path: 'M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4',
@@ -149,7 +184,7 @@ const ICON_PATHS: Record<string, { path: string; viewBox?: string; fill?: boolea
         path: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
         viewBox: '0 0 24 24',
     },
-    'sparkle': {
+    'sparkle-alt': {
         path: 'M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z',
         viewBox: '0 0 24 24',
     },
@@ -296,7 +331,7 @@ const ICON_PATHS: Record<string, { path: string; viewBox?: string; fill?: boolea
         path: 'M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z',
         viewBox: '0 0 24 24',
     },
-    'search': {
+    'search-alt': {
         path: 'M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35',
         viewBox: '0 0 24 24',
     },
@@ -372,6 +407,59 @@ const ICON_PATHS: Record<string, { path: string; viewBox?: string; fill?: boolea
         path: 'M12 20V10M18 20V4M6 20v-4',
         viewBox: '0 0 24 24',
     },
+    // Rich-text editor formatting
+    'bold': {
+        path: 'M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6zM6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z',
+        viewBox: '0 0 24 24',
+    },
+    'italic': {
+        path: 'M19 4h-9M14 20H5M15 4L9 20',
+        viewBox: '0 0 24 24',
+    },
+    'underline': {
+        path: 'M6 3v7a6 6 0 006 6 6 6 0 006-6V3M4 21h16',
+        viewBox: '0 0 24 24',
+    },
+    'strikethrough': {
+        path: 'M17.3 6.7a4 4 0 00-6.3 4.9M3 12h18M6.7 17.3a4 4 0 006.3-4.9',
+        viewBox: '0 0 24 24',
+    },
+    'code-inline': {
+        path: 'M16 18l6-6-6-6M8 6l-6 6 6 6',
+        viewBox: '0 0 24 24',
+    },
+    'code-block': {
+        path: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M10 12l-2 2 2 2M14 16l2-2-2-2',
+        viewBox: '0 0 24 24',
+    },
+    'align-center': {
+        path: 'M18 10H6M21 6H3M21 14H3M18 18H6',
+        viewBox: '0 0 24 24',
+    },
+    'align-right': {
+        path: 'M21 10H9M21 6H3M21 14H3M21 18H9',
+        viewBox: '0 0 24 24',
+    },
+    'list-ordered': {
+        path: 'M10 6h11M10 12h11M10 18h11M4 6h1v4M4 10H3M3 18h2a1 1 0 001-1v-1a1 1 0 00-1-1H4a1 1 0 01-1-1v-1a1 1 0 011-1h2',
+        viewBox: '0 0 24 24',
+    },
+    'quote': {
+        path: 'M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zM15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z',
+        viewBox: '0 0 24 24',
+    },
+    'highlight': {
+        path: 'M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z',
+        viewBox: '0 0 24 24',
+    },
+    'video': {
+        path: 'M22.54 6.42a2 2 0 00-1.41-1.41C19.24 4.5 12 4.5 12 4.5s-7.24 0-9.13.51A2 2 0 001.46 6.42C1 8.28 1 12 1 12s0 3.72.46 5.58a2 2 0 001.41 1.41C4.76 19.5 12 19.5 12 19.5s7.24 0 9.13-.51a2 2 0 001.41-1.41C23 15.72 23 12 23 12s0-3.72-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z',
+        viewBox: '0 0 24 24',
+    },
+    'divider': {
+        path: 'M3 12h18M9 8l-6 4 6 4M15 8l6 4-6 4',
+        viewBox: '0 0 24 24',
+    },
 };
 
 export interface IconProps extends JSX.SvgSVGAttributes<SVGSVGElement> {
@@ -395,9 +483,9 @@ export const Icon: Component<IconProps> = (props) => {
             width={size()}
             height={size()}
             viewBox={iconData().viewBox || '0 0 24 24'}
-            fill="none"
-            stroke={local.color || 'currentColor'}
-            stroke-width="2"
+            fill={iconData().fill ? (local.color || 'currentColor') : 'none'}
+            stroke={iconData().fill ? 'none' : (local.color || 'currentColor')}
+            stroke-width={iconData().fill ? '0' : '2'}
             stroke-linecap="round"
             stroke-linejoin="round"
             class={local.class}

@@ -18,6 +18,10 @@ export { PricingCard } from "./pricing-table";
 export type { PricingPlan } from "./pricing-table";
 export { FAQSection } from "./faq-section";
 export { FAQItem } from "./faq-section";
+
+// Blog components
+export { BlogCard } from "./blog/BlogCard";
+export type { BlogPost } from "./blog/BlogCard";
 export { ContactSalesCard } from "./contact-sales-card";
 export { CTASection as CTASectionComponent } from "./cta/cta-section";
 
