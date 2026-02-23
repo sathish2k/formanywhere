@@ -1,6 +1,16 @@
-import { Component, createResource, createSignal, Show } from 'solid-js';
+import { Component, createResource, createSignal, Show, createEffect, onMount } from 'solid-js';
 import { useParams } from '@solidjs/router';
 import { Title } from '@solidjs/meta';
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import python from 'highlight.js/lib/languages/python';
+import css from 'highlight.js/lib/languages/css';
+import xml from 'highlight.js/lib/languages/xml';
+import json from 'highlight.js/lib/languages/json';
+import bash from 'highlight.js/lib/languages/bash';
+import sql from 'highlight.js/lib/languages/sql';
+import 'highlight.js/styles/github-dark.css';
 import { Box } from '@formanywhere/ui/box';
 import { Typography } from '@formanywhere/ui/typography';
 import { Avatar } from '@formanywhere/ui/avatar';
@@ -9,73 +19,56 @@ import { IconButton } from '@formanywhere/ui/icon-button';
 import { Icon } from '@formanywhere/ui/icon';
 import { Divider } from '@formanywhere/ui/divider';
 import { Button } from '@formanywhere/ui/button';
-import { BlogPost } from '@formanywhere/marketing';
+import {
+  fetchBlogBySlug,
+  ArticleChat,
+  ReadingModes,
+  CitationsPanel,
+  SocialSyndication,
+  MermaidRenderer,
+} from '@formanywhere/marketing/blog';
 
-// Mock fetch function
-const fetchPost = async (slug: string): Promise<BlogPost & { content: string }> => {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  
-  return {
-    id: '1',
-    slug,
-    title: 'Capital Confidential: ‘Big Short’ author contemplates taking on Brexit',
-    excerpt: 'We are thrilled to announce FormAnywhere, a revolutionary new way to build, manage, and analyze forms across all your platforms.',
-    content: `
-      <p>Forms are the lifeblood of the internet. They are how we collect leads, gather feedback, process orders, and interact with our users. But for too long, building and managing forms has been a tedious, frustrating process.</p>
-      <h2>The Problem with Existing Form Builders</h2>
-      <p>Most form builders are either too simple, lacking the advanced features you need, or too complex, requiring a developer to set up and maintain. They lock you into their ecosystem, making it difficult to integrate with your existing tools and workflows.</p>
-      <blockquote>
-        "The best form builder is the one you don't have to think about." - Jane Doe
-      </blockquote>
-      <h2>Enter FormAnywhere</h2>
-      <p>FormAnywhere is different. We built it from the ground up to be the most powerful, flexible, and easy-to-use form builder on the market. Whether you're a marketer looking to capture more leads, a product manager gathering user feedback, or a developer building complex data collection workflows, FormAnywhere has you covered.</p>
-      <h3>Code Example</h3>
-      <p>Here is how you can integrate FormAnywhere into your React application:</p>
-      <pre><code class="language-javascript">import { FormAnywhere } from '@formanywhere/react';
 
-function App() {
-  return (
-    &lt;FormAnywhere formId="your-form-id" /&gt;
-  );
-}</code></pre>
-      <h3>Key Features</h3>
-      <ul>
-        <li><strong>Intuitive Drag-and-Drop Interface:</strong> Build beautiful forms in minutes, no coding required.</li>
-        <li><strong>Advanced Conditional Logic:</strong> Create dynamic, personalized experiences for your users.</li>
-        <li><strong>Seamless Integrations:</strong> Connect your forms to your favorite tools with just a few clicks.</li>
-        <li><strong>Powerful Analytics:</strong> Gain deep insights into your form performance and user behavior.</li>
-      </ul>
-      <p>We can't wait to see what you build with FormAnywhere. Sign up for a free trial today and experience the future of form building for yourself.</p>
-    `,
-    author: {
-      name: 'Adam Davis',
-      avatarUrl: 'https://i.pravatar.cc/150?u=adam',
-    },
-    publishedAt: 'Mar 16',
-    readTime: '1 min',
-    tags: ['javascript', 'javascript', 'javascript', 'javascript', 'javascript'],
-    thumbnailUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200&h=600',
-    aiSummary: 'FormAnywhere is launching a new, intuitive form builder designed to replace clunky legacy systems. It focuses on seamless data collection and cross-platform management.',
-    audioUrl: 'mock-audio.mp3',
-    mood: '🚀 Exciting',
-    engagementScore: 100000,
-    commentsCount: 1000000,
-    sharesCount: 15000,
-    likedBy: [
-      { name: 'Yen', avatarUrl: 'https://i.pravatar.cc/150?u=yen' },
-      { name: 'User2', avatarUrl: 'https://i.pravatar.cc/150?u=user2' },
-      { name: 'User3', avatarUrl: 'https://i.pravatar.cc/150?u=user3' },
-    ]
-  };
-};
+// Register highlight.js languages
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('js', javascript);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('ts', typescript);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('css', css);
+hljs.registerLanguage('html', xml);
+hljs.registerLanguage('xml', xml);
+hljs.registerLanguage('json', json);
+hljs.registerLanguage('bash', bash);
+hljs.registerLanguage('shell', bash);
+hljs.registerLanguage('sql', sql);
 
 export default function BlogRead() {
   const params = useParams();
-  const [post] = createResource(() => params.slug, fetchPost);
+  const [post] = createResource(() => params.slug, fetchBlogBySlug);
   const [isPlaying, setIsPlaying] = createSignal(false);
   const [likes, setLikes] = createSignal(0);
   const [isLiked, setIsLiked] = createSignal(false);
+  const [contentRef, setContentRef] = createSignal<HTMLElement | undefined>();
+  const [modeContent, setModeContent] = createSignal<string | null>(null);
+
+  const displayContent = () => modeContent() || post()?.content || '';
+
+  // Highlight code blocks after content renders
+  createEffect(() => {
+    const ref = contentRef();
+    const content = displayContent();
+    if (!ref || !content) return;
+    // Wait for innerHTML to be applied
+    requestAnimationFrame(() => {
+      ref.querySelectorAll('pre code').forEach((block) => {
+        // Skip mermaid blocks and already-highlighted blocks
+        if (block.classList.contains('language-mermaid')) return;
+        if (block.getAttribute('data-highlighted')) return;
+        hljs.highlightElement(block as HTMLElement);
+      });
+    });
+  });
 
   const handleLike = () => {
     if (isLiked()) {
@@ -101,13 +94,6 @@ export default function BlogRead() {
       {post() && (
         <article>
           <Title>{post()?.title} - FormAnywhere Blog</Title>
-          
-          {/* Mood Badge */}
-          <Show when={post()?.mood}>
-            <Box style={{ "margin-bottom": '16px' }}>
-              <Chip label={post()?.mood!} variant="assist" />
-            </Box>
-          </Show>
 
           <Typography variant="display-small" style={{ "font-weight": '900', "margin-bottom": '24px', "line-height": '1.2', "letter-spacing": '-0.02em' }}>
             {post()?.title}
@@ -115,18 +101,12 @@ export default function BlogRead() {
 
           <Box style={{ display: 'flex', "align-items": 'center', "justify-content": 'space-between', "margin-bottom": '32px', "flex-wrap": 'wrap', gap: '16px' }}>
             <Box style={{ display: 'flex', "align-items": 'center', gap: '16px' }}>
-              <Avatar src={post()?.author.avatarUrl} alt={post()?.author.name} size="md" />
+              <Avatar src={`https://i.pravatar.cc/150?u=${post()?.slug}`} alt="FormAnywhere AI" size="md" />
               <Box style={{ display: 'flex', "flex-direction": 'column' }}>
                 <Typography variant="label-large" style={{ color: 'var(--md-sys-color-on-surface)', "font-weight": 'bold' }}>
-                  {post()?.author.name}
+                  FormAnywhere AI
                 </Typography>
                 <Box style={{ display: 'flex', gap: '8px', "align-items": 'center' }}>
-                  <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
-                    {post()?.readTime} read
-                  </Typography>
-                  <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
-                    ·
-                  </Typography>
                   <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
                     {post()?.publishedAt}
                   </Typography>
@@ -135,24 +115,14 @@ export default function BlogRead() {
             </Box>
 
             <Box style={{ display: 'flex', gap: '8px', "align-items": 'center' }}>
-              <Show when={post()?.audioUrl}>
-                <Button
-                  variant={isPlaying() ? "filled" : "tonal"}
-                  onClick={() => setIsPlaying(!isPlaying())}
-                  style={{ "border-radius": '20px', padding: '0 16px', height: '36px' }}
-                >
-                  <Icon name={isPlaying() ? "pause" : "headset"} style={{ "margin-right": '8px', "font-size": '18px' }} />
-                  {isPlaying() ? "Playing..." : "Listen"}
-                </Button>
-              </Show>
               <IconButton variant="standard" icon={<Icon name="bookmark" />} />
-              <IconButton variant="standard" icon={<Icon name="share" />} />
+              <IconButton variant="standard" icon={<Icon name="share" />} onClick={() => navigator.clipboard.writeText(window.location.href)} />
               <IconButton variant="standard" icon={<Icon name="more-vert" />} />
             </Box>
           </Box>
 
           {/* AI Summary Box */}
-          <Show when={post()?.aiSummary}>
+          <Show when={post()?.excerpt}>
             <Box
               style={{
                 background: 'var(--md-sys-color-surface-container-low)',
@@ -173,15 +143,15 @@ export default function BlogRead() {
                   AI Summary
                 </Typography>
                 <Typography variant="body-large" style={{ color: 'var(--md-sys-color-on-surface-variant)', "line-height": '1.6' }}>
-                  {post()?.aiSummary}
+                  {post()?.excerpt}
                 </Typography>
               </Box>
             </Box>
           </Show>
 
-          {post()?.thumbnailUrl && (
+          {post()?.coverImage && (
             <img
-              src={post()?.thumbnailUrl}
+              src={post()?.coverImage!}
               alt={post()?.title}
               style={{
                 width: '100%',
@@ -193,6 +163,13 @@ export default function BlogRead() {
               }}
             />
           )}
+
+          {/* Reading Modes */}
+          <ReadingModes
+            slug={post()!.slug}
+            originalContent={post()!.content}
+            onContentChange={(html: string) => setModeContent(html)}
+          />
 
           <style>
             {`
@@ -239,37 +216,124 @@ export default function BlogRead() {
                 border-radius: 0 16px 16px 0;
               }
               .blog-content pre {
-                background: #1E1E1E;
-                color: #D4D4D4;
+                background: #0d1117;
+                color: #e6edf3;
                 padding: 24px;
                 border-radius: 16px;
                 overflow-x: auto;
                 margin-bottom: 24px;
-                font-family: 'Fira Code', monospace;
-                font-size: 1rem;
+                font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', monospace;
+                font-size: 0.9rem;
+                line-height: 1.6;
+                max-width: 100%;
+                border: 1px solid rgba(255,255,255,0.1);
+                position: relative;
+              }
+              .blog-content pre code {
+                font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', monospace;
+                display: block;
+                overflow-x: auto;
+                max-width: 100%;
+                white-space: pre;
+                word-wrap: normal;
+                tab-size: 2;
+              }
+              .blog-content pre code::-webkit-scrollbar {
+                height: 6px;
+              }
+              .blog-content pre code::-webkit-scrollbar-track {
+                background: transparent;
+              }
+              .blog-content pre code::-webkit-scrollbar-thumb {
+                background: rgba(255,255,255,0.2);
+                border-radius: 3px;
+              }
+              .blog-content pre code::-webkit-scrollbar-thumb:hover {
+                background: rgba(255,255,255,0.3);
               }
               .blog-content code {
-                font-family: 'Fira Code', monospace;
+                font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', monospace;
               }
               .blog-content p code {
                 background: var(--md-sys-color-surface-container);
-                padding: 4px 8px;
-                border-radius: 4px;
-                font-size: 1rem;
+                padding: 2px 8px;
+                border-radius: 6px;
+                font-size: 0.9rem;
+                color: var(--md-sys-color-primary);
+              }
+              /* Playground blocks */
+              .blog-content div[data-type='playground'] {
+                background: #0d1117;
+                border-radius: 16px;
+                overflow: hidden;
+                margin-bottom: 24px;
+                border: 1px solid rgba(255,255,255,0.1);
+              }
+              .blog-content div[data-type='playground']::before {
+                content: '▶ Interactive Playground';
+                display: block;
+                padding: 8px 16px;
+                background: rgba(255,255,255,0.05);
+                color: #7ee787;
+                font-size: 0.8rem;
+                font-weight: 600;
+                font-family: system-ui, sans-serif;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+              }
+              .blog-content div[data-type='playground'] pre {
+                margin: 0;
+                border: none;
+                border-radius: 0;
+              }
+              /* Code block language label */
+              .blog-content pre code[class*='language-']::before {
+                content: attr(data-language);
+                position: absolute;
+                top: 8px;
+                right: 12px;
+                font-size: 0.7rem;
+                color: rgba(255,255,255,0.35);
+                text-transform: uppercase;
+                font-family: system-ui, sans-serif;
+                letter-spacing: 0.05em;
+              }
+              /* Image figure blocks */
+              .blog-content figure.image-block {
+                margin: 32px 0;
+                text-align: center;
+              }
+              .blog-content figure.image-block img {
+                max-width: 100%;
+                border-radius: 12px;
+              }
+              .blog-content figure.image-block figcaption {
+                margin-top: 8px;
+                font-size: 0.9rem;
+                color: var(--md-sys-color-on-surface-variant);
+                font-style: italic;
+              }
+              /* Horizontal rules */
+              .blog-content hr {
+                border: none;
+                height: 1px;
+                background: var(--md-sys-color-outline-variant);
+                margin: 48px 0;
               }
             `}
           </style>
 
           <Box
+            ref={(el) => setContentRef(el)}
             class="blog-content"
-            innerHTML={post()?.content}
+            innerHTML={displayContent()}
           />
+          <MermaidRenderer containerRef={contentRef()} />
 
           <Divider style={{ "margin-bottom": '32px' }} />
 
           <Box style={{ display: 'flex', "align-items": 'center', "justify-content": 'space-between', "margin-bottom": '48px', "flex-wrap": 'wrap', gap: '24px' }}>
             <Box style={{ display: 'flex', gap: '8px', "flex-wrap": 'wrap' }}>
-              {post()?.tags.map((tag) => (
+              {post()?.tags.map((tag: string) => (
                 <Chip label={tag} variant="assist" />
               ))}
             </Box>
@@ -292,12 +356,24 @@ export default function BlogRead() {
             >
               <Icon name="favorite" style={{ "font-size": '24px', color: isLiked() ? '#FF3B30' : 'inherit' }} />
               <Typography variant="title-medium" style={{ "font-weight": 'bold' }}>
-                {formatNumber((post()?.engagementScore || 0) + likes())} Claps
+                {likes()} Claps
               </Typography>
             </Box>
           </Box>
+
+          {/* Citations & Trust Score */}
+          <CitationsPanel slug={post()!.slug} trustScore={post()?.trustScore || 0} citations={post()?.citations || []} />
+
+          {/* Social Media Syndication */}
+          <SocialSyndication slug={post()!.slug} socialData={post()?.socialMediaPosts || undefined} />
+
         </article>
       )}
+
+      {/* AI Chat (floating) */}
+      <Show when={post()}>
+        <ArticleChat slug={post()!.slug} />
+      </Show>
     </Box>
   );
 }

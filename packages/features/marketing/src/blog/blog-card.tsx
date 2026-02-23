@@ -50,14 +50,8 @@ export const BlogCard: Component<{ post: BlogPost }> = (props) => {
     return num.toString();
   };
 
-  const getTagColor = (tag: string) => {
-    const colors: Record<string, { bg: string, text: string }> = {
-      'Technology': { bg: '#E3F2FD', text: '#007AFF' },
-      'Design': { bg: '#F3E5F5', text: '#AF52DE' },
-      'Development': { bg: '#E8F5E9', text: '#34C759' },
-      'Business': { bg: '#FFF3E0', text: '#FF9500' },
-    };
-    return colors[tag] || { bg: 'var(--md-sys-color-surface-container)', text: 'var(--md-sys-color-on-surface)' };
+  const getTagColor = (_tag: string) => {
+    return { bg: 'var(--md-sys-color-primary-container)', text: 'var(--md-sys-color-on-primary-container)' };
   };
 
   return (
@@ -66,7 +60,7 @@ export const BlogCard: Component<{ post: BlogPost }> = (props) => {
       style={{
         display: 'flex',
         "flex-direction": 'column',
-        background: '#FFFFFF',
+        background: 'var(--md-sys-color-surface-container-lowest, #FFFFFF)',
         "border-radius": '24px',
         "box-shadow": '0 4px 24px rgba(0,0,0,0.06)',
         overflow: 'hidden',
@@ -77,7 +71,7 @@ export const BlogCard: Component<{ post: BlogPost }> = (props) => {
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.1)';
+        e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.12)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0)';
@@ -131,14 +125,14 @@ export const BlogCard: Component<{ post: BlogPost }> = (props) => {
           {/* Title & Excerpt */}
           <Typography
             variant="headline-small"
-            style={{ "font-weight": '800', "line-height": '1.3', "margin-bottom": '12px', "letter-spacing": '-0.01em', color: '#1A1A1A' }}
+            style={{ "font-weight": '800', "line-height": '1.3', "margin-bottom": '12px', "letter-spacing": '-0.01em', color: 'var(--md-sys-color-on-surface)' }}
           >
             {props.post.title}
           </Typography>
           <Typography
             variant="body-medium"
             style={{
-              color: '#666666',
+              color: 'var(--md-sys-color-on-surface-variant)',
               display: '-webkit-box',
               "-webkit-line-clamp": '3',
               "-webkit-box-orient": 'vertical',
@@ -154,17 +148,17 @@ export const BlogCard: Component<{ post: BlogPost }> = (props) => {
           <Box style={{ display: 'flex', "align-items": 'center', gap: '12px', "margin-bottom": '24px' }}>
             <Avatar src={props.post.author.avatarUrl} alt={props.post.author.name} size="sm" />
             <Box>
-              <Typography variant="label-medium" style={{ color: '#1A1A1A', "font-weight": 'bold' }}>
+              <Typography variant="label-medium" style={{ color: 'var(--md-sys-color-on-surface)', "font-weight": 'bold' }}>
                 {props.post.author.name}
               </Typography>
-              <Typography variant="body-small" style={{ color: '#999999' }}>
+              <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
                 {props.post.publishedAt} · {props.post.readTime} read
               </Typography>
             </Box>
           </Box>
 
           {/* Divider */}
-          <Box style={{ height: '1px', background: '#F0F0F0', "margin-bottom": '16px' }} />
+          <Box style={{ height: '1px', background: 'var(--md-sys-color-outline-variant)', "margin-bottom": '16px' }} />
 
           {/* Stats Row */}
           <Box style={{ display: 'flex', "align-items": 'center', "justify-content": 'space-between' }}>
@@ -180,7 +174,7 @@ export const BlogCard: Component<{ post: BlogPost }> = (props) => {
                         width: '24px',
                         height: '24px',
                         "border-radius": '50%',
-                        border: '2px solid #FFFFFF',
+                        border: '2px solid var(--md-sys-color-surface-container-lowest, #FFFFFF)',
                         "margin-left": index > 0 ? '-8px' : '0',
                         "z-index": 3 - index,
                       }}
@@ -188,13 +182,13 @@ export const BlogCard: Component<{ post: BlogPost }> = (props) => {
                   ))}
                 </Box>
               </Show>
-              <Typography variant="body-small" style={{ color: '#999999', "font-weight": '500' }}>
+              <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)', "font-weight": '500' }}>
                 {formatNumber(likes())} Likes
               </Typography>
             </Box>
 
             {/* Action Icons */}
-            <Box style={{ display: 'flex', gap: '16px', color: '#999999' }}>
+            <Box style={{ display: 'flex', gap: '16px', color: 'var(--md-sys-color-on-surface-variant)' }}>
               <Box style={{ display: 'flex', "align-items": 'center', gap: '4px' }}>
                 <Icon name="comment" style={{ "font-size": '18px' }} />
                 <Typography variant="body-small" style={{ "font-weight": '500' }}>

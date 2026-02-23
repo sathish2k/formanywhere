@@ -24,7 +24,7 @@ export default function MarketingLayout(props: RouteSectionProps) {
     return (
         <>
             <Header isAuthenticated={!!session()} />
-            <main id="main-content">{props.children}</main>
+            <main id="main-content" style={{ "padding-top": "72px" }}>{props.children}</main>
             <Footer />
         </>
     );

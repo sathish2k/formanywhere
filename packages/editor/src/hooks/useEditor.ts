@@ -28,12 +28,20 @@ import { ImageBlock } from '../extensions/ImageBlock';
 import { CodeBlockNode, lowlight } from '../extensions/CodeBlockNode';
 import { FormEmbed } from '../extensions/FormEmbed';
 import { DividerBlock } from '../extensions/DividerBlock';
+import { PlaygroundBlock } from '../extensions/PlaygroundBlock';
+import { DraftHistory } from '../extensions/DraftHistory';
+import { DynamicVariables } from '../extensions/DynamicVariables';
+import { SlashCommand } from '../extensions/SlashCommand';
+import { suggestion } from '../extensions/slash-suggestion';
+import { MermaidBlock } from '../extensions/MermaidBlock';
 
 export interface UseEditorOptions {
   content: string;
   placeholder?: string;
   onChange: (html: string) => void;
   editorEl: Accessor<HTMLDivElement | undefined>;
+  onHistoryChange?: (history: any[]) => void;
+  variables?: Record<string, string>;
 }
 
 export interface EditorActions {
@@ -58,6 +66,7 @@ export interface EditorActions {
   insertVideo: (src: string, width: number, height: number) => void;
   insertDivider: () => void;
   insertForm: (formId: string) => void;
+  insertPlayground: () => void;
   insertAI: () => void;
   undo: () => void;
   redo: () => void;
@@ -95,6 +104,17 @@ export function useEditor(opts: UseEditorOptions): [Accessor<Editor | undefined>
         }),
         Youtube.configure({ controls: true }),
         FormEmbed,
+        PlaygroundBlock,
+        MermaidBlock,
+        DraftHistory.configure({
+          onHistoryChange: opts.onHistoryChange,
+        }),
+        DynamicVariables.configure({
+          variables: opts.variables || {},
+        }),
+        SlashCommand.configure({
+          suggestion,
+        }),
         Placeholder.configure({
           placeholder: opts.placeholder ?? 'Tell your story\u2026',
         }),
@@ -185,6 +205,8 @@ export function useEditor(opts: UseEditorOptions): [Accessor<Editor | undefined>
     insertDivider: () => e()?.chain().focus().setHorizontalRule().run(),
     insertForm: (formId) =>
       e()?.chain().focus().insertContent({ type: 'formEmbed', attrs: { formId } }).run(),
+    insertPlayground: () =>
+      e()?.chain().focus().insertContent({ type: 'playgroundBlock' }).run(),
     insertAI: () =>
       e()
         ?.chain()

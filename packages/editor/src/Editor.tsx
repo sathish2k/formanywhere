@@ -15,6 +15,7 @@ import { useEditor } from './hooks/useEditor';
 import { InlineTooltip } from './components/InlineTooltip';
 import { AddButton } from './components/AddButton';
 import { LinkDialog } from './components/LinkDialog';
+import { DraftHistorySlider } from './components/DraftHistorySlider';
 import { Dialog } from '@formanywhere/ui/dialog';
 import { Button } from '@formanywhere/ui/button';
 import { TextField } from '@formanywhere/ui/textfield';
@@ -27,6 +28,8 @@ export interface RichTextEditorProps {
   content: string;
   onChange: (html: string) => void;
   placeholder?: string;
+  onHistoryChange?: (history: any[]) => void;
+  variables?: Record<string, string>;
 }
 
 const RichTextEditor: Component<RichTextEditorProps> = (props) => {
@@ -50,12 +53,19 @@ const RichTextEditor: Component<RichTextEditorProps> = (props) => {
   // Visibility signals driven by editor events
   const [showBubble, setShowBubble] = createSignal(false);
   const [showFloat, setShowFloat] = createSignal(false);
+  
+  const [history, setHistory] = createSignal<any[]>([]);
 
   const [editor, actions] = useEditor({
     content: props.content,
     placeholder: props.placeholder,
     onChange: props.onChange,
     editorEl,
+    onHistoryChange: (newHistory) => {
+      setHistory([...newHistory]);
+      props.onHistoryChange?.(newHistory);
+    },
+    variables: props.variables,
   });
 
   // ── Use editor events for positioning (more reliable than createEditorTransaction) ──
@@ -292,6 +302,17 @@ const RichTextEditor: Component<RichTextEditorProps> = (props) => {
 
       {/* The ProseMirror editable area */}
       <Box ref={setEditorEl} />
+
+      {/* Draft History Slider */}
+      <DraftHistorySlider 
+        history={history()} 
+        onRestore={(content) => {
+          const ed = editor();
+          if (ed) {
+            ed.commands.setContent(content, { emitUpdate: false });
+          }
+        }} 
+      />
     </Box>
   );
 };

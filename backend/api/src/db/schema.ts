@@ -82,3 +82,26 @@ export const form = pgTable('form', {
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
+
+/**
+ * Blogs table — stores AI generated blogs.
+ */
+export const blog = pgTable('blog', {
+    id: text('id').primaryKey(),
+    title: text('title').notNull(),
+    slug: text('slug').notNull().unique(),
+    content: text('content').notNull(),
+    excerpt: text('excerpt'),
+    coverImage: text('cover_image'),
+    seoTitle: text('seo_title'),
+    seoDescription: text('seo_description'),
+    tags: jsonb('tags'),
+    audioUrl: text('audio_url'),
+    trustScore: integer('trust_score').default(90),
+    socialMediaPosts: jsonb('social_media_posts'),
+    citations: jsonb('citations'),
+    status: text('status').notNull().default('published'), // draft | published
+    publishedAt: timestamp('published_at').notNull().defaultNow(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});

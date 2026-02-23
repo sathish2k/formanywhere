@@ -78,6 +78,11 @@ export const AddButton: Component<Props> = (props) => {
           leadingIcon={<Icon name="code-block" size={18} />}
           onClick={() => act(() => props.actions.toggleCodeBlock())}
         />
+        <MenuItem
+          label="Interactive Playground"
+          leadingIcon={<Icon name="play" size={18} />}
+          onClick={() => act(() => props.actions.insertPlayground())}
+        />
         <MenuDivider />
         <MenuItem
           label="Embed Form"

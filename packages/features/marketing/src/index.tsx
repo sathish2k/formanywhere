@@ -20,8 +20,21 @@ export { FAQSection } from "./faq-section";
 export { FAQItem } from "./faq-section";
 
 // Blog components
-export { BlogCard } from "./blog/BlogCard";
-export type { BlogPost } from "./blog/BlogCard";
+export { BlogCard } from "./blog";
+export type { BlogPost } from "./blog";
+
+// Blog feature components
+export { ArticleChat } from "./blog";
+export { PodcastPlayer } from "./blog";
+export { ReadingModes } from "./blog";
+export { SocialSyndication } from "./blog";
+export { CitationsPanel } from "./blog";
+export { MermaidRenderer } from "./blog";
+
+// Blog API
+export { configureBlogApi, fetchBlogs, fetchBlogBySlug } from "./blog";
+export type { ApiBlogPost, Citation, SocialMediaPosts } from "./blog";
+
 export { ContactSalesCard } from "./contact-sales-card";
 export { CTASection as CTASectionComponent } from "./cta/cta-section";
 

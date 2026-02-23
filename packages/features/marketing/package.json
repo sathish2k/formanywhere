@@ -116,6 +116,16 @@
         "./template-browser": {
             "solid": "./src/template-browser/index.tsx",
             "import": "./src/template-browser/index.tsx"
+        },
+        "./blog": {
+            "solid": "./src/blog/index.ts",
+            "import": "./src/blog/index.ts",
+            "types": "./src/blog/index.ts"
+        },
+        "./blog/api": {
+            "solid": "./src/blog/blog-api.ts",
+            "import": "./src/blog/blog-api.ts",
+            "types": "./src/blog/blog-api.ts"
         }
     },
     "scripts": {

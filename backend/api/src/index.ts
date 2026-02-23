@@ -3,6 +3,13 @@ import { cors } from '@elysiajs/cors';
 import { swagger } from '@elysiajs/swagger';
 import { auth } from './lib/auth';
 import { formsRoutes } from './routes/forms.elysia';
+import { blogsRoutes } from './routes/blogs.elysia';
+import { feedRoutes } from './routes/feed.elysia';
+import { blogFeaturesRoutes } from './routes/blog-features.elysia';
+import { setupCronJobs } from './services/cron';
+
+// Initialize background jobs
+setupCronJobs();
 
 /**
  * Better Auth handler for Elysia.
@@ -33,6 +40,9 @@ const app = new Elysia()
     .get('/', () => ({ status: 'ok', name: 'FormAnywhere API' }))
     .use(betterAuthView)
     .use(formsRoutes)
+    .use(blogsRoutes)
+    .use(feedRoutes)
+    .use(blogFeaturesRoutes)
     .listen(process.env.PORT || 3001);
 
 console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`);
