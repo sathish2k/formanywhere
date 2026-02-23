@@ -20,6 +20,7 @@ import { ImportForm } from './import/ImportForm';
 import { FormPreview } from '@formanywhere/form-runtime';
 import type { FormSchema, FormRule } from '@formanywhere/shared/types';
 import { generateId, go } from '@formanywhere/shared/utils';
+import { fetchWithAuth } from '@formanywhere/shared/auth-client';
 import { validateSchema } from '@formanywhere/domain/form';
 import { BuilderHeader } from './header/BuilderHeader';
 import { PageToolbar } from './page-toolbar/PageToolbar';
@@ -237,7 +238,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
     const loadExistingForm = async (formId: string) => {
         try {
             const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-            const res = await fetch(`${API_URL}/api/forms/${formId}`, { credentials: 'include' });
+            const res = await fetchWithAuth(`${API_URL}/api/forms/${formId}`);
             const data = await res.json();
             if (!data.success || !data.form) return;
 
@@ -365,10 +366,9 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
             const endpoint = local.formId
                 ? `${API_URL}/api/forms/${local.formId}`
                 : `${API_URL}/api/forms`;
-            await fetch(endpoint, {
+            await fetchWithAuth(endpoint, {
                 method: local.formId ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
                 body: JSON.stringify({
                     title: schemaToSave.name,
                     description: schemaToSave.description,

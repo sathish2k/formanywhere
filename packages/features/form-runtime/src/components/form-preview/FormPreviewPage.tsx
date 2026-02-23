@@ -5,12 +5,14 @@
 import { createSignal, onMount, Show } from 'solid-js';
 import type { Component } from 'solid-js';
 import { useSearchParams, useNavigate } from '@solidjs/router';
-import { FormPreview } from '@formanywhere/form-runtime';
+import { FormPreview } from '../../renderer/FormPreview';
 import { Typography } from '@formanywhere/ui/typography';
 import { CircularProgress } from '@formanywhere/ui/progress';
 import type { FormSchema } from '@formanywhere/shared/types';
+import { fetchWithAuth } from '@formanywhere/shared/auth-client';
 
 export const FormPreviewPage: Component = () => {
+    console.log('FormPreviewPage mounted');
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const [schema, setSchema] = createSignal<FormSchema | null>(null);
@@ -28,10 +30,11 @@ export const FormPreviewPage: Component = () => {
 
         try {
             const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-            const res = await fetch(`${API_URL}/api/forms/${formId}`, { credentials: 'include' });
+            const res = await fetchWithAuth(`${API_URL}/api/forms/${formId}`);
             const data = await res.json();
-
+    console.log('FormPreviewPage mounted');
             if (data.success && data.form?.schema) {
+                console.log('Fetched form schema:', JSON.parse(data.form.schema));
                 setSchema(JSON.parse(data.form.schema));
             } else {
                 setError('Form not found.');

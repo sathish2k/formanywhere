@@ -2,6 +2,7 @@
  * Dashboard Datasource
  * API calls for dashboard data — talks to Elysia backend via session cookies.
  */
+import { fetchWithAuth } from '@formanywhere/shared/auth-client';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
@@ -60,7 +61,7 @@ export async function fetchForms(
         const qs = params.toString();
         const url = `${API_URL}/api/forms${qs ? `?${qs}` : ''}`;
 
-        const response = await fetch(url, { credentials: 'include' });
+        const response = await fetchWithAuth(url);
 
         if (!response.ok) {
             console.error('Failed to fetch forms:', response.status);
@@ -96,10 +97,9 @@ export async function createForm(data: {
     status?: string;
 }): Promise<{ success: boolean; form?: FormData }> {
     try {
-        const response = await fetch(`${API_URL}/api/forms`, {
+        const response = await fetchWithAuth(`${API_URL}/api/forms`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
             body: JSON.stringify(data),
         });
 
@@ -120,9 +120,8 @@ export async function createForm(data: {
  */
 export async function deleteForm(formId: string): Promise<{ success: boolean }> {
     try {
-        const response = await fetch(`${API_URL}/api/forms/${formId}`, {
+        const response = await fetchWithAuth(`${API_URL}/api/forms/${formId}`, {
             method: 'DELETE',
-            credentials: 'include',
         });
 
         if (!response.ok) return { success: false };
@@ -142,9 +141,8 @@ export async function duplicateForm(
     formId: string
 ): Promise<{ success: boolean; form?: FormData }> {
     try {
-        const response = await fetch(`${API_URL}/api/forms/${formId}/duplicate`, {
+        const response = await fetchWithAuth(`${API_URL}/api/forms/${formId}/duplicate`, {
             method: 'POST',
-            credentials: 'include',
         });
 
         if (!response.ok) return { success: false };
@@ -165,10 +163,9 @@ export async function updateForm(
     data: Partial<{ title: string; description: string; schema: unknown; status: string }>
 ): Promise<{ success: boolean; form?: FormData }> {
     try {
-        const response = await fetch(`${API_URL}/api/forms/${formId}`, {
+        const response = await fetchWithAuth(`${API_URL}/api/forms/${formId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
             body: JSON.stringify(data),
         });
 
@@ -187,9 +184,7 @@ export async function updateForm(
  */
 export async function getForm(formId: string): Promise<{ success: boolean; form?: FormData }> {
     try {
-        const response = await fetch(`${API_URL}/api/forms/${formId}`, {
-            credentials: 'include',
-        });
+        const response = await fetchWithAuth(`${API_URL}/api/forms/${formId}`);
 
         if (!response.ok) return { success: false };
 
