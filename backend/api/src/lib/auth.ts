@@ -11,22 +11,13 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '../db';
 import * as schema from '../db/schema';
+import { sendPasswordResetEmail } from './email';
 
 /**
- * Sends a password reset email.
- * In development, logs the reset URL to the console.
- * In production, integrate a real email service (e.g. Resend, SendGrid).
+ * Sends a password reset email via Resend (or logs in dev mode).
  */
-async function sendResetPasswordEmail(url: string, user: { email: string; name: string }) {
-    if (process.env.NODE_ENV === 'production') {
-        // TODO: Replace with real email service (Resend, SendGrid, etc.)
-        console.log(`[AUTH] Password reset requested for ${user.email} — email service not configured`);
-    } else {
-        console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-        console.log(`  🔑 Password Reset Link for ${user.email}`);
-        console.log(`  ${url}`);
-        console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
-    }
+async function sendResetPasswordEmailHandler(url: string, user: { email: string; name: string }) {
+    await sendPasswordResetEmail(url, user);
 }
 
 export const auth = betterAuth({
@@ -40,7 +31,13 @@ export const auth = betterAuth({
      * Secret key for signing sessions and tokens.
      * MUST be set in production via BETTER_AUTH_SECRET env variable.
      */
-    secret: process.env.BETTER_AUTH_SECRET || 'formanywhere-dev-secret-change-in-production',
+    secret: (() => {
+        const secret = process.env.BETTER_AUTH_SECRET;
+        if (!secret && process.env.NODE_ENV === 'production') {
+            throw new Error('BETTER_AUTH_SECRET environment variable is required in production');
+        }
+        return secret || 'formanywhere-dev-secret-local-only';
+    })(),
 
     /**
      * Database adapter using Drizzle ORM.
@@ -59,7 +56,7 @@ export const auth = betterAuth({
         minPasswordLength: 8,
         maxPasswordLength: 128,
         sendResetPassword: async ({ user, url }) => {
-            await sendResetPasswordEmail(url, { email: user.email, name: user.name });
+            await sendResetPasswordEmailHandler(url, { email: user.email, name: user.name });
         },
     },
 

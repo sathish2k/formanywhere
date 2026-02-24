@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, integer, jsonb, index } from 'drizzle-orm/pg-core';
 
 // ─── Better Auth Core Tables ────────────────────────────────────────────────
 // These tables are required by Better Auth for user management,
@@ -31,7 +31,9 @@ export const session = pgTable('session', {
     ipAddress: text('ip_address'),
     userAgent: text('user_agent'),
     userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
-});
+}, (table) => [
+    index('session_user_id_idx').on(table.userId),
+]);
 
 /**
  * Accounts table - Links auth providers to users.
@@ -51,7 +53,9 @@ export const account = pgTable('account', {
     password: text('password'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
-});
+}, (table) => [
+    index('account_user_id_idx').on(table.userId),
+]);
 
 /**
  * Verification table - Stores email verification and password reset tokens.
@@ -81,7 +85,11 @@ export const form = pgTable('form', {
     submissions: integer('submissions').notNull().default(0),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
-});
+}, (table) => [
+    index('form_user_id_idx').on(table.userId),
+    index('form_status_idx').on(table.status),
+    index('form_created_at_idx').on(table.createdAt),
+]);
 
 /**
  * Blogs table — stores AI generated blogs.
@@ -96,7 +104,9 @@ export const blog = pgTable('blog', {
     seoTitle: text('seo_title'),
     seoDescription: text('seo_description'),
     tags: jsonb('tags'),
+    category: text('category').default('random'), // tech | non-tech | random
     audioUrl: text('audio_url'),
+    viewCount: integer('view_count').notNull().default(0),
     trustScore: integer('trust_score').default(90),
     socialMediaPosts: jsonb('social_media_posts'),
     citations: jsonb('citations'),
@@ -104,4 +114,25 @@ export const blog = pgTable('blog', {
     publishedAt: timestamp('published_at').notNull().defaultNow(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
-});
+}, (table) => [
+    index('blog_published_at_idx').on(table.publishedAt),
+    index('blog_category_idx').on(table.category),
+    index('blog_view_count_idx').on(table.viewCount),
+    index('blog_status_idx').on(table.status),
+]);
+
+/**
+ * Blog views table — tracks unique views per visitor (YouTube-style).
+ * A "view" is only counted once per visitor per blog within a 24-hour window.
+ * Uses IP + User-Agent hash as a visitor fingerprint.
+ */
+export const blogView = pgTable('blog_view', {
+    id: text('id').primaryKey(),
+    blogId: text('blog_id').notNull().references(() => blog.id, { onDelete: 'cascade' }),
+    /** SHA-256 hash of IP + User-Agent for privacy-safe dedup */
+    visitorHash: text('visitor_hash').notNull(),
+    viewedAt: timestamp('viewed_at').notNull().defaultNow(),
+}, (table) => [
+    index('blog_view_blog_id_idx').on(table.blogId),
+    index('blog_view_visitor_idx').on(table.blogId, table.visitorHash),
+]);

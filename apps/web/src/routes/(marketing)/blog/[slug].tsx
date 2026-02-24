@@ -1,379 +1,326 @@
-import { Component, createResource, createSignal, Show, createEffect, onMount } from 'solid-js';
+import { createResource, createSignal, Show, createEffect, lazy, Suspense, onMount } from 'solid-js';
 import { useParams } from '@solidjs/router';
-import { Title } from '@solidjs/meta';
-import hljs from 'highlight.js/lib/core';
-import javascript from 'highlight.js/lib/languages/javascript';
-import typescript from 'highlight.js/lib/languages/typescript';
-import python from 'highlight.js/lib/languages/python';
-import css from 'highlight.js/lib/languages/css';
-import xml from 'highlight.js/lib/languages/xml';
-import json from 'highlight.js/lib/languages/json';
-import bash from 'highlight.js/lib/languages/bash';
-import sql from 'highlight.js/lib/languages/sql';
-import 'highlight.js/styles/github-dark.css';
+import { Title, Meta, Link } from '@solidjs/meta';
 import { Box } from '@formanywhere/ui/box';
 import { Typography } from '@formanywhere/ui/typography';
-import { Avatar } from '@formanywhere/ui/avatar';
-import { Chip } from '@formanywhere/ui/chip';
-import { IconButton } from '@formanywhere/ui/icon-button';
-import { Icon } from '@formanywhere/ui/icon';
 import { Divider } from '@formanywhere/ui/divider';
-import { Button } from '@formanywhere/ui/button';
-import {
-  fetchBlogBySlug,
-  ArticleChat,
-  ReadingModes,
-  CitationsPanel,
-  SocialSyndication,
-  MermaidRenderer,
-} from '@formanywhere/marketing/blog';
+import { fetchBlogBySlug, recordBlogView, BlogSkeleton, BlogIcon } from '@formanywhere/marketing/blog';
+import '~/styles/blog-content.scss';
 
+// ── Lazy-load ALL heavy components (only skeleton + fetch are eager) ──
+const Avatar = lazy(() => import('@formanywhere/ui/avatar').then((m) => ({ default: m.Avatar })));
+const Chip = lazy(() => import('@formanywhere/ui/chip').then((m) => ({ default: m.Chip })));
+const IconButton = lazy(() => import('@formanywhere/ui/icon-button').then((m) => ({ default: m.IconButton })));
 
-// Register highlight.js languages
-hljs.registerLanguage('javascript', javascript);
-hljs.registerLanguage('js', javascript);
-hljs.registerLanguage('typescript', typescript);
-hljs.registerLanguage('ts', typescript);
-hljs.registerLanguage('python', python);
-hljs.registerLanguage('css', css);
-hljs.registerLanguage('html', xml);
-hljs.registerLanguage('xml', xml);
-hljs.registerLanguage('json', json);
-hljs.registerLanguage('bash', bash);
-hljs.registerLanguage('shell', bash);
-hljs.registerLanguage('sql', sql);
+const ReadingModes = lazy(() =>
+  import('@formanywhere/marketing/blog').then((m) => ({ default: m.ReadingModes }))
+);
+const ArticleChat = lazy(() =>
+  import('@formanywhere/marketing/blog').then((m) => ({ default: m.ArticleChat }))
+);
+const CitationsPanel = lazy(() =>
+  import('@formanywhere/marketing/blog').then((m) => ({ default: m.CitationsPanel }))
+);
+const SocialSyndication = lazy(() =>
+  import('@formanywhere/marketing/blog').then((m) => ({ default: m.SocialSyndication }))
+);
+
+/**
+ * Lazy-load Prism.js only when the content contains code blocks.
+ * Prism core (7.5 KB min) + 8 grammars (22 KB) + theme (1.8 KB) ≈ ~10 KB gzipped
+ * vs highlight.js ~31 KB gzipped — 67% smaller.
+ */
+async function highlightCodeBlocks(container: HTMLElement) {
+  const codeBlocks = container.querySelectorAll('pre code');
+  if (codeBlocks.length === 0) return;
+
+  const Prism = (await import('prismjs')).default;
+
+  // Load grammars — order matters (some depend on others)
+  await import('prismjs/components/prism-markup');
+  await import('prismjs/components/prism-css');
+  await import('prismjs/components/prism-javascript');
+  await import('prismjs/components/prism-typescript');
+  await import('prismjs/components/prism-python');
+  await import('prismjs/components/prism-json');
+  await import('prismjs/components/prism-bash');
+  await import('prismjs/components/prism-sql');
+
+  // Theme CSS
+  await import('prismjs/themes/prism-tomorrow.css');
+
+  // Map language class names to Prism grammar keys
+  const langMap: Record<string, string> = {
+    javascript: 'javascript', js: 'javascript',
+    typescript: 'typescript', ts: 'typescript',
+    python: 'python', py: 'python',
+    css: 'css', html: 'markup', xml: 'markup',
+    json: 'json', bash: 'bash', shell: 'bash', sql: 'sql',
+  };
+
+  codeBlocks.forEach((block) => {
+    if (block.getAttribute('data-highlighted')) return;
+
+    // Extract language from class="language-xxx"
+    const cls = block.className.match(/language-(\w+)/);
+    const lang = cls ? langMap[cls[1]] || cls[1] : '';
+    const grammar = lang ? Prism.languages[lang] : null;
+
+    if (grammar) {
+      const html = Prism.highlight(block.textContent || '', grammar, lang);
+      block.innerHTML = html;
+    }
+
+    block.setAttribute('data-highlighted', 'true');
+  });
+}
 
 export default function BlogRead() {
   const params = useParams();
+
+  const formatViews = (n: number) => {
+    if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+    if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
+    return String(n);
+  };
+
   const [post] = createResource(() => params.slug, fetchBlogBySlug);
-  const [isPlaying, setIsPlaying] = createSignal(false);
-  const [likes, setLikes] = createSignal(0);
-  const [isLiked, setIsLiked] = createSignal(false);
   const [contentRef, setContentRef] = createSignal<HTMLElement | undefined>();
   const [modeContent, setModeContent] = createSignal<string | null>(null);
+  const [viewCount, setViewCount] = createSignal<number | null>(null);
+
+  // Record a view when the blog loads (YouTube-style unique counting)
+  createEffect(() => {
+    const slug = post()?.slug;
+    if (!slug) return;
+    recordBlogView(slug)
+      .then((res) => setViewCount(res.views))
+      .catch(() => setViewCount(post()?.viewCount || 0));
+  });
 
   const displayContent = () => modeContent() || post()?.content || '';
 
-  // Highlight code blocks after content renders
+  // Highlight code blocks after content renders (lazy-loaded)
   createEffect(() => {
     const ref = contentRef();
     const content = displayContent();
     if (!ref || !content) return;
-    // Wait for innerHTML to be applied
     requestAnimationFrame(() => {
-      ref.querySelectorAll('pre code').forEach((block) => {
-        // Skip mermaid blocks and already-highlighted blocks
-        if (block.classList.contains('language-mermaid')) return;
-        if (block.getAttribute('data-highlighted')) return;
-        hljs.highlightElement(block as HTMLElement);
-      });
+      highlightCodeBlocks(ref);
     });
   });
 
-  const handleLike = () => {
-    if (isLiked()) {
-      setLikes(l => l - 1);
-      setIsLiked(false);
-    } else {
-      setLikes(l => l + 1);
-      setIsLiked(true);
-    }
-  };
+  // Initialize AdSense in-article ad slots after content renders
+  createEffect(() => {
+    const ref = contentRef();
+    const content = displayContent();
+    if (!ref || !content) return;
+    requestAnimationFrame(() => {
+      try {
+        const adSlots = ref.querySelectorAll('.adsbygoogle:not([data-adsbygoogle-status])');
+        adSlots.forEach(() => {
+          ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+        });
+      } catch { /* AdSense not loaded or blocked */ }
+    });
+  });
 
-  const formatNumber = (num: number) => {
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-    return num.toString();
-  };
+  // Load AdSense script once on mount (async, non-blocking)
+  onMount(() => {
+    const adClientId = import.meta.env.VITE_ADSENSE_CLIENT_ID;
+    if (!adClientId || typeof document === 'undefined') return;
+    if (document.querySelector('script[src*="adsbygoogle"]')) return;
+    const script = document.createElement('script');
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClientId}`;
+    document.head.appendChild(script);
+  });
+
+
 
   return (
-    <Box padding="xl" style={{ "max-width": '800px', margin: '0 auto' }}>
-      {post.loading && <Typography variant="body-large">Loading...</Typography>}
-      {post.error && <Typography variant="body-large" style={{ color: 'var(--md-sys-color-error)' }}>Error loading post.</Typography>}
-      
-      {post() && (
-        <article>
-          <Title>{post()?.title} - FormAnywhere Blog</Title>
+    <>
+      {/* ── Skeleton: renders instantly, zero-wait ── */}
+      <Show when={post.loading}>
+        <BlogSkeleton />
+      </Show>
 
-          <Typography variant="display-small" style={{ "font-weight": '900', "margin-bottom": '24px', "line-height": '1.2', "letter-spacing": '-0.02em' }}>
-            {post()?.title}
+      {/* ── Error state ── */}
+      <Show when={post.error}>
+        <Box padding="xl" style={{ "max-width": '800px', margin: '0 auto' }}>
+          <Typography variant="body-large" style={{ color: 'var(--md-sys-color-error)' }}>
+            Error loading post.
           </Typography>
+        </Box>
+      </Show>
 
-          <Box style={{ display: 'flex', "align-items": 'center', "justify-content": 'space-between', "margin-bottom": '32px', "flex-wrap": 'wrap', gap: '16px' }}>
-            <Box style={{ display: 'flex', "align-items": 'center', gap: '16px' }}>
-              <Avatar src={`https://i.pravatar.cc/150?u=${post()?.slug}`} alt="FormAnywhere AI" size="md" />
-              <Box style={{ display: 'flex', "flex-direction": 'column' }}>
-                <Typography variant="label-large" style={{ color: 'var(--md-sys-color-on-surface)', "font-weight": 'bold' }}>
-                  FormAnywhere AI
-                </Typography>
-                <Box style={{ display: 'flex', gap: '8px', "align-items": 'center' }}>
-                  <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
-                    {post()?.publishedAt}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
+      {/* ── Content: only mounts after data arrives ── */}
+      <Show when={post()}>
+        <Box padding="xl" style={{ "max-width": '800px', margin: '0 auto' }}>
+          <article>
+            <Title>{post()?.seoTitle || post()?.title} - FormAnywhere Blog</Title>
+            <Meta name="description" content={post()?.seoDescription || post()?.excerpt || ''} />
+            <Meta property="og:type" content="article" />
+            <Meta property="og:title" content={post()?.seoTitle || post()?.title || ''} />
+            <Meta property="og:description" content={post()?.seoDescription || post()?.excerpt || ''} />
+            <Meta property="og:image" content={post()?.coverImage || 'https://formanywhere.com/logos/og-default.png'} />
+            <Meta property="og:url" content={`https://formanywhere.com/blog/${post()?.slug}`} />
+            <Meta name="twitter:card" content="summary_large_image" />
+            <Meta name="twitter:title" content={post()?.seoTitle || post()?.title || ''} />
+            <Meta name="twitter:description" content={post()?.seoDescription || post()?.excerpt || ''} />
+            <Meta name="twitter:image" content={post()?.coverImage || 'https://formanywhere.com/logos/og-default.png'} />
+            <Link rel="canonical" href={`https://formanywhere.com/blog/${post()?.slug}`} />
 
-            <Box style={{ display: 'flex', gap: '8px', "align-items": 'center' }}>
-              <IconButton variant="standard" icon={<Icon name="bookmark" />} />
-              <IconButton variant="standard" icon={<Icon name="share" />} onClick={() => navigator.clipboard.writeText(window.location.href)} />
-              <IconButton variant="standard" icon={<Icon name="more-vert" />} />
-            </Box>
-          </Box>
-
-          {/* AI Summary Box */}
-          <Show when={post()?.excerpt}>
-            <Box
+            <Typography
+              variant="display-small"
               style={{
-                background: 'var(--md-sys-color-surface-container-low)',
-                padding: '24px',
-                "border-radius": '16px',
-                "margin-bottom": '32px',
-                border: '1px solid var(--md-sys-color-outline-variant)',
-                display: 'flex',
-                gap: '16px',
-                "align-items": 'flex-start',
+                "font-weight": '900',
+                "margin-bottom": '24px',
+                "line-height": '1.2',
+                "letter-spacing": '-0.02em',
               }}
             >
-              <Box style={{ background: 'var(--md-sys-color-primary-container)', padding: '8px', "border-radius": '50%', display: 'flex' }}>
-                <Icon name="sparkle" style={{ color: 'var(--md-sys-color-on-primary-container)' }} />
-              </Box>
-              <Box>
-                <Typography variant="title-medium" style={{ "font-weight": 'bold', "margin-bottom": '8px' }}>
-                  AI Summary
-                </Typography>
-                <Typography variant="body-large" style={{ color: 'var(--md-sys-color-on-surface-variant)', "line-height": '1.6' }}>
-                  {post()?.excerpt}
-                </Typography>
-              </Box>
-            </Box>
-          </Show>
+              {post()?.title}
+            </Typography>
 
-          {post()?.coverImage && (
-            <img
-              src={post()?.coverImage!}
-              alt={post()?.title}
-              style={{
-                width: '100%',
-                "max-height": '500px',
-                "object-fit": 'cover',
-                "border-radius": '16px',
-                "margin-bottom": '48px',
-                "box-shadow": '0 8px 32px rgba(0,0,0,0.08)',
-              }}
-            />
-          )}
-
-          {/* Reading Modes */}
-          <ReadingModes
-            slug={post()!.slug}
-            originalContent={post()!.content}
-            onContentChange={(html: string) => setModeContent(html)}
-          />
-
-          <style>
-            {`
-              .blog-content {
-                font-size: 1.25rem;
-                line-height: 1.8;
-                color: var(--md-sys-color-on-surface);
-                margin-bottom: 48px;
-                font-family: Georgia, serif;
-              }
-              .blog-content h2 {
-                font-size: 2rem;
-                font-weight: bold;
-                margin-top: 48px;
-                margin-bottom: 24px;
-                font-family: system-ui, -apple-system, sans-serif;
-              }
-              .blog-content h3 {
-                font-size: 1.5rem;
-                font-weight: bold;
-                margin-top: 32px;
-                margin-bottom: 16px;
-                font-family: system-ui, -apple-system, sans-serif;
-              }
-              .blog-content p {
-                margin-bottom: 24px;
-              }
-              .blog-content ul {
-                margin-bottom: 24px;
-                padding-left: 24px;
-              }
-              .blog-content li {
-                margin-bottom: 8px;
-              }
-              .blog-content blockquote {
-                border-left: 4px solid var(--md-sys-color-primary);
-                padding-left: 24px;
-                margin-left: 0;
-                margin-right: 0;
-                font-style: italic;
-                color: var(--md-sys-color-on-surface-variant);
-                background: var(--md-sys-color-surface-container-lowest);
-                padding: 24px;
-                border-radius: 0 16px 16px 0;
-              }
-              .blog-content pre {
-                background: #0d1117;
-                color: #e6edf3;
-                padding: 24px;
-                border-radius: 16px;
-                overflow-x: auto;
-                margin-bottom: 24px;
-                font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', monospace;
-                font-size: 0.9rem;
-                line-height: 1.6;
-                max-width: 100%;
-                border: 1px solid rgba(255,255,255,0.1);
-                position: relative;
-              }
-              .blog-content pre code {
-                font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', monospace;
-                display: block;
-                overflow-x: auto;
-                max-width: 100%;
-                white-space: pre;
-                word-wrap: normal;
-                tab-size: 2;
-              }
-              .blog-content pre code::-webkit-scrollbar {
-                height: 6px;
-              }
-              .blog-content pre code::-webkit-scrollbar-track {
-                background: transparent;
-              }
-              .blog-content pre code::-webkit-scrollbar-thumb {
-                background: rgba(255,255,255,0.2);
-                border-radius: 3px;
-              }
-              .blog-content pre code::-webkit-scrollbar-thumb:hover {
-                background: rgba(255,255,255,0.3);
-              }
-              .blog-content code {
-                font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', monospace;
-              }
-              .blog-content p code {
-                background: var(--md-sys-color-surface-container);
-                padding: 2px 8px;
-                border-radius: 6px;
-                font-size: 0.9rem;
-                color: var(--md-sys-color-primary);
-              }
-              /* Playground blocks */
-              .blog-content div[data-type='playground'] {
-                background: #0d1117;
-                border-radius: 16px;
-                overflow: hidden;
-                margin-bottom: 24px;
-                border: 1px solid rgba(255,255,255,0.1);
-              }
-              .blog-content div[data-type='playground']::before {
-                content: '▶ Interactive Playground';
-                display: block;
-                padding: 8px 16px;
-                background: rgba(255,255,255,0.05);
-                color: #7ee787;
-                font-size: 0.8rem;
-                font-weight: 600;
-                font-family: system-ui, sans-serif;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-              }
-              .blog-content div[data-type='playground'] pre {
-                margin: 0;
-                border: none;
-                border-radius: 0;
-              }
-              /* Code block language label */
-              .blog-content pre code[class*='language-']::before {
-                content: attr(data-language);
-                position: absolute;
-                top: 8px;
-                right: 12px;
-                font-size: 0.7rem;
-                color: rgba(255,255,255,0.35);
-                text-transform: uppercase;
-                font-family: system-ui, sans-serif;
-                letter-spacing: 0.05em;
-              }
-              /* Image figure blocks */
-              .blog-content figure.image-block {
-                margin: 32px 0;
-                text-align: center;
-              }
-              .blog-content figure.image-block img {
-                max-width: 100%;
-                border-radius: 12px;
-              }
-              .blog-content figure.image-block figcaption {
-                margin-top: 8px;
-                font-size: 0.9rem;
-                color: var(--md-sys-color-on-surface-variant);
-                font-style: italic;
-              }
-              /* Horizontal rules */
-              .blog-content hr {
-                border: none;
-                height: 1px;
-                background: var(--md-sys-color-outline-variant);
-                margin: 48px 0;
-              }
-            `}
-          </style>
-
-          <Box
-            ref={(el) => setContentRef(el)}
-            class="blog-content"
-            innerHTML={displayContent()}
-          />
-          <MermaidRenderer containerRef={contentRef()} />
-
-          <Divider style={{ "margin-bottom": '32px' }} />
-
-          <Box style={{ display: 'flex', "align-items": 'center', "justify-content": 'space-between', "margin-bottom": '48px', "flex-wrap": 'wrap', gap: '24px' }}>
-            <Box style={{ display: 'flex', gap: '8px', "flex-wrap": 'wrap' }}>
-              {post()?.tags.map((tag: string) => (
-                <Chip label={tag} variant="assist" />
-              ))}
-            </Box>
-
-            {/* Engagement / Like Button */}
+            {/* Author row */}
             <Box
-              onClick={handleLike}
               style={{
                 display: 'flex',
                 "align-items": 'center',
-                gap: '8px',
-                padding: '8px 16px',
-                "border-radius": '24px',
-                background: isLiked() ? 'var(--md-sys-color-primary-container)' : 'var(--md-sys-color-surface-container)',
-                color: isLiked() ? 'var(--md-sys-color-on-primary-container)' : 'var(--md-sys-color-on-surface)',
-                transition: 'all 0.2s',
-                cursor: 'pointer',
-                "box-shadow": isLiked() ? '0 4px 12px rgba(0,0,0,0.1)' : 'none',
+                "justify-content": 'space-between',
+                "margin-bottom": '32px',
+                "flex-wrap": 'wrap',
+                gap: '16px',
               }}
             >
-              <Icon name="favorite" style={{ "font-size": '24px', color: isLiked() ? '#FF3B30' : 'inherit' }} />
-              <Typography variant="title-medium" style={{ "font-weight": 'bold' }}>
-                {likes()} Claps
-              </Typography>
+              <Box style={{ display: 'flex', "align-items": 'center', gap: '16px' }}>
+                <Suspense fallback={<div class="blog-skeleton__bone" style={{ width: '48px', height: '48px', "border-radius": '50%' }} />}>
+                  <Avatar src={`https://i.pravatar.cc/150?u=${post()?.slug}`} alt={post()?.socialMediaPosts?.author || 'FormAnywhere'} size="md" />
+                </Suspense>
+                <Box style={{ display: 'flex', "flex-direction": 'column' }}>
+                  <Typography variant="label-large" style={{ color: 'var(--md-sys-color-on-surface)', "font-weight": 'bold' }}>
+                    {post()?.socialMediaPosts?.author || 'FormAnywhere'}
+                  </Typography>
+                  <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+                    {post()?.publishedAt}
+                    {viewCount() !== null && ` · ${formatViews(viewCount()!)} views`}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Suspense>
+                <Box style={{ display: 'flex', gap: '8px', "align-items": 'center' }}>
+                  <IconButton variant="standard" icon={<BlogIcon name="share" />} onClick={() => navigator.clipboard.writeText(window.location.href)} />
+                </Box>
+              </Suspense>
             </Box>
-          </Box>
 
-          {/* Citations & Trust Score */}
-          <CitationsPanel slug={post()!.slug} trustScore={post()?.trustScore || 0} citations={post()?.citations || []} />
+            {/* AI Summary Box */}
+            <Show when={post()?.excerpt}>
+              <Box
+                style={{
+                  background: 'var(--md-sys-color-surface-container-low)',
+                  padding: '24px',
+                  "border-radius": '16px',
+                  "margin-bottom": '32px',
+                  border: '1px solid var(--md-sys-color-outline-variant)',
+                  display: 'flex',
+                  gap: '16px',
+                  "align-items": 'flex-start',
+                }}
+              >
+                <Box style={{ background: 'var(--md-sys-color-primary-container)', padding: '8px', "border-radius": '50%', display: 'flex' }}>
+                  <BlogIcon name="sparkle" style={{ color: 'var(--md-sys-color-on-primary-container)' }} />
+                </Box>
+                <Box>
+                  <Typography variant="title-medium" style={{ "font-weight": 'bold', "margin-bottom": '8px' }}>
+                    AI Summary
+                  </Typography>
+                  <Typography variant="body-large" style={{ color: 'var(--md-sys-color-on-surface-variant)', "line-height": '1.6' }}>
+                    {post()?.excerpt}
+                  </Typography>
+                </Box>
+              </Box>
+            </Show>
 
-          {/* Social Media Syndication */}
-          <SocialSyndication slug={post()!.slug} socialData={post()?.socialMediaPosts || undefined} />
+            {/* Cover image */}
+            <Show when={post()?.coverImage}>
+              <img
+                src={post()!.coverImage!}
+                alt={post()?.title}
+                loading="lazy"
+                decoding="async"
+                width={800}
+                height={450}
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  "max-height": '500px',
+                  "object-fit": 'cover',
+                  "border-radius": '16px',
+                  "margin-bottom": '48px',
+                  "box-shadow": '0 8px 32px rgba(0,0,0,0.08)',
+                  "aspect-ratio": '16 / 9',
+                }}
+              />
+            </Show>
 
-        </article>
-      )}
+            {/* Reading Modes (lazy) */}
+            <Suspense>
+              <ReadingModes
+                slug={post()!.slug}
+                originalContent={post()!.content}
+                onContentChange={(html: string) => setModeContent(html)}
+              />
+            </Suspense>
 
-      {/* AI Chat (floating) */}
-      <Show when={post()}>
-        <ArticleChat slug={post()!.slug} />
+            {/* Blog content */}
+            <Box
+              ref={(el) => setContentRef(el)}
+              class="blog-content"
+              innerHTML={displayContent()}
+            />
+
+            <Divider style={{ "margin-bottom": '32px' }} />
+
+            {/* Tags */}
+            <Show when={post()?.tags?.length}>
+              <Box
+                style={{
+                  display: 'flex',
+                  "align-items": 'center',
+                  "margin-bottom": '48px',
+                  "flex-wrap": 'wrap',
+                  gap: '8px',
+                }}
+              >
+                <Suspense>
+                  {post()?.tags.map((tag: string) => (
+                    <Chip label={tag} variant="assist" />
+                  ))}
+                </Suspense>
+              </Box>
+            </Show>
+
+            {/* Citations & Trust Score (lazy) */}
+            <Suspense>
+              <CitationsPanel slug={post()!.slug} trustScore={post()?.trustScore || 0} citations={post()?.citations || []} />
+            </Suspense>
+
+            {/* Social Syndication (lazy) */}
+            <Suspense>
+              <SocialSyndication slug={post()!.slug} socialData={post()?.socialMediaPosts || undefined} />
+            </Suspense>
+          </article>
+        </Box>
+
+        {/* AI Chat FAB (lazy) */}
+        <Suspense>
+          <ArticleChat slug={post()!.slug} />
+        </Suspense>
       </Show>
-    </Box>
+    </>
   );
 }

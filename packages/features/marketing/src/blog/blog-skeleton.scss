@@ -1,0 +1,20 @@
+// Blog skeleton shimmer animation — lightweight CSS-only
+.blog-skeleton__bone {
+  background: linear-gradient(
+    90deg,
+    var(--md-sys-color-surface-container, #e7e0ec) 25%,
+    var(--md-sys-color-surface-container-high, #ece6f0) 37%,
+    var(--md-sys-color-surface-container, #e7e0ec) 63%
+  );
+  background-size: 400% 100%;
+  animation: blog-skeleton-shimmer 1.4s ease infinite;
+}
+
+@keyframes blog-skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}

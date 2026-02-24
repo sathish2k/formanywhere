@@ -1,6 +1,5 @@
 import { Component, createEffect, createSignal, onCleanup } from 'solid-js';
 import mermaid from 'mermaid';
-import { NodeViewWrapper } from 'solid-tiptap';
 
 export const MermaidNodeView: Component<any> = (props) => {
   let containerRef!: HTMLDivElement;
@@ -28,7 +27,7 @@ export const MermaidNodeView: Component<any> = (props) => {
   });
 
   return (
-    <NodeViewWrapper class="mermaid-block my-4 p-4 border rounded-lg bg-gray-50 relative">
+    <div class="mermaid-block my-4 p-4 border rounded-lg bg-gray-50 relative" data-node-view-wrapper="">
       <div class="absolute top-2 right-2 text-xs text-gray-400 font-mono">Mermaid Diagram</div>
       {error() ? (
         <div class="text-red-500 text-sm font-mono whitespace-pre-wrap">{error()}</div>
@@ -38,6 +37,6 @@ export const MermaidNodeView: Component<any> = (props) => {
       <pre class="hidden">
         <code class="language-mermaid">{props.node.textContent}</code>
       </pre>
-    </NodeViewWrapper>
+    </div>
   );
 };

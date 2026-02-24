@@ -8,6 +8,7 @@ export {
   configureBlogApi,
   fetchBlogs,
   fetchBlogBySlug,
+  recordBlogView,
   chatWithArticle,
   generateAudio,
   getReadingMode,
@@ -18,6 +19,11 @@ export {
 
 export type {
   BlogPost as ApiBlogPost,
+  BlogListItem,
+  BlogListParams,
+  BlogListResponse,
+  PaginationInfo,
+  ViewResponse,
   Citation,
   SocialMediaPosts,
   ChatResponse,
@@ -32,8 +38,14 @@ export { PodcastPlayer } from './podcast-player';
 export { ReadingModes } from './reading-modes';
 export { SocialSyndication } from './social-syndication';
 export { CitationsPanel } from './citations-panel';
-export { MermaidRenderer } from './mermaid-renderer';
 
 // Re-export BlogCard (already existed here)
 export { BlogCard } from './blog-card';
 export type { BlogPost } from './blog-card';
+
+// Skeleton loader (lightweight — no heavy deps)
+export { BlogSkeleton } from './blog-skeleton';
+
+// Lightweight blog-only icon (~700 B vs 19 KB full Icon)
+export { BlogIcon } from './blog-icon';
+export type { BlogIconProps } from './blog-icon';

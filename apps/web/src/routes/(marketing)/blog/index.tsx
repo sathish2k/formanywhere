@@ -1,4 +1,5 @@
-import { createResource, createSignal, For, Show } from 'solid-js';
+import { createResource, createSignal, createMemo, For, Show } from 'solid-js';
+import { useSearchParams } from '@solidjs/router';
 import { Title } from '@solidjs/meta';
 import { Box } from '@formanywhere/ui/box';
 import { HStack, VStack } from '@formanywhere/ui/stack';
@@ -8,38 +9,49 @@ import { Icon } from '@formanywhere/ui/icon';
 import { Card } from '@formanywhere/ui/card';
 import { TextField } from '@formanywhere/ui/textfield';
 import { CircularProgress } from '@formanywhere/ui/progress';
-import { BlogCard, BlogPost } from '@formanywhere/marketing';
-import { fetchBlogs, type ApiBlogPost } from '@formanywhere/marketing/blog';
+import { Chip } from '@formanywhere/ui/chip';
+import { BlogCard, type BlogPost } from '@formanywhere/marketing';
+import {
+  fetchBlogs,
+  type BlogListItem,
+  type BlogListParams,
+  type BlogListResponse,
+} from '@formanywhere/marketing/blog';
 
-/** Map API blog posts to the BlogCard-expected format */
-function toBlogCardPost(api: ApiBlogPost): BlogPost {
-  const wordCount = api.content.replace(/<[^>]*>/g, '').split(/\s+/).length;
+/** Map API blog list items to the BlogCard-expected format */
+function toBlogCardPost(api: BlogListItem): BlogPost {
+  const author = (api.socialMediaPosts as any)?.author || 'FormAnywhere';
   return {
     id: api.id,
     slug: api.slug,
     title: api.title,
-    excerpt: api.excerpt || api.seoDescription || '',
+    excerpt: api.excerpt || '',
     author: {
-      name: 'FormAnywhere AI',
+      name: author,
       avatarUrl: `https://i.pravatar.cc/150?u=${api.slug}`,
     },
     publishedAt: new Date(api.publishedAt).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
     }),
-    readTime: `${Math.max(1, Math.ceil(wordCount / 250))} min`,
-    tags: api.tags || [],
+    readTime: '',
+    tags: (api.tags as string[]) || [],
     thumbnailUrl: api.coverImage || undefined,
-    aiSummary: api.excerpt || undefined,
-    audioUrl: api.audioUrl || undefined,
+    viewCount: api.viewCount || 0,
   };
 }
 
-const FORM_STATS = [
-  { label: 'Forms Created', value: '12,500+', icon: 'file-text' as const },
-  { label: 'Submissions Collected', value: '1.2M+', icon: 'check-circle' as const },
-  { label: 'Templates Available', value: '50+', icon: 'layers' as const },
-];
+const SORT_OPTIONS = [
+  { value: 'latest', label: 'Latest' },
+  { value: 'trending', label: 'Trending' },
+  { value: 'most-viewed', label: 'Most Viewed' },
+] as const;
+
+const CATEGORY_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'tech', label: 'Tech' },
+  { value: 'non-tech', label: 'Non-Tech' },
+] as const;
 
 const QUICK_LINKS = [
   { label: 'Getting Started Guide', href: '/blog/getting-started', icon: 'rocket' as const },
@@ -49,11 +61,58 @@ const QUICK_LINKS = [
 ];
 
 export default function BlogList() {
-  const [activeTab, setActiveTab] = createSignal('Latest');
-  const tabs = ['Latest', 'Trending', 'Recommended'];
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [apiPosts] = createResource(fetchBlogs);
-  const posts = () => (apiPosts() || []).map(toBlogCardPost);
+  // ── Reactive query params ──
+  const page = () => Math.max(1, Number(searchParams.page) || 1);
+  const sort = () => (searchParams.sort as BlogListParams['sort']) || 'latest';
+  const category = () => (searchParams.category as BlogListParams['category']) || 'all';
+  const tag = () => (searchParams.tag as string) || '';
+  const search = () => (searchParams.search as string) || '';
+
+  // Build fetch params key for createResource reactivity
+  const fetchParams = createMemo<BlogListParams>(() => ({
+    page: page(),
+    limit: 12,
+    sort: sort(),
+    category: category(),
+    tag: tag(),
+    search: search(),
+  }));
+
+  const [data] = createResource(fetchParams, fetchBlogs);
+  const blogs = () => data()?.blogs || [];
+  const pagination = () => data()?.pagination;
+  const posts = () => blogs().map(toBlogCardPost);
+
+  // ── Search with debounce ──
+  let searchTimeout: ReturnType<typeof setTimeout>;
+  const [searchInput, setSearchInput] = createSignal(search());
+  const handleSearch = (value: string) => {
+    setSearchInput(value);
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      setSearchParams({ search: value || undefined, page: '1' });
+    }, 400);
+  };
+
+  const setSort = (s: string) => setSearchParams({ sort: s, page: '1' });
+  const setCategory = (c: string) => setSearchParams({ category: c, page: '1' });
+  const setTag = (t: string) => setSearchParams({ tag: t || undefined, page: '1' });
+  const goToPage = (p: number) => setSearchParams({ page: String(p) });
+
+  // Collect all unique tags from current results for the sidebar
+  const allTags = createMemo(() => {
+    const tagSet = new Set<string>();
+    blogs().forEach((b) => ((b.tags as string[]) || []).forEach((t) => tagSet.add(t)));
+    return [...tagSet].slice(0, 12);
+  });
+
+  const formatCount = (n: number) => {
+    if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+    if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
+    return String(n);
+  };
 
   return (
     <Box
@@ -63,8 +122,8 @@ export default function BlogList() {
     >
       <Title>Blog - FormAnywhere</Title>
 
-      {/* Header */}
-      <HStack align="center" justify="between" style={{ 'margin-bottom': '48px' }}>
+      {/* ── Header ── */}
+      <HStack align="center" justify="between" style={{ 'margin-bottom': '32px', 'flex-wrap': 'wrap', gap: '16px' }}>
         <Typography
           variant="display-medium"
           style={{ 'font-weight': '900', 'letter-spacing': '-0.02em', color: 'var(--md-sys-color-on-surface)' }}
@@ -72,55 +131,63 @@ export default function BlogList() {
           Explore
         </Typography>
 
-        <TextField
-          variant="outlined"
-          placeholder="Search articles..."
-          leadingIcon={<Icon name="search" />}
-          size="sm"
-          style={{ width: '300px' }}
-        />
+        <Box style={{ width: '320px' }}>
+          <TextField
+            variant="outlined"
+            placeholder="Search articles..."
+            leadingIcon={<Icon name="search" />}
+            size="sm"
+            value={searchInput()}
+            onInput={(e: any) => handleSearch(e.target?.value || '')}
+          />
+        </Box>
       </HStack>
 
+      {/* ── Category + Sort bar ── */}
+      <HStack gap="md" align="center" justify="between" style={{ 'margin-bottom': '32px', 'flex-wrap': 'wrap' }}>
+        <HStack gap="sm">
+          <For each={CATEGORY_OPTIONS}>
+            {(opt) => (
+              <Chip
+                label={opt.label}
+                variant="filter"
+                selected={category() === opt.value}
+                onClick={() => setCategory(opt.value)}
+              />
+            )}
+          </For>
+        </HStack>
+
+        <HStack gap="sm">
+          <For each={SORT_OPTIONS}>
+            {(opt) => (
+              <Chip
+                label={opt.label}
+                variant="filter"
+                selected={sort() === opt.value}
+                onClick={() => setSort(opt.value)}
+              />
+            )}
+          </For>
+        </HStack>
+      </HStack>
+
+      {/* ── Active tag filter indicator ── */}
+      <Show when={tag()}>
+        <HStack gap="sm" align="center" style={{ 'margin-bottom': '24px' }}>
+          <Typography variant="body-medium" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+            Filtered by tag:
+          </Typography>
+          <Chip label={tag()} variant="input" onRemove={() => setTag('')} />
+        </HStack>
+      </Show>
+
       <HStack gap="xl" align="start">
-        {/* Main Content Area */}
-        <Box style={{ flex: '1' }}>
-          {/* Tabs */}
-          <HStack gap="lg" style={{ 'margin-bottom': '32px', 'border-bottom': '2px solid var(--md-sys-color-outline-variant, #E5E5E5)' }}>
-            <For each={tabs}>
-              {(tab) => (
-                <Box
-                  onClick={() => setActiveTab(tab)}
-                  style={{
-                    padding: '0 0 16px 0',
-                    cursor: 'pointer',
-                    position: 'relative',
-                    color: activeTab() === tab ? 'var(--md-sys-color-on-surface)' : 'var(--md-sys-color-on-surface-variant)',
-                    'font-weight': activeTab() === tab ? 'bold' : '500',
-                    'font-size': '1.125rem',
-                    transition: 'color 0.2s ease',
-                  }}
-                >
-                  {tab}
-                  {activeTab() === tab && (
-                    <Box
-                      style={{
-                        position: 'absolute',
-                        bottom: '-2px',
-                        left: 0,
-                        right: 0,
-                        height: '2px',
-                        background: 'var(--md-sys-color-on-surface)',
-                        'border-radius': '2px 2px 0 0',
-                      }}
-                    />
-                  )}
-                </Box>
-              )}
-            </For>
-          </HStack>
+        {/* ── Main Content Area ── */}
+        <Box style={{ flex: '1', 'min-width': '0' }}>
 
           {/* Loading */}
-          <Show when={apiPosts.loading}>
+          <Show when={data.loading}>
             <HStack gap="sm" align="center" justify="center" style={{ padding: '48px' }}>
               <CircularProgress indeterminate size={24} />
               <Typography variant="body-large" color="on-surface-variant">
@@ -130,37 +197,90 @@ export default function BlogList() {
           </Show>
 
           {/* Error */}
-          <Show when={apiPosts.error}>
+          <Show when={data.error}>
             <Typography variant="body-large" color="on-surface-variant" align="center" style={{ padding: '48px' }}>
               Unable to load articles. Please try again later.
             </Typography>
           </Show>
 
           {/* Empty */}
-          <Show when={!apiPosts.loading && !apiPosts.error && posts().length === 0}>
+          <Show when={!data.loading && !data.error && posts().length === 0}>
             <VStack align="center" gap="sm" style={{ padding: '48px' }}>
               <Typography variant="title-large" style={{ color: 'var(--md-sys-color-on-surface)' }}>
-                No articles yet
+                No articles found
               </Typography>
               <Typography variant="body-large" color="on-surface-variant">
-                Our AI writes fresh articles every day at 4:00 AM. Check back soon!
+                {search() ? `No results for "${search()}". Try a different search.` : 'Our AI writes fresh articles every day. Check back soon!'}
               </Typography>
             </VStack>
           </Show>
 
-          {/* Masonry Grid */}
-          <Box style={{ 'column-count': '2', 'column-gap': '24px' }}>
-            <For each={posts()}>
-              {(post) => (
-                <Box style={{ 'break-inside': 'avoid', 'margin-bottom': '24px' }}>
-                  <BlogCard post={post} />
-                </Box>
-              )}
-            </For>
-          </Box>
+          {/* ── Blog Grid ── */}
+          <Show when={posts().length > 0}>
+            <Box style={{ 'column-count': '2', 'column-gap': '24px' }}>
+              <For each={posts()}>
+                {(post) => (
+                  <Box style={{ 'break-inside': 'avoid', 'margin-bottom': '24px' }}>
+                    <BlogCard post={post} />
+                  </Box>
+                )}
+              </For>
+            </Box>
+          </Show>
+
+          {/* ── Pagination ── */}
+          <Show when={pagination() && pagination()!.totalPages > 1}>
+            <HStack gap="sm" align="center" justify="center" style={{ 'margin-top': '48px', 'margin-bottom': '32px', 'flex-wrap': 'wrap' }}>
+              <Button
+                variant="outlined"
+                size="sm"
+                disabled={!pagination()!.hasPrev}
+                onClick={() => goToPage(page() - 1)}
+                icon={<Icon name="chevron-left" size={16} />}
+              >
+                Previous
+              </Button>
+
+              <For each={getPaginationRange(page(), pagination()!.totalPages)}>
+                {(p) => (
+                  <Show
+                    when={p !== '...'}
+                    fallback={
+                      <Typography variant="body-medium" style={{ padding: '0 4px', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                        ...
+                      </Typography>
+                    }
+                  >
+                    <Button
+                      variant={page() === Number(p) ? 'filled' : 'outlined'}
+                      size="sm"
+                      onClick={() => goToPage(Number(p))}
+                      style={{ 'min-width': '40px' }}
+                    >
+                      {p}
+                    </Button>
+                  </Show>
+                )}
+              </For>
+
+              <Button
+                variant="outlined"
+                size="sm"
+                disabled={!pagination()!.hasNext}
+                onClick={() => goToPage(page() + 1)}
+                trailingIcon={<Icon name="chevron-right" size={16} />}
+              >
+                Next
+              </Button>
+            </HStack>
+
+            <Typography variant="body-small" align="center" style={{ color: 'var(--md-sys-color-on-surface-variant)', 'margin-bottom': '32px' }}>
+              Showing {((page() - 1) * (pagination()!.limit)) + 1}–{Math.min(page() * pagination()!.limit, pagination()!.totalCount)} of {formatCount(pagination()!.totalCount)} articles
+            </Typography>
+          </Show>
         </Box>
 
-        {/* Sidebar */}
+        {/* ── Sidebar ── */}
         <VStack gap="lg" style={{ width: '320px', 'flex-shrink': '0', position: 'sticky', top: '24px' }}>
 
           {/* Popular Topics */}
@@ -172,64 +292,29 @@ export default function BlogList() {
               Popular Topics
             </Typography>
             <HStack gap="sm" style={{ 'flex-wrap': 'wrap' }}>
-              <Show when={posts().length > 0} fallback={
-                <For each={['AI Forms', 'Productivity', 'Design', 'No-Code', 'Analytics', 'Automation']}>
-                  {(tag) => (
-                    <Button variant="tonal" size="sm" style={{ 'border-radius': '999px' }}>
-                      {tag}
+              <Show when={allTags().length > 0} fallback={
+                <For each={['AI', 'Tech', 'Apple', 'Samsung', 'Google', 'Startups']}>
+                  {(t) => (
+                    <Button variant="tonal" size="sm" style={{ 'border-radius': '999px' }} onClick={() => setTag(t)}>
+                      {t}
                     </Button>
                   )}
                 </For>
               }>
-                <For each={[...new Set(posts().flatMap(p => p.tags))].slice(0, 8)}>
-                  {(tag) => (
-                    <Button variant="tonal" size="sm" style={{ 'border-radius': '999px' }}>
-                      {tag}
+                <For each={allTags()}>
+                  {(t) => (
+                    <Button
+                      variant={tag() === t ? 'filled' : 'tonal'}
+                      size="sm"
+                      style={{ 'border-radius': '999px' }}
+                      onClick={() => setTag(tag() === t ? '' : t)}
+                    >
+                      {t}
                     </Button>
                   )}
                 </For>
               </Show>
             </HStack>
-          </Card>
-
-          {/* Platform Stats */}
-          <Card variant="elevated" padding="lg">
-            <Typography
-              variant="title-large"
-              style={{ 'font-weight': 'bold', 'margin-bottom': '16px', color: 'var(--md-sys-color-on-surface)' }}
-            >
-              FormAnywhere in Numbers
-            </Typography>
-            <VStack gap="md">
-              <For each={FORM_STATS}>
-                {(stat) => (
-                  <HStack gap="sm" align="center">
-                    <Box
-                      style={{
-                        width: '40px',
-                        height: '40px',
-                        'border-radius': '12px',
-                        background: 'var(--md-sys-color-primary-container, #E8DEF8)',
-                        display: 'flex',
-                        'align-items': 'center',
-                        'justify-content': 'center',
-                        'flex-shrink': '0',
-                      }}
-                    >
-                      <Icon name={stat.icon} size={20} color="var(--md-sys-color-primary, #6750A4)" />
-                    </Box>
-                    <VStack>
-                      <Typography variant="title-medium" style={{ 'font-weight': 'bold', color: 'var(--md-sys-color-on-surface)' }}>
-                        {stat.value}
-                      </Typography>
-                      <Typography variant="body-small" color="on-surface-variant">
-                        {stat.label}
-                      </Typography>
-                    </VStack>
-                  </HStack>
-                )}
-              </For>
-            </VStack>
           </Card>
 
           {/* Quick Links */}
@@ -304,4 +389,31 @@ export default function BlogList() {
       </HStack>
     </Box>
   );
+}
+
+/**
+ * Generate pagination range with ellipsis for large page counts.
+ * e.g. [1, 2, 3, '...', 98, 99, 100] for page 2 of 100
+ */
+function getPaginationRange(current: number, total: number): (string | number)[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const pages: (string | number)[] = [];
+
+  // Always show first page
+  pages.push(1);
+
+  if (current > 3) pages.push('...');
+
+  // Show pages around current
+  const start = Math.max(2, current - 1);
+  const end = Math.min(total - 1, current + 1);
+  for (let i = start; i <= end; i++) pages.push(i);
+
+  if (current < total - 2) pages.push('...');
+
+  // Always show last page
+  if (total > 1) pages.push(total);
+
+  return pages;
 }

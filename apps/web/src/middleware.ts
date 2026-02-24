@@ -50,19 +50,30 @@ export default createMiddleware({
       try {
         const cookieHeader = event.request.headers.get("cookie");
         if (cookieHeader) {
-          const response = await fetch(`${API_URL}/api/auth/get-session`, {
-            headers: { cookie: cookieHeader },
-          });
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 3000);
 
-          if (response.ok) {
-            const data = await response.json();
-            if (data?.user) {
-              sessionUser = data.user;
+          try {
+            const response = await fetch(`${API_URL}/api/auth/get-session`, {
+              headers: { cookie: cookieHeader },
+              signal: controller.signal,
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              if (data?.user) {
+                sessionUser = data.user;
+              }
             }
+          } finally {
+            clearTimeout(timeout);
           }
         }
       } catch (err) {
-        console.error("[Auth Middleware] Failed to validate session:", err);
+        // Log only non-abort errors
+        if ((err as Error)?.name !== 'AbortError') {
+          console.error("[Auth Middleware] Failed to validate session:", err);
+        }
       }
 
       // Store user in request context via typed locals

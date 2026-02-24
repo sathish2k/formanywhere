@@ -2,24 +2,27 @@
  * Forms API Routes — Elysia
  *
  * Full CRUD with search, filter, sort, and pagination.
- * All routes are protected via authMiddleware (session cookie → user).
+ * All routes are protected via inline auth (session cookie → user).
  */
 import { Elysia, t } from 'elysia';
 import { db } from '../db';
 import { form } from '../db/schema';
 import { eq, and, or, gte, lte, ilike, desc, asc, count } from 'drizzle-orm';
 import { auth } from '../lib/auth';
+import crypto from 'crypto';
+
+/** Valid form status schema for TypeBox validation */
+const VALID_STATUSES = new Set(['draft', 'published', 'archived', 'closed']);
+
+function isValidStatus(s: string): boolean {
+    return VALID_STATUSES.has(s);
+}
 
 /**
- * Generate a short random ID (16 chars).
+ * Generate a cryptographically secure random ID (16 chars).
  */
 function generateId(): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let id = '';
-    for (let i = 0; i < 16; i++) {
-        id += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return id;
+    return crypto.randomBytes(12).toString('base64url').slice(0, 16);
 }
 
 export const formsRoutes = new Elysia({ prefix: '/api/forms' })
@@ -30,20 +33,20 @@ export const formsRoutes = new Elysia({ prefix: '/api/forms' })
 
         if (!session) {
             set.status = 401;
-            return { authedUser: null as any };
+            return { user: null as any };
         }
 
-        return { authedUser: session.user };
+        return { user: session.user };
     })
-    .onBeforeHandle(({ authedUser, set }) => {
-        if (!authedUser) {
+    .onBeforeHandle(({ user, set }) => {
+        if (!user) {
             set.status = 401;
             return { success: false, error: 'Unauthorized' };
         }
     })
 
     // ── List forms (GET /api/forms) ────────────────────────────
-    .get('/', async ({ authedUser, query }) => {
+    .get('/', async ({ user, query }) => {
         const {
             search,
             sortBy = 'date',
@@ -61,7 +64,7 @@ export const formsRoutes = new Elysia({ prefix: '/api/forms' })
         const offset = (pageNum - 1) * limitNum;
 
         // Build WHERE conditions
-        const conditions = [eq(form.userId, authedUser.id)];
+        const conditions = [eq(form.userId, user.id)];
 
         // Search filter (title or description)
         if (search) {
@@ -162,11 +165,11 @@ export const formsRoutes = new Elysia({ prefix: '/api/forms' })
     })
 
     // ── Get single form (GET /api/forms/:id) ───────────────────
-    .get('/:id', async ({ authedUser, params, set }) => {
+    .get('/:id', async ({ user, params, set }) => {
         const [found] = await db
             .select()
             .from(form)
-            .where(and(eq(form.id, params.id), eq(form.userId, authedUser.id)));
+            .where(and(eq(form.id, params.id), eq(form.userId, user.id)));
 
         if (!found) {
             set.status = 404;
@@ -177,17 +180,23 @@ export const formsRoutes = new Elysia({ prefix: '/api/forms' })
     })
 
     // ── Create form (POST /api/forms) ──────────────────────────
-    .post('/', async ({ authedUser, body }) => {
+    .post('/', async ({ user, body, set }) => {
         const id = generateId();
         const now = new Date();
 
+        const status = body.status || 'draft';
+        if (!isValidStatus(status)) {
+            set.status = 400;
+            return { success: false, error: 'Invalid status. Must be draft, published, archived, or closed.' };
+        }
+
         const [created] = await db.insert(form).values({
             id,
-            userId: authedUser.id,
+            userId: user.id,
             title: body.title || 'Untitled Form',
             description: body.description || null,
             schema: body.schema || null,
-            status: body.status || 'draft',
+            status,
             submissions: 0,
             createdAt: now,
             updatedAt: now,
@@ -196,24 +205,29 @@ export const formsRoutes = new Elysia({ prefix: '/api/forms' })
         return { success: true, form: created };
     }, {
         body: t.Object({
-            title: t.Optional(t.String()),
-            description: t.Optional(t.String()),
-            schema: t.Optional(t.Any()),
+            title: t.Optional(t.String({ maxLength: 500 })),
+            description: t.Optional(t.String({ maxLength: 5000 })),
+            schema: t.Optional(t.Unknown()),
             status: t.Optional(t.String()),
         }),
     })
 
     // ── Update form (PUT /api/forms/:id) ───────────────────────
-    .put('/:id', async ({ authedUser, params, body, set }) => {
+    .put('/:id', async ({ user, params, body, set }) => {
         // Verify ownership
         const [existing] = await db
             .select({ id: form.id })
             .from(form)
-            .where(and(eq(form.id, params.id), eq(form.userId, authedUser.id)));
+            .where(and(eq(form.id, params.id), eq(form.userId, user.id)));
 
         if (!existing) {
             set.status = 404;
             return { success: false, error: 'Form not found' };
+        }
+
+        if (body.status && !isValidStatus(body.status)) {
+            set.status = 400;
+            return { success: false, error: 'Invalid status. Must be draft, published, archived, or closed.' };
         }
 
         const updates: Record<string, unknown> = { updatedAt: new Date() };
@@ -231,19 +245,19 @@ export const formsRoutes = new Elysia({ prefix: '/api/forms' })
         return { success: true, form: updated };
     }, {
         body: t.Object({
-            title: t.Optional(t.String()),
-            description: t.Optional(t.String()),
-            schema: t.Optional(t.Any()),
+            title: t.Optional(t.String({ maxLength: 500 })),
+            description: t.Optional(t.String({ maxLength: 5000 })),
+            schema: t.Optional(t.Unknown()),
             status: t.Optional(t.String()),
         }),
     })
 
     // ── Delete form (DELETE /api/forms/:id) ─────────────────────
-    .delete('/:id', async ({ authedUser, params, set }) => {
+    .delete('/:id', async ({ user, params, set }) => {
         const [existing] = await db
             .select({ id: form.id })
             .from(form)
-            .where(and(eq(form.id, params.id), eq(form.userId, authedUser.id)));
+            .where(and(eq(form.id, params.id), eq(form.userId, user.id)));
 
         if (!existing) {
             set.status = 404;
@@ -256,11 +270,11 @@ export const formsRoutes = new Elysia({ prefix: '/api/forms' })
     })
 
     // ── Duplicate form (POST /api/forms/:id/duplicate) ──────────
-    .post('/:id/duplicate', async ({ authedUser, params, set }) => {
+    .post('/:id/duplicate', async ({ user, params, set }) => {
         const [original] = await db
             .select()
             .from(form)
-            .where(and(eq(form.id, params.id), eq(form.userId, authedUser.id)));
+            .where(and(eq(form.id, params.id), eq(form.userId, user.id)));
 
         if (!original) {
             set.status = 404;
@@ -272,7 +286,7 @@ export const formsRoutes = new Elysia({ prefix: '/api/forms' })
 
         const [duplicate] = await db.insert(form).values({
             id,
-            userId: authedUser.id,
+            userId: user.id,
             title: `${original.title} (Copy)`,
             description: original.description,
             schema: original.schema,

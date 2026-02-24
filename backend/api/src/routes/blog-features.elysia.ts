@@ -3,6 +3,7 @@ import { db } from '../db';
 import { blog } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { GoogleGenAI } from '@google/genai';
+import { invalidateBlogCache } from '../lib/redis';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -36,7 +37,7 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
         return { answer: response.text };
     }, {
         body: t.Object({
-            question: t.String()
+            question: t.String({ maxLength: 2000, minLength: 1 })
         })
     })
 
@@ -78,6 +79,7 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
                 await db.update(blog)
                     .set({ audioUrl: `tts:${response.text}` })
                     .where(eq(blog.slug, slug));
+                await invalidateBlogCache(slug);
 
                 return { 
                     audioUrl: `tts:script`,
@@ -113,6 +115,7 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
             await db.update(blog)
                 .set({ audioUrl })
                 .where(eq(blog.slug, slug));
+            await invalidateBlogCache(slug);
 
             return { audioUrl, method: 'openai-tts' };
         } catch (err: any) {
@@ -195,6 +198,7 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
         await db.update(blog)
             .set({ socialMediaPosts: socialData })
             .where(eq(blog.slug, slug));
+        await invalidateBlogCache(slug);
 
         return socialData;
     })
@@ -247,6 +251,7 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
                 citations: verifyData.citations,
             })
             .where(eq(blog.slug, slug));
+        await invalidateBlogCache(slug);
 
         return verifyData;
     });

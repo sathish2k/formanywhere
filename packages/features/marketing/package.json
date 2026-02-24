@@ -126,6 +126,11 @@
             "solid": "./src/blog/blog-api.ts",
             "import": "./src/blog/blog-api.ts",
             "types": "./src/blog/blog-api.ts"
+        },
+        "./legal": {
+            "solid": "./src/legal/index.ts",
+            "import": "./src/legal/index.ts",
+            "types": "./src/legal/index.ts"
         }
     },
     "scripts": {

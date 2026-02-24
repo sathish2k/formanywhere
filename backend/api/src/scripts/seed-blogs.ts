@@ -17,10 +17,14 @@ async function seed() {
     console.log('✅ All old blogs deleted.\n');
 
     const total = 10;
+    const categories: Array<'tech' | 'non-tech' | 'random'> = [
+        'tech', 'non-tech', 'tech', 'non-tech', 'tech',
+        'non-tech', 'tech', 'random', 'random', 'non-tech',
+    ];
     for (let i = 1; i <= total; i++) {
         try {
-            console.log(`\n📝 Generating blog ${i}/${total}...`);
-            const created = await generateAndPublishBlog();
+            console.log(`\n📝 Generating blog ${i}/${total} (${categories[i - 1]})...`);
+            const created = await generateAndPublishBlog(categories[i - 1]);
             console.log(`   ✅ "${created.title}"`);
         } catch (err) {
             console.error(`   ❌ Failed to generate blog ${i}:`, err);

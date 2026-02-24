@@ -1,0 +1,28 @@
+{
+  "name": "FormAnywhere",
+  "short_name": "FormAnywhere",
+  "description": "Build powerful forms that work offline. Create multi-step forms, surveys, and questionnaires with drag-and-drop simplicity.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFDFC",
+  "theme_color": "#006A6A",
+  "orientation": "any",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business", "utilities"],
+  "lang": "en",
+  "dir": "ltr"
+}

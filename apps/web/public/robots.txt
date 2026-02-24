@@ -1,0 +1,19 @@
+# FormAnywhere — robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://formanywhere.com/sitemap.xml
+
+# Disallow admin/internal routes
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /form-setup
+Disallow: /preview
+Disallow: /app
+
+# Disallow auth routes
+Disallow: /signin
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password

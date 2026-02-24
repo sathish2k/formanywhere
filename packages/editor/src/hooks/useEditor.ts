@@ -33,7 +33,6 @@ import { DraftHistory } from '../extensions/DraftHistory';
 import { DynamicVariables } from '../extensions/DynamicVariables';
 import { SlashCommand } from '../extensions/SlashCommand';
 import { suggestion } from '../extensions/slash-suggestion';
-import { MermaidBlock } from '../extensions/MermaidBlock';
 
 export interface UseEditorOptions {
   content: string;
@@ -105,7 +104,6 @@ export function useEditor(opts: UseEditorOptions): [Accessor<Editor | undefined>
         Youtube.configure({ controls: true }),
         FormEmbed,
         PlaygroundBlock,
-        MermaidBlock,
         DraftHistory.configure({
           onHistoryChange: opts.onHistoryChange,
         }),

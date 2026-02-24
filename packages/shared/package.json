@@ -76,6 +76,11 @@
         "./icons/svg/github.svg": {
             "import": "./src/icons/svg/github.svg",
             "default": "./src/icons/svg/github.svg"
+        },
+        "./components/cookie-consent": {
+            "solid": "./src/components/cookie-consent.tsx",
+            "import": "./src/components/cookie-consent.tsx",
+            "types": "./src/components/cookie-consent.tsx"
         }
     },
     "scripts": {

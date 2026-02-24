@@ -29,11 +29,10 @@ export { PodcastPlayer } from "./blog";
 export { ReadingModes } from "./blog";
 export { SocialSyndication } from "./blog";
 export { CitationsPanel } from "./blog";
-export { MermaidRenderer } from "./blog";
 
 // Blog API
-export { configureBlogApi, fetchBlogs, fetchBlogBySlug } from "./blog";
-export type { ApiBlogPost, Citation, SocialMediaPosts } from "./blog";
+export { configureBlogApi, fetchBlogs, fetchBlogBySlug, recordBlogView } from "./blog";
+export type { ApiBlogPost, BlogListItem, BlogListParams, BlogListResponse, PaginationInfo, ViewResponse, Citation, SocialMediaPosts } from "./blog";
 
 export { ContactSalesCard } from "./contact-sales-card";
 export { CTASection as CTASectionComponent } from "./cta/cta-section";

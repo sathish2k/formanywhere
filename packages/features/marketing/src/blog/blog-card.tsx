@@ -1,4 +1,4 @@
-import { Component, createSignal, Show } from 'solid-js';
+import { Component, Show } from 'solid-js';
 import { A } from '@solidjs/router';
 import { Avatar } from '@formanywhere/ui/avatar';
 import { Typography } from '@formanywhere/ui/typography';
@@ -18,31 +18,14 @@ export interface BlogPost {
   readTime: string;
   tags: string[];
   thumbnailUrl?: string;
+  viewCount?: number;
   // Innovative Features
   aiSummary?: string;
   audioUrl?: string;
   mood?: string;
-  engagementScore?: number;
-  commentsCount?: number;
-  sharesCount?: number;
-  likedBy?: { name: string; avatarUrl: string }[];
 }
 
 export const BlogCard: Component<{ post: BlogPost }> = (props) => {
-  const [likes, setLikes] = createSignal(props.post.engagementScore || 0);
-  const [isLiked, setIsLiked] = createSignal(false);
-
-  const handleLike = (e: Event) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (isLiked()) {
-      setLikes(l => l - 1);
-      setIsLiked(false);
-    } else {
-      setLikes(l => l + 1);
-      setIsLiked(true);
-    }
-  };
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -162,44 +145,16 @@ export const BlogCard: Component<{ post: BlogPost }> = (props) => {
 
           {/* Stats Row */}
           <Box style={{ display: 'flex', "align-items": 'center', "justify-content": 'space-between' }}>
-            {/* Liked By Avatars */}
-            <Box style={{ display: 'flex', "align-items": 'center' }}>
-              <Show when={props.post.likedBy && props.post.likedBy.length > 0}>
-                <Box style={{ display: 'flex', "margin-right": '8px' }}>
-                  {props.post.likedBy?.slice(0, 3).map((user, index) => (
-                    <img
-                      src={user.avatarUrl}
-                      alt={user.name}
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        "border-radius": '50%',
-                        border: '2px solid var(--md-sys-color-surface-container-lowest, #FFFFFF)',
-                        "margin-left": index > 0 ? '-8px' : '0',
-                        "z-index": 3 - index,
-                      }}
-                    />
-                  ))}
-                </Box>
-              </Show>
-              <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)', "font-weight": '500' }}>
-                {formatNumber(likes())} Likes
+            <Box style={{ display: 'flex', "align-items": 'center', gap: '4px', color: 'var(--md-sys-color-on-surface-variant)' }}>
+              <Icon name="eye" style={{ "font-size": '18px' }} />
+              <Typography variant="body-small" style={{ "font-weight": '500' }}>
+                {formatNumber(props.post.viewCount || 0)} views
               </Typography>
             </Box>
 
-            {/* Action Icons */}
             <Box style={{ display: 'flex', gap: '16px', color: 'var(--md-sys-color-on-surface-variant)' }}>
               <Box style={{ display: 'flex', "align-items": 'center', gap: '4px' }}>
-                <Icon name="comment" style={{ "font-size": '18px' }} />
-                <Typography variant="body-small" style={{ "font-weight": '500' }}>
-                  {formatNumber(props.post.commentsCount || 0)}
-                </Typography>
-              </Box>
-              <Box style={{ display: 'flex', "align-items": 'center', gap: '4px' }}>
                 <Icon name="share" style={{ "font-size": '18px' }} />
-                <Typography variant="body-small" style={{ "font-weight": '500' }}>
-                  {formatNumber(props.post.sharesCount || 0)}
-                </Typography>
               </Box>
             </Box>
           </Box>

@@ -32,13 +32,52 @@ export interface BlogPost {
     seoTitle: string | null;
     seoDescription: string | null;
     tags: string[];
+    category: string | null;
     audioUrl: string | null;
+    viewCount: number;
     trustScore: number;
     socialMediaPosts: SocialMediaPosts | null;
     citations: Citation[];
     status: string;
     publishedAt: string;
     createdAt: string;
+}
+
+/** Lightweight blog item returned by the list endpoint (no full content) */
+export interface BlogListItem {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    coverImage: string | null;
+    tags: string[];
+    category: string | null;
+    viewCount: number;
+    publishedAt: string;
+    socialMediaPosts: SocialMediaPosts | null;
+}
+
+export interface BlogListParams {
+    page?: number;
+    limit?: number;
+    sort?: 'latest' | 'trending' | 'most-viewed';
+    category?: 'tech' | 'non-tech' | 'all';
+    tag?: string;
+    search?: string;
+}
+
+export interface PaginationInfo {
+    page: number;
+    limit: number;
+    totalCount: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+}
+
+export interface BlogListResponse {
+    blogs: BlogListItem[];
+    pagination: PaginationInfo;
 }
 
 export interface Citation {
@@ -51,6 +90,7 @@ export interface SocialMediaPosts {
     twitterThread?: string[];
     linkedInPost?: string;
     newsletter?: string;
+    author?: string;
 }
 
 export interface ChatResponse {
@@ -74,9 +114,24 @@ export interface TrustResponse {
     warnings?: string[];
 }
 
-/** Fetch all published blog posts */
-export async function fetchBlogs(): Promise<BlogPost[]> {
-    const res = await fetch(`${getApiUrl()}/api/blogs`);
+export interface ViewResponse {
+    counted: boolean;
+    views: number;
+}
+
+/** Fetch paginated blog list with filtering & sorting */
+export async function fetchBlogs(params: BlogListParams = {}): Promise<BlogListResponse> {
+    const searchParams = new URLSearchParams();
+    if (params.page) searchParams.set('page', String(params.page));
+    if (params.limit) searchParams.set('limit', String(params.limit));
+    if (params.sort) searchParams.set('sort', params.sort);
+    if (params.category && params.category !== 'all') searchParams.set('category', params.category);
+    if (params.tag) searchParams.set('tag', params.tag);
+    if (params.search) searchParams.set('search', params.search);
+
+    const qs = searchParams.toString();
+    const url = `${getApiUrl()}/api/blogs${qs ? `?${qs}` : ''}`;
+    const res = await fetch(url);
     if (!res.ok) throw new Error('Failed to fetch blogs');
     return res.json();
 }
@@ -85,6 +140,15 @@ export async function fetchBlogs(): Promise<BlogPost[]> {
 export async function fetchBlogBySlug(slug: string): Promise<BlogPost> {
     const res = await fetch(`${getApiUrl()}/api/blogs/${slug}`);
     if (!res.ok) throw new Error('Blog not found');
+    return res.json();
+}
+
+/** Record a view for a blog post (YouTube-style unique counting) */
+export async function recordBlogView(slug: string): Promise<ViewResponse> {
+    const res = await fetch(`${getApiUrl()}/api/blogs/${slug}/view`, {
+        method: 'POST',
+    });
+    if (!res.ok) throw new Error('Failed to record view');
     return res.json();
 }
 
