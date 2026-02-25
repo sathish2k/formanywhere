@@ -2,7 +2,9 @@ import { Elysia, t } from 'elysia';
 import { db } from '../db';
 import { blog } from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { ai } from '../lib/ai-provider';
+import { GoogleGenAI } from '@google/genai';
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 import { invalidateBlogCache } from '../lib/redis';
 
 export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
@@ -27,9 +29,12 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
             Keep the answer concise, helpful, and formatted in HTML (use <p>, <strong>, <code>, <ul>, <li> tags).
         `;
 
-        const answer = await ai.generateText(prompt);
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+        });
 
-        return { answer };
+        return { answer: response.text || '' };
     }, {
         body: t.Object({
             question: t.String({ maxLength: 2000, minLength: 1 })
@@ -65,7 +70,11 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
                     Blog: ${ttsText.slice(0, 2000)}
                     Return ONLY the script text, no JSON.
                 `;
-                const script = await ai.generateText(scriptPrompt);
+                const scriptResponse = await ai.models.generateContent({
+                    model: 'gemini-2.5-flash',
+                    contents: scriptPrompt,
+                });
+                const script = scriptResponse.text || '';
 
                 // Save script as pseudo-audio (frontend will use browser TTS)
                 await db.update(blog)
@@ -137,9 +146,12 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
             Return ONLY the rewritten content in clean HTML format (use <h2>, <h3>, <p>, <ul>, <li>, <strong>, <em>, <blockquote> tags).
         `;
 
-        const content = await ai.generateText(prompt);
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+        });
 
-        return { content, mode: body.mode };
+        return { content: response.text || '', mode: body.mode };
     }, {
         body: t.Object({
             mode: t.Union([
@@ -175,7 +187,14 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
             }
         `;
 
-        const socialData = await ai.generateJSON(prompt);
+        const socialResponse = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                responseMimeType: 'application/json',
+            },
+        });
+        const socialData = JSON.parse(socialResponse.text || '{}');
 
         // Cache in DB
         await db.update(blog)
@@ -220,7 +239,14 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
             }
         `;
 
-        const verifyData = await ai.generateJSON(prompt);
+        const verifyResponse = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                responseMimeType: 'application/json',
+            },
+        });
+        const verifyData = JSON.parse(verifyResponse.text || '{}');
 
         await db.update(blog)
             .set({

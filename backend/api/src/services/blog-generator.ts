@@ -1,4 +1,4 @@
-import { ai } from '../lib/ai-provider';
+import { GoogleGenAI } from '@google/genai';
 import { db } from '../db';
 import { blog } from '../db/schema';
 import { v4 as uuidv4 } from 'uuid';
@@ -6,6 +6,7 @@ import { invalidateAllBlogCaches } from '../lib/redis';
 import Parser from 'rss-parser';
 
 // ─── AI Providers ───────────────────────────────────────────────────────────
+const gemini = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 const rssParser = new Parser();
 
 // ─── Blog Types ─────────────────────────────────────────────────────────────
@@ -515,7 +516,9 @@ async function generateOutline(
 7. NEXT STEPS — Where to go from here`,
     };
 
-    const outlinePrompt = `You are the editorial brain behind a top tech blog that publishes on dev.to, Medium, and their own site (similar to Beebom, The Verge, or TechCrunch). You plan articles that get thousands of reads — because they deliver REAL VALUE, not clickbait.
+    const response = await gemini.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: `You are the editorial brain behind a top tech blog that publishes on dev.to, Medium, and their own site (similar to Beebom, The Verge, or TechCrunch). You plan articles that get thousands of reads — because they deliver REAL VALUE, not clickbait.
 
 Plan a **${typeInfo.label}** blog post about "${topic}" using voice style: **${voice.label}** — ${voice.description}${researchBlock}
 
@@ -555,9 +558,13 @@ Generate exactly 5 candidate titles for this article. Then act as a harsh Hacker
 - Which title creates the strongest curiosity gap?
 - Which would get the most upvotes on HackerNews?
 - Which would get the most clicks on Twitter/X?
-Pick the ONE best title and put it as the main outline title. List all 5 candidates below it labeled "TITLE_CANDIDATES:" so the writer can see the alternatives.`;
+Pick the ONE best title and put it as the main outline title. List all 5 candidates below it labeled "TITLE_CANDIDATES:" so the writer can see the alternatives.`,
+        config: {
+            tools: [{ googleSearch: {} }],
+        },
+    });
 
-    const outline = await ai.generateText(outlinePrompt, { webSearch: true });
+    const outline = response.text || '';
     console.log(`✅ Agent 2 complete (${outline.length} chars outline)`);
     return outline;
 }
@@ -785,13 +792,16 @@ Email newsletter section with [LINK]
 2-minute natural podcast script starting with "Hey everyone, welcome back..."`;
 
     // Use thinking budget for better quality + Google Search for fact verification
-    const article = await ai.generateText(prompt, {
-        model: 'pro',
-        thinking: true,
-        thinkingBudget: 4096,
-        webSearch: true,
+    const response = await gemini.models.generateContent({
+        model: 'gemini-2.5-pro',
+        contents: prompt,
+        config: {
+            thinkingConfig: { thinkingBudget: 4096 },
+            tools: [{ googleSearch: {} }],
+        },
     });
 
+    const article = response.text || '';
     console.log(`✅ Agent 3 complete (${article.length} chars draft)`);
     return article;
 }
@@ -838,7 +848,9 @@ async function editAndPolish(rawArticle: string, voice: BlogVoice, blogType: Blo
 - Does it show the final working result?`,
     };
 
-    const editPrompt = `You are an elite editor who's worked at Beebom, The Verge, dev.to, and Medium. You know EXACTLY what separates a forgettable post from one that gets massive engagement.
+    const response = await gemini.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: `You are an elite editor who's worked at Beebom, The Verge, dev.to, and Medium. You know EXACTLY what separates a forgettable post from one that gets massive engagement.
 
 This is a **${typeInfo.label}** article with voice style: **${voice.label}** — ${voice.description}
 
@@ -925,9 +937,13 @@ PASS 8 — THE EXCERPT TEST:
 - Bad: "This article explores the latest developments in..."
 - Good: "It scored 9,437. That's 25% more than its predecessor — and it costs $100 less."
 
-OUTPUT: Return the COMPLETE article in the exact same # SECTION format. Do NOT summarize or shorten. Return ALL sections: TITLE, EXCERPT, SEO_TITLE, SEO_DESCRIPTION, TAGS, IMAGE_KEYWORD, TRUST_SCORE, CONTENT, CITATIONS, TWITTER_THREAD, LINKEDIN_POST, NEWSLETTER, PODCAST_SCRIPT.`;
+OUTPUT: Return the COMPLETE article in the exact same # SECTION format. Do NOT summarize or shorten. Return ALL sections: TITLE, EXCERPT, SEO_TITLE, SEO_DESCRIPTION, TAGS, IMAGE_KEYWORD, TRUST_SCORE, CONTENT, CITATIONS, TWITTER_THREAD, LINKEDIN_POST, NEWSLETTER, PODCAST_SCRIPT.`,
+        config: {
+            tools: [{ googleSearch: {} }],
+        },
+    });
 
-    const edited = await ai.generateText(editPrompt, { webSearch: true });
+    const edited = response.text || '';
     console.log(`✅ Agent 4 complete (${edited.length} chars polished)`);
     return edited;
 }

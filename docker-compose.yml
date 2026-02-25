@@ -121,13 +121,8 @@ services:
       GITHUB_REDIRECT_URI: https://api.${DOMAIN}/api/auth/callback/github
 
       # AI (optional — features degrade gracefully without keys)
-      AI_PROVIDER: ${AI_PROVIDER:-gemini}
-      AI_MODEL_FAST: ${AI_MODEL_FAST:-}
-      AI_MODEL_PRO: ${AI_MODEL_PRO:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       XAI_API_KEY: ${XAI_API_KEY:-}
-      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-}
 
       # Unsplash (optional — for blog cover images)
       UNSPLASH_ACCESS_KEY: ${UNSPLASH_ACCESS_KEY:-}
