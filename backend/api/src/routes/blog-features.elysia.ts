@@ -2,10 +2,8 @@ import { Elysia, t } from 'elysia';
 import { db } from '../db';
 import { blog } from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { GoogleGenAI } from '@google/genai';
+import { ai } from '../lib/ai-provider';
 import { invalidateBlogCache } from '../lib/redis';
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
 
@@ -29,12 +27,9 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
             Keep the answer concise, helpful, and formatted in HTML (use <p>, <strong>, <code>, <ul>, <li> tags).
         `;
 
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
-        });
+        const answer = await ai.generateText(prompt);
 
-        return { answer: response.text };
+        return { answer };
     }, {
         body: t.Object({
             question: t.String({ maxLength: 2000, minLength: 1 })
@@ -70,20 +65,17 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
                     Blog: ${ttsText.slice(0, 2000)}
                     Return ONLY the script text, no JSON.
                 `;
-                const response = await ai.models.generateContent({
-                    model: 'gemini-2.5-flash',
-                    contents: scriptPrompt,
-                });
+                const script = await ai.generateText(scriptPrompt);
 
                 // Save script as pseudo-audio (frontend will use browser TTS)
                 await db.update(blog)
-                    .set({ audioUrl: `tts:${response.text}` })
+                    .set({ audioUrl: `tts:${script}` })
                     .where(eq(blog.slug, slug));
                 await invalidateBlogCache(slug);
 
                 return { 
                     audioUrl: `tts:script`,
-                    script: response.text,
+                    script,
                     method: 'browser-tts'
                 };
             }
@@ -145,12 +137,9 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
             Return ONLY the rewritten content in clean HTML format (use <h2>, <h3>, <p>, <ul>, <li>, <strong>, <em>, <blockquote> tags).
         `;
 
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
-        });
+        const content = await ai.generateText(prompt);
 
-        return { content: response.text, mode: body.mode };
+        return { content, mode: body.mode };
     }, {
         body: t.Object({
             mode: t.Union([
@@ -186,13 +175,7 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
             }
         `;
 
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
-            config: { responseMimeType: 'application/json' },
-        });
-
-        const socialData = JSON.parse(response.text || '{}');
+        const socialData = await ai.generateJSON(prompt);
 
         // Cache in DB
         await db.update(blog)
@@ -237,13 +220,7 @@ export const blogFeaturesRoutes = new Elysia({ prefix: '/api/blogs' })
             }
         `;
 
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
-            config: { responseMimeType: 'application/json' },
-        });
-
-        const verifyData = JSON.parse(response.text || '{}');
+        const verifyData = await ai.generateJSON(prompt);
 
         await db.update(blog)
             .set({

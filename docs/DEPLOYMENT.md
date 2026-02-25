@@ -110,9 +110,18 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 GITHUB_CLIENT_ID=your-github-client-id
 GITHUB_CLIENT_SECRET=your-github-client-secret
 
-# AI Features
+# AI Provider ("gemini" or "openrouter", default: gemini)
+AI_PROVIDER=gemini
+# AI_MODEL_FAST=gemini-2.5-flash    # optional model override
+# AI_MODEL_PRO=gemini-2.5-pro        # optional model override
+
+# Gemini (default)
 GEMINI_API_KEY=your-gemini-api-key
 XAI_API_KEY=your-xai-api-key
+
+# OpenRouter (only needed when AI_PROVIDER=openrouter)
+# OPENROUTER_API_KEY=your-openrouter-key
+# OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 
 # Blog cover images
 UNSPLASH_ACCESS_KEY=your-unsplash-key

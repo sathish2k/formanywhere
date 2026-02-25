@@ -16,7 +16,7 @@
 | **State** | SolidJS primitives (`createSignal`, `createResource`, `createStore`) |
 | **Backend** | ElysiaJS on Bun |
 | **ORM** | Drizzle ORM + PostgreSQL |
-| **AI** | `@google/genai` (Gemini 2.5 Flash) |
+| **AI** | Unified AI provider (`backend/api/src/lib/ai-provider.ts`) — supports Gemini (default) and OpenRouter |
 | **Desktop** | Tauri v2 (`apps/desktop/`) |
 | **Monorepo** | Turborepo + Bun workspaces |
 | **Package manager** | Bun (`bun install`, `bun run`) |
