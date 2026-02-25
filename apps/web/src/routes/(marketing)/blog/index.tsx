@@ -118,7 +118,7 @@ export default function BlogList() {
     <Box
       padding="xl"
       maxWidth="xl"
-      style={{ margin: '0 auto', background: 'var(--md-sys-color-surface, #F8F9FA)', 'min-height': '100vh' }}
+      style={{ margin: '0 auto', background: 'var(--m3-color-surface)', 'min-height': '100vh' }}
     >
       <Title>Blog - FormAnywhere</Title>
 
@@ -126,7 +126,7 @@ export default function BlogList() {
       <HStack align="center" justify="between" style={{ 'margin-bottom': '32px', 'flex-wrap': 'wrap', gap: '16px' }}>
         <Typography
           variant="display-medium"
-          style={{ 'font-weight': '900', 'letter-spacing': '-0.02em', color: 'var(--md-sys-color-on-surface)' }}
+          style={{ 'font-weight': '900', 'letter-spacing': '-0.02em', color: 'var(--m3-color-on-surface)' }}
         >
           Explore
         </Typography>
@@ -175,7 +175,7 @@ export default function BlogList() {
       {/* ── Active tag filter indicator ── */}
       <Show when={tag()}>
         <HStack gap="sm" align="center" style={{ 'margin-bottom': '24px' }}>
-          <Typography variant="body-medium" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+              <Typography variant="body-medium" style={{ color: 'var(--m3-color-on-surface-variant)' }}>
             Filtered by tag:
           </Typography>
           <Chip label={tag()} variant="input" onRemove={() => setTag('')} />
@@ -206,7 +206,7 @@ export default function BlogList() {
           {/* Empty */}
           <Show when={!data.loading && !data.error && posts().length === 0}>
             <VStack align="center" gap="sm" style={{ padding: '48px' }}>
-              <Typography variant="title-large" style={{ color: 'var(--md-sys-color-on-surface)' }}>
+              <Typography variant="title-large" style={{ color: 'var(--m3-color-on-surface)' }}>
                 No articles found
               </Typography>
               <Typography variant="body-large" color="on-surface-variant">
@@ -246,7 +246,7 @@ export default function BlogList() {
                   <Show
                     when={p !== '...'}
                     fallback={
-                      <Typography variant="body-medium" style={{ padding: '0 4px', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                      <Typography variant="body-medium" style={{ padding: '0 4px', color: 'var(--m3-color-on-surface-variant)' }}>
                         ...
                       </Typography>
                     }
@@ -274,7 +274,7 @@ export default function BlogList() {
               </Button>
             </HStack>
 
-            <Typography variant="body-small" align="center" style={{ color: 'var(--md-sys-color-on-surface-variant)', 'margin-bottom': '32px' }}>
+            <Typography variant="body-small" align="center" style={{ color: 'var(--m3-color-on-surface-variant)', 'margin-bottom': '32px' }}>
               Showing {((page() - 1) * (pagination()!.limit)) + 1}–{Math.min(page() * pagination()!.limit, pagination()!.totalCount)} of {formatCount(pagination()!.totalCount)} articles
             </Typography>
           </Show>
@@ -287,7 +287,7 @@ export default function BlogList() {
           <Card variant="elevated" padding="lg">
             <Typography
               variant="title-large"
-              style={{ 'font-weight': 'bold', 'margin-bottom': '16px', color: 'var(--md-sys-color-on-surface)' }}
+              style={{ 'font-weight': 'bold', 'margin-bottom': '16px', color: 'var(--m3-color-on-surface)' }}
             >
               Popular Topics
             </Typography>
@@ -321,7 +321,7 @@ export default function BlogList() {
           <Card variant="elevated" padding="lg">
             <Typography
               variant="title-large"
-              style={{ 'font-weight': 'bold', 'margin-bottom': '16px', color: 'var(--md-sys-color-on-surface)' }}
+              style={{ 'font-weight': 'bold', 'margin-bottom': '16px', color: 'var(--m3-color-on-surface)' }}
             >
               Quick Links
             </Typography>
@@ -338,12 +338,12 @@ export default function BlogList() {
                       transition: 'background 0.2s',
                     }}
                   >
-                    <Icon name={link.icon} size={18} color="var(--md-sys-color-primary, #6750A4)" />
+                    <Icon name={link.icon} size={18} color="var(--m3-color-primary)" />
                     <Typography variant="body-medium" style={{ 'font-weight': '500' }}>
                       {link.label}
                     </Typography>
                     <Box style={{ 'margin-left': 'auto' }}>
-                      <Icon name="chevron-right" size={16} color="var(--md-sys-color-on-surface-variant)" />
+                      <Icon name="chevron-right" size={16} color="var(--m3-color-on-surface-variant)" />
                     </Box>
                   </HStack>
                 )}
@@ -356,7 +356,7 @@ export default function BlogList() {
             variant="filled"
             padding="lg"
             style={{
-              background: 'linear-gradient(135deg, var(--md-sys-color-primary, #6750A4), var(--md-sys-color-tertiary, #7D5260))',
+              background: 'linear-gradient(135deg, var(--m3-color-primary), var(--m3-color-tertiary))',
               color: 'white',
             }}
           >
