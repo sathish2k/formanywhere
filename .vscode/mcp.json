@@ -14,11 +14,6 @@
       "gallery": "https://api.mcp.github.com",
       "version": "1.0.3"
     },
-    "material3": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@weppa-cloud/material3-mcp-server"]
-    },
     "solid-helper": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-everything"],
