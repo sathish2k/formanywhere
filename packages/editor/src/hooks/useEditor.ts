@@ -24,6 +24,7 @@ import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
 import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
+import { TableKit } from '@tiptap/extension-table';
 import { ImageBlock } from '../extensions/ImageBlock';
 import { CodeBlockNode, lowlight } from '../extensions/CodeBlockNode';
 import { FormEmbed } from '../extensions/FormEmbed';
@@ -67,6 +68,19 @@ export interface EditorActions {
   insertForm: (formId: string) => void;
   insertPlayground: () => void;
   insertAI: () => void;
+  insertTable: (rows?: number, cols?: number) => void;
+  addRowBefore: () => void;
+  addRowAfter: () => void;
+  deleteRow: () => void;
+  addColumnBefore: () => void;
+  addColumnAfter: () => void;
+  deleteColumn: () => void;
+  deleteTable: () => void;
+  mergeCells: () => void;
+  splitCell: () => void;
+  toggleHeaderRow: () => void;
+  toggleHeaderColumn: () => void;
+  toggleHeaderCell: () => void;
   undo: () => void;
   redo: () => void;
   /** Reactive isActive — use createEditorTransaction in components for reactive tracking */
@@ -104,6 +118,11 @@ export function useEditor(opts: UseEditorOptions): [Accessor<Editor | undefined>
         Youtube.configure({ controls: true }),
         FormEmbed,
         PlaygroundBlock,
+        TableKit.configure({
+          table: {
+            resizable: true,
+          },
+        }),
         DraftHistory.configure({
           onHistoryChange: opts.onHistoryChange,
         }),
@@ -213,6 +232,20 @@ export function useEditor(opts: UseEditorOptions): [Accessor<Editor | undefined>
           '<p><em>\u2728 AI Suggestion: Consider adding a personal anecdote here to increase reader engagement!</em></p>'
         )
         .run(),
+    insertTable: (rows = 3, cols = 3) =>
+      e()?.chain().focus().insertTable({ rows, cols, withHeaderRow: true }).run(),
+    addRowBefore: () => e()?.chain().focus().addRowBefore().run(),
+    addRowAfter: () => e()?.chain().focus().addRowAfter().run(),
+    deleteRow: () => e()?.chain().focus().deleteRow().run(),
+    addColumnBefore: () => e()?.chain().focus().addColumnBefore().run(),
+    addColumnAfter: () => e()?.chain().focus().addColumnAfter().run(),
+    deleteColumn: () => e()?.chain().focus().deleteColumn().run(),
+    deleteTable: () => e()?.chain().focus().deleteTable().run(),
+    mergeCells: () => e()?.chain().focus().mergeCells().run(),
+    splitCell: () => e()?.chain().focus().splitCell().run(),
+    toggleHeaderRow: () => e()?.chain().focus().toggleHeaderRow().run(),
+    toggleHeaderColumn: () => e()?.chain().focus().toggleHeaderColumn().run(),
+    toggleHeaderCell: () => e()?.chain().focus().toggleHeaderCell().run(),
     undo: () => e()?.chain().focus().undo().run(),
     redo: () => e()?.chain().focus().redo().run(),
     isActive: (name, attrs) => !!e()?.isActive(name, attrs),

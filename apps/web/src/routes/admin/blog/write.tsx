@@ -204,6 +204,51 @@ export default function AdminBlogWrite() {
                   .blog-preview .image-block-caption:empty {
                     display: none;
                   }
+                  .blog-preview table {
+                    border-collapse: separate;
+                    border-spacing: 0;
+                    table-layout: fixed;
+                    width: 100%;
+                    margin: 1.5em 0;
+                    overflow: hidden;
+                    border-radius: var(--m3-shape-medium, 12px);
+                    border: 1px solid var(--m3-color-outline-variant, #c4c7c5);
+                    background: var(--glass-tint-subtle, rgba(255, 255, 255, 0.3));
+                    backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+                    -webkit-backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+                    box-shadow: var(--glass-shadow, 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04));
+                  }
+                  .blog-preview td,
+                  .blog-preview th {
+                    min-width: 80px;
+                    border-bottom: 1px solid var(--m3-color-outline-variant, #c4c7c5);
+                    border-right: 1px solid var(--m3-color-outline-variant, #c4c7c5);
+                    padding: 10px 14px;
+                    vertical-align: top;
+                    font-size: 1rem;
+                    line-height: 1.6;
+                  }
+                  .blog-preview td:last-child,
+                  .blog-preview th:last-child {
+                    border-right: none;
+                  }
+                  .blog-preview tr:last-child td {
+                    border-bottom: none;
+                  }
+                  .blog-preview th {
+                    font-weight: 600;
+                    background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
+                    text-align: left;
+                    border-bottom: 2px solid var(--m3-color-outline-variant, #c4c7c5);
+                  }
+                  .blog-preview tr:first-child th:first-child { border-top-left-radius: var(--m3-shape-medium, 12px); }
+                  .blog-preview tr:first-child th:last-child { border-top-right-radius: var(--m3-shape-medium, 12px); }
+                  .blog-preview tr:last-child td:first-child { border-bottom-left-radius: var(--m3-shape-medium, 12px); }
+                  .blog-preview tr:last-child td:last-child { border-bottom-right-radius: var(--m3-shape-medium, 12px); }
+                  .blog-preview td p,
+                  .blog-preview th p {
+                    margin: 0;
+                  }
                 `}
               </style>
               <Box class="blog-preview" innerHTML={content() || '<p style="color: var(--md-sys-color-on-surface-variant); font-style: italic;">Nothing to preview yet...</p>'} />

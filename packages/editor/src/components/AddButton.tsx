@@ -79,6 +79,11 @@ export const AddButton: Component<Props> = (props) => {
           onClick={() => act(() => props.actions.toggleCodeBlock())}
         />
         <MenuItem
+          label="Table"
+          leadingIcon={<Icon name="grid-3x3" size={18} />}
+          onClick={() => act(() => props.actions.insertTable())}
+        />
+        <MenuItem
           label="Interactive Playground"
           leadingIcon={<Icon name="play" size={18} />}
           onClick={() => act(() => props.actions.insertPlayground())}

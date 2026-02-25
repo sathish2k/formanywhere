@@ -4,13 +4,13 @@ import { Title, Meta, Link } from '@solidjs/meta';
 import { Box } from '@formanywhere/ui/box';
 import { Typography } from '@formanywhere/ui/typography';
 import { Divider } from '@formanywhere/ui/divider';
+import { Avatar } from '@formanywhere/ui/avatar';
+import { Chip } from '@formanywhere/ui/chip';
+import { IconButton } from '@formanywhere/ui/icon-button';
 import { fetchBlogBySlug, recordBlogView, BlogSkeleton, BlogIcon } from '@formanywhere/marketing/blog';
 import '~/styles/blog-content.scss';
 
-// ── Lazy-load ALL heavy components (only skeleton + fetch are eager) ──
-const Avatar = lazy(() => import('@formanywhere/ui/avatar').then((m) => ({ default: m.Avatar })));
-const Chip = lazy(() => import('@formanywhere/ui/chip').then((m) => ({ default: m.Chip })));
-const IconButton = lazy(() => import('@formanywhere/ui/icon-button').then((m) => ({ default: m.IconButton })));
+// ── Lazy-load heavy feature components (small UI components are eager) ──
 
 const ReadingModes = lazy(() =>
   import('@formanywhere/marketing/blog').then((m) => ({ default: m.ReadingModes }))
@@ -196,9 +196,7 @@ export default function BlogRead() {
               }}
             >
               <Box style={{ display: 'flex', "align-items": 'center', gap: '16px' }}>
-                <Suspense fallback={<div class="blog-skeleton__bone" style={{ width: '48px', height: '48px', "border-radius": '50%' }} />}>
-                  <Avatar src={`https://i.pravatar.cc/150?u=${post()?.slug}`} alt={post()?.socialMediaPosts?.author || 'FormAnywhere'} size="md" />
-                </Suspense>
+                <Avatar src={`https://i.pravatar.cc/150?u=${post()?.slug}`} alt={post()?.socialMediaPosts?.author || 'FormAnywhere'} size="md" />
                 <Box style={{ display: 'flex', "flex-direction": 'column' }}>
                   <Typography variant="label-large" style={{ color: 'var(--md-sys-color-on-surface)', "font-weight": 'bold' }}>
                     {post()?.socialMediaPosts?.author || 'FormAnywhere'}
@@ -210,11 +208,9 @@ export default function BlogRead() {
                 </Box>
               </Box>
 
-              <Suspense>
-                <Box style={{ display: 'flex', gap: '8px', "align-items": 'center' }}>
-                  <IconButton variant="standard" icon={<BlogIcon name="share" />} onClick={() => navigator.clipboard.writeText(window.location.href)} />
-                </Box>
-              </Suspense>
+              <Box style={{ display: 'flex', gap: '8px', "align-items": 'center' }}>
+                <IconButton variant="standard" icon={<BlogIcon name="share" />} onClick={() => navigator.clipboard.writeText(window.location.href)} />
+              </Box>
             </Box>
 
             {/* AI Summary Box */}
@@ -296,11 +292,9 @@ export default function BlogRead() {
                   gap: '8px',
                 }}
               >
-                <Suspense>
-                  {post()?.tags.map((tag: string) => (
-                    <Chip label={tag} variant="assist" />
-                  ))}
-                </Suspense>
+                {post()?.tags.map((tag: string) => (
+                  <Chip label={tag} variant="assist" />
+                ))}
               </Box>
             </Show>
 

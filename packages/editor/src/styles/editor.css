@@ -506,3 +506,201 @@
   padding: 8px 0;
   min-width: 320px;
 }
+
+
+/* ═══════════════════════════════════════════════════════
+   Table — Tiptap table extension styling (M3 Liquid Glass)
+   ═══════════════════════════════════════════════════════ */
+.dante-editor .dante-editor-content table {
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  width: 100%;
+  margin: 1.5em 0;
+  overflow: hidden;
+  border-radius: var(--m3-shape-medium, 12px);
+  border: 1px solid var(--m3-color-outline-variant, #c4c7c5);
+  background: var(--glass-tint-subtle, rgba(255, 255, 255, 0.3));
+  backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+  -webkit-backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+  box-shadow: var(--glass-shadow, 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04));
+}
+
+.dante-editor .dante-editor-content td,
+.dante-editor .dante-editor-content th {
+  min-width: 80px;
+  border-bottom: 1px solid var(--m3-color-outline-variant, #c4c7c5);
+  border-right: 1px solid var(--m3-color-outline-variant, #c4c7c5);
+  padding: 10px 14px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--m3-color-on-surface, #1c252e);
+}
+
+/* Remove right border on last column */
+.dante-editor .dante-editor-content td:last-child,
+.dante-editor .dante-editor-content th:last-child {
+  border-right: none;
+}
+
+/* Remove bottom border on last row */
+.dante-editor .dante-editor-content tr:last-child td {
+  border-bottom: none;
+}
+
+.dante-editor .dante-editor-content th {
+  font-weight: 600;
+  background: var(--glass-tint-medium, rgba(255, 255, 255, 0.5));
+  backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+  -webkit-backdrop-filter: blur(var(--glass-blur-subtle, 12px));
+  color: var(--m3-color-on-surface, #1c252e);
+  text-align: left;
+  border-bottom: 2px solid var(--m3-color-outline-variant, #c4c7c5);
+}
+
+/* Top-left and top-right radius for header row */
+.dante-editor .dante-editor-content tr:first-child th:first-child {
+  border-top-left-radius: var(--m3-shape-medium, 12px);
+}
+.dante-editor .dante-editor-content tr:first-child th:last-child {
+  border-top-right-radius: var(--m3-shape-medium, 12px);
+}
+
+/* Bottom-left and bottom-right radius for last row */
+.dante-editor .dante-editor-content tr:last-child td:first-child {
+  border-bottom-left-radius: var(--m3-shape-medium, 12px);
+}
+.dante-editor .dante-editor-content tr:last-child td:last-child {
+  border-bottom-right-radius: var(--m3-shape-medium, 12px);
+}
+
+.dante-editor .dante-editor-content td > *,
+.dante-editor .dante-editor-content th > * {
+  margin-bottom: 0;
+}
+
+/* Row hover — subtle glass highlight */
+.dante-editor .dante-editor-content tr:hover td {
+  background: var(--glass-tint-subtle, rgba(255, 255, 255, 0.3));
+  transition: background var(--m3-motion-duration-medium, 300ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
+}
+
+/* Selected cell highlight */
+.dante-editor .dante-editor-content .selectedCell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--m3-color-primary, #078DEE);
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: 2px;
+}
+
+/* Column resize handle */
+.dante-editor .dante-editor-content .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: -2px;
+  width: 4px;
+  background: var(--m3-color-primary, #078DEE);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Resize cursor while resizing */
+.dante-editor .dante-editor-content.resize-cursor {
+  cursor: col-resize;
+}
+
+/* Table paragraph resets — remove padding inside table cells */
+.dante-editor .dante-editor-content td p,
+.dante-editor .dante-editor-content th p {
+  padding-top: 0;
+  margin: 0;
+}
+
+/* Dark theme overrides for table */
+[data-theme="dark"] .dante-editor .dante-editor-content table {
+  background: rgba(30, 27, 35, 0.4);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .dante-editor .dante-editor-content th {
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .dante-editor .dante-editor-content td,
+[data-theme="dark"] .dante-editor .dante-editor-content th {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark"] .dante-editor .dante-editor-content tr:hover td {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   Table Bubble Menu — context toolbar (M3 Liquid Glass)
+   ═══════════════════════════════════════════════════════ */
+
+/* Floating wrapper — positioned by JS, hidden by default */
+.dante-table-bubble-wrap {
+  position: fixed;
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+.dante-table-bubble-wrap.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dante-table-bubble {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 8px;
+  background: var(--glass-tint-light, rgba(255, 255, 255, 0.7));
+  backdrop-filter: blur(var(--glass-blur, 20px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+  border: 1px solid var(--glass-border-medium, rgba(255, 255, 255, 0.4));
+  border-radius: var(--m3-shape-large, 16px);
+  box-shadow: var(--glass-shadow, 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04));
+  margin-top: 8px;
+  margin-bottom: 8px;
+  width: fit-content;
+  transition: box-shadow var(--m3-motion-duration-medium, 300ms) var(--m3-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.dante-table-bubble:hover {
+  box-shadow: var(--glass-shadow-elevated, 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06));
+}
+
+[data-theme="dark"] .dante-table-bubble {
+  background: rgba(30, 27, 35, 0.6);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.dante-table-bubble .md-divider--vertical {
+  height: 24px;
+  margin: 0 4px;
+  opacity: 0.4;
+}
+
+/* Fallback for browsers without backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) {
+  .dante-editor .dante-editor-content table {
+    background: var(--m3-color-surface-container-low, #f5f5f5);
+  }
+  .dante-editor .dante-editor-content th {
+    background: var(--m3-color-surface-container, #eeeeee);
+  }
+  .dante-table-bubble {
+    background: var(--m3-color-surface-container-high, #E9EDF1);
+  }
+}

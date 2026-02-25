@@ -16,6 +16,7 @@ import { InlineTooltip } from './components/InlineTooltip';
 import { AddButton } from './components/AddButton';
 import { LinkDialog } from './components/LinkDialog';
 import { DraftHistorySlider } from './components/DraftHistorySlider';
+import { TableBubbleMenu } from './components/TableBubbleMenu';
 import { Dialog } from '@formanywhere/ui/dialog';
 import { Button } from '@formanywhere/ui/button';
 import { TextField } from '@formanywhere/ui/textfield';
@@ -37,6 +38,7 @@ const RichTextEditor: Component<RichTextEditorProps> = (props) => {
   let fileInputRef!: HTMLInputElement;
   let bubbleRef!: HTMLDivElement;
   let floatRef!: HTMLDivElement;
+  let tableBubbleRef!: HTMLDivElement;
 
   const [linkOpen, setLinkOpen] = createSignal(false);
   const [linkInitial, setLinkInitial] = createSignal('');
@@ -53,6 +55,7 @@ const RichTextEditor: Component<RichTextEditorProps> = (props) => {
   // Visibility signals driven by editor events
   const [showBubble, setShowBubble] = createSignal(false);
   const [showFloat, setShowFloat] = createSignal(false);
+  const [showTableBubble, setShowTableBubble] = createSignal(false);
   
   const [history, setHistory] = createSignal<any[]>([]);
 
@@ -122,6 +125,39 @@ const RichTextEditor: Component<RichTextEditorProps> = (props) => {
       } else {
         setShowFloat(false);
       }
+
+      // Table bubble menu: show below the table when cursor is inside one
+      if (ed.isActive('table')) {
+        try {
+          // Walk up from the resolved position to find the table node
+          const { $head } = ed.state.selection;
+          let tableDepth = -1;
+          for (let d = $head.depth; d >= 0; d--) {
+            if ($head.node(d).type.name === 'table') {
+              tableDepth = d;
+              break;
+            }
+          }
+          if (tableDepth >= 0 && tableBubbleRef) {
+            const tableStart = $head.start(tableDepth) - 1;
+            const tableEnd = tableStart + $head.node(tableDepth).nodeSize;
+            const endCoords = ed.view.coordsAtPos(tableEnd);
+            const startCoords = ed.view.coordsAtPos(tableStart);
+            const centerX = (startCoords.left + endCoords.right) / 2;
+            const bubbleW = tableBubbleRef.offsetWidth || 300;
+
+            tableBubbleRef.style.top = `${endCoords.bottom + 4}px`;
+            tableBubbleRef.style.left = `${centerX - bubbleW / 2}px`;
+            setShowTableBubble(true);
+          } else {
+            setShowTableBubble(false);
+          }
+        } catch {
+          setShowTableBubble(false);
+        }
+      } else {
+        setShowTableBubble(false);
+      }
     };
 
     ed.on('selectionUpdate', updatePositions);
@@ -134,6 +170,7 @@ const RichTextEditor: Component<RichTextEditorProps> = (props) => {
         if (!ed.isFocused && !linkModeActive()) {
           setShowBubble(false);
           setShowFloat(false);
+          setShowTableBubble(false);
         }
       }, 200);
     });
@@ -302,6 +339,18 @@ const RichTextEditor: Component<RichTextEditorProps> = (props) => {
 
       {/* The ProseMirror editable area */}
       <Box ref={setEditorEl} />
+
+      {/* Table context menu — floating below table when cursor is inside */}
+      <Box
+        ref={(el: HTMLDivElement) => { tableBubbleRef = el; }}
+        class={`dante-table-bubble-wrap ${showTableBubble() ? 'is-visible' : ''}`}
+      >
+        <Show when={editor()}>
+          {(instance) => (
+            <TableBubbleMenu editor={instance()} actions={actions} />
+          )}
+        </Show>
+      </Box>
 
       {/* Draft History Slider */}
       <DraftHistorySlider 
