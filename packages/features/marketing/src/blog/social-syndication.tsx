@@ -4,7 +4,7 @@
  */
 import { Component, createSignal, createResource, For, Show } from 'solid-js';
 import { Box } from '@formanywhere/ui/box';
-import { HStack, VStack } from '@formanywhere/ui/stack';
+import { Stack } from '@formanywhere/ui/stack';
 import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
@@ -54,12 +54,12 @@ export const SocialSyndication: Component<{
         <Card variant="outlined" style={{ 'margin-top': '16px', overflow: 'hidden' }}>
           {/* Loading state */}
           <Show when={social.loading}>
-            <HStack gap="sm" align="center" justify="center" style={{ padding: '32px' }}>
+            <Stack direction="row" gap="sm" align="center" justify="center" style={{ padding: '32px' }}>
               <CircularProgress indeterminate size={24} />
               <Typography variant="body-medium" color="on-surface-variant">
                 Loading social posts...
               </Typography>
-            </HStack>
+            </Stack>
           </Show>
 
           <Show when={social()}>
@@ -81,7 +81,7 @@ export const SocialSyndication: Component<{
                       </Typography>
                     }
                   >
-                    <VStack gap="sm">
+                    <Stack gap="sm">
                       <For each={social()?.twitterThread}>
                         {(tweet, i) => (
                           <Card
@@ -112,7 +112,7 @@ export const SocialSyndication: Component<{
                       >
                         {copied() ? 'Copied!' : 'Copy Thread'}
                       </Button>
-                    </VStack>
+                    </Stack>
                   </Show>
                 </Box>
               </TabPanel>
@@ -128,7 +128,7 @@ export const SocialSyndication: Component<{
                       </Typography>
                     }
                   >
-                    <VStack gap="sm">
+                    <Stack gap="sm">
                       <Card
                         variant="filled"
                         padding="md"
@@ -149,7 +149,7 @@ export const SocialSyndication: Component<{
                       >
                         {copied() ? 'Copied!' : 'Copy LinkedIn Post'}
                       </Button>
-                    </VStack>
+                    </Stack>
                   </Show>
                 </Box>
               </TabPanel>
@@ -165,7 +165,7 @@ export const SocialSyndication: Component<{
                       </Typography>
                     }
                   >
-                    <VStack gap="sm">
+                    <Stack gap="sm">
                       <Card
                         variant="filled"
                         padding="md"
@@ -186,7 +186,7 @@ export const SocialSyndication: Component<{
                       >
                         {copied() ? 'Copied!' : 'Copy Newsletter'}
                       </Button>
-                    </VStack>
+                    </Stack>
                   </Show>
                 </Box>
               </TabPanel>

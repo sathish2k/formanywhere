@@ -4,7 +4,7 @@
  */
 import { Component, createSignal, createEffect, Show, onCleanup } from 'solid-js';
 import { Box } from '@formanywhere/ui/box';
-import { HStack, VStack } from '@formanywhere/ui/stack';
+import { Stack } from '@formanywhere/ui/stack';
 import { Typography } from '@formanywhere/ui/typography';
 import { IconButton } from '@formanywhere/ui/icon-button';
 import { Button } from '@formanywhere/ui/button';
@@ -109,7 +109,7 @@ export const PodcastPlayer: Component<{
         color: '#fff',
       }}
     >
-      <HStack gap="md" align="center">
+      <Stack direction="row" gap="md" align="center">
         {/* Play / Generate Button */}
         <IconButton
           variant="filled-tonal"
@@ -128,7 +128,7 @@ export const PodcastPlayer: Component<{
           }}
         />
 
-        <VStack gap="xs" style={{ flex: '1', 'min-width': '0' }}>
+        <Stack gap="xs" style={{ flex: '1', 'min-width': '0' }}>
           <Typography variant="label-large" noWrap style={{ color: '#fff' }}>
             {hasAudio() ? '🎧 Listen to this Article' : '🎧 Generate AI Podcast'}
           </Typography>
@@ -141,7 +141,7 @@ export const PodcastPlayer: Component<{
                   : 'AI-Generated Audio'
                 : 'Click to create a podcast version'}
           </Typography>
-        </VStack>
+        </Stack>
 
         {/* Time display */}
         <Show when={hasAudio() && duration() > 0}>
@@ -155,7 +155,7 @@ export const PodcastPlayer: Component<{
           icon={<Icon name={isExpanded() ? 'chevron-down' : 'chevron-right'} color="#fff" />}
           onClick={() => setIsExpanded(!isExpanded())}
         />
-      </HStack>
+      </Stack>
 
       {/* Progress bar */}
       <Show when={hasAudio() && isPlaying()}>

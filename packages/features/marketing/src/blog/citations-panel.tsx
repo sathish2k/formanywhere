@@ -4,7 +4,7 @@
  */
 import { Component, createSignal, For, Show } from 'solid-js';
 import { Box } from '@formanywhere/ui/box';
-import { HStack, VStack } from '@formanywhere/ui/stack';
+import { Stack } from '@formanywhere/ui/stack';
 import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
@@ -65,8 +65,8 @@ export const CitationsPanel: Component<{
         style={{ cursor: 'pointer' }}
         onClick={() => setIsExpanded(!isExpanded())}
       >
-        <HStack align="center" justify="between">
-          <HStack gap="md" align="center">
+        <Stack direction="row" align="center" justify="between">
+          <Stack direction="row" gap="md" align="center">
             <Typography variant="title-medium" style={{ 'font-weight': '700' }}>
               🛡️ Trust & Citations
             </Typography>
@@ -75,9 +75,9 @@ export const CitationsPanel: Component<{
               tone={getScoreTone()}
               size="md"
             />
-          </HStack>
+          </Stack>
 
-          <HStack gap="sm" align="center">
+          <Stack direction="row" gap="sm" align="center">
             <Button
               variant="outlined"
               size="sm"
@@ -94,8 +94,8 @@ export const CitationsPanel: Component<{
               variant="standard"
               icon={<Icon name={isExpanded() ? 'chevron-down' : 'chevron-right'} />}
             />
-          </HStack>
-        </HStack>
+          </Stack>
+        </Stack>
       </Box>
 
       <Show when={isExpanded()}>
@@ -114,7 +114,7 @@ export const CitationsPanel: Component<{
               <Typography variant="label-large" style={{ color: '#92400e', 'margin-bottom': '8px' }}>
                 ⚠️ Unverified Claims
               </Typography>
-              <VStack gap="xs">
+              <Stack gap="xs">
                 <For each={warnings()}>
                   {(warning) => (
                     <Typography variant="body-small" style={{ color: '#92400e' }}>
@@ -122,7 +122,7 @@ export const CitationsPanel: Component<{
                     </Typography>
                   )}
                 </For>
-              </VStack>
+              </Stack>
             </Card>
           </Show>
 

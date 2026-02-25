@@ -4,7 +4,7 @@
  */
 import { Component, createSignal, For, Show } from 'solid-js';
 import { Box } from '@formanywhere/ui/box';
-import { HStack, VStack } from '@formanywhere/ui/stack';
+import { Stack } from '@formanywhere/ui/stack';
 import { Typography } from '@formanywhere/ui/typography';
 import { IconButton } from '@formanywhere/ui/icon-button';
 import { Button } from '@formanywhere/ui/button';
@@ -97,28 +97,28 @@ export const ArticleChat: Component<{ slug: string }> = (props) => {
         >
           {/* Header */}
           <Box bg="primary" padding="md" style={{ 'border-radius': '16px 16px 0 0' }}>
-            <HStack align="center" justify="between">
-              <VStack gap="xs">
-                <HStack gap="sm" align="center">
+            <Stack direction="row" align="center" justify="between">
+              <Stack gap="xs">
+                <Stack direction="row" gap="sm" align="center">
                   <Icon name="sparkle" size={20} color="var(--md-sys-color-on-primary)" />
                   <Typography variant="title-medium" style={{ color: 'var(--md-sys-color-on-primary)', 'font-weight': '700' }}>
                     Chat with this Article
                   </Typography>
-                </HStack>
+                </Stack>
                 <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-primary)', opacity: '0.8' }}>
                   Ask any question about what you just read
                 </Typography>
-              </VStack>
+              </Stack>
               <IconButton
                 variant="standard"
                 icon={<Icon name="close" color="var(--md-sys-color-on-primary)" />}
                 onClick={() => setIsOpen(false)}
               />
-            </HStack>
+            </Stack>
           </Box>
 
           {/* Messages */}
-          <VStack
+          <Stack
             gap="sm"
             style={{
               flex: '1',
@@ -129,12 +129,12 @@ export const ArticleChat: Component<{ slug: string }> = (props) => {
             }}
           >
             <Show when={messages().length === 0}>
-              <VStack align="center" gap="md" style={{ 'margin-top': '32px' }}>
+              <Stack align="center" gap="md" style={{ 'margin-top': '32px' }}>
                 <Icon name="ai" size={40} color="var(--md-sys-color-primary)" />
                 <Typography variant="body-medium" color="on-surface-variant" align="center">
                   Ask me anything about this article!
                 </Typography>
-                <VStack gap="xs" fullWidth>
+                <Stack gap="xs" fullWidth>
                   <For each={suggestions}>
                     {(s) => (
                       <Chip
@@ -145,8 +145,8 @@ export const ArticleChat: Component<{ slug: string }> = (props) => {
                       />
                     )}
                   </For>
-                </VStack>
-              </VStack>
+                </Stack>
+              </Stack>
             </Show>
 
             <For each={messages()}>
@@ -189,20 +189,20 @@ export const ArticleChat: Component<{ slug: string }> = (props) => {
             </For>
 
             <Show when={loading()}>
-              <HStack gap="sm" align="center" style={{ 'align-self': 'flex-start' }}>
+              <Stack direction="row" gap="sm" align="center" style={{ 'align-self': 'flex-start' }}>
                 <CircularProgress indeterminate size={20} />
                 <Typography variant="body-small" color="on-surface-variant">
                   Thinking...
                 </Typography>
-              </HStack>
+              </Stack>
             </Show>
             <div ref={chatEndRef} />
-          </VStack>
+          </Stack>
 
           {/* Input */}
           <Divider />
           <Box padding="sm">
-            <HStack gap="sm" align="center">
+            <Stack direction="row" gap="sm" align="center">
               <Box style={{ flex: '1' }}>
                 <TextField
                   variant="outlined"
@@ -223,7 +223,7 @@ export const ArticleChat: Component<{ slug: string }> = (props) => {
                 onClick={() => sendMessage()}
                 disabled={loading() || !input().trim()}
               />
-            </HStack>
+            </Stack>
           </Box>
         </Card>
       </Show>

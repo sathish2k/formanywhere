@@ -3,7 +3,7 @@
  * Pure CSS animation, zero JS dependencies.
  */
 import { Box } from '@formanywhere/ui/box';
-import { VStack } from '@formanywhere/ui/stack';
+import { Stack } from '@formanywhere/ui/stack';
 import { Divider } from '@formanywhere/ui/divider';
 import './blog-skeleton.scss';
 
@@ -22,7 +22,7 @@ const Bone = (props: { width?: string; height?: string; radius?: string; style?:
 
 export const BlogSkeleton = () => (
   <Box padding="xl" style={{ "max-width": '800px', margin: '0 auto' }}>
-    <VStack gap="md">
+    <Stack gap="md">
       {/* Title */}
       <Bone height="40px" width="90%" radius="12px" />
       <Bone height="40px" width="65%" radius="12px" />
@@ -30,10 +30,10 @@ export const BlogSkeleton = () => (
       {/* Author row */}
       <Box style={{ display: 'flex', "align-items": 'center', gap: '16px', "margin-top": '8px' }}>
         <Bone width="48px" height="48px" radius="50%" />
-        <VStack gap="xs" style={{ flex: '1' }}>
+        <Stack gap="xs" style={{ flex: '1' }}>
           <Bone width="140px" height="14px" />
           <Bone width="100px" height="12px" />
-        </VStack>
+        </Stack>
         <Box style={{ display: 'flex', gap: '8px' }}>
           <Bone width="40px" height="40px" radius="50%" />
           <Bone width="40px" height="40px" radius="50%" />
@@ -57,25 +57,25 @@ export const BlogSkeleton = () => (
       </Box>
 
       {/* Body content lines */}
-      <VStack gap="sm" style={{ "margin-top": '16px' }}>
+      <Stack gap="sm" style={{ "margin-top": '16px' }}>
         <Bone height="18px" width="100%" />
         <Bone height="18px" width="100%" />
         <Bone height="18px" width="95%" />
         <Bone height="18px" width="88%" />
         <Bone height="18px" width="100%" />
         <Bone height="18px" width="72%" />
-      </VStack>
+      </Stack>
 
       {/* Subheading */}
       <Bone height="28px" width="45%" style={{ "margin-top": '24px' }} />
 
       {/* More body lines */}
-      <VStack gap="sm">
+      <Stack gap="sm">
         <Bone height="18px" width="100%" />
         <Bone height="18px" width="97%" />
         <Bone height="18px" width="100%" />
         <Bone height="18px" width="80%" />
-      </VStack>
+      </Stack>
 
       <Divider style={{ "margin-top": '24px' }} />
 
@@ -85,6 +85,6 @@ export const BlogSkeleton = () => (
         <Bone width="88px" height="32px" radius="16px" />
         <Bone width="64px" height="32px" radius="16px" />
       </Box>
-    </VStack>
+    </Stack>
   </Box>
 );

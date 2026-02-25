@@ -4,7 +4,7 @@ import { Card } from '@formanywhere/ui/card';
 import { Avatar } from '@formanywhere/ui/avatar';
 import { Typography } from '@formanywhere/ui/typography';
 import { Icon } from '@formanywhere/ui/icon';
-import { HStack, VStack } from '@formanywhere/ui/stack';
+import { Stack } from '@formanywhere/ui/stack';
 import { Chip } from '@formanywhere/ui/chip';
 import { Divider } from '@formanywhere/ui/divider';
 import { Box } from '@formanywhere/ui/box';
@@ -73,15 +73,15 @@ export const BlogCard: Component<{ post: BlogPost }> = (props) => {
         </Show>
 
         {/* Content */}
-        <VStack gap="sm" style={{ padding: '24px' }}>
+        <Stack gap="sm" style={{ padding: '24px' }}>
           {/* Tags */}
-          <HStack gap="sm" style={{ 'flex-wrap': 'wrap' }}>
+          <Stack direction="row" gap="sm" style={{ 'flex-wrap': 'wrap' }}>
             <For each={props.post.tags.slice(0, 2)}>
               {(tag) => (
                 <Chip label={tag} variant="label" size="sm" />
               )}
             </For>
-          </HStack>
+          </Stack>
 
           {/* Title */}
           <Typography
@@ -108,9 +108,9 @@ export const BlogCard: Component<{ post: BlogPost }> = (props) => {
           </Typography>
 
           {/* Author */}
-          <HStack gap="sm" align="center" style={{ 'margin-top': '8px' }}>
+          <Stack direction="row" gap="sm" align="center" style={{ 'margin-top': '8px' }}>
             <Avatar src={props.post.author.avatarUrl} alt={props.post.author.name} size="sm" />
-            <VStack gap="none">
+            <Stack gap="none">
               <Typography variant="label-medium" color="on-surface" style={{ 'font-weight': 'bold' }}>
                 {props.post.author.name}
               </Typography>
@@ -118,23 +118,23 @@ export const BlogCard: Component<{ post: BlogPost }> = (props) => {
                 {props.post.publishedAt}
                 <Show when={props.post.readTime}>{` · ${props.post.readTime} read`}</Show>
               </Typography>
-            </VStack>
-          </HStack>
+            </Stack>
+          </Stack>
 
           {/* Divider */}
           <Divider />
 
           {/* Stats */}
-          <HStack align="center" justify="between">
-            <HStack gap="xs" align="center">
+          <Stack direction="row" align="center" justify="between">
+            <Stack direction="row" gap="xs" align="center">
               <Icon name="eye" size={16} color="var(--m3-color-on-surface-variant)" />
               <Typography variant="body-small" color="on-surface-variant" style={{ 'font-weight': '500' }}>
                 {formatNumber(props.post.viewCount || 0)} views
               </Typography>
-            </HStack>
+            </Stack>
             <Icon name="share" size={16} color="var(--m3-color-on-surface-variant)" />
-          </HStack>
-        </VStack>
+          </Stack>
+        </Stack>
       </Card>
     </A>
   );

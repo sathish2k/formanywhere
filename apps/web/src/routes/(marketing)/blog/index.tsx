@@ -2,7 +2,7 @@ import { createResource, createSignal, createMemo, For, Show } from 'solid-js';
 import { useSearchParams } from '@solidjs/router';
 import { Title } from '@solidjs/meta';
 import { Box } from '@formanywhere/ui/box';
-import { HStack, VStack } from '@formanywhere/ui/stack';
+import { Stack } from '@formanywhere/ui/stack';
 import { Typography } from '@formanywhere/ui/typography';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
@@ -123,7 +123,7 @@ export default function BlogList() {
       <Title>Blog - FormAnywhere</Title>
 
       {/* ── Header ── */}
-      <HStack align="center" justify="between" style={{ 'margin-bottom': '32px', 'flex-wrap': 'wrap', gap: '16px' }}>
+      <Stack direction="row" align="center" justify="between" style={{ 'margin-bottom': '32px', 'flex-wrap': 'wrap', gap: '16px' }}>
         <Typography
           variant="display-medium"
           style={{ 'font-weight': '900', 'letter-spacing': '-0.02em', color: 'var(--m3-color-on-surface)' }}
@@ -141,11 +141,11 @@ export default function BlogList() {
             onInput={(e: any) => handleSearch(e.target?.value || '')}
           />
         </Box>
-      </HStack>
+      </Stack>
 
       {/* ── Category + Sort bar ── */}
-      <HStack gap="md" align="center" justify="between" style={{ 'margin-bottom': '32px', 'flex-wrap': 'wrap' }}>
-        <HStack gap="sm">
+      <Stack direction="row" gap="md" align="center" justify="between" style={{ 'margin-bottom': '32px', 'flex-wrap': 'wrap' }}>
+        <Stack direction="row" gap="sm">
           <For each={CATEGORY_OPTIONS}>
             {(opt) => (
               <Chip
@@ -156,9 +156,9 @@ export default function BlogList() {
               />
             )}
           </For>
-        </HStack>
+        </Stack>
 
-        <HStack gap="sm">
+        <Stack direction="row" gap="sm">
           <For each={SORT_OPTIONS}>
             {(opt) => (
               <Chip
@@ -169,31 +169,31 @@ export default function BlogList() {
               />
             )}
           </For>
-        </HStack>
-      </HStack>
+        </Stack>
+      </Stack>
 
       {/* ── Active tag filter indicator ── */}
       <Show when={tag()}>
-        <HStack gap="sm" align="center" style={{ 'margin-bottom': '24px' }}>
+        <Stack direction="row" gap="sm" align="center" style={{ 'margin-bottom': '24px' }}>
               <Typography variant="body-medium" style={{ color: 'var(--m3-color-on-surface-variant)' }}>
             Filtered by tag:
           </Typography>
           <Chip label={tag()} variant="input" onRemove={() => setTag('')} />
-        </HStack>
+        </Stack>
       </Show>
 
-      <HStack gap="xl" align="start">
+      <Stack direction="row" gap="xl" align="start">
         {/* ── Main Content Area ── */}
         <Box style={{ flex: '1', 'min-width': '0' }}>
 
           {/* Loading */}
           <Show when={data.loading}>
-            <HStack gap="sm" align="center" justify="center" style={{ padding: '48px' }}>
+            <Stack direction="row" gap="sm" align="center" justify="center" style={{ padding: '48px' }}>
               <CircularProgress indeterminate size={24} />
               <Typography variant="body-large" color="on-surface-variant">
                 Loading articles...
               </Typography>
-            </HStack>
+            </Stack>
           </Show>
 
           {/* Error */}
@@ -205,14 +205,14 @@ export default function BlogList() {
 
           {/* Empty */}
           <Show when={!data.loading && !data.error && posts().length === 0}>
-            <VStack align="center" gap="sm" style={{ padding: '48px' }}>
+            <Stack align="center" gap="sm" style={{ padding: '48px' }}>
               <Typography variant="title-large" style={{ color: 'var(--m3-color-on-surface)' }}>
                 No articles found
               </Typography>
               <Typography variant="body-large" color="on-surface-variant">
                 {search() ? `No results for "${search()}". Try a different search.` : 'Our AI writes fresh articles every day. Check back soon!'}
               </Typography>
-            </VStack>
+            </Stack>
           </Show>
 
           {/* ── Blog Grid ── */}
@@ -230,7 +230,7 @@ export default function BlogList() {
 
           {/* ── Pagination ── */}
           <Show when={pagination() && pagination()!.totalPages > 1}>
-            <HStack gap="sm" align="center" justify="center" style={{ 'margin-top': '48px', 'margin-bottom': '32px', 'flex-wrap': 'wrap' }}>
+            <Stack direction="row" gap="sm" align="center" justify="center" style={{ 'margin-top': '48px', 'margin-bottom': '32px', 'flex-wrap': 'wrap' }}>
               <Button
                 variant="outlined"
                 size="sm"
@@ -272,7 +272,7 @@ export default function BlogList() {
               >
                 Next
               </Button>
-            </HStack>
+            </Stack>
 
             <Typography variant="body-small" align="center" style={{ color: 'var(--m3-color-on-surface-variant)', 'margin-bottom': '32px' }}>
               Showing {((page() - 1) * (pagination()!.limit)) + 1}–{Math.min(page() * pagination()!.limit, pagination()!.totalCount)} of {formatCount(pagination()!.totalCount)} articles
@@ -281,7 +281,7 @@ export default function BlogList() {
         </Box>
 
         {/* ── Sidebar ── */}
-        <VStack gap="lg" style={{ width: '320px', 'flex-shrink': '0', position: 'sticky', top: '24px' }}>
+        <Stack gap="lg" style={{ width: '320px', 'flex-shrink': '0', position: 'sticky', top: '24px' }}>
 
           {/* Popular Topics */}
           <Card variant="elevated" padding="lg">
@@ -291,7 +291,7 @@ export default function BlogList() {
             >
               Popular Topics
             </Typography>
-            <HStack gap="sm" style={{ 'flex-wrap': 'wrap' }}>
+            <Stack direction="row" gap="sm" style={{ 'flex-wrap': 'wrap' }}>
               <Show when={allTags().length > 0} fallback={
                 <For each={['AI', 'Tech', 'Apple', 'Samsung', 'Google', 'Startups']}>
                   {(t) => (
@@ -314,7 +314,7 @@ export default function BlogList() {
                   )}
                 </For>
               </Show>
-            </HStack>
+            </Stack>
           </Card>
 
           {/* Quick Links */}
@@ -325,10 +325,10 @@ export default function BlogList() {
             >
               Quick Links
             </Typography>
-            <VStack gap="sm">
+            <Stack gap="sm">
               <For each={QUICK_LINKS}>
                 {(link) => (
-                  <HStack
+                  <Stack direction="row"
                     gap="sm"
                     align="center"
                     style={{
@@ -345,10 +345,10 @@ export default function BlogList() {
                     <Box style={{ 'margin-left': 'auto' }}>
                       <Icon name="chevron-right" size={16} color="var(--m3-color-on-surface-variant)" />
                     </Box>
-                  </HStack>
+                  </Stack>
                 )}
               </For>
-            </VStack>
+            </Stack>
           </Card>
 
           {/* CTA Card */}
@@ -360,7 +360,7 @@ export default function BlogList() {
               color: 'white',
             }}
           >
-            <VStack gap="md" align="center">
+            <Stack gap="md" align="center">
               <Icon name="sparkle" size={32} color="white" />
               <Typography
                 variant="title-large"
@@ -382,11 +382,11 @@ export default function BlogList() {
               >
                 Get Started Free
               </Button>
-            </VStack>
+            </Stack>
           </Card>
 
-        </VStack>
-      </HStack>
+        </Stack>
+      </Stack>
     </Box>
   );
 }

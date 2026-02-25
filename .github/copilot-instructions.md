@@ -187,7 +187,7 @@ Always import from **subpath exports** (tree-shakeable):
 ```ts
 ✅ import { Box } from '@formanywhere/ui/box';
 ✅ import { Button } from '@formanywhere/ui/button';
-✅ import { HStack, VStack } from '@formanywhere/ui/stack';
+✅ import { Stack } from '@formanywhere/ui/stack';
 ✅ import { Typography } from '@formanywhere/ui/typography';
 ✅ import { Icon } from '@formanywhere/ui/icon';
 
@@ -199,7 +199,7 @@ Always import from **subpath exports** (tree-shakeable):
 
 1. **NEVER use raw HTML** for UI — no `<div>`, `<button>`, `<input>`, `<span>` with inline styles.
 2. **Use `Box`** instead of `<div>` — it provides `padding`, `margin`, `rounded`, `bg`, `color`, `display`, `maxWidth`, `textAlign`, `as` props.
-3. **Use `HStack` / `VStack`** instead of flex `<div>` — they provide `gap`, `align`, `justify`, `wrap`.
+3. **Use `Stack`** instead of flex `<div>` — it provides `direction`, `gap`, `align`, `justify`, `wrap`. Use `direction="row"` for horizontal and default (column) for vertical.
 4. **Use `Typography`** instead of `<p>`, `<h1>`–`<h6>`, `<span>` for text.
 5. **Use `Card`** instead of styled `<div>` containers.
 6. **Use `Icon`** with built-in icon names — never raw SVGs.
@@ -213,7 +213,7 @@ Always import from **subpath exports** (tree-shakeable):
 | Import Path | Components | Key Props |
 |------------|------------|-----------|
 | `@formanywhere/ui/box` | `Box` | `padding`, `margin`, `rounded`, `bg`, `color`, `display`, `maxWidth`, `textAlign`, `as` |
-| `@formanywhere/ui/stack` | `Stack`, `HStack`, `VStack` | `gap`, `align`, `justify`, `wrap`, `fullWidth`, `as` |
+| `@formanywhere/ui/stack` | `Stack` | `direction`, `gap`, `align`, `justify`, `wrap`, `fullWidth`, `as` |
 | `@formanywhere/ui/card` | `Card` | `variant` (elevated/filled/outlined/glass), `padding`, `gap`, `direction`, `clickable` |
 | `@formanywhere/ui/typography` | `Typography` | `variant` (display/headline/title/body/label × large/medium/small), `color`, `align`, `noWrap` |
 | `@formanywhere/ui/button` | `Button` | `variant` (filled/tonal/elevated/outlined/text/ghost/danger/glass), `size`, `icon`, `trailingIcon`, `loading`, `href` |

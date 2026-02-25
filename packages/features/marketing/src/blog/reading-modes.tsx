@@ -4,7 +4,7 @@
  */
 import { Component, createSignal, For, Show } from 'solid-js';
 import { Box } from '@formanywhere/ui/box';
-import { HStack } from '@formanywhere/ui/stack';
+import { Stack } from '@formanywhere/ui/stack';
 import { Typography } from '@formanywhere/ui/typography';
 import { Chip } from '@formanywhere/ui/chip';
 import { CircularProgress } from '@formanywhere/ui/progress';
@@ -77,7 +77,7 @@ export const ReadingModes: Component<{
       >
         Reading Mode
       </Typography>
-      <HStack gap="xs" wrap>
+      <Stack direction="row" gap="xs" wrap>
         <For each={MODES}>
           {(mode) => (
             <Chip
@@ -89,14 +89,14 @@ export const ReadingModes: Component<{
             />
           )}
         </For>
-      </HStack>
+      </Stack>
       <Show when={loading()}>
-        <HStack gap="sm" align="center" style={{ 'margin-top': '12px' }}>
+        <Stack direction="row" gap="sm" align="center" style={{ 'margin-top': '12px' }}>
           <CircularProgress indeterminate size={16} />
           <Typography variant="body-small" color="on-surface-variant">
             Rewriting article...
           </Typography>
-        </HStack>
+        </Stack>
       </Show>
     </Box>
   );

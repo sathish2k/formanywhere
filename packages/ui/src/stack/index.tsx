@@ -86,13 +86,4 @@ export const Stack: ParentComponent<StackProps> = (props) => {
     );
 };
 
-// Convenience components
-export const HStack: ParentComponent<Omit<StackProps, 'direction'>> = (props) => (
-    <Stack {...props} direction="row" />
-);
-
-export const VStack: ParentComponent<Omit<StackProps, 'direction'>> = (props) => (
-    <Stack {...props} direction="column" />
-);
-
 export default Stack;
