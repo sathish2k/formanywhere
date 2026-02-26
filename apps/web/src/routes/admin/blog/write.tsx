@@ -8,6 +8,7 @@ import { Button } from '@formanywhere/ui/button';
 import { IconButton } from '@formanywhere/ui/icon-button';
 import { Icon } from '@formanywhere/ui/icon';
 import { Divider } from '@formanywhere/ui/divider';
+import { BlogImage } from '@formanywhere/ui/blog-image';
 
 // Client-only: TipTap requires DOM APIs and injects <style> tags that cause hydration mismatch
 const RichTextEditor = clientOnly(() =>
@@ -329,14 +330,17 @@ export default function AdminBlogWrite() {
 
           {/* Cover image preview */}
           <Show when={thumbnailUrl()}>
-            <Box style={{ "border-radius": '12px', overflow: 'hidden', "max-height": '300px' }}>
-              <img
-                src={thumbnailUrl()}
-                alt="Cover preview"
-                style={{ width: '100%', "object-fit": 'cover', "max-height": '300px' }}
-                onError={(e) => (e.target as HTMLImageElement).style.display = 'none'}
-              />
-            </Box>
+            <BlogImage
+              src={thumbnailUrl()}
+              alt="Cover preview"
+              loading="eager"
+              width={800}
+              height={300}
+              style={{
+                "border-radius": '12px',
+                "max-height": '300px',
+              }}
+            />
           </Show>
 
           {/* Content editor / preview */}

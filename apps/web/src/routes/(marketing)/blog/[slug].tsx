@@ -7,6 +7,7 @@ import { Divider } from '@formanywhere/ui/divider';
 import { Avatar } from '@formanywhere/ui/avatar';
 import { Chip } from '@formanywhere/ui/chip';
 import { IconButton } from '@formanywhere/ui/icon-button';
+import { BlogImage } from '@formanywhere/ui/blog-image';
 import { fetchBlogBySlug, recordBlogView, BlogSkeleton, BlogIcon } from '@formanywhere/marketing/blog';
 import '~/styles/blog-content.scss';
 
@@ -243,22 +244,16 @@ export default function BlogRead() {
 
             {/* Cover image */}
             <Show when={post()?.coverImage}>
-              <img
+              <BlogImage
                 src={post()!.coverImage!}
-                alt={post()?.title}
-                loading="lazy"
-                decoding="async"
+                alt={post()?.title || ''}
+                loading="eager"
                 width={800}
                 height={450}
                 style={{
-                  width: '100%',
-                  height: 'auto',
-                  "max-height": '500px',
-                  "object-fit": 'cover',
                   "border-radius": '16px',
                   "margin-bottom": '48px',
                   "box-shadow": '0 8px 32px rgba(0,0,0,0.08)',
-                  "aspect-ratio": '16 / 9',
                 }}
               />
             </Show>

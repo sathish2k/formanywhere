@@ -5,10 +5,12 @@
  * - Figure wrapper with figcaption
  * - Alignment/direction controls (center, wide, full-width) via SegmentedButton
  * - Caption editing (contentEditable figcaption, managed via node attrs)
+ * - Progressive image loading via BlogImage (LQIP + AVIF/WebP)
  * - Upload progress support
  *
  * Uses @formanywhere/ui components rendered into the vanilla DOM NodeView
  * via solid-js/web render():
+ *   - BlogImage (progressive loading with AVIF/WebP fallback)
  *   - SegmentedButton (alignment selector — reactive via getter props)
  *   - Icon (align icons)
  *
@@ -26,6 +28,7 @@ import { render } from 'solid-js/web';
 import { createSignal } from 'solid-js';
 import { SegmentedButton } from '@formanywhere/ui/segmented-button';
 import { Icon } from '@formanywhere/ui/icon';
+import { BlogImage } from '@formanywhere/ui/blog-image';
 
 export type ImageDirection = 'center' | 'wide' | 'fill';
 
@@ -76,24 +79,34 @@ export const ImageBlock = Image.extend({
       figure.classList.add('image-block');
       figure.dataset.direction = node.attrs.direction || 'center';
 
-      // ── Image container ──
+      // ── Image container — BlogImage rendered via SolidJS ──
       const imgWrap = document.createElement('div');
       imgWrap.classList.add('image-block-img-wrap');
 
-      const img = document.createElement('img');
-      img.src = node.attrs.src || '';
-      img.alt = node.attrs.alt || '';
-      img.classList.add('image-block-img');
-      img.draggable = false;
+      // Reactive signals so BlogImage updates without re-mount
+      const [imgSrc, setImgSrc] = createSignal<string>(node.attrs.src || '');
+      const [imgAlt, setImgAlt] = createSignal<string>(node.attrs.alt || '');
 
-      img.addEventListener('click', () => {
+      // Click anywhere on the image to select the node
+      imgWrap.addEventListener('click', () => {
         if (typeof getPos === 'function') {
           const pos = getPos();
           if (pos != null) editor.commands.setNodeSelection(pos);
         }
       });
 
-      imgWrap.appendChild(img);
+      const disposeImage = render(() => (
+        BlogImage({
+          get src() { return imgSrc(); },
+          get alt() { return imgAlt(); },
+          loading: 'eager',
+          class: 'image-block-img',
+          style: {
+            'border-radius': '0',
+          },
+        })
+      ), imgWrap);
+
       figure.appendChild(imgWrap);
 
       // ── Alignment toolbar — SegmentedButton ──
@@ -202,8 +215,9 @@ export const ImageBlock = Image.extend({
 
         update(updatedNode) {
           if (updatedNode.type.name !== 'image') return false;
-          img.src = updatedNode.attrs.src || '';
-          img.alt = updatedNode.attrs.alt || '';
+          // Update reactive signals — BlogImage re-renders automatically
+          setImgSrc(updatedNode.attrs.src || '');
+          setImgAlt(updatedNode.attrs.alt || '');
           // Only update caption text if the caption is NOT focused
           // (to prevent cursor position loss during typing)
           if (document.activeElement !== caption) {
@@ -223,6 +237,7 @@ export const ImageBlock = Image.extend({
         },
 
         destroy() {
+          disposeImage();
           disposeToolbar();
         },
       };
