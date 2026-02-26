@@ -18,6 +18,8 @@ export type { DashboardAppBarProps } from './components/header/dashboard-app-bar
 export { CreateFormSection } from './components/cards/create-form-section';
 export type { CreateFormSectionProps } from './components/cards/create-form-section';
 export { FormsListSection } from './components/forms-list-section';
+export { AnalyticsView } from './components/analytics/analytics-view';
+export type { AnalyticsViewProps } from './components/analytics/analytics-view';
 export { FormCard } from './components/cards/form-card';
 export type { FormCardProps } from './components/cards/form-card';
 export { FilterBar } from './components/filters/filter-bar';

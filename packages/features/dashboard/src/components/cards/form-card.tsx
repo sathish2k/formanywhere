@@ -17,6 +17,7 @@ export interface FormCardProps {
     onDuplicate?: (formId: string) => void;
     onDelete?: (formId: string) => void;
     onView?: (formId: string) => void;
+    onAnalytics?: (formId: string) => void;
 }
 
 export const FormCard: Component<FormCardProps> = (props) => {
@@ -93,6 +94,11 @@ export const FormCard: Component<FormCardProps> = (props) => {
                     label="Preview"
                     leadingIcon={<Icon name="eye" size={20} />}
                     onClick={() => handleAction(props.onView)}
+                />
+                <MenuItem
+                    label="Analytics"
+                    leadingIcon={<Icon name="bar-chart-2" size={20} />}
+                    onClick={() => handleAction(props.onAnalytics)}
                 />
                 <MenuItem
                     label="Duplicate"

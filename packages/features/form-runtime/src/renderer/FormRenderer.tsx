@@ -33,11 +33,12 @@ import {
 
 export interface FormRendererProps {
     schema: FormSchema;
+    formId?: string; // Optional since it might be rendered in preview without an ID
     onSubmit: (data: Record<string, unknown>) => void;
 }
 
 export const FormRenderer: Component<FormRendererProps> = (props) => {
-    const [local] = splitProps(props, ['schema', 'onSubmit']);
+    const [local] = splitProps(props, ['schema', 'formId', 'onSubmit']);
     const zodSchema = buildZodSchema(local.schema);
     const [formStore, { Form, Field }] = createForm<DynamicFormValues>({
         validate: zodForm(zodSchema),
@@ -95,6 +96,32 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
         return result.data;
     };
 
+    /** Send execution logs to the backend analytics endpoint */
+    const sendExecutionLog = async (result: Awaited<ReturnType<typeof executeWorkflow>>, duration: number) => {
+        if (!local.formId) return; // Only log for saved, running forms, not generic previews
+
+        try {
+            const API_URL = typeof import.meta !== 'undefined'
+                ? (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001'
+                : 'http://localhost:3001';
+
+            const hasError = result.results.some(r => r.status === 'error');
+
+            await fetch(`${API_URL}/api/forms/${local.formId}/workflow-logs`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                    trace: result,
+                    duration,
+                    success: !hasError
+                })
+            });
+        } catch (err) {
+            console.error('[workflow] Failed to record execution log:', err);
+        }
+    };
+
     /** Apply workflow execution result to form state. */
     const applyWorkflowResult = (result: Awaited<ReturnType<typeof executeWorkflow>>) => {
         // Apply option updates
@@ -138,8 +165,12 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
 
             try {
                 const values = (getValues(formStore) as Record<string, unknown>) ?? {};
+                const start = performance.now();
                 const result = await executeWorkflow(wf, values, apiCaller);
+                const duration = Math.round(performance.now() - start);
+
                 applyWorkflowResult(result);
+                sendExecutionLog(result, duration);
             } catch (err) {
                 console.error(`[workflow] Error executing ${wf.name}:`, err);
                 showError(`Failed to load data: ${err instanceof Error ? err.message : 'Unknown error'}`);
@@ -157,8 +188,12 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
         for (const wf of triggered) {
             try {
                 const values = (getValues(formStore) as Record<string, unknown>) ?? {};
+                const start = performance.now();
                 const result = await executeWorkflow(wf, values, apiCaller);
+                const duration = Math.round(performance.now() - start);
+
                 applyWorkflowResult(result);
+                sendExecutionLog(result, duration);
             } catch (err) {
                 console.error(`[workflow] Error executing ${wf.name}:`, err);
                 showError(`Workflow failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
@@ -173,8 +208,12 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
 
         for (const wf of submitWfs) {
             try {
+                const start = performance.now();
                 const result = await executeWorkflow(wf, values, apiCaller);
+                const duration = Math.round(performance.now() - start);
+
                 applyWorkflowResult(result);
+                sendExecutionLog(result, duration);
 
                 // If any node errored, don't proceed with submission
                 if (result.results.some((r) => r.status === 'error')) {

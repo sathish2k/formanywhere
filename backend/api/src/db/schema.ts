@@ -161,3 +161,23 @@ export const blogView = pgTable('blog_view', {
     index('blog_view_blog_id_idx').on(table.blogId),
     index('blog_view_visitor_idx').on(table.blogId, table.visitorHash),
 ]);
+
+/**
+ * Workflow execution logs — tracks node results and errors for workflows.
+ */
+export const workflowExecutionLog = pgTable('workflow_execution_log', {
+    id: text('id').primaryKey(),
+    formId: text('form_id').notNull().references(() => form.id, { onDelete: 'cascade' }),
+    submissionId: text('submission_id').references(() => submission.id, { onDelete: 'set null' }),
+    /** The raw execution trace (node results, API payloads, success/errors) */
+    trace: jsonb('trace').notNull(),
+    /** Total duration of workflow execution in milliseconds */
+    duration: integer('duration'),
+    /** Did the workflow complete without any unhandled errors? */
+    success: boolean('success').notNull().default(true),
+    executedAt: timestamp('executed_at').notNull().defaultNow(),
+}, (table) => [
+    index('workflow_execution_log_form_id_idx').on(table.formId),
+    index('workflow_execution_log_submission_id_idx').on(table.submissionId),
+    index('workflow_execution_log_executed_at_idx').on(table.executedAt),
+]);

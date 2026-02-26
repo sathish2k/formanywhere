@@ -23,6 +23,7 @@ import { Box } from '@formanywhere/ui/box';
 import { Typography } from '@formanywhere/ui/typography';
 import { WorkflowNodeComponent } from './WorkflowNodeComponent';
 import { WorkflowEdgeSvg, DragEdgeSvg, getPortPosition } from './WorkflowEdgeSvg';
+import { autoLayoutWorkflow, type WorkflowTemplate } from '@formanywhere/domain/form';
 import { NodePalette, NODE_TYPES } from './NodePalette';
 import { NodeConfigPanel } from './NodeConfigPanel';
 import { WorkflowDebuggerDialog } from '../dialogs/WorkflowDebuggerDialog';
@@ -145,6 +146,9 @@ export const WorkflowCanvas: Component<WorkflowCanvasProps> = (props) => {
         fromX: number; fromY: number;
         toX: number; toY: number;
     } | null>(null);
+
+    // Clipboard state
+    const [clipboard, setClipboard] = createSignal<{ nodes: WorkflowNode[]; edges: WorkflowEdge[] } | null>(null);
 
     // Canvas pan state
     const [panOffset, setPanOffset] = createSignal({ x: 0, y: 0 });
@@ -442,6 +446,95 @@ export const WorkflowCanvas: Component<WorkflowCanvasProps> = (props) => {
             e.preventDefault();
             setSelectedNodeIds(new Set(nodes().map((n) => n.id)));
         }
+
+        // Copy
+        if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
+            const ids = selectedNodeIds();
+            if (ids.size > 0) {
+                const copiedNodes = nodes().filter((n) => ids.has(n.id));
+                // Only copy edges where BOTH source and target are in the copied set
+                const copiedEdges = edges().filter(
+                    (edge) => ids.has(edge.sourceNodeId) && ids.has(edge.targetNodeId)
+                );
+                setClipboard({ nodes: JSON.parse(JSON.stringify(copiedNodes)), edges: JSON.parse(JSON.stringify(copiedEdges)) });
+            }
+        }
+
+        // Paste
+        if ((e.metaKey || e.ctrlKey) && e.key === 'v') {
+            const clip = clipboard();
+            if (clip && clip.nodes.length > 0) {
+                e.preventDefault();
+                pushHistory();
+
+                // Map old IDs to new IDs
+                const idMap = new Map<string, string>();
+                clip.nodes.forEach((n) => {
+                    idMap.set(n.id, uid());
+                });
+
+                const newNodes: WorkflowNode[] = clip.nodes.map((n) => ({
+                    ...n,
+                    id: idMap.get(n.id)!,
+                    position: { x: n.position.x + 50, y: n.position.y + 50 },
+                }));
+
+                const newEdges: WorkflowEdge[] = clip.edges.map((edge) => ({
+                    ...edge,
+                    id: uid(),
+                    sourceNodeId: idMap.get(edge.sourceNodeId)!,
+                    targetNodeId: idMap.get(edge.targetNodeId)!,
+                }));
+
+                batch(() => {
+                    props.onUpdateWorkflow({
+                        ...props.workflow,
+                        nodes: [...props.workflow.nodes, ...newNodes],
+                        edges: [...props.workflow.edges, ...newEdges],
+                    });
+                    setSelectedNodeIds(new Set(newNodes.map((n) => n.id)));
+                });
+            }
+        }
+    };
+
+    const handleAddTemplate = (template: WorkflowTemplate) => {
+        pushHistory();
+
+        // Map old IDs from template to new unique IDs to avoid collisions
+        const idMap = new Map<string, string>();
+        template.workflow.nodes.forEach((n: WorkflowNode) => {
+            idMap.set(n.id, uid());
+        });
+
+        // Offset positions by pan
+        const currentPanX = panOffset().x;
+        const currentPanY = panOffset().y;
+
+        const newNodes: WorkflowNode[] = template.workflow.nodes.map((n: WorkflowNode) => ({
+            ...n,
+            id: idMap.get(n.id)!,
+            position: {
+                x: n.position.x - currentPanX + 50,
+                y: n.position.y - currentPanY + 50
+            },
+        }));
+
+        const newEdges: WorkflowEdge[] = template.workflow.edges.map((edge: WorkflowEdge) => ({
+            ...edge,
+            id: uid(),
+            sourceNodeId: idMap.get(edge.sourceNodeId)!,
+            targetNodeId: idMap.get(edge.targetNodeId)!,
+        }));
+
+        batch(() => {
+            props.onUpdateWorkflow({
+                ...props.workflow,
+                nodes: [...props.workflow.nodes, ...newNodes],
+                edges: [...props.workflow.edges, ...newEdges],
+            });
+            setSelectedNodeIds(new Set(newNodes.map((n) => n.id)));
+        });
     };
 
     onMount(() => {
@@ -609,6 +702,22 @@ export const WorkflowCanvas: Component<WorkflowCanvasProps> = (props) => {
                             disabled={historyIdx() >= history().length - 1}
                             aria-label="Redo"
                             style={{ width: '28px', height: '28px' }}
+                        />
+                    </Tooltip>
+                    <Box style={{ width: '1px', height: '18px', background: 'var(--m3-color-outline-variant, #C4C7C5)', margin: '0 2px' }} />
+                    <Tooltip text="Auto-Layout (Magic Wand)" position="bottom">
+                        <IconButton
+                            variant="standard"
+                            icon={<Icon name="wand" size={16} />}
+                            onClick={() => {
+                                const newNodes = autoLayoutWorkflow(props.workflow);
+                                updateNodes(() => newNodes);
+                            }}
+                            aria-label="Auto-Layout"
+                            style={{
+                                width: '28px',
+                                height: '28px',
+                            }}
                         />
                     </Tooltip>
                     <Box style={{ width: '1px', height: '18px', background: 'var(--m3-color-outline-variant, #C4C7C5)', margin: '0 2px' }} />

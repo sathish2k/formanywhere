@@ -56,6 +56,7 @@ export interface DashboardContextValue {
     handleDuplicateForm: (formId: string) => void;
     handleDeleteForm: (formId: string) => void;
     handleViewForm: (formId: string) => void;
+    handleAnalyticsForm: (formId: string) => void;
 
     // New form dialog
     newFormDialogOpen: () => boolean;
@@ -322,6 +323,10 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
         go(`/preview?form=${formId}`);
     };
 
+    const handleAnalyticsForm = (formId: string) => {
+        go(`/analytics?form=${formId}`);
+    };
+
     // ── Context value ──────────────────────────────────────────
 
     const contextValue: DashboardContextValue = {
@@ -349,6 +354,7 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
         handleDuplicateForm,
         handleDeleteForm,
         handleViewForm,
+        handleAnalyticsForm,
 
         newFormDialogOpen,
         closeNewFormDialog,

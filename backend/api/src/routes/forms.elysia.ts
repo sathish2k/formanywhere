@@ -6,7 +6,7 @@
  */
 import { Elysia, t } from 'elysia';
 import { db } from '../db';
-import { form } from '../db/schema';
+import { form, workflowExecutionLog } from '../db/schema';
 import { eq, and, or, gte, lte, ilike, desc, asc, count } from 'drizzle-orm';
 import { auth } from '../lib/auth';
 import crypto from 'crypto';
@@ -115,7 +115,7 @@ export const formsRoutes = new Elysia({ prefix: '/api/forms' })
         // Sort
         const orderColumn = sortBy === 'name' ? form.title
             : sortBy === 'responses' ? form.submissions
-            : form.createdAt; // default: date
+                : form.createdAt; // default: date
         const orderFn = sortOrder === 'asc' ? asc : desc;
 
         // Count total matching rows
@@ -297,4 +297,90 @@ export const formsRoutes = new Elysia({ prefix: '/api/forms' })
         }).returning();
 
         return { success: true, form: duplicate };
+    })
+
+    // ── Record workflow execution log (POST /api/forms/:id/workflow-logs) ──────
+    .post('/:id/workflow-logs', async ({ user, params, body, set }) => {
+        // Technically anyone who can submit the form can run the workflow.
+        // For now, we just require authentication to prevent spam or check if 
+        // the form is published. To keep it simple, we assume the frontend
+        // sends this after a successful valid run.
+
+        // Ensure form exists (could enforce status === 'published' here if strict)
+        const [existingForm] = await db
+            .select({ id: form.id })
+            .from(form)
+            .where(eq(form.id, params.id));
+
+        if (!existingForm) {
+            set.status = 404;
+            return { success: false, error: 'Form not found' };
+        }
+
+        const logId = generateId();
+
+        const [createdLog] = await db.insert(workflowExecutionLog).values({
+            id: logId,
+            formId: params.id,
+            submissionId: body.submissionId || null,
+            trace: body.trace,
+            duration: body.duration,
+            success: body.success,
+            executedAt: new Date()
+        }).returning();
+
+        return { success: true, log: createdLog };
+    }, {
+        body: t.Object({
+            submissionId: t.Optional(t.String()),
+            trace: t.Unknown(),
+            duration: t.Optional(t.Number()),
+            success: t.Boolean()
+        })
+    })
+
+    // ── Get workflow execution logs (GET /api/forms/:id/workflow-logs) ─────────
+    .get('/:id/workflow-logs', async ({ user, params, query, set }) => {
+        // Verify ownership
+        const [existing] = await db
+            .select({ id: form.id })
+            .from(form)
+            .where(and(eq(form.id, params.id), eq(form.userId, user.id)));
+
+        if (!existing) {
+            set.status = 404;
+            return { success: false, error: 'Form not found' };
+        }
+
+        const pageNum = Math.max(1, parseInt(query.page || '1', 10));
+        const limitNum = Math.min(100, Math.max(1, parseInt(query.limit || '20', 10)));
+        const offset = (pageNum - 1) * limitNum;
+
+        const where = eq(workflowExecutionLog.formId, params.id);
+
+        const [{ total }] = await db
+            .select({ total: count() })
+            .from(workflowExecutionLog)
+            .where(where);
+
+        const logs = await db
+            .select()
+            .from(workflowExecutionLog)
+            .where(where)
+            .orderBy(desc(workflowExecutionLog.executedAt))
+            .limit(limitNum)
+            .offset(offset);
+
+        return {
+            success: true,
+            logs,
+            total,
+            page: pageNum,
+            totalPages: Math.ceil(total / limitNum),
+        };
+    }, {
+        query: t.Object({
+            page: t.Optional(t.String()),
+            limit: t.Optional(t.String()),
+        }),
     });

@@ -18,6 +18,7 @@ export const FormsListSection: Component = () => {
         handleDuplicateForm,
         handleDeleteForm,
         handleViewForm,
+        handleAnalyticsForm,
     } = useDashboard();
 
     return (
@@ -56,6 +57,7 @@ export const FormsListSection: Component = () => {
                                 onDuplicate={handleDuplicateForm}
                                 onDelete={handleDeleteForm}
                                 onView={handleViewForm}
+                                onAnalytics={handleAnalyticsForm}
                             />
                         )}
                     </For>
