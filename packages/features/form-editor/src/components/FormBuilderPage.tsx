@@ -18,7 +18,7 @@ import { FormEditorLayout } from './layout/FormEditorLayout';
 import { AIFormBuilder } from './ai/AIFormBuilder';
 import { ImportForm } from './import/ImportForm';
 import { FormPreview } from '@formanywhere/form-runtime';
-import type { FormSchema, FormRule } from '@formanywhere/shared/types';
+import type { FormSchema, FormRule, FormWorkflow } from '@formanywhere/shared/types';
 import { generateId, go } from '@formanywhere/shared/utils';
 import { fetchWithAuth } from '@formanywhere/shared/auth-client';
 import { validateSchema } from '@formanywhere/domain/form';
@@ -104,6 +104,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
     const [formSettingsOpen, setFormSettingsOpen] = createSignal(false);
     const [debuggerOpen, setDebuggerOpen] = createSignal(false);
     const [formRules, setFormRules] = createSignal<FormRule[]>([]);
+    const [workflows, setWorkflows] = createSignal<FormWorkflow[]>([]);
     const [formSettings, setFormSettings] = createSignal<FormSettings>({
         // M3 baseline palette defaults — data values for user-customizable theme, not CSS styling
         primaryColor: '#6750A4',
@@ -131,6 +132,11 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
     const updateRule = (id: string, rule: FormRule) => setFormRules((prev) => prev.map((r) => r.id === id ? rule : r));
     const deleteRule = (id: string) => setFormRules((prev) => prev.filter((r) => r.id !== id));
 
+    // Workflow management handlers
+    const addWorkflow = (wf: FormWorkflow) => setWorkflows((prev) => [...prev, wf]);
+    const updateWorkflow = (id: string, wf: FormWorkflow) => setWorkflows((prev) => prev.map((w) => w.id === id ? wf : w));
+    const deleteWorkflow = (id: string) => setWorkflows((prev) => prev.filter((w) => w.id !== id));
+
     // ── Autosave to localStorage (debounced) ──────────────────────────────
     const AUTOSAVE_KEY = `formanywhere_draft_${local.formId ?? 'new'}`;
     const AUTOSAVE_INTERVAL = 5_000; // 5 seconds
@@ -143,6 +149,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
             localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({
                 schema: s,
                 rules: formRules(),
+                workflows: workflows(),
                 settings: formSettings(),
                 savedAt: Date.now(),
             }));
@@ -186,6 +193,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                 syncPagesFromSchema(draft.schema);
             }
             if (draft.rules) setFormRules(draft.rules);
+            if (draft.workflows) setWorkflows(draft.workflows);
             if (draft.settings) setFormSettings(draft.settings);
             return true;
         } catch { return false; }
@@ -254,6 +262,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                 // Bug fix: populate PageToolbar from saved schema pages
                 syncPagesFromSchema(loadedSchema);
                 if (loadedSchema.rules) setFormRules(loadedSchema.rules);
+                if (loadedSchema.workflows) setWorkflows(loadedSchema.workflows);
             } else {
                 // Freshly created form with no schema yet — initialize a blank schema with API title
                 setSchema({
@@ -344,6 +353,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
             ...currentSchema,
             name: currentSchema.name || 'Untitled Form',
             rules: formRules(),
+            workflows: workflows(),
             settings: {
                 ...currentSchema.settings,
                 ...buildSettingsFromFormSettings(formSettings()),
@@ -487,9 +497,9 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                          async loadExistingForm resolves — otherwise FormEditor creates its
                          own default schema and the loaded data is never applied. */}
                     <Show when={!local.formId || schema()}>
-                    <FormEditor initialSchema={schema() ?? undefined} onChange={handleSchemaChange} activePageId={activePageId()} pages={pages()}>
-                        <FormEditorLayout />
-                    </FormEditor>
+                        <FormEditor initialSchema={schema() ?? undefined} onChange={handleSchemaChange} activePageId={activePageId()} pages={pages()}>
+                            <FormEditorLayout />
+                        </FormEditor>
                     </Show>
                 </Show>
             </Show>
@@ -507,11 +517,12 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
             <WorkflowDialog
                 open={workflowOpen()}
                 onClose={() => setWorkflowOpen(false)}
-                rules={formRules()}
-                onAddRule={addRule}
-                onUpdateRule={updateRule}
-                onDeleteRule={deleteRule}
+                workflows={workflows()}
                 pages={pages()}
+                elements={schema()?.elements ?? []}
+                onAddWorkflow={addWorkflow}
+                onUpdateWorkflow={updateWorkflow}
+                onDeleteWorkflow={deleteWorkflow}
             />
             <SchemaDialog
                 open={schemaDialogOpen()}

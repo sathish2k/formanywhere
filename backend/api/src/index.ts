@@ -8,6 +8,7 @@ import { blogsRoutes } from './routes/blogs.elysia';
 import { imageRoutes } from './routes/images.elysia';
 import { feedRoutes } from './routes/feed.elysia';
 import { sitemapRoutes } from './routes/sitemap.elysia';
+import { workflowProxyRoutes } from './routes/workflow-proxy.elysia';
 import { setupCronJobs } from './services/cron';
 import { redis } from './lib/redis';
 import { db } from './db';
@@ -95,6 +96,7 @@ const app = new Elysia()
     .use(imageRoutes)
     .use(feedRoutes)
     .use(sitemapRoutes)
+    .use(workflowProxyRoutes)
     // Global error handler — report uncaught errors to Sentry
     .onError(({ error, request }) => {
         if (error instanceof Error) {

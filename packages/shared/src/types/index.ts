@@ -3,6 +3,24 @@ export * from './form-rules';
 
 import type { FormRule } from './form-rules';
 
+// Re-export workflow types from domain (consumer convenience)
+export type {
+    WorkflowNodeType,
+    TriggerType,
+    NodePosition,
+    WorkflowApiConfig,
+    DataMappingEntry,
+    WorkflowNodeConfig,
+    WorkflowNode,
+    EdgeSourcePort,
+    WorkflowEdge,
+    FormWorkflow,
+    NodeExecutionResult,
+    WorkflowExecutionResult,
+    WorkflowValidationIssue,
+    WorkflowValidationResult,
+} from '@formanywhere/domain/form';
+
 export interface FormElement {
     id: string;
     type: FormElementType;
@@ -74,6 +92,8 @@ export interface FormSchema {
     settings: FormSettings;
     /** Conditional logic / workflow rules */
     rules?: FormRule[];
+    /** Visual workflow definitions (API calls, data mapping, redirects) */
+    workflows?: import('@formanywhere/domain/form').FormWorkflow[];
     createdAt: Date;
     updatedAt: Date;
 }

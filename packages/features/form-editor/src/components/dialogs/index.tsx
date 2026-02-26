@@ -10,3 +10,5 @@ export { FormSettingsDialog } from './FormSettingsDialog';
 export type { FormSettingsDialogProps, FormSettings } from './FormSettingsDialog';
 export { LogicDebuggerDialog } from './LogicDebuggerDialog';
 export type { LogicDebuggerDialogProps } from './LogicDebuggerDialog';
+export { WorkflowDebuggerDialog } from './WorkflowDebuggerDialog';
+export type { WorkflowDebuggerDialogProps } from './WorkflowDebuggerDialog';

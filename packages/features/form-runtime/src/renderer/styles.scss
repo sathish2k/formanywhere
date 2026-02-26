@@ -127,7 +127,7 @@
     color: var(--m3-color-on-surface-variant, #49454F);
     cursor: pointer;
     transition: border-color 200ms cubic-bezier(0.2, 0, 0, 1),
-                background-color 200ms cubic-bezier(0.2, 0, 0, 1);
+        background-color 200ms cubic-bezier(0.2, 0, 0, 1);
 
     &:hover {
         border-color: var(--m3-color-primary, #6750A4);
@@ -178,7 +178,9 @@
     opacity: 0.7;
     transition: opacity 0.15s ease;
 
-    &:hover { opacity: 1; }
+    &:hover {
+        opacity: 1;
+    }
 }
 
 // ── Radio Group ──────────────────────────────────────────────
@@ -208,7 +210,9 @@
     cursor: pointer;
     transition: background 0.1s ease;
 
-    &:hover { background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 4%, transparent); }
+    &:hover {
+        background: color-mix(in srgb, var(--m3-color-on-surface, #1C1B1F) 4%, transparent);
+    }
 
     input[type="radio"] {
         width: 18px;
@@ -274,9 +278,7 @@
     margin: 8px 0;
 }
 
-.form-renderer__spacer {
-    // height set via inline style
-}
+
 
 .form-renderer__logo {
     max-width: 200px;
@@ -364,6 +366,7 @@
     &--completed {
         cursor: pointer;
         color: var(--m3-color-primary, #6750A4);
+
         &:hover {
             background: color-mix(in srgb, var(--m3-color-primary, #6750A4) 8%, transparent);
         }
@@ -401,7 +404,10 @@
 
 .form-renderer__step-label {
     display: none;
-    @media (min-width: 480px) { display: inline; }
+
+    @media (min-width: 480px) {
+        display: inline;
+    }
 }
 
 .form-renderer__progress-bar {
@@ -569,7 +575,7 @@
     background: var(--m3-color-surface-container-lowest, #fff);
     border-radius: var(--m3-shape-large, 16px);
     box-shadow: 0px 0px 2px 0px rgba(145, 158, 171, 0.2),
-                0px 12px 24px -4px rgba(145, 158, 171, 0.12);
+        0px 12px 24px -4px rgba(145, 158, 171, 0.12);
     align-self: flex-start;
 }
 
@@ -645,3 +651,4 @@
     color: var(--m3-color-on-surface, #1C1B1F);
     border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
 }
+

@@ -1,67 +1,89 @@
 /**
- * WorkflowDialog — Visual workflow builder for form automation
- * Migrated from AI-Powered Form Builder UI → SolidJS + M3
+ * WorkflowDialog — Full-screen visual workflow builder
+ *
+ * Manages a list of workflows and provides the node-based canvas editor
+ * for building flows (Page → Call API → Set Data → Page → Redirect).
+ *
+ * Uses inline styles + @formanywhere/ui only (no SCSS classes).
  */
-import { splitProps, For, Show, createSignal } from 'solid-js';
-import type { Component } from 'solid-js';
+import { splitProps, For, Show, createSignal, type Component } from 'solid-js';
 import { Dialog } from '@formanywhere/ui/dialog';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
-import type { FormRule, RuleCondition, RuleAction } from '@formanywhere/shared/types';
+import { IconButton } from '@formanywhere/ui/icon-button';
+import { Typography } from '@formanywhere/ui/typography';
+import { Stack } from '@formanywhere/ui/stack';
+import { Box } from '@formanywhere/ui/box';
+import { List, ListItem } from '@formanywhere/ui/list';
+import { Chip } from '@formanywhere/ui/chip';
+import { TextField } from '@formanywhere/ui/textfield';
+import type { FormWorkflow, FormElement } from '@formanywhere/shared/types';
 import type { PageTab } from '../page-toolbar/PageToolbar';
-import './dialogs.scss';
+import { WorkflowCanvas } from '../workflow-canvas/WorkflowCanvas';
 
 export interface WorkflowDialogProps {
     open: boolean;
     onClose: () => void;
-    rules: FormRule[];
-    onAddRule: (rule: FormRule) => void;
-    onUpdateRule: (ruleId: string, rule: FormRule) => void;
-    onDeleteRule: (ruleId: string) => void;
+    workflows: FormWorkflow[];
     pages: PageTab[];
+    elements: FormElement[];
+    onAddWorkflow: (workflow: FormWorkflow) => void;
+    onUpdateWorkflow: (workflowId: string, workflow: FormWorkflow) => void;
+    onDeleteWorkflow: (workflowId: string) => void;
 }
 
+function uid(): string {
+    return `wkfl-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+}
+
+/* ── Inline Styles ───────────────────────────────────────────────────────────── */
+
+const S = {
+    dialogClass: 'workflow-dialog workflow-dialog--fullscreen',
+};
+
 export const WorkflowDialog: Component<WorkflowDialogProps> = (props) => {
-    const [local] = splitProps(props, ['open', 'onClose', 'rules', 'onUpdateRule', 'onDeleteRule']);
-    const [selectedRule, setSelectedRule] = createSignal<string | null>(null);
+    const [local] = splitProps(props, ['open', 'onClose', 'workflows', 'pages', 'elements', 'onAddWorkflow', 'onUpdateWorkflow', 'onDeleteWorkflow']);
+    const [activeWorkflowId, setActiveWorkflowId] = createSignal<string | null>(null);
+    const [editingName, setEditingName] = createSignal<string | null>(null);
 
-    const activeRules = () => local.rules.filter((r) => r.enabled);
-    const inactiveRules = () => local.rules.filter((r) => !r.enabled);
+    const activeWorkflow = () => local.workflows.find((w) => w.id === activeWorkflowId()) ?? null;
 
-    const toggleRule = (rule: FormRule) => {
-        local.onUpdateRule(rule.id, { ...rule, enabled: !rule.enabled });
+    const createWorkflow = () => {
+        const wf: FormWorkflow = {
+            id: uid(),
+            name: `Workflow ${local.workflows.length + 1}`,
+            enabled: true,
+            nodes: [],
+            edges: [],
+        };
+        local.onAddWorkflow(wf);
+        setActiveWorkflowId(wf.id);
     };
 
-    const getTriggerLabel = (trigger: FormRule['trigger']) => {
-        const map: Record<string, string> = {
-            onChange: 'Value Changed',
-            onBlur: 'Field Left',
-            onFocus: 'Field Focused',
-            onSubmit: 'Form Submitted',
-            onPageLoad: 'Page Loaded',
-        };
-        return map[trigger] || trigger;
+    const handleUpdateWorkflow = (updated: FormWorkflow) => {
+        local.onUpdateWorkflow(updated.id, updated);
     };
 
-    const getActionLabel = (type: RuleAction['type']) => {
-        const map: Record<string, string> = {
-            show: 'Show Field',
-            hide: 'Hide Field',
-            enable: 'Enable Field',
-            disable: 'Disable Field',
-            require: 'Make Required',
-            setValue: 'Set Value',
-            navigate: 'Go to Page',
-        };
-        return map[type] || type;
+    const toggleWorkflow = (wf: FormWorkflow) => {
+        local.onUpdateWorkflow(wf.id, { ...wf, enabled: !wf.enabled });
     };
 
-    const getOperatorLabel = (op: RuleCondition['operator']) => {
-        const map: Record<string, string> = {
-            equals: '=', notEquals: '≠', contains: '⊃', notContains: '⊅',
-            greaterThan: '>', lessThan: '<', isEmpty: '∅', isNotEmpty: '≠∅',
-        };
-        return map[op] || op;
+    const deleteWorkflow = (wfId: string) => {
+        local.onDeleteWorkflow(wfId);
+        if (activeWorkflowId() === wfId) setActiveWorkflowId(null);
+    };
+
+    const startRename = (wfId: string) => {
+        setEditingName(wfId);
+    };
+
+    const finishRename = (wfId: string, name: string) => {
+        const wf = local.workflows.find((w) => w.id === wfId);
+        if (wf && name.trim()) {
+            local.onUpdateWorkflow(wfId, { ...wf, name: name.trim() });
+        }
+        setEditingName(null);
     };
 
     return (
@@ -70,136 +92,135 @@ export const WorkflowDialog: Component<WorkflowDialogProps> = (props) => {
             onClose={local.onClose}
             title="Workflow Builder"
             icon={<Icon name="workflow" size={20} />}
-            class="workflow-dialog"
+            class={S.dialogClass}
             actions={
                 <Button variant="text" size="sm" onClick={local.onClose}>Close</Button>
             }
         >
-            <div class="workflow-dialog__content">
-                <div class="workflow-dialog__sidebar">
-                    <div class="workflow-dialog__sidebar-header">
-                        <span>Rules ({local.rules.length})</span>
-                    </div>
+            <Stack direction="row" style={{ flex: 1, 'min-height': 0, overflow: 'hidden' }}>
+                {/* Workflow list sidebar */}
+                <Box
+                    style={{
+                        width: '230px',
+                        'flex-shrink': 0,
+                        'border-right': '1px solid var(--m3-color-outline-variant, #C4C7C5)',
+                        overflow: 'auto',
+                    }}
+                >
+                    <Stack
+                        direction="row"
+                        align="center"
+                        justify="between"
+                        style={{
+                            padding: '12px 16px',
+                            'border-bottom': '1px solid var(--m3-color-outline-variant, #C4C7C5)',
+                        }}
+                    >
+                        <Typography variant="label-small" style={{ 'font-weight': 700, 'text-transform': 'uppercase', 'letter-spacing': '0.05em' }}>
+                            Workflows ({local.workflows.length})
+                        </Typography>
+                        <IconButton
+                            variant="standard"
+                            size="sm"
+                            icon={<Icon name="plus" size={16} />}
+                            onClick={createWorkflow}
+                        />
+                    </Stack>
 
-                    <Show when={activeRules().length > 0}>
-                        <div class="workflow-dialog__group-label">Active</div>
-                        <For each={activeRules()}>
-                            {(rule) => (
-                                <button
-                                    class={`workflow-dialog__rule-item ${selectedRule() === rule.id ? 'workflow-dialog__rule-item--selected' : ''}`}
-                                    onClick={() => setSelectedRule(rule.id)}
-                                >
-                                    <span class="workflow-dialog__rule-dot workflow-dialog__rule-dot--active" />
-                                    <span class="workflow-dialog__rule-item-name">{rule.name}</span>
-                                </button>
-                            )}
-                        </For>
+                    <Show when={local.workflows.length === 0}>
+                        <Box padding="xl" style={{ 'text-align': 'center' }}>
+                            <Stack align="center" justify="center" gap="sm">
+                                <Icon name="workflow" size={24} style={{ color: 'var(--m3-color-on-surface-variant, #49454F)' }} />
+                                <Typography variant="body-small" color="on-surface-variant">
+                                    No workflows yet. Create one to connect pages with actions.
+                                </Typography>
+                            </Stack>
+                        </Box>
                     </Show>
 
-                    <Show when={inactiveRules().length > 0}>
-                        <div class="workflow-dialog__group-label">Inactive</div>
-                        <For each={inactiveRules()}>
-                            {(rule) => (
-                                <button
-                                    class={`workflow-dialog__rule-item ${selectedRule() === rule.id ? 'workflow-dialog__rule-item--selected' : ''}`}
-                                    onClick={() => setSelectedRule(rule.id)}
-                                >
-                                    <span class="workflow-dialog__rule-dot" />
-                                    <span class="workflow-dialog__rule-item-name">{rule.name}</span>
-                                </button>
-                            )}
-                        </For>
-                    </Show>
-
-                    <Show when={local.rules.length === 0}>
-                        <div class="workflow-dialog__empty-sidebar">
-                            <Icon name="workflow" size={24} />
-                            <p>No rules. Create rules in the Logic dialog first.</p>
-                        </div>
-                    </Show>
-                </div>
-
-                <div class="workflow-dialog__canvas">
-                    <Show when={selectedRule()} fallback={
-                        <div class="workflow-dialog__empty-canvas">
-                            <Icon name="mouse-pointer" size={32} />
-                            <p>Select a rule to view its workflow</p>
-                        </div>
-                    }>
-                        {(() => {
-                            const rule = () => local.rules.find((r) => r.id === selectedRule());
-                            return (
-                                <Show when={rule()}>
-                                    {(r) => (
-                                        <div class="workflow-dialog__flow">
-                                            <div class="workflow-dialog__flow-header">
-                                                <h3>{r().name}</h3>
-                                                <div class="workflow-dialog__flow-header-actions">
-                                                    <label class="logic-dialog__toggle">
-                                                        <input type="checkbox" checked={r().enabled} onChange={() => toggleRule(r())} />
-                                                        <span class="logic-dialog__toggle-slider" />
-                                                    </label>
-                                                    <button class="logic-dialog__icon-btn logic-dialog__icon-btn--danger" onClick={() => { local.onDeleteRule(r().id); setSelectedRule(null); }}>
-                                                        <Icon name="trash" size={14} />
-                                                    </button>
+                    <Box padding="xs">
+                        <List>
+                            <For each={local.workflows}>
+                                {(wf) => (
+                                    <ListItem
+                                        headline={editingName() !== wf.id ? wf.name : ''}
+                                        selected={activeWorkflowId() === wf.id}
+                                        interactive
+                                        onClick={() => {
+                                            if (editingName() !== wf.id) setActiveWorkflowId(wf.id);
+                                        }}
+                                        start={
+                                            editingName() === wf.id ? (
+                                                <div
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') finishRename(wf.id, (e.target as HTMLInputElement).value);
+                                                    }}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <TextField
+                                                        size="sm"
+                                                        value={wf.name}
+                                                        onBlur={(e) => finishRename(wf.id, (e.target as HTMLInputElement).value)}
+                                                    />
                                                 </div>
-                                            </div>
+                                            ) : undefined
+                                        }
+                                        supportingText={
+                                            editingName() !== wf.id
+                                                ? `${wf.nodes.length} nodes · ${wf.edges.length} edges`
+                                                : undefined
+                                        }
+                                        end={
+                                            editingName() !== wf.id ? (
+                                                <Box onClick={(e: MouseEvent) => e.stopPropagation()}>
+                                                    <Stack direction="row" gap="none">
+                                                        <IconButton
+                                                            variant="standard"
+                                                            size="sm"
+                                                            icon={<Icon name={wf.enabled ? 'eye' : 'eye-off'} size={14} />}
+                                                            onClick={() => toggleWorkflow(wf)}
+                                                        />
+                                                        <IconButton
+                                                            variant="standard"
+                                                            size="sm"
+                                                            icon={<Icon name="trash" size={14} />}
+                                                            onClick={() => deleteWorkflow(wf.id)}
+                                                        />
+                                                    </Stack>
+                                                </Box>
+                                            ) : undefined
+                                        }
+                                    />
+                                )}
+                            </For>
+                        </List>
+                    </Box>
+                </Box>
 
-                                            {/* Trigger node */}
-                                            <div class="workflow-dialog__node workflow-dialog__node--trigger">
-                                                <div class="workflow-dialog__node-icon"><Icon name="lightning" size={16} /></div>
-                                                <div class="workflow-dialog__node-body">
-                                                    <span class="workflow-dialog__node-label">Trigger</span>
-                                                    <span class="workflow-dialog__node-value">{getTriggerLabel(r().trigger)}</span>
-                                                </div>
-                                            </div>
-                                            <div class="workflow-dialog__connector" />
-
-                                            {/* Conditions */}
-                                            <div class="workflow-dialog__node workflow-dialog__node--condition">
-                                                <div class="workflow-dialog__node-icon"><Icon name="git-branch" size={16} /></div>
-                                                <div class="workflow-dialog__node-body">
-                                                    <span class="workflow-dialog__node-label">
-                                                        Conditions ({r().conditionOperator})
-                                                    </span>
-                                                    <For each={r().conditions}>
-                                                        {(c) => (
-                                                            <div class="workflow-dialog__node-detail">
-                                                                <code>{c.fieldId || '?'}</code>
-                                                                <span class="workflow-dialog__op">{getOperatorLabel(c.operator)}</span>
-                                                                <code>{c.value || '—'}</code>
-                                                            </div>
-                                                        )}
-                                                    </For>
-                                                </div>
-                                            </div>
-                                            <div class="workflow-dialog__connector" />
-
-                                            {/* Actions */}
-                                            <For each={r().actions}>
-                                                {(act, idx) => (
-                                                    <>
-                                                        <div class="workflow-dialog__node workflow-dialog__node--action">
-                                                            <div class="workflow-dialog__node-icon"><Icon name="play" size={16} /></div>
-                                                            <div class="workflow-dialog__node-body">
-                                                                <span class="workflow-dialog__node-label">{getActionLabel(act.type)}</span>
-                                                                <span class="workflow-dialog__node-value">Target: {act.targetId || '—'}</span>
-                                                            </div>
-                                                        </div>
-                                                        <Show when={idx() < r().actions.length - 1}>
-                                                            <div class="workflow-dialog__connector" />
-                                                        </Show>
-                                                    </>
-                                                )}
-                                            </For>
-                                        </div>
-                                    )}
-                                </Show>
-                            );
-                        })()}
+                {/* Canvas area */}
+                <Box style={{ flex: 1, 'min-width': 0, 'min-height': 0, overflow: 'hidden' }}>
+                    <Show
+                        when={activeWorkflow()}
+                        fallback={
+                            <Stack align="center" justify="center" gap="sm" style={{ height: '100%', 'text-align': 'center' }}>
+                                <Icon name="mouse-pointer" size={32} style={{ color: 'var(--m3-color-on-surface-variant, #49454F)' }} />
+                                <Typography variant="body-large" color="on-surface-variant">
+                                    Select a workflow from the sidebar or create a new one
+                                </Typography>
+                            </Stack>
+                        }
+                    >
+                        {(wf) => (
+                            <WorkflowCanvas
+                                workflow={wf()}
+                                pages={local.pages}
+                                elements={local.elements}
+                                onUpdateWorkflow={handleUpdateWorkflow}
+                            />
+                        )}
                     </Show>
-                </div>
-            </div>
+                </Box>
+            </Stack>
         </Dialog>
     );
 };

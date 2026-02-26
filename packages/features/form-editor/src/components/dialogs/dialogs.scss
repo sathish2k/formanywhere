@@ -127,7 +127,7 @@
     }
 }
 
-.logic-dialog__toggle input:checked + .logic-dialog__toggle-slider {
+.logic-dialog__toggle input:checked+.logic-dialog__toggle-slider {
     background: var(--m3-color-primary, #6750A4);
 
     &::before {
@@ -179,7 +179,8 @@
         letter-spacing: 0.05em;
     }
 
-    input, select {
+    input,
+    select {
         padding: 8px 10px;
         border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
         border-radius: 8px;
@@ -228,7 +229,9 @@
     font-weight: 600;
     cursor: pointer;
 
-    &:hover { text-decoration: underline; }
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 .logic-dialog__condition-row {
@@ -236,7 +239,8 @@
     gap: 6px;
     align-items: center;
 
-    input, select {
+    input,
+    select {
         flex: 1;
         padding: 6px 8px;
         border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
@@ -265,8 +269,15 @@
     cursor: pointer;
     flex-shrink: 0;
 
-    &:hover { background: color-mix(in srgb, var(--m3-color-error, #B3261E) 12%, transparent); color: var(--m3-color-error, #B3261E); }
-    &:disabled { opacity: 0.3; cursor: not-allowed; }
+    &:hover {
+        background: color-mix(in srgb, var(--m3-color-error, #B3261E) 12%, transparent);
+        color: var(--m3-color-error, #B3261E);
+    }
+
+    &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
 }
 
 .logic-dialog__editor-actions {
@@ -278,207 +289,28 @@
 }
 
 
-/* ── Workflow Dialog ────────────────────────────────────────────────────── */
+/* ── Workflow Dialog (Full-screen visual builder) ──────────────────────── */
 .workflow-dialog {
     max-width: 800px;
     width: 90vw;
 }
 
-.workflow-dialog__content {
-    display: flex;
-    min-height: 400px;
-    gap: 0;
-}
-
-.workflow-dialog__sidebar {
-    width: 200px;
-    flex-shrink: 0;
-    border-right: 1px solid var(--m3-color-outline-variant, #C4C7C5);
-    padding-right: 12px;
-    overflow-y: auto;
-}
-
-.workflow-dialog__sidebar-header {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--m3-color-on-surface-variant, #49454F);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 8px;
-}
-
-.workflow-dialog__group-label {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    color: var(--m3-color-on-surface-variant, #49454F);
-    text-transform: uppercase;
-    margin: 12px 0 4px;
-}
-
-.workflow-dialog__rule-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    padding: 8px 10px;
-    border: none;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--m3-color-on-surface, #1C1B1F);
-    font-size: 0.8125rem;
-    cursor: pointer;
-    text-align: left;
-
-    &:hover { background: var(--m3-color-surface-container-low, #F7F2FA); }
-    &--selected { background: var(--m3-color-secondary-container, rgba(139, 92, 246, 0.12)); font-weight: 600; }
-}
-
-.workflow-dialog__rule-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    background: var(--m3-color-outline, #79747E);
-
-    &--active { background: var(--m3-color-primary, #6750A4); }
-}
-
-.workflow-dialog__rule-item-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.workflow-dialog__empty-sidebar,
-.workflow-dialog__empty-canvas {
+.workflow-dialog--fullscreen {
+    width: 95vw;
+    max-width: 1400px;
+    height: 85vh;
+    max-height: 85vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 32px;
-    color: var(--m3-color-on-surface-variant, #49454F);
-    text-align: center;
-    height: 100%;
 
-    p { font-size: 0.8125rem; line-height: 1.5; }
-}
-
-.workflow-dialog__canvas {
-    flex: 1;
-    padding-left: 16px;
-    overflow-y: auto;
-}
-
-.workflow-dialog__flow {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 16px;
-}
-
-.workflow-dialog__flow-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 20px;
-
-    h3 {
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--m3-color-on-surface, #1C1B1F);
-        margin: 0;
+    .md-dialog__content {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
     }
-}
-
-.workflow-dialog__flow-header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Flow nodes */
-.workflow-dialog__node {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    width: 100%;
-    max-width: 400px;
-    padding: 12px;
-    border-radius: 12px;
-    border: 1px solid var(--m3-color-outline-variant, #C4C7C5);
-    background: var(--m3-color-surface-container-lowest, #fff);
-}
-
-.workflow-dialog__node--trigger {
-    border-left: 3px solid var(--m3-color-tertiary, #7D5260);
-}
-
-.workflow-dialog__node--condition {
-    border-left: 3px solid var(--m3-color-primary, #6750A4);
-}
-
-.workflow-dialog__node--action {
-    border-left: 3px solid var(--m3-color-secondary, #625B71);
-}
-
-.workflow-dialog__node-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    background: var(--m3-color-surface-container-highest, #E6E0E9);
-    color: var(--m3-color-on-surface, #1C1B1F);
-}
-
-.workflow-dialog__node-body {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    min-width: 0;
-}
-
-.workflow-dialog__node-label {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--m3-color-on-surface-variant, #49454F);
-}
-
-.workflow-dialog__node-value {
-    font-size: 0.8125rem;
-    color: var(--m3-color-on-surface, #1C1B1F);
-}
-
-.workflow-dialog__node-detail {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.8125rem;
-
-    code {
-        padding: 1px 6px;
-        border-radius: 4px;
-        background: var(--m3-color-surface-container-highest, #E6E0E9);
-        font-family: 'SF Mono', 'Menlo', monospace;
-        font-size: 0.75rem;
-    }
-}
-
-.workflow-dialog__op {
-    font-weight: 700;
-    color: var(--m3-color-primary, #6750A4);
-}
-
-.workflow-dialog__connector {
-    width: 2px;
-    height: 20px;
-    background: var(--m3-color-outline-variant, #C4C7C5);
 }
 
 
@@ -589,8 +421,13 @@
     }
 
     /* Hide default header — we build our own */
-    .md-dialog__header { display: none; }
-    .md-dialog__actions { display: none; }
+    .md-dialog__header {
+        display: none;
+    }
+
+    .md-dialog__actions {
+        display: none;
+    }
 }
 
 .form-settings-dialog__header {
@@ -693,7 +530,10 @@
     cursor: pointer;
     flex-shrink: 0;
 
-    &::-webkit-color-swatch-wrapper { padding: 0; }
+    &::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+
     &::-webkit-color-swatch {
         border: none;
         border-radius: 6px;
@@ -824,7 +664,9 @@
     align-items: flex-start;
     gap: 8px;
 
-    .md-textfield { flex: 1; }
+    .md-textfield {
+        flex: 1;
+    }
 }
 
 .form-settings-dialog__checkbox-row {
@@ -1023,11 +865,26 @@
     flex-shrink: 0;
     font-weight: 600;
 
-    &--fired { color: var(--m3-color-primary, #6750A4); }
-    &--skipped { color: var(--m3-color-outline, #79747E); }
-    &--breakpoint { color: var(--m3-color-tertiary, #7D5260); }
-    &--error { color: var(--m3-color-error, #B3261E); }
-    &--pending { color: var(--m3-color-outline, #79747E); opacity: 0.5; }
+    &--fired {
+        color: var(--m3-color-primary, #6750A4);
+    }
+
+    &--skipped {
+        color: var(--m3-color-outline, #79747E);
+    }
+
+    &--breakpoint {
+        color: var(--m3-color-tertiary, #7D5260);
+    }
+
+    &--error {
+        color: var(--m3-color-error, #B3261E);
+    }
+
+    &--pending {
+        color: var(--m3-color-outline, #79747E);
+        opacity: 0.5;
+    }
 }
 
 .debugger__rule-name {
@@ -1182,7 +1039,11 @@
     text-align: center;
     color: var(--m3-color-on-surface-variant, #49454F);
 
-    p { font-size: 0.75rem; line-height: 1.5; max-width: 180px; }
+    p {
+        font-size: 0.75rem;
+        line-height: 1.5;
+        max-width: 180px;
+    }
 }
 
 /* ── Watch Panel ────────────────────────────────────────────────────────── */
@@ -1223,7 +1084,10 @@
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 0.6875rem;
 
-    em { color: var(--m3-color-outline, #79747E); font-style: italic; }
+    em {
+        color: var(--m3-color-outline, #79747E);
+        font-style: italic;
+    }
 }
 
 .debugger__watch-bool {
@@ -1237,6 +1101,7 @@
         color: var(--m3-color-on-success-container, #1B5E20);
         background: var(--m3-color-success-container, #E8F5E9);
     }
+
     &--false {
         color: var(--m3-color-on-error-container, #B71C1C);
         background: var(--m3-color-error-container, #FFEBEE);
@@ -1272,7 +1137,9 @@
     cursor: pointer;
     transition: background 0.12s;
 
-    &:hover { background: var(--m3-color-surface-container, #F3EDF7); }
+    &:hover {
+        background: var(--m3-color-surface-container, #F3EDF7);
+    }
 }
 
 .debugger__trace-idx {
@@ -1320,7 +1187,9 @@
     color: var(--m3-color-on-success-container, #2E7D32);
     text-align: center;
 
-    p { font-size: 0.8125rem; }
+    p {
+        font-size: 0.8125rem;
+    }
 }
 
 .debugger__conflict-card {
@@ -1419,8 +1288,13 @@
     font-size: 0.75rem;
     margin-bottom: 4px;
 
-    &--pass { background: var(--m3-color-success-container, #E8F5E9); }
-    &--fail { background: var(--m3-color-error-container, #FFEBEE); }
+    &--pass {
+        background: var(--m3-color-success-container, #E8F5E9);
+    }
+
+    &--fail {
+        background: var(--m3-color-error-container, #FFEBEE);
+    }
 }
 
 .debugger__condition-status {
@@ -1430,8 +1304,13 @@
     flex-shrink: 0;
 }
 
-.debugger__condition-row--pass .debugger__condition-status { color: var(--m3-color-on-success-container, #2E7D32); }
-.debugger__condition-row--fail .debugger__condition-status { color: var(--m3-color-on-error-container, #C62828); }
+.debugger__condition-row--pass .debugger__condition-status {
+    color: var(--m3-color-on-success-container, #2E7D32);
+}
+
+.debugger__condition-row--fail .debugger__condition-status {
+    color: var(--m3-color-on-error-container, #C62828);
+}
 
 .debugger__condition-field {
     font-family: 'SF Mono', 'Fira Code', monospace;
@@ -1600,7 +1479,9 @@
     text-align: center;
     color: var(--m3-color-on-surface-variant, #49454F);
 
-    p { font-size: 0.75rem; }
+    p {
+        font-size: 0.75rem;
+    }
 }
 
 .debugger__data-actions {
@@ -1627,4 +1508,3 @@
         border-color: var(--m3-color-error, #B3261E);
     }
 }
-
