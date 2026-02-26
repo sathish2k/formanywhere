@@ -1,43 +1,41 @@
 /**
  * RadioField — radio button group.
  * Works in both 'editor' and 'runtime' modes.
+ * Uses @formanywhere/ui Radio & RadioGroup for M3 styling.
  */
 import type { Component } from 'solid-js';
-import { For, Show } from 'solid-js';
+import { Show } from 'solid-js';
+import { Radio, RadioGroup } from '@formanywhere/ui/radio';
 import { Typography } from '@formanywhere/ui/typography';
+import { Stack } from '@formanywhere/ui/stack';
 import type { FieldProps } from '../field-types';
 
-export const RadioField: Component<FieldProps> = (props) => (
-    <div class="ff-radio-group">
-        <Typography variant="body-medium" class="ff-field__label">
-            {props.element.label}
-            <Show when={props.mode === 'runtime' && props.element.required}>
-                <span class="ff-field__required-mark">*</span>
-            </Show>
-        </Typography>
-        <div class="ff-radio-group__options">
-            <For each={props.element.options ?? []}>
-                {(opt) => {
+export const RadioField: Component<FieldProps> = (props) => {
+    const options = () => props.element.options ?? [];
+
+    return (
+        <Stack gap="xs">
+            <Typography variant="body-medium" style={{ 'font-weight': '500' }}>
+                {props.element.label}
+                <Show when={props.mode === 'runtime' && props.element.required}>
+                    <span style={{ color: 'var(--m3-color-error, #B3261E)', 'margin-left': '4px' }}>*</span>
+                </Show>
+            </Typography>
+            <RadioGroup
+                name={props.element.id}
+                value={props.value() ?? ''}
+                onChange={(val) => props.onValue(val)}
+                style={{ display: 'flex', 'flex-direction': 'column', gap: '4px' }}
+            >
+                {options().map((opt) => {
                     const optVal = typeof opt === 'string' ? opt : opt.value;
                     const optLabel = typeof opt === 'string' ? opt : opt.label;
-                    return (
-                        <label class="ff-radio-group__option">
-                            <input
-                                type="radio"
-                                name={props.element.id}
-                                value={optVal}
-                                checked={props.value() === optVal}
-                                onChange={() => props.onValue(optVal)}
-                            />
-                            <span class="ff-radio-group__circle" />
-                            <Typography variant="body-medium">{optLabel}</Typography>
-                        </label>
-                    );
-                }}
-            </For>
-        </div>
-        <Show when={props.mode === 'runtime' && props.error}>
-            <Typography variant="body-small" color="error">{props.error}</Typography>
-        </Show>
-    </div>
-);
+                    return <Radio value={optVal} label={optLabel} />;
+                })}
+            </RadioGroup>
+            <Show when={props.mode === 'runtime' && props.error}>
+                <Typography variant="body-small" color="error">{props.error}</Typography>
+            </Show>
+        </Stack>
+    );
+};

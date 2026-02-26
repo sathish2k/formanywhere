@@ -1,11 +1,14 @@
 /**
  * SignatureField — canvas-based signature pad.
  * Works in both 'editor' and 'runtime' modes.
+ * Uses @formanywhere/ui components + inline styles for M3 styling.
  */
 import type { Component } from 'solid-js';
 import { Show, onMount, onCleanup } from 'solid-js';
 import { Icon } from '@formanywhere/ui/icon';
 import { Typography } from '@formanywhere/ui/typography';
+import { Stack } from '@formanywhere/ui/stack';
+import { Button } from '@formanywhere/ui/button';
 import type { FieldProps } from '../field-types';
 
 export const SignatureField: Component<FieldProps> = (props) => {
@@ -89,26 +92,47 @@ export const SignatureField: Component<FieldProps> = (props) => {
     };
 
     return (
-        <div class="ff-signature-field">
-            <Typography variant="body-medium" class="ff-field__label">
+        <Stack gap="xs">
+            <Typography variant="body-medium" style={{ 'font-weight': '500' }}>
                 {props.element.label}
                 <Show when={props.mode === 'runtime' && props.element.required}>
-                    <span class="ff-field__required-mark">*</span>
+                    <span style={{ color: 'var(--m3-color-error, #B3261E)', 'margin-left': '4px' }}>*</span>
                 </Show>
             </Typography>
-            <div class="ff-signature-field__pad">
+            <div style={{
+                position: 'relative',
+                border: '1px solid var(--m3-color-outline-variant, #C4C7C5)',
+                'border-radius': 'var(--m3-shape-medium, 12px)',
+                overflow: 'hidden',
+                background: 'var(--m3-color-surface, #FFFBFE)',
+            }}>
                 <canvas
                     ref={(el) => onMount(() => setupCanvas(el))}
-                    class="ff-signature-field__canvas"
+                    style={{
+                        display: 'block',
+                        width: '100%',
+                        height: '120px',
+                        cursor: 'crosshair',
+                        'touch-action': 'none',
+                    }}
                 />
-                <button type="button" class="ff-signature-field__clear" onClick={clearSignature}>
-                    <Icon name="cross" size={14} />
+                <Button
+                    variant="text"
+                    size="sm"
+                    icon="cross"
+                    onClick={clearSignature}
+                    style={{
+                        position: 'absolute',
+                        top: '4px',
+                        right: '4px',
+                    }}
+                >
                     Clear
-                </button>
+                </Button>
             </div>
             <Show when={props.mode === 'runtime' && props.error}>
                 <Typography variant="body-small" color="error">{props.error}</Typography>
             </Show>
-        </div>
+        </Stack>
     );
 };
