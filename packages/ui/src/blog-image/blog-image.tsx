@@ -1,16 +1,14 @@
 // ─── BlogImage — Progressive Image Loading ─────────────────────────────────
-// Shows a tiny blurred LQIP placeholder instantly, then fades in the full
-// AVIF image when loaded. Uses <picture> for AVIF + WebP fallback.
+// Shows a shimmer gradient placeholder instantly, then fades in the full
+// image when loaded. Uses <picture> for AVIF + WebP fallback.
 
-import { createSignal, onMount, Show, type JSX, splitProps } from 'solid-js';
+import { createSignal, Show, type JSX } from 'solid-js';
 
 export interface BlogImageProps {
-    /** Full-size AVIF image URL */
+    /** Full-size image URL (primary source) */
     src: string;
     /** WebP fallback URL (optional — browser picks best format) */
     webpSrc?: string;
-    /** Base64-encoded LQIP data URI (e.g. "data:image/webp;base64,...") */
-    lqip?: string;
     /** Alt text for accessibility */
     alt: string;
     /** Image width in pixels */
@@ -42,28 +40,25 @@ export function BlogImage(props: BlogImageProps) {
             style={{
                 position: 'relative',
                 overflow: 'hidden',
-                "border-radius": '8px',
+                "border-radius": 'var(--m3-shape-medium, 12px)',
                 "aspect-ratio": aspectRatio(),
-                "background-color": '#1a1a2e',
+                "background-color": 'var(--m3-color-surface-container-low)',
                 ...props.style,
             }}
         >
-            {/* LQIP placeholder — shows instantly */}
-            <Show when={props.lqip && !loaded()}>
-                <img
-                    src={props.lqip}
-                    alt=""
+            {/* Shimmer placeholder — shows while image loads */}
+            <Show when={!loaded() && !error()}>
+                <div
                     aria-hidden="true"
                     style={{
                         position: 'absolute',
                         inset: '0',
-                        width: '100%',
-                        height: '100%',
-                        "object-fit": 'cover',
-                        filter: 'blur(20px)',
-                        transform: 'scale(1.1)',
-                        transition: 'opacity 0.3s ease',
-                        opacity: loaded() ? '0' : '1',
+                        background: `linear-gradient(90deg,
+                            var(--m3-color-surface-container-lowest) 25%,
+                            var(--m3-color-surface-container-low) 50%,
+                            var(--m3-color-surface-container-lowest) 75%)`,
+                        "background-size": '200% 100%',
+                        animation: 'blogImageShimmer 1.5s ease-in-out infinite',
                     }}
                 />
             </Show>
@@ -75,22 +70,20 @@ export function BlogImage(props: BlogImageProps) {
                     "align-items": 'center',
                     "justify-content": 'center',
                     height: '100%',
-                    color: 'var(--md-sys-color-on-surface-variant, #999)',
+                    color: 'var(--m3-color-on-surface-variant)',
                     "font-size": '14px',
                 }}>
                     ⚠️ Image failed to load
                 </div>
             }>
                 <picture>
-                    {/* AVIF source (best compression, modern browsers) */}
-                    <source srcset={props.src} type="image/avif" />
-                    {/* WebP fallback */}
+                    {/* WebP fallback if provided */}
                     <Show when={props.webpSrc}>
                         <source srcset={props.webpSrc} type="image/webp" />
                     </Show>
-                    {/* Fallback img tag */}
+                    {/* Primary img tag */}
                     <img
-                        src={props.webpSrc || props.src}
+                        src={props.src}
                         alt={props.alt}
                         width={props.width}
                         height={props.height}
@@ -102,12 +95,20 @@ export function BlogImage(props: BlogImageProps) {
                             width: '100%',
                             height: '100%',
                             "object-fit": 'cover',
-                            transition: 'opacity 0.5s ease',
+                            transition: `opacity var(--m3-motion-duration-medium, 300ms) var(--m3-motion-easing-standard, ease)`,
                             opacity: loaded() ? '1' : '0',
                         }}
                     />
                 </picture>
             </Show>
+
+            {/* Shimmer animation keyframes (injected once) */}
+            <style>{`
+                @keyframes blogImageShimmer {
+                    0% { background-position: 200% 0; }
+                    100% { background-position: -200% 0; }
+                }
+            `}</style>
         </div>
     );
 }

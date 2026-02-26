@@ -86,6 +86,8 @@ export const ImageBlock = Image.extend({
       // Reactive signals so BlogImage updates without re-mount
       const [imgSrc, setImgSrc] = createSignal<string>(node.attrs.src || '');
       const [imgAlt, setImgAlt] = createSignal<string>(node.attrs.alt || '');
+      const [imgWidth, setImgWidth] = createSignal<number | undefined>(node.attrs.width || undefined);
+      const [imgHeight, setImgHeight] = createSignal<number | undefined>(node.attrs.height || undefined);
 
       // Click anywhere on the image to select the node
       imgWrap.addEventListener('click', () => {
@@ -99,6 +101,8 @@ export const ImageBlock = Image.extend({
         BlogImage({
           get src() { return imgSrc(); },
           get alt() { return imgAlt(); },
+          get width() { return imgWidth(); },
+          get height() { return imgHeight(); },
           loading: 'eager',
           class: 'image-block-img',
           style: {
@@ -218,6 +222,8 @@ export const ImageBlock = Image.extend({
           // Update reactive signals — BlogImage re-renders automatically
           setImgSrc(updatedNode.attrs.src || '');
           setImgAlt(updatedNode.attrs.alt || '');
+          setImgWidth(updatedNode.attrs.width || undefined);
+          setImgHeight(updatedNode.attrs.height || undefined);
           // Only update caption text if the caption is NOT focused
           // (to prevent cursor position loss during typing)
           if (document.activeElement !== caption) {
