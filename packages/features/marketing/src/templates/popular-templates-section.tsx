@@ -1,15 +1,36 @@
 /**
  * Popular Templates Section — lazy-loaded below fold.
- * Co-locates templates data + TemplateCard for code-splitting.
+ * Fetches real templates from the DB and renders the ones marked popular.
  */
-import { For } from "solid-js";
+import { For, Show, createResource } from "solid-js";
 import { Typography } from "@formanywhere/ui/typography";
 import { TemplateCard } from "../template-card";
-import { templates } from "./config";
-
-const popularTemplates = templates.filter((t) => t.popular);
+import type { Template } from "../template-card";
+import { fetchTemplates } from "@formanywhere/shared/templates-api";
+import { go } from "@formanywhere/shared/utils";
 
 export default function PopularTemplatesSection() {
+  const [dbTemplates] = createResource(() => fetchTemplates());
+
+  const templates = (): Template[] =>
+    (dbTemplates() ?? []).slice(0, 4).map((t) => ({
+      id: t.id,
+      name: t.name,
+      description: t.description ?? "",
+      category: t.category,
+      popular: true,
+      uses: "–",
+      fields: [],
+    }));
+
+  const handleUse = (id: string) => {
+    go(`/app?template=${id}&mode=template`);
+  };
+
+  const handlePreview = (id: string) => {
+    go(`/preview?template=${id}`);
+  };
+
   return (
     <section
       style={{
@@ -49,17 +70,25 @@ export default function PopularTemplatesSection() {
           </Typography>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gap: "1.5rem",
-            "grid-template-columns": "repeat(auto-fit, minmax(240px, 1fr))",
-          }}
-        >
-          <For each={popularTemplates}>
-            {(template) => <TemplateCard template={template} />}
-          </For>
-        </div>
+        <Show when={!dbTemplates.loading} fallback={<div style={{ "min-height": "200px" }} />}>
+          <div
+            style={{
+              display: "grid",
+              gap: "1.5rem",
+              "grid-template-columns": "repeat(auto-fit, minmax(240px, 1fr))",
+            }}
+          >
+            <For each={templates()}>
+              {(template) => (
+                <TemplateCard
+                  template={template}
+                  onUse={handleUse}
+                  onPreview={handlePreview}
+                />
+              )}
+            </For>
+          </div>
+        </Show>
       </div>
     </section>
   );

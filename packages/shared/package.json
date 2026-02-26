@@ -81,6 +81,14 @@
             "solid": "./src/components/cookie-consent.tsx",
             "import": "./src/components/cookie-consent.tsx",
             "types": "./src/components/cookie-consent.tsx"
+        },
+        "./templates-browser": {
+            "import": "./src/components/form-setup/templates-browser.tsx",
+            "types": "./src/components/form-setup/templates-browser.tsx"
+        },
+        "./templates-api": {
+            "import": "./src/lib/templates-api.ts",
+            "types": "./src/lib/templates-api.ts"
         }
     },
     "scripts": {

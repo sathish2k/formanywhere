@@ -1,6 +1,7 @@
 // ─── Blog Generator Orchestrator ─────────────────────────────────────────────
-// 2-agent pipeline: Trends → Gemini 3.1 Pro (research+write) → Gemini 3 Flash (edit) → Publish
+// 2-agent pipeline: Trends → Gemini 2.5 Pro (research+write) → Gemini 2.5 Flash (edit) → Publish
 
+import { GoogleGenAI } from '@google/genai';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '../../db';
 import { blog } from '../../db/schema';
@@ -8,12 +9,12 @@ import { invalidateAllBlogCaches } from '../../lib/redis';
 
 // Module imports
 import { BLOG_TYPE_PROMPTS, pickBlogType, pickBlogVoice } from './blog-types';
-import type { BlogCategory, BlogType } from './blog-types';
+import type { BlogCategory, BlogType, BlogVoice } from './blog-types';
 import { pickAuthor } from './blog-authors';
+import type { AuthorPersona } from './blog-authors';
 import { TECH_CATEGORIES, NON_TECH_CATEGORIES, REVIEW_TOPICS } from './blog-categories';
 import { getRealtimeTrends } from './news-sources';
-import { researchAndWrite } from './agents/writer';
-import { editAndPolish } from './agents/editor';
+import { buildWriterPrompt } from './prompt-generator';
 import { parseMarkdownBlog } from './parser';
 import {
     injectAdSlots,
@@ -27,6 +28,70 @@ import {
     replaceInlineImages,
 } from './post-processing';
 import { syndicateToSocialMedia } from './social';
+
+// ─── Inline agents ───────────────────────────────────────────────────────────
+
+function getAI(): GoogleGenAI {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error('GEMINI_API_KEY is not set');
+    return new GoogleGenAI({ apiKey });
+}
+
+async function researchAndWrite(
+    topic: string,
+    categoryType: 'tech' | 'non-tech',
+    author: AuthorPersona,
+    voice: BlogVoice,
+    blogType: BlogType,
+): Promise<string> {
+    console.log(`✍️  [Writer] Calling gemini-2.5-pro for "${topic}"...`);
+    const prompt = buildWriterPrompt(topic, categoryType, author, voice, blogType);
+    const result = await getAI().models.generateContent({
+        model: 'gemini-2.5-pro',
+        contents: prompt,
+        config: { temperature: 0.85, maxOutputTokens: 8192, tools: [{ googleSearch: {} }] },
+    });
+    const text = result.text ?? '';
+    if (text.length < 200) throw new Error(`[Writer] Empty response for "${topic}"`);
+    console.log(`✅ [Writer] Raw article generated (${text.length} chars)`);
+    return text;
+}
+
+async function editAndPolish(
+    rawArticle: string,
+    voice: BlogVoice,
+    blogType: BlogType,
+    topic: string,
+): Promise<string> {
+    console.log('✏️  [Editor] Calling gemini-2.5-flash to polish...');
+    const editPrompt = `You are a senior tech editor. Polish the following article about "${topic}".
+
+Rules:
+- Fix any factual inconsistencies or outdated info
+- Remove ALL banned AI phrases: "delve", "tapestry", "it's worth noting", "in conclusion", "game-changer", "paradigm shift", "transformative", "holistic", "robust"
+- Tighten sentences — cut 10-15% of words without losing meaning
+- Ensure the voice style is "${voice.label}" throughout
+- Fix any broken HTML tags
+- Keep the EXACT output format (# TITLE, # EXCERPT, # CONTENT, etc.)
+- Do NOT change the topic or add new information you're unsure about
+- Output the FULL article in the same structured format
+
+ARTICLE:
+${rawArticle}`;
+
+    const result = await getAI().models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: editPrompt,
+        config: { temperature: 0.4, maxOutputTokens: 8192 },
+    });
+    const text = result.text ?? '';
+    if (text.length < 200) {
+        console.warn('[Editor] Polish returned empty — using raw article');
+        return rawArticle;
+    }
+    console.log(`✅ [Editor] Polished article (${text.length} chars)`);
+    return text;
+}
 
 export async function generateAndPublishBlog(category: BlogCategory = 'random', forceBlogType?: BlogType) {
     console.log('🚀 Starting 2-agent blog generation pipeline...');

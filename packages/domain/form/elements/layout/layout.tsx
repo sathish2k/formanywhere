@@ -51,7 +51,12 @@ export const LayoutField: Component<LayoutFieldProps> = (props) => {
             );
 
         case 'divider':
-            return <hr class="ff-divider" />;
+            return <hr class="ff-divider" style={{
+                border: 'none',
+                'border-top': '1px solid var(--m3-color-outline-variant, #C4C7C5)',
+                margin: '8px 0',
+                width: '100%',
+            }} />;
 
         case 'spacer':
             return <div class="ff-spacer" style={{ height: `${(el() as any).height ?? 24}px` }} />;
@@ -72,7 +77,12 @@ export const LayoutField: Component<LayoutFieldProps> = (props) => {
             return (
                 <div
                     class="ff-grid"
-                    style={{ 'grid-template-columns': `repeat(${(el() as any).columns ?? 12}, 1fr)` }}
+                    style={{
+                        display: 'grid',
+                        'grid-template-columns': `repeat(${(el() as any).columns ?? 12}, 1fr)`,
+                        gap: `${(el() as any).gap ?? 16}px`,
+                        width: '100%',
+                    }}
                 >
                     <For each={children()}>{(child) => props.renderChild(child)}</For>
                 </div>
@@ -82,7 +92,13 @@ export const LayoutField: Component<LayoutFieldProps> = (props) => {
             return (
                 <div
                     class="ff-grid-column"
-                    style={{ 'grid-column': `span ${(el() as any).span ?? 6}` }}
+                    style={{
+                        'grid-column': `span ${(el() as any).span ?? (el() as any).columns ?? 6}`,
+                        display: 'flex',
+                        'flex-direction': 'column',
+                        gap: '16px',
+                        'min-width': '0',
+                    }}
                 >
                     <For each={children()}>{(child) => props.renderChild(child)}</For>
                 </div>
@@ -96,20 +112,38 @@ export const LayoutField: Component<LayoutFieldProps> = (props) => {
             const elMaxWidth = (el() as any).maxWidth;
             const elAlign = (el() as any).alignment;
             const isCentered = elAlign === 'center' && elMaxWidth;
+            const isCard = el().type === 'card';
+            const isSection = el().type === 'section';
             return (
                 <div
                     class={`ff-${el().type}`}
                     style={{
-                        padding: elPadding != null ? `${elPadding}px` : undefined,
+                        display: 'flex',
+                        'flex-direction': 'column',
+                        gap: '16px',
+                        padding: elPadding != null ? `${elPadding}px`
+                            : isCard ? '20px'
+                            : isSection ? '0'
+                            : undefined,
                         margin: isCentered
                             ? `${elMargin ?? 0}px auto`
                             : elMargin ? `${elMargin}px` : undefined,
                         'max-width': elMaxWidth ? `${elMaxWidth}px` : undefined,
                         'text-align': elAlign ?? undefined,
+                        'border-radius': isCard ? 'var(--m3-shape-medium, 12px)' : undefined,
+                        background: isCard ? 'var(--m3-color-surface-container-lowest, #fff)' : undefined,
+                        border: isCard ? '1px solid var(--m3-color-outline-variant, #C4C7C5)' : undefined,
+                        'border-bottom': isSection && !isCard ? '1px solid var(--m3-color-outline-variant, #C4C7C5)' : undefined,
+                        'padding-bottom': isSection && !isCard ? '20px' : undefined,
+                        'margin-bottom': isSection && !isCard ? '4px' : undefined,
                     }}
                 >
                     <Show when={el().label && el().type !== 'container'}>
-                        <Typography variant="title-small" class="ff-section__title">
+                        <Typography variant="title-small" class="ff-section__title" style={{
+                            'font-weight': '600',
+                            color: 'var(--m3-color-on-surface, #1C1B1F)',
+                            'margin-bottom': '4px',
+                        }}>
                             {el().label}
                         </Typography>
                     </Show>

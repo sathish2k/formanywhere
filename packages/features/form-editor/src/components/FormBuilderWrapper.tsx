@@ -44,6 +44,7 @@ export const FormBuilderWrapper: Component = () => {
         <FormBuilderPage
             mode={mode()}
             formId={(searchParams.form as string) || undefined}
+            templateId={(searchParams.template as string) || undefined}
             initialName={(searchParams.name as string) || setupData?.name || undefined}
             initialDescription={(searchParams.desc as string) || setupData?.description || undefined}
             initialPages={initialPages}

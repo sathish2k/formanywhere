@@ -10,3 +10,6 @@ export type {
     PageData,
     FormSetupData,
 } from './layout-builder';
+export { TemplatesBrowser } from './templates-browser';
+export type { TemplatesBrowserProps } from './templates-browser';
+export { TemplateCard } from './template-card';

@@ -292,11 +292,10 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
     const renderElement = (element: FormElement) => {
         if (!isVisible(element)) return null;
         if (isLayoutElement(element.type)) {
-            return (
-                <Stack gap="xs">
-                    {renderLayoutElement(element)}
-                </Stack>
-            );
+            // Layout elements manage their own display/gap — no extra Stack
+            // wrapper so CSS Grid children (grid-column) remain direct children
+            // of their grid parent.
+            return renderLayoutElement(element);
         }
         return (
             <Stack gap="xs">

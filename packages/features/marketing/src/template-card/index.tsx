@@ -1,4 +1,4 @@
-import { Component, For, Show } from 'solid-js';
+import { Component, For, Show, createSignal } from 'solid-js';
 import { Card, CardContent } from '@formanywhere/ui/card';
 import { Typography } from '@formanywhere/ui/typography';
 import { Chip } from '@formanywhere/ui/chip';
@@ -17,10 +17,25 @@ export interface Template {
 
 export interface TemplateCardProps {
     template: Template;
-    onUse?: (id: string) => void;
+    onUse?: (id: string) => void | Promise<void>;
+    onPreview?: (id: string) => void;
 }
 
 export const TemplateCard: Component<TemplateCardProps> = (props) => {
+    const [usingTemplate, setUsingTemplate] = createSignal(false);
+
+    const handleUse = async (e: MouseEvent) => {
+        if (props.onUse) {
+            e.preventDefault();
+            setUsingTemplate(true);
+            try {
+                await props.onUse(props.template.id);
+            } finally {
+                setUsingTemplate(false);
+            }
+        }
+    };
+
     return (
         <Card
             variant="outlined"
@@ -258,27 +273,51 @@ export const TemplateCard: Component<TemplateCardProps> = (props) => {
                         </span>
                     </Stack>
 
-                    {/* Action */}
-                    <a
-                        href="/signup"
-                        style={{
-                            display: 'flex',
-                            'align-items': 'center',
-                            gap: '8px',
-                            'font-size': '0.875rem',
-                            'font-weight': '700',
-                            color: 'var(--m3-color-primary)',
-                            'text-decoration': 'none',
-                            transition: 'color 0.3s ease',
-                        }}
-                    >
-                        Use Template
-                        <span style={{ transition: 'transform 0.3s ease' }}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
-                        </span>
-                    </a>
+                    {/* Actions */}
+                    <Stack direction="row" gap="xs" align="center">
+                        <Show when={props.onPreview}>
+                            <button
+                                onClick={() => props.onPreview!(props.template.id)}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    'font-size': '0.8125rem',
+                                    'font-weight': '600',
+                                    color: 'var(--m3-color-on-surface-variant)',
+                                    padding: '4px 8px',
+                                    'border-radius': '8px',
+                                }}
+                            >
+                                Preview
+                            </button>
+                        </Show>
+                        <a
+                            href={props.onUse ? undefined : '/signup'}
+                            onClick={handleUse}
+                            style={{
+                                display: 'flex',
+                                'align-items': 'center',
+                                gap: '8px',
+                                'font-size': '0.875rem',
+                                'font-weight': '700',
+                                color: usingTemplate() ? 'var(--m3-color-on-surface-variant)' : 'var(--m3-color-primary)',
+                                'text-decoration': 'none',
+                                transition: 'color 0.3s ease',
+                                cursor: usingTemplate() ? 'default' : 'pointer',
+                                'pointer-events': usingTemplate() ? 'none' : 'auto',
+                            }}
+                        >
+                            {usingTemplate() ? 'Opening...' : 'Use Template'}
+                            <Show when={!usingTemplate()}>
+                                <span style={{ transition: 'transform 0.3s ease' }}>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                    </svg>
+                                </span>
+                            </Show>
+                        </a>
+                    </Stack>
                 </Stack>
             </CardContent>
         </Card>

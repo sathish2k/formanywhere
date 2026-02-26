@@ -8,6 +8,13 @@
         "LOG_LEVEL": "INFO"
       }
     },
+    "vitest-runner": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@madrus/vitest-mcp-server@latest"
+      ],
+    },
     "com.figma.mcp/mcp": {
       "type": "http",
       "url": "https://mcp.figma.com/mcp",

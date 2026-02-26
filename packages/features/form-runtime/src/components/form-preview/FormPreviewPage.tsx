@@ -1,6 +1,8 @@
 /**
  * FormPreviewPage — Standalone preview page
- * Reads ?form= query param via useSearchParams, fetches the schema, and renders FormPreview.
+ * Reads ?form= or ?template= query param, fetches the schema, and renders FormPreview.
+ * - ?form=<id>      → fetch from /api/forms/:id   (authenticated)
+ * - ?template=<id>  → fetch from /api/templates/:id (public)
  */
 import { createSignal, onMount, Show } from 'solid-js';
 import type { Component } from 'solid-js';
@@ -21,23 +23,37 @@ export const FormPreviewPage: Component = () => {
 
     onMount(async () => {
         const formId = searchParams.form;
+        const templateId = searchParams.template;
 
-        if (!formId) {
-            setError('No form ID provided.');
+        if (!formId && !templateId) {
+            setError('No form or template ID provided.');
             setLoading(false);
             return;
         }
 
         try {
             const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-            const res = await fetchWithAuth(`${API_URL}/api/forms/${formId}`);
-            const data = await res.json();
-    console.log('FormPreviewPage mounted');
-            if (data.success && data.form?.schema) {
-                console.log('Fetched form schema:', JSON.parse(data.form.schema));
-                setSchema(JSON.parse(data.form.schema));
+
+            if (templateId) {
+                // Public endpoint — no auth required
+                const res = await fetch(`${API_URL}/api/templates/${templateId}`);
+                const data = await res.json();
+                if (data.success && data.template?.schema) {
+                    setSchema(data.template.schema as FormSchema);
+                } else {
+                    setError('Template not found.');
+                }
             } else {
-                setError('Form not found.');
+                // Authenticated form endpoint
+                const res = await fetchWithAuth(`${API_URL}/api/forms/${formId}`);
+                const data = await res.json();
+                console.log('FormPreviewPage mounted');
+                if (data.success && data.form?.schema) {
+                    console.log('Fetched form schema:', JSON.parse(data.form.schema));
+                    setSchema(JSON.parse(data.form.schema));
+                } else {
+                    setError('Form not found.');
+                }
             }
         } catch {
             setError('Failed to load form.');
@@ -45,6 +61,15 @@ export const FormPreviewPage: Component = () => {
             setLoading(false);
         }
     });
+
+    const handleBack = () => {
+        if (searchParams.template) {
+            // Came from template browser — go back there
+            navigate('/templates');
+        } else {
+            navigate(`/app?form=${searchParams.form}`);
+        }
+    };
 
     return (
         <Show
@@ -67,12 +92,12 @@ export const FormPreviewPage: Component = () => {
                 {(s) => (
                     <FormPreview
                         schema={s()}
-                        onBackToEditor={() => {
-                            navigate(`/app?form=${searchParams.form}`);
-                        }}
+                        onBackToEditor={handleBack}
+                        backLabel={searchParams.template ? 'Back to Templates' : 'Back to Editor'}
                     />
                 )}
             </Show>
         </Show>
     );
 };
+

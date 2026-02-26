@@ -18,10 +18,13 @@ export interface FormPreviewProps {
     schema: FormSchema;
     onSubmit?: (data: Record<string, unknown>) => void;
     onBackToEditor?: () => void;
+    /** Override the label of the back button. Defaults to "Back to Editor". */
+    backLabel?: string;
 }
 
 export const FormPreview: Component<FormPreviewProps> = (props) => {
-    const [local] = splitProps(props, ['schema', 'onBackToEditor', 'onSubmit']);
+    const [local] = splitProps(props, ['schema', 'onBackToEditor', 'onSubmit', 'backLabel']);
+    const backLabel = () => local.backLabel ?? 'Back to Editor';
     const [previewData, setPreviewData] = createSignal<Record<string, unknown> | null>(null);
     const [device, setDevice] = createSignal<'desktop' | 'tablet' | 'mobile'>('desktop');
 
@@ -111,7 +114,7 @@ export const FormPreview: Component<FormPreviewProps> = (props) => {
                 <Show when={local.onBackToEditor}>
                     <Button variant="outlined" onClick={local.onBackToEditor}>
                         <Icon name="pencil" size={16} />
-                        Back to Editor
+                        {backLabel()}
                     </Button>
                 </Show>
             </div>
@@ -196,7 +199,7 @@ export const FormPreview: Component<FormPreviewProps> = (props) => {
                                     <Show when={local.onBackToEditor}>
                                         <Button variant="filled" onClick={local.onBackToEditor}>
                                             <Icon name="pencil" size={16} />
-                                            Back to Editor
+                                            {backLabel()}
                                         </Button>
                                     </Show>
                                 </div>

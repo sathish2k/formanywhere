@@ -163,6 +163,31 @@ export const blogView = pgTable('blog_view', {
 ]);
 
 /**
+ * Templates table — stores pre-built form templates available to all users.
+ * Templates are seeded via scripts/seed-templates.ts and are read-only at runtime.
+ */
+export const template = pgTable('template', {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    description: text('description'),
+    category: text('category').notNull().default('General'),
+    /** Full form schema stored as JSONB */
+    schema: jsonb('schema').notNull(),
+    /** Display icon name (from @formanywhere/ui icon set) */
+    icon: text('icon').notNull().default('file-text'),
+    /** Whether this template is visible to all users */
+    isPublic: boolean('is_public').notNull().default(true),
+    /** Sort order for display (lower = first) */
+    sortOrder: integer('sort_order').notNull().default(0),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+}, (table) => [
+    index('template_category_idx').on(table.category),
+    index('template_is_public_idx').on(table.isPublic),
+    index('template_sort_order_idx').on(table.sortOrder),
+]);
+
+/**
  * Workflow execution logs — tracks node results and errors for workflows.
  */
 export const workflowExecutionLog = pgTable('workflow_execution_log', {

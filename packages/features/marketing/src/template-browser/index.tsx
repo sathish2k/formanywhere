@@ -9,6 +9,8 @@ export interface TemplateBrowserProps {
     initialTemplates: Template[];
     categories: Category[];
     iconPaths: Record<string, string>;
+    onUse?: (id: string) => void | Promise<void>;
+    onPreview?: (id: string) => void;
 }
 
 export const TemplateBrowser: Component<TemplateBrowserProps> = (props) => {
@@ -76,7 +78,11 @@ export const TemplateBrowser: Component<TemplateBrowserProps> = (props) => {
             }}>
                 <For each={filteredTemplates()}>
                     {(template) => (
-                        <TemplateCard template={template} />
+                        <TemplateCard
+                            template={template}
+                            onUse={props.onUse}
+                            onPreview={props.onPreview}
+                        />
                     )}
                 </For>
             </div>

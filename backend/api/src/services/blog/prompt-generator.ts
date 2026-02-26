@@ -129,7 +129,7 @@ function pickUnique(arr: string[], used: Set<string>): string {
     return available[Math.floor(Math.random() * available.length)];
 }
 
-function buildWriterPrompt(
+export function buildWriterPrompt(
     topic: string,
     categoryType: 'tech' | 'non-tech',
     author: AuthorPersona,

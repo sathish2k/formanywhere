@@ -43,6 +43,8 @@ export interface FormBuilderPageProps {
     mode?: BuilderMode;
     /** Form ID for editing existing forms */
     formId?: string;
+    /** Template ID to load from public API */
+    templateId?: string;
     /** Template schema to pre-fill */
     templateSchema?: FormSchema;
     /** Initial form name (from URL param or setup) */
@@ -54,7 +56,7 @@ export interface FormBuilderPageProps {
 }
 
 export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
-    const [local] = splitProps(props, ['formId', 'mode', 'templateSchema', 'initialName', 'initialDescription', 'initialPages']);
+    const [local] = splitProps(props, ['formId', 'templateId', 'mode', 'templateSchema', 'initialName', 'initialDescription', 'initialPages']);
     const mode = () => local.mode ?? 'blank';
 
     // Pre-build the schema from initialName NOW (synchronously) so that
@@ -235,6 +237,9 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
             setShowOverlay('import');
         } else if (mode() === 'template' && local.templateSchema) {
             setSchema({ ...local.templateSchema, id: generateId(), updatedAt: new Date() });
+        } else if (mode() === 'template' && local.templateId) {
+            // Fetch template from public API (no auth required)
+            loadTemplateById(local.templateId);
         } else if (local.formId) {
             loadExistingForm(local.formId);
         } else {
@@ -242,6 +247,30 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
             restoreDraft();
         }
     });
+
+    const loadTemplateById = async (templateId: string) => {
+        try {
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+            const res = await fetch(`${API_URL}/api/templates/${templateId}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            if (!data.success || !data.template?.schema) return;
+            const templateSchema = typeof data.template.schema === 'string'
+                ? JSON.parse(data.template.schema)
+                : data.template.schema;
+            // Override ID so each use is a fresh form
+            templateSchema.id = generateId();
+            templateSchema.updatedAt = new Date();
+            if (data.template.name) templateSchema.name = data.template.name;
+            if (data.template.description) templateSchema.description = data.template.description;
+            setSchema(templateSchema);
+            syncPagesFromSchema(templateSchema);
+            if (templateSchema.rules) setFormRules(templateSchema.rules);
+            if (templateSchema.workflows) setWorkflows(templateSchema.workflows);
+        } catch (err) {
+            console.error('Failed to load template:', err);
+        }
+    };
 
     const loadExistingForm = async (formId: string) => {
         try {

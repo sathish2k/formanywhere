@@ -39,6 +39,11 @@ export function validateField(
         }
     }
 
+    // Skip custom validation rules for empty optional fields
+    if (!element.required && (value === undefined || value === null || value === '')) {
+        return null;
+    }
+
     // Custom validation rules
     if (element.validation) {
         for (const rule of element.validation) {

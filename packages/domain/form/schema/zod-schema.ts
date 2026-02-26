@@ -128,16 +128,29 @@ function buildFieldSchema(element: FormElement): ZodTypeAny {
 
     switch (element.type) {
         case 'email': {
-            let s = z.string();
-            if (required) s = s.min(1, requiredMsg);
-            s = s.email(customMsg(element, 'Please enter a valid email address'));
-            return required ? applyStringRules(s, element.validation, element) : s.optional();
+            if (required) {
+                let s = z.string().min(1, requiredMsg).email(customMsg(element, 'Please enter a valid email address'));
+                return applyStringRules(s, element.validation, element);
+            }
+            // Optional: allow empty string or valid email
+            return z.string().refine(
+                (v: string) => v === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+                customMsg(element, 'Please enter a valid email address'),
+            ).optional();
         }
         case 'url': {
-            let s = z.string();
-            if (required) s = s.min(1, requiredMsg);
-            s = s.url(customMsg(element, 'Please enter a valid URL'));
-            return required ? applyStringRules(s, element.validation, element) : s.optional();
+            if (required) {
+                let s = z.string().min(1, requiredMsg).url(customMsg(element, 'Please enter a valid URL'));
+                return applyStringRules(s, element.validation, element);
+            }
+            // Optional: allow empty string or valid URL
+            return z.string().refine(
+                (v: string) => {
+                    if (!v) return true;
+                    try { new URL(v); return true; } catch { return false; }
+                },
+                customMsg(element, 'Please enter a valid URL'),
+            ).optional();
         }
         case 'phone': {
             let s = z.string();
@@ -224,17 +237,32 @@ function buildFieldSchema(element: FormElement): ZodTypeAny {
     }
 }
 
+/**
+ * Returns true if an element has conditional logic that makes it shown only
+ * when certain conditions are met (i.e. hidden by default).
+ */
+function isConditionallyShown(el: FormElement): boolean {
+    return !!(el.conditionalLogic as any)?.some((r: any) => r.action === 'show');
+}
+
 function collectFieldSchemas(
     elements: FormElement[],
     fields: Record<string, ZodTypeAny>,
+    parentHidden = false,
 ): void {
     for (const el of elements) {
+        // If this element (or its parent) is conditionally shown, it is hidden by
+        // default — treat all required descendant fields as optional in the schema.
+        const hidden = parentHidden || isConditionallyShown(el);
+
         if (LAYOUT_TYPES.has(el.type)) {
-            if (el.elements) collectFieldSchemas(el.elements, fields);
+            if (el.elements) collectFieldSchemas(el.elements, fields, hidden);
             continue;
         }
-        fields[el.id] = buildFieldSchema(el);
-        if (el.elements) collectFieldSchemas(el.elements, fields);
+        // Override required for fields inside conditionally-hidden containers
+        const fieldEl = hidden ? { ...el, required: false } : el;
+        fields[fieldEl.id] = buildFieldSchema(fieldEl);
+        if (el.elements) collectFieldSchemas(el.elements, fields, hidden);
     }
 }
 
