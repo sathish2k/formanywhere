@@ -93,6 +93,30 @@ export const form = pgTable('form', {
 ]);
 
 /**
+ * Submissions table — stores individual form responses.
+ * Data is stored as JSONB to flexibly match any form schema.
+ */
+export const submission = pgTable('submission', {
+    id: text('id').primaryKey(),
+    formId: text('form_id').notNull().references(() => form.id, { onDelete: 'cascade' }),
+    /** Submitted field values: { [elementId]: value } */
+    data: jsonb('data').notNull(),
+    /** Optional metadata about the submitter */
+    metadata: jsonb('metadata').$type<{
+        ip?: string;
+        userAgent?: string;
+        referrer?: string;
+        /** Time taken to fill the form (ms) */
+        duration?: number;
+    }>(),
+    status: text('status').notNull().default('completed'), // completed | partial | spam
+    submittedAt: timestamp('submitted_at').notNull().defaultNow(),
+}, (table) => [
+    index('submission_form_id_idx').on(table.formId),
+    index('submission_submitted_at_idx').on(table.submittedAt),
+]);
+
+/**
  * Blogs table — stores AI generated blogs.
  */
 export const blog = pgTable('blog', {

@@ -73,7 +73,7 @@ export default function AdminBlogDrafts() {
                     <Typography variant="headline-medium" style={{ "font-weight": 'bold' }}>
                         📄 Draft Posts
                     </Typography>
-                    <Typography variant="body-medium" style={{ color: 'var(--md-sys-color-on-surface-variant)', "margin-top": '4px' }}>
+                    <Typography variant="body-medium" style={{ color: 'var(--m3-color-on-surface-variant)', "margin-top": '4px' }}>
                         <Show when={drafts()} fallback="Loading...">
                             {drafts()!.length} draft{drafts()!.length !== 1 ? 's' : ''}
                         </Show>
@@ -101,11 +101,11 @@ export default function AdminBlogDrafts() {
                     <Box style={{
                         "text-align": 'center',
                         padding: '64px 24px',
-                        background: 'var(--md-sys-color-surface-container)',
+                        background: 'var(--m3-color-surface-container)',
                         "border-radius": '16px',
                     }}>
                         <Typography variant="headline-small" style={{ "margin-bottom": '8px' }}>No drafts yet</Typography>
-                        <Typography variant="body-medium" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+                        <Typography variant="body-medium" style={{ color: 'var(--m3-color-on-surface-variant)' }}>
                             Go to Prompts → Copy a prompt → Paste AI output → Save as Draft
                         </Typography>
                     </Box>
@@ -118,9 +118,9 @@ export default function AdminBlogDrafts() {
                                     "align-items": 'center',
                                     gap: '16px',
                                     padding: '16px 20px',
-                                    background: 'var(--md-sys-color-surface-container)',
+                                    background: 'var(--m3-color-surface-container)',
                                     "border-radius": '16px',
-                                    border: '1px solid var(--md-sys-color-outline-variant)',
+                                    border: '1px solid var(--m3-color-outline-variant)',
                                     transition: 'background 0.15s',
                                 }}>
                                     {/* Cover image thumbnail */}
@@ -128,7 +128,7 @@ export default function AdminBlogDrafts() {
                                         <div style={{
                                             width: '80px', height: '56px',
                                             "border-radius": '8px',
-                                            background: 'var(--md-sys-color-surface-container-highest)',
+                                            background: 'var(--m3-color-surface-container-highest)',
                                             display: 'flex', "align-items": 'center', "justify-content": 'center',
                                             "flex-shrink": '0',
                                             "font-size": '24px',
@@ -157,7 +157,7 @@ export default function AdminBlogDrafts() {
                                         }}>
                                             {draft.title || 'Untitled Draft'}
                                         </Typography>
-                                        <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)', "margin-top": '2px' }}>
+                                        <Typography variant="body-small" style={{ color: 'var(--m3-color-on-surface-variant)', "margin-top": '2px' }}>
                                             {formatDate(draft.createdAt)}
                                             {draft.tags && draft.tags.length > 0 ? ` • ${(draft.tags as string[]).slice(0, 3).join(', ')}` : ''}
                                         </Typography>

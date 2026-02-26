@@ -7,7 +7,6 @@ import { formsRoutes } from './routes/forms.elysia';
 import { blogsRoutes } from './routes/blogs.elysia';
 import { imageRoutes } from './routes/images.elysia';
 import { feedRoutes } from './routes/feed.elysia';
-import { blogFeaturesRoutes } from './routes/blog-features.elysia';
 import { sitemapRoutes } from './routes/sitemap.elysia';
 import { setupCronJobs } from './services/cron';
 import { redis } from './lib/redis';
@@ -95,7 +94,6 @@ const app = new Elysia()
     .use(blogsRoutes)
     .use(imageRoutes)
     .use(feedRoutes)
-    .use(blogFeaturesRoutes)
     .use(sitemapRoutes)
     // Global error handler — report uncaught errors to Sentry
     .onError(({ error, request }) => {

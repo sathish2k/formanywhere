@@ -18,7 +18,7 @@
   font-size: 21px;
   line-height: 1.58;
   letter-spacing: -0.004em;
-  color: var(--md-sys-color-on-surface, rgba(0, 0, 0, 0.84));
+  color: var(--m3-color-on-surface, rgba(0, 0, 0, 0.84));
   word-break: break-word;
 }
 
@@ -30,7 +30,7 @@
 .dante-editor .dante-editor-content p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
-  color: var(--md-sys-color-on-surface-variant, rgba(0, 0, 0, 0.35));
+  color: var(--m3-color-on-surface-variant, rgba(0, 0, 0, 0.35));
   pointer-events: none;
   height: 0;
   font-style: normal;
@@ -77,17 +77,17 @@
 
 /* ── Blockquote (Medium style) ────────────────────────── */
 .dante-editor .dante-editor-content blockquote {
-  border-left: 3px solid var(--md-sys-color-on-surface, rgba(0, 0, 0, 0.84));
+  border-left: 3px solid var(--m3-color-on-surface, rgba(0, 0, 0, 0.84));
   padding: 0 0 0 20px;
   margin: 2em 0;
   font-style: italic;
-  color: var(--md-sys-color-on-surface-variant, rgba(0, 0, 0, 0.68));
+  color: var(--m3-color-on-surface-variant, rgba(0, 0, 0, 0.68));
 }
 
 /* ── Inline code ──────────────────────────────────────── */
 .dante-editor .dante-editor-content p code,
 .dante-editor .dante-editor-content li code {
-  background: var(--md-sys-color-surface-container, #f2f2f2);
+  background: var(--m3-color-surface-container, #f2f2f2);
   padding: 3px 6px;
   border-radius: 3px;
   font-size: 0.85em;
@@ -110,12 +110,12 @@
 .dante-editor .dante-editor-content a {
   color: inherit;
   text-decoration: underline;
-  text-decoration-color: var(--md-sys-color-primary, rgba(0, 0, 0, 0.4));
+  text-decoration-color: var(--m3-color-primary, rgba(0, 0, 0, 0.4));
   text-underline-offset: 3px;
 }
 
 .dante-editor .dante-editor-content a:hover {
-  text-decoration-color: var(--md-sys-color-primary, rgba(0, 0, 0, 0.84));
+  text-decoration-color: var(--m3-color-primary, rgba(0, 0, 0, 0.84));
 }
 
 /* ── YouTube / iframes ────────────────────────────────── */
@@ -146,7 +146,7 @@
 
 /* ── Highlight ────────────────────────────────────────── */
 .dante-editor .dante-editor-content mark {
-  background: var(--md-sys-color-tertiary-container, #b8f2b1);
+  background: var(--m3-color-tertiary-container, #b8f2b1);
   border-radius: 2px;
   padding: 0 2px;
 }
@@ -162,7 +162,7 @@
 
 /* ── Selected node ────────────────────────────────────── */
 .dante-editor .ProseMirror-selectednode {
-  outline: 2px solid var(--md-sys-color-primary, #1a8917);
+  outline: 2px solid var(--m3-color-primary, #1a8917);
 }
 
 /* ── Form embed ───────────────────────────────────────── */
@@ -175,8 +175,8 @@
    Code Block — with language selector and syntax highlighting
    ═══════════════════════════════════════════════════════ */
 .dante-editor .code-block-node {
-  background: var(--md-sys-color-surface-container, #f8f9fa);
-  border: 1px solid var(--md-sys-color-outline-variant, #e0e0e0);
+  background: var(--m3-color-surface-container, #f8f9fa);
+  border: 1px solid var(--m3-color-outline-variant, #e0e0e0);
   border-radius: 8px;
   margin: 2em 0;
   overflow: visible;
@@ -188,8 +188,8 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: var(--md-sys-color-surface-container-high, #f0f0f0);
-  border-bottom: 1px solid var(--md-sys-color-outline-variant, #e0e0e0);
+  background: var(--m3-color-surface-container-high, #f0f0f0);
+  border-bottom: 1px solid var(--m3-color-outline-variant, #e0e0e0);
   border-radius: 8px 8px 0 0;
   user-select: none;
   position: relative;
@@ -385,7 +385,7 @@
   top: 8px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--md-sys-color-inverse-surface, #292929);
+  background: var(--m3-color-inverse-surface, #292929);
   border-radius: 6px;
   padding: 4px;
   gap: 2px;
@@ -400,9 +400,9 @@
 
 /* Override UI IconButton inside dark image toolbar */
 .dante-editor .image-block-align-icon-btn {
-  --md-sys-color-on-surface: var(--md-sys-color-inverse-on-surface, #fff);
-  --md-sys-color-on-surface-variant: var(--md-sys-color-inverse-on-surface, #fff);
-  color: var(--md-sys-color-inverse-on-surface, #fff);
+  --m3-color-on-surface: var(--m3-color-inverse-on-surface, #fff);
+  --m3-color-on-surface-variant: var(--m3-color-inverse-on-surface, #fff);
+  color: var(--m3-color-inverse-on-surface, #fff);
   border-radius: 4px;
   min-width: 32px;
 }
@@ -413,14 +413,14 @@
 
 .dante-editor .image-block-align-icon-btn.is-active {
   background: rgba(255, 255, 255, 0.2);
-  color: var(--md-sys-color-primary, #1db954);
+  color: var(--m3-color-primary, #1db954);
 }
 
 /* ── Caption ──────────────────────────────────────────── */
 .dante-editor .image-block-caption {
   font-family: 'sohne', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 14px;
-  color: var(--md-sys-color-on-surface-variant, rgba(0, 0, 0, 0.54));
+  color: var(--m3-color-on-surface-variant, rgba(0, 0, 0, 0.54));
   text-align: center;
   padding: 8px 0;
   margin-top: 4px;
@@ -431,13 +431,13 @@
 
 .dante-editor .image-block-caption:empty::before {
   content: attr(data-placeholder);
-  color: var(--md-sys-color-on-surface-variant, rgba(0, 0, 0, 0.35));
+  color: var(--m3-color-on-surface-variant, rgba(0, 0, 0, 0.35));
   font-style: italic;
   pointer-events: none;
 }
 
 .dante-editor .image-block-caption:focus {
-  border-bottom: 1px solid var(--md-sys-color-outline-variant, #ccc);
+  border-bottom: 1px solid var(--m3-color-outline-variant, #ccc);
 }
 
 
@@ -484,14 +484,14 @@
 
 /* IconButton overrides for link-input confirm/cancel */
 .dante-tooltip-icon-btn {
-  color: var(--md-sys-color-on-surface-variant, #555);
+  color: var(--m3-color-on-surface-variant, #555);
   border-radius: 6px;
   min-width: 32px;
 }
 
 .dante-tooltip-icon-btn:hover {
-  color: var(--md-sys-color-on-surface, #1d1d1d);
-  background: var(--md-sys-color-surface-container, #f2f2f2);
+  color: var(--m3-color-on-surface, #1d1d1d);
+  background: var(--m3-color-surface-container, #f2f2f2);
 }
 
 /* ── Link input ─────────────────────────── */
@@ -500,8 +500,8 @@
   align-items: center;
   gap: 4px;
   padding: 4px 8px;
-  background: var(--md-sys-color-surface, #fff);
-  border: 1px solid var(--md-sys-color-outline-variant, #e0e0e0);
+  background: var(--m3-color-surface, #fff);
+  border: 1px solid var(--m3-color-outline-variant, #e0e0e0);
   border-radius: 12px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
@@ -510,7 +510,7 @@
   background: transparent;
   border: none;
   outline: none;
-  color: var(--md-sys-color-on-surface, #1d1d1d);
+  color: var(--m3-color-on-surface, #1d1d1d);
   font-size: 14px;
   font-family: 'sohne', sans-serif;
   width: 200px;
@@ -518,7 +518,7 @@
 }
 
 .dante-link-input-wrap input::placeholder {
-  color: var(--md-sys-color-on-surface-variant, rgba(0, 0, 0, 0.4));
+  color: var(--m3-color-on-surface-variant, rgba(0, 0, 0, 0.4));
 }
 
 .dante-link-sep {

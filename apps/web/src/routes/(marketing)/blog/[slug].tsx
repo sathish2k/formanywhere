@@ -1,4 +1,4 @@
-import { createResource, createSignal, Show, createEffect, lazy, Suspense, onMount } from 'solid-js';
+import { createResource, createSignal, Show, createEffect, onMount } from 'solid-js';
 import { useParams } from '@solidjs/router';
 import { Title, Meta, Link } from '@solidjs/meta';
 import { Box } from '@formanywhere/ui/box';
@@ -9,22 +9,9 @@ import { Chip } from '@formanywhere/ui/chip';
 import { IconButton } from '@formanywhere/ui/icon-button';
 import { BlogImage } from '@formanywhere/ui/blog-image';
 import { fetchBlogBySlug, recordBlogView, BlogSkeleton, BlogIcon } from '@formanywhere/marketing/blog';
-import '~/styles/blog-content.scss';
+import '@formanywhere/marketing/blog/blog-content.scss';
 
-// ── Lazy-load heavy feature components (small UI components are eager) ──
 
-const ReadingModes = lazy(() =>
-  import('@formanywhere/marketing/blog').then((m) => ({ default: m.ReadingModes }))
-);
-const ArticleChat = lazy(() =>
-  import('@formanywhere/marketing/blog').then((m) => ({ default: m.ArticleChat }))
-);
-const CitationsPanel = lazy(() =>
-  import('@formanywhere/marketing/blog').then((m) => ({ default: m.CitationsPanel }))
-);
-const SocialSyndication = lazy(() =>
-  import('@formanywhere/marketing/blog').then((m) => ({ default: m.SocialSyndication }))
-);
 
 /**
  * Lazy-load Prism.js only when the content contains code blocks.
@@ -87,7 +74,6 @@ export default function BlogRead() {
 
   const [post] = createResource(() => params.slug, fetchBlogBySlug);
   const [contentRef, setContentRef] = createSignal<HTMLElement | undefined>();
-  const [modeContent, setModeContent] = createSignal<string | null>(null);
   const [viewCount, setViewCount] = createSignal<number | null>(null);
 
   // Record a view when the blog loads (YouTube-style unique counting)
@@ -99,12 +85,10 @@ export default function BlogRead() {
       .catch(() => setViewCount(post()?.viewCount || 0));
   });
 
-  const displayContent = () => modeContent() || post()?.content || '';
-
   // Highlight code blocks after content renders (lazy-loaded)
   createEffect(() => {
     const ref = contentRef();
-    const content = displayContent();
+    const content = post()?.content;
     if (!ref || !content) return;
     requestAnimationFrame(() => {
       highlightCodeBlocks(ref);
@@ -114,7 +98,7 @@ export default function BlogRead() {
   // Initialize AdSense in-article ad slots after content renders
   createEffect(() => {
     const ref = contentRef();
-    const content = displayContent();
+    const content = post()?.content;
     if (!ref || !content) return;
     requestAnimationFrame(() => {
       try {
@@ -150,7 +134,7 @@ export default function BlogRead() {
       {/* ── Error state ── */}
       <Show when={post.error}>
         <Box padding="xl" style={{ "max-width": '800px', margin: '0 auto' }}>
-          <Typography variant="body-large" style={{ color: 'var(--md-sys-color-error)' }}>
+          <Typography variant="body-large" style={{ color: 'var(--m3-color-error)' }}>
             Error loading post.
           </Typography>
         </Box>
@@ -197,12 +181,12 @@ export default function BlogRead() {
               }}
             >
               <Box style={{ display: 'flex', "align-items": 'center', gap: '16px' }}>
-                <Avatar src={`https://i.pravatar.cc/150?u=${post()?.slug}`} alt={post()?.socialMediaPosts?.author || 'FormAnywhere'} size="md" />
+                <Avatar src={`https://i.pravatar.cc/150?u=${post()?.slug}`} alt="FormAnywhere" size="md" />
                 <Box style={{ display: 'flex', "flex-direction": 'column' }}>
-                  <Typography variant="label-large" style={{ color: 'var(--md-sys-color-on-surface)', "font-weight": 'bold' }}>
-                    {post()?.socialMediaPosts?.author || 'FormAnywhere'}
+                  <Typography variant="label-large" style={{ color: 'var(--m3-color-on-surface)', "font-weight": 'bold' }}>
+                    FormAnywhere
                   </Typography>
-                  <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+                  <Typography variant="body-small" style={{ color: 'var(--m3-color-on-surface-variant)' }}>
                     {post()?.publishedAt}
                     {viewCount() !== null && ` · ${formatViews(viewCount()!)} views`}
                   </Typography>
@@ -218,24 +202,24 @@ export default function BlogRead() {
             <Show when={post()?.excerpt}>
               <Box
                 style={{
-                  background: 'var(--md-sys-color-surface-container-low)',
+                  background: 'var(--m3-color-surface-container-low)',
                   padding: '24px',
                   "border-radius": '16px',
                   "margin-bottom": '32px',
-                  border: '1px solid var(--md-sys-color-outline-variant)',
+                  border: '1px solid var(--m3-color-outline-variant)',
                   display: 'flex',
                   gap: '16px',
                   "align-items": 'flex-start',
                 }}
               >
-                <Box style={{ background: 'var(--md-sys-color-primary-container)', padding: '8px', "border-radius": '50%', display: 'flex' }}>
-                  <BlogIcon name="sparkle" style={{ color: 'var(--md-sys-color-on-primary-container)' }} />
+                <Box style={{ background: 'var(--m3-color-primary-container)', padding: '8px', "border-radius": '50%', display: 'flex' }}>
+                  <BlogIcon name="sparkle" style={{ color: 'var(--m3-color-on-primary-container)' }} />
                 </Box>
                 <Box>
                   <Typography variant="title-medium" style={{ "font-weight": 'bold', "margin-bottom": '8px' }}>
                     AI Summary
                   </Typography>
-                  <Typography variant="body-large" style={{ color: 'var(--md-sys-color-on-surface-variant)', "line-height": '1.6' }}>
+                  <Typography variant="body-large" style={{ color: 'var(--m3-color-on-surface-variant)', "line-height": '1.6' }}>
                     {post()?.excerpt}
                   </Typography>
                 </Box>
@@ -258,20 +242,11 @@ export default function BlogRead() {
               />
             </Show>
 
-            {/* Reading Modes (lazy) */}
-            <Suspense>
-              <ReadingModes
-                slug={post()!.slug}
-                originalContent={post()!.content}
-                onContentChange={(html: string) => setModeContent(html)}
-              />
-            </Suspense>
-
             {/* Blog content */}
             <Box
               ref={(el) => setContentRef(el)}
               class="blog-content"
-              innerHTML={displayContent()}
+              innerHTML={post()?.content || ''}
             />
 
             <Divider style={{ "margin-bottom": '32px' }} />
@@ -293,22 +268,8 @@ export default function BlogRead() {
               </Box>
             </Show>
 
-            {/* Citations & Trust Score (lazy) */}
-            <Suspense>
-              <CitationsPanel slug={post()!.slug} trustScore={post()?.trustScore || 0} citations={post()?.citations || []} />
-            </Suspense>
-
-            {/* Social Syndication (lazy) */}
-            <Suspense>
-              <SocialSyndication slug={post()!.slug} socialData={post()?.socialMediaPosts || undefined} />
-            </Suspense>
           </article>
         </Box>
-
-        {/* AI Chat FAB (lazy) */}
-        <Suspense>
-          <ArticleChat slug={post()!.slug} />
-        </Suspense>
       </Show>
     </>
   );

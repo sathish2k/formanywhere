@@ -20,7 +20,7 @@ import {
 
 /** Map API blog list items to the BlogCard-expected format */
 function toBlogCardPost(api: BlogListItem): BlogPost {
-  const author = (api.socialMediaPosts as any)?.author || 'FormAnywhere';
+  const author = 'FormAnywhere';
   return {
     id: api.id,
     slug: api.slug,
@@ -175,7 +175,7 @@ export default function BlogList() {
       {/* ── Active tag filter indicator ── */}
       <Show when={tag()}>
         <Stack direction="row" gap="sm" align="center" style={{ 'margin-bottom': '24px' }}>
-              <Typography variant="body-medium" style={{ color: 'var(--m3-color-on-surface-variant)' }}>
+          <Typography variant="body-medium" style={{ color: 'var(--m3-color-on-surface-variant)' }}>
             Filtered by tag:
           </Typography>
           <Chip label={tag()} variant="input" onRemove={() => setTag('')} />

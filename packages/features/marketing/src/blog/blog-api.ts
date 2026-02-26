@@ -33,11 +33,7 @@ export interface BlogPost {
     seoDescription: string | null;
     tags: string[];
     category: string | null;
-    audioUrl: string | null;
     viewCount: number;
-    trustScore: number;
-    socialMediaPosts: SocialMediaPosts | null;
-    citations: Citation[];
     status: string;
     publishedAt: string;
     createdAt: string;
@@ -54,7 +50,6 @@ export interface BlogListItem {
     category: string | null;
     viewCount: number;
     publishedAt: string;
-    socialMediaPosts: SocialMediaPosts | null;
 }
 
 export interface BlogListParams {
@@ -78,40 +73,6 @@ export interface PaginationInfo {
 export interface BlogListResponse {
     blogs: BlogListItem[];
     pagination: PaginationInfo;
-}
-
-export interface Citation {
-    title: string;
-    url: string;
-    claim?: string;
-}
-
-export interface SocialMediaPosts {
-    twitterThread?: string[];
-    linkedInPost?: string;
-    newsletter?: string;
-    author?: string;
-}
-
-export interface ChatResponse {
-    answer: string;
-}
-
-export interface ModeResponse {
-    content: string;
-    mode: string;
-}
-
-export interface AudioResponse {
-    audioUrl?: string;
-    script?: string;
-    method: string;
-}
-
-export interface TrustResponse {
-    trustScore: number;
-    citations: Citation[];
-    warnings?: string[];
 }
 
 export interface ViewResponse {
@@ -149,59 +110,5 @@ export async function recordBlogView(slug: string): Promise<ViewResponse> {
         method: 'POST',
     });
     if (!res.ok) throw new Error('Failed to record view');
-    return res.json();
-}
-
-/** Feature 1: Chat with article */
-export async function chatWithArticle(slug: string, question: string): Promise<ChatResponse> {
-    const res = await fetch(`${getApiUrl()}/api/blogs/${slug}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question }),
-    });
-    if (!res.ok) throw new Error('Chat failed');
-    return res.json();
-}
-
-/** Feature 3: Generate audio */
-export async function generateAudio(slug: string): Promise<AudioResponse> {
-    const res = await fetch(`${getApiUrl()}/api/blogs/${slug}/generate-audio`, {
-        method: 'POST',
-    });
-    if (!res.ok) throw new Error('Audio generation failed');
-    return res.json();
-}
-
-/** Feature 4: Get reading mode */
-export async function getReadingMode(slug: string, mode: string): Promise<ModeResponse> {
-    const res = await fetch(`${getApiUrl()}/api/blogs/${slug}/mode`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode }),
-    });
-    if (!res.ok) throw new Error('Mode switch failed');
-    return res.json();
-}
-
-/** Feature 5: Get social media posts */
-export async function getSocialPosts(slug: string): Promise<SocialMediaPosts> {
-    const res = await fetch(`${getApiUrl()}/api/blogs/${slug}/social`);
-    if (!res.ok) throw new Error('Social posts fetch failed');
-    return res.json();
-}
-
-/** Feature 6: Get trust score & citations */
-export async function getTrustData(slug: string): Promise<TrustResponse> {
-    const res = await fetch(`${getApiUrl()}/api/blogs/${slug}/trust`);
-    if (!res.ok) throw new Error('Trust data fetch failed');
-    return res.json();
-}
-
-/** Feature 6: Verify & regenerate citations */
-export async function verifyArticle(slug: string): Promise<TrustResponse> {
-    const res = await fetch(`${getApiUrl()}/api/blogs/${slug}/verify`, {
-        method: 'POST',
-    });
-    if (!res.ok) throw new Error('Verification failed');
     return res.json();
 }

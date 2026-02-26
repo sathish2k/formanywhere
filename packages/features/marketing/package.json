@@ -122,6 +122,7 @@
             "import": "./src/blog/index.ts",
             "types": "./src/blog/index.ts"
         },
+        "./blog/blog-content.scss": "./src/blog/blog-content.scss",
         "./blog/api": {
             "solid": "./src/blog/blog-api.ts",
             "import": "./src/blog/blog-api.ts",

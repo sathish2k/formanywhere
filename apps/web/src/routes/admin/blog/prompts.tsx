@@ -135,7 +135,7 @@ export default function AdminBlogPrompts() {
                     <Typography variant="headline-medium" style={{ "font-weight": 'bold' }}>
                         📝 Today's Blog Prompts
                     </Typography>
-                    <Typography variant="body-medium" style={{ color: 'var(--md-sys-color-on-surface-variant)', "margin-top": '4px' }}>
+                    <Typography variant="body-medium" style={{ color: 'var(--m3-color-on-surface-variant)', "margin-top": '4px' }}>
                         {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                         {' • '}
                         <Show when={prompts()} fallback="Loading...">
@@ -168,9 +168,9 @@ export default function AdminBlogPrompts() {
 
                             return (
                                 <div style={{
-                                    background: 'var(--md-sys-color-surface-container)',
+                                    background: 'var(--m3-color-surface-container)',
                                     "border-radius": '16px',
-                                    border: `1px solid ${prompt.status === 'completed' ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-outline-variant)'}`,
+                                    border: `1px solid ${prompt.status === 'completed' ? 'var(--m3-color-primary)' : 'var(--m3-color-outline-variant)'}`,
                                     overflow: 'hidden',
                                     transition: 'all 0.2s ease',
                                 }}>
@@ -210,12 +210,12 @@ export default function AdminBlogPrompts() {
                                         </Typography>
 
                                         {/* Status + Author */}
-                                        <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)', "white-space": 'nowrap' }}>
+                                        <Typography variant="body-small" style={{ color: 'var(--m3-color-on-surface-variant)', "white-space": 'nowrap' }}>
                                             {prompt.author.name} • {prompt.voice.label}
                                         </Typography>
 
                                         <Show when={prompt.status === 'completed'}>
-                                            <span style={{ color: 'var(--md-sys-color-primary)', "font-size": '18px' }}>✅</span>
+                                            <span style={{ color: 'var(--m3-color-primary)', "font-size": '18px' }}>✅</span>
                                         </Show>
 
                                         <span style={{
@@ -227,7 +227,7 @@ export default function AdminBlogPrompts() {
 
                                     {/* Expanded content */}
                                     <Show when={isExpanded()}>
-                                        <div style={{ padding: '0 20px 20px', "border-top": '1px solid var(--md-sys-color-outline-variant)' }}>
+                                        <div style={{ padding: '0 20px 20px', "border-top": '1px solid var(--m3-color-outline-variant)' }}>
                                             {/* Copy buttons */}
                                             <div style={{ display: 'flex', gap: '12px', "margin-top": '16px', "flex-wrap": 'wrap' }}>
                                                 <Button
@@ -266,9 +266,9 @@ export default function AdminBlogPrompts() {
                                                     "min-height": '200px',
                                                     padding: '16px',
                                                     "border-radius": '12px',
-                                                    border: '1px solid var(--md-sys-color-outline-variant)',
-                                                    background: 'var(--md-sys-color-surface)',
-                                                    color: 'var(--md-sys-color-on-surface)',
+                                                    border: '1px solid var(--m3-color-outline-variant)',
+                                                    background: 'var(--m3-color-surface)',
+                                                    color: 'var(--m3-color-on-surface)',
                                                     "font-family": "'JetBrains Mono', 'Fira Code', monospace",
                                                     "font-size": '13px',
                                                     "line-height": '1.5',
@@ -290,9 +290,9 @@ export default function AdminBlogPrompts() {
                                                         width: '100%',
                                                         padding: '12px 16px',
                                                         "border-radius": '12px',
-                                                        border: '1px solid var(--md-sys-color-outline-variant)',
-                                                        background: 'var(--md-sys-color-surface)',
-                                                        color: 'var(--md-sys-color-on-surface)',
+                                                        border: '1px solid var(--m3-color-outline-variant)',
+                                                        background: 'var(--m3-color-surface)',
+                                                        color: 'var(--m3-color-on-surface)',
                                                         "font-size": '14px',
                                                     }}
                                                 />
@@ -313,9 +313,9 @@ export default function AdminBlogPrompts() {
                                                                 width: '100%',
                                                                 padding: '10px 16px',
                                                                 "border-radius": '12px',
-                                                                border: '1px solid var(--md-sys-color-outline-variant)',
-                                                                background: 'var(--md-sys-color-surface)',
-                                                                color: 'var(--md-sys-color-on-surface)',
+                                                                border: '1px solid var(--m3-color-outline-variant)',
+                                                                background: 'var(--m3-color-surface)',
+                                                                color: 'var(--m3-color-on-surface)',
                                                                 "font-size": '14px',
                                                                 "margin-bottom": '8px',
                                                             }}

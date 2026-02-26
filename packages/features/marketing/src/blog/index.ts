@@ -9,12 +9,6 @@ export {
   fetchBlogs,
   fetchBlogBySlug,
   recordBlogView,
-  chatWithArticle,
-  generateAudio,
-  getReadingMode,
-  getSocialPosts,
-  getTrustData,
-  verifyArticle,
 } from './blog-api';
 
 export type {
@@ -24,22 +18,9 @@ export type {
   BlogListResponse,
   PaginationInfo,
   ViewResponse,
-  Citation,
-  SocialMediaPosts,
-  ChatResponse,
-  ModeResponse,
-  AudioResponse,
-  TrustResponse,
 } from './blog-api';
 
 // UI components
-export { ArticleChat } from './article-chat';
-export { PodcastPlayer } from './podcast-player';
-export { ReadingModes } from './reading-modes';
-export { SocialSyndication } from './social-syndication';
-export { CitationsPanel } from './citations-panel';
-
-// Re-export BlogCard (already existed here)
 export { BlogCard } from './blog-card';
 export type { BlogPost } from './blog-card';
 

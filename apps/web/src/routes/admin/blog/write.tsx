@@ -175,7 +175,7 @@ export default function AdminBlogWrite() {
               {draftId() ? '✏️ Edit Draft' : '📝 Write a new story'}
             </Typography>
             <Show when={draftId()}>
-              <Typography variant="body-small" style={{ color: 'var(--md-sys-color-on-surface-variant)', "margin-top": '4px' }}>
+              <Typography variant="body-small" style={{ color: 'var(--m3-color-on-surface-variant)', "margin-top": '4px' }}>
                 Draft ID: {draftId()}
               </Typography>
             </Show>
@@ -227,7 +227,7 @@ export default function AdminBlogWrite() {
               border: 'none',
               outline: 'none',
               background: 'transparent',
-              color: 'var(--md-sys-color-on-surface)',
+              color: 'var(--m3-color-on-surface)',
               width: '100%',
               "font-family": 'system-ui, -apple-system, sans-serif',
             }}
@@ -244,10 +244,10 @@ export default function AdminBlogWrite() {
               border: 'none',
               outline: 'none',
               background: 'transparent',
-              color: 'var(--md-sys-color-on-surface-variant)',
+              color: 'var(--m3-color-on-surface-variant)',
               width: '100%',
               padding: '8px 0',
-              "border-bottom": '1px solid var(--md-sys-color-outline-variant)',
+              "border-bottom": '1px solid var(--m3-color-outline-variant)',
             }}
           />
 
@@ -262,10 +262,10 @@ export default function AdminBlogWrite() {
               border: 'none',
               outline: 'none',
               background: 'transparent',
-              color: 'var(--md-sys-color-on-surface-variant)',
+              color: 'var(--m3-color-on-surface-variant)',
               width: '100%',
               padding: '8px 0',
-              "border-bottom": '1px solid var(--md-sys-color-outline-variant)',
+              "border-bottom": '1px solid var(--m3-color-outline-variant)',
             }}
           />
 
@@ -280,16 +280,16 @@ export default function AdminBlogWrite() {
               border: 'none',
               outline: 'none',
               background: 'transparent',
-              color: 'var(--md-sys-color-on-surface-variant)',
+              color: 'var(--m3-color-on-surface-variant)',
               width: '100%',
               padding: '8px 0',
-              "border-bottom": '1px solid var(--md-sys-color-outline-variant)',
+              "border-bottom": '1px solid var(--m3-color-outline-variant)',
             }}
           />
 
           {/* SEO fields (collapsible) */}
           <details>
-            <summary style={{ cursor: 'pointer', color: 'var(--md-sys-color-on-surface-variant)', "margin-bottom": '12px' }}>
+            <summary style={{ cursor: 'pointer', color: 'var(--m3-color-on-surface-variant)', "margin-bottom": '12px' }}>
               🔍 SEO Settings
             </summary>
             <Box style={{ display: 'flex', "flex-direction": 'column', gap: '12px' }}>
@@ -303,10 +303,10 @@ export default function AdminBlogWrite() {
                   border: 'none',
                   outline: 'none',
                   background: 'transparent',
-                  color: 'var(--md-sys-color-on-surface-variant)',
+                  color: 'var(--m3-color-on-surface-variant)',
                   width: '100%',
                   padding: '8px 0',
-                  "border-bottom": '1px solid var(--md-sys-color-outline-variant)',
+                  "border-bottom": '1px solid var(--m3-color-outline-variant)',
                 }}
               />
               <input
@@ -319,10 +319,10 @@ export default function AdminBlogWrite() {
                   border: 'none',
                   outline: 'none',
                   background: 'transparent',
-                  color: 'var(--md-sys-color-on-surface-variant)',
+                  color: 'var(--m3-color-on-surface-variant)',
                   width: '100%',
                   padding: '8px 0',
-                  "border-bottom": '1px solid var(--md-sys-color-outline-variant)',
+                  "border-bottom": '1px solid var(--m3-color-outline-variant)',
                 }}
               />
             </Box>
@@ -353,7 +353,7 @@ export default function AdminBlogWrite() {
                     .blog-preview {
                       font-size: 1.25rem;
                       line-height: 1.8;
-                      color: var(--md-sys-color-on-surface);
+                      color: var(--m3-color-on-surface);
                       font-family: Georgia, serif;
                       min-height: 400px;
                     }
@@ -375,12 +375,12 @@ export default function AdminBlogWrite() {
                     .blog-preview ul { margin-bottom: 24px; padding-left: 24px; }
                     .blog-preview li { margin-bottom: 8px; }
                     .blog-preview blockquote {
-                      border-left: 4px solid var(--md-sys-color-primary);
+                      border-left: 4px solid var(--m3-color-primary);
                       padding: 24px;
                       margin-left: 0; margin-right: 0;
                       font-style: italic;
-                      color: var(--md-sys-color-on-surface-variant);
-                      background: var(--md-sys-color-surface-container-lowest);
+                      color: var(--m3-color-on-surface-variant);
+                      background: var(--m3-color-surface-container-lowest);
                       border-radius: 0 16px 16px 0;
                     }
                     .blog-preview pre {
@@ -395,7 +395,7 @@ export default function AdminBlogWrite() {
                     }
                     .blog-preview code { font-family: 'Fira Code', monospace; }
                     .blog-preview p code {
-                      background: var(--md-sys-color-surface-container);
+                      background: var(--m3-color-surface-container);
                       padding: 4px 8px;
                       border-radius: 4px;
                       font-size: 1rem;
@@ -406,7 +406,7 @@ export default function AdminBlogWrite() {
                     }
                     .blog-preview .image-block-caption {
                       font-size: 0.9rem;
-                      color: var(--md-sys-color-on-surface-variant);
+                      color: var(--m3-color-on-surface-variant);
                       font-style: italic; padding: 8px 0;
                     }
                     .blog-preview table {
@@ -428,7 +428,7 @@ export default function AdminBlogWrite() {
                     }
                   `}
                 </style>
-                <Box class="blog-preview" innerHTML={content() || '<p style="color: var(--md-sys-color-on-surface-variant); font-style: italic;">Nothing to preview yet...</p>'} />
+                <Box class="blog-preview" innerHTML={content() || '<p style="color: var(--m3-color-on-surface-variant); font-style: italic;">Nothing to preview yet...</p>'} />
               </Box>
             }
           >
