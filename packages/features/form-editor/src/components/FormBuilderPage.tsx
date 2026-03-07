@@ -10,8 +10,13 @@
  *   - IntegrationsDialog     (external service connections)
  *   - @formanywhere/form-editor  (editor panels)
  *   - @formanywhere/form-runtime (preview)
+ *
+ * State management is delegated to extracted hooks:
+ *   - usePageManagement   (page CRUD & schema sync)
+ *   - useDraftPersistence (localStorage autosave/restore)
+ *   - useFormSave         (API load/save + validation)
  */
-import { splitProps, createSignal, Show, For, onMount, createEffect } from 'solid-js';
+import { splitProps, createSignal, Show, For, onMount } from 'solid-js';
 import type { Component } from 'solid-js';
 import { FormEditor } from './FormEditor';
 import { FormEditorLayout } from './layout/FormEditorLayout';
@@ -20,11 +25,8 @@ import { ImportForm } from './import/ImportForm';
 import { FormPreview } from '@formanywhere/form-runtime';
 import type { FormSchema, FormRule, FormWorkflow } from '@formanywhere/shared/types';
 import { generateId, go } from '@formanywhere/shared/utils';
-import { fetchWithAuth } from '@formanywhere/shared/auth-client';
-import { validateSchema } from '@formanywhere/domain/form';
 import { BuilderHeader } from './header/BuilderHeader';
 import { PageToolbar } from './page-toolbar/PageToolbar';
-import type { PageTab } from './page-toolbar/PageToolbar';
 import { LogicDialog } from './dialogs/LogicDialog';
 import { WorkflowDialog } from './dialogs/WorkflowDialog';
 import { SchemaDialog } from './dialogs/SchemaDialog';
@@ -34,24 +36,20 @@ import { LogicDebuggerDialog } from './dialogs/LogicDebuggerDialog';
 import type { FormSettings } from './dialogs/FormSettingsDialog';
 import { LayoutBuilder } from '@formanywhere/shared/form-setup/layout-builder';
 import type { LayoutConfig } from '@formanywhere/shared/form-setup/layout-builder/types';
+import { usePageManagement } from './hooks/use-page-management';
+import { useDraftPersistence } from './hooks/use-draft-persistence';
+import { useFormSave } from './hooks/use-form-save';
 import './form-builder.scss';
 
 export type BuilderMode = 'blank' | 'template' | 'import' | 'ai';
 
 export interface FormBuilderPageProps {
-    /** The creation mode */
     mode?: BuilderMode;
-    /** Form ID for editing existing forms */
     formId?: string;
-    /** Template ID to load from public API */
     templateId?: string;
-    /** Template schema to pre-fill */
     templateSchema?: FormSchema;
-    /** Initial form name (from URL param or setup) */
     initialName?: string;
-    /** Initial form description (from URL param or setup) */
     initialDescription?: string;
-    /** Initial pages from FormSetupPage (id + title pairs) */
     initialPages?: Array<{ id: string; title: string }>;
 }
 
@@ -59,9 +57,8 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
     const [local] = splitProps(props, ['formId', 'templateId', 'mode', 'templateSchema', 'initialName', 'initialDescription', 'initialPages']);
     const mode = () => local.mode ?? 'blank';
 
-    // Pre-build the schema from initialName NOW (synchronously) so that
-    // FormEditor receives the correct name on its very first render, rather
-    // than defaulting to 'Untitled Form' and ignoring a later onMount patch.
+    // ── Schema Signal ─────────────────────────────────────────────────────────
+
     const makeInitialSchema = (): FormSchema | null => {
         if (!local.initialName) return null;
         return {
@@ -69,11 +66,7 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
             name: local.initialName,
             description: local.initialDescription ?? '',
             elements: [],
-            settings: {
-                pages: [],
-                submitButtonText: 'Submit',
-                successMessage: 'Thank you!',
-            },
+            settings: { pages: [], submitButtonText: 'Submit', successMessage: 'Thank you!' },
             version: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -82,154 +75,82 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
 
     const [schema, setSchema] = createSignal<FormSchema | null>(makeInitialSchema());
     const [previewing, setPreviewing] = createSignal(false);
-    const [saving, setSaving] = createSignal(false);
     const [showOverlay, setShowOverlay] = createSignal<'ai' | 'import' | null>(null);
-    const [validationErrors, setValidationErrors] = createSignal<string[]>([]);
 
-    // Page management — seed from initialPages (FormSetupPage) if provided
-    const seedPages = (): PageTab[] =>
-        local.initialPages && local.initialPages.length > 0
-            ? local.initialPages.map((p) => ({ id: p.id, title: p.title }))
-            : [{ id: generateId(), title: 'Page 1' }];
-    const [pages, setPages] = createSignal<PageTab[]>(seedPages());
-    const [activePageId, setActivePageId] = createSignal<string>('');
+    // ── Rules & Workflows ─────────────────────────────────────────────────────
 
-    // Layout Builder overlay
+    const [formRules, setFormRules] = createSignal<FormRule[]>([]);
+    const [workflows, setWorkflows] = createSignal<FormWorkflow[]>([]);
+    const addRule = (rule: FormRule) => setFormRules((prev) => [...prev, rule]);
+    const updateRule = (id: string, rule: FormRule) => setFormRules((prev) => prev.map((r) => r.id === id ? rule : r));
+    const deleteRule = (id: string) => setFormRules((prev) => prev.filter((r) => r.id !== id));
+    const addWorkflow = (wf: FormWorkflow) => setWorkflows((prev) => [...prev, wf]);
+    const updateWorkflow = (id: string, wf: FormWorkflow) => setWorkflows((prev) => prev.map((w) => w.id === id ? wf : w));
+    const deleteWorkflow = (id: string) => setWorkflows((prev) => prev.filter((w) => w.id !== id));
+
+    // ── Form Settings & Layout ────────────────────────────────────────────────
+
+    const [formSettings, setFormSettings] = createSignal<FormSettings>({
+        primaryColor: '#6750A4', secondaryColor: '#625B71',
+        backgroundColor: '#FFFBFE', surfaceColor: '#FFFFFF',
+        borderRadius: 12, fontFamily: 'Inter', customCSS: '', googleFontUrl: '',
+        customHeadTags: '', externalCSS: [], externalJS: [],
+        successHeading: 'Thank You!', successMessage: 'Your response has been recorded.',
+        successShowData: false, successButtonText: '', successButtonUrl: '',
+        redirectUrl: '', redirectDelay: 0,
+    });
     const [layoutBuilderOpen, setLayoutBuilderOpen] = createSignal(false);
     const [layoutConfig, setLayoutConfig] = createSignal<LayoutConfig | null>(null);
 
-    // Dialog state
+    // ── Dialog State ──────────────────────────────────────────────────────────
+
     const [logicOpen, setLogicOpen] = createSignal(false);
     const [workflowOpen, setWorkflowOpen] = createSignal(false);
     const [schemaDialogOpen, setSchemaDialogOpen] = createSignal(false);
     const [integrationsOpen, setIntegrationsOpen] = createSignal(false);
     const [formSettingsOpen, setFormSettingsOpen] = createSignal(false);
     const [debuggerOpen, setDebuggerOpen] = createSignal(false);
-    const [formRules, setFormRules] = createSignal<FormRule[]>([]);
-    const [workflows, setWorkflows] = createSignal<FormWorkflow[]>([]);
-    const [formSettings, setFormSettings] = createSignal<FormSettings>({
-        // M3 baseline palette defaults — data values for user-customizable theme, not CSS styling
-        primaryColor: '#6750A4',
-        secondaryColor: '#625B71',
-        backgroundColor: '#FFFBFE',
-        surfaceColor: '#FFFFFF',
-        borderRadius: 12,
-        fontFamily: 'Inter',
-        customCSS: '',
-        googleFontUrl: '',
-        customHeadTags: '',
-        externalCSS: [],
-        externalJS: [],
-        successHeading: 'Thank You!',
-        successMessage: 'Your response has been recorded.',
-        successShowData: false,
-        successButtonText: '',
-        successButtonUrl: '',
-        redirectUrl: '',
-        redirectDelay: 0,
+
+    // ── Hooks ─────────────────────────────────────────────────────────────────
+
+    const pm = usePageManagement({ initialPages: local.initialPages, setSchema });
+
+    const draft = useDraftPersistence({
+        formId: local.formId,
+        schema, formRules, workflows, formSettings,
     });
 
-    // Rule management handlers
-    const addRule = (rule: FormRule) => setFormRules((prev) => [...prev, rule]);
-    const updateRule = (id: string, rule: FormRule) => setFormRules((prev) => prev.map((r) => r.id === id ? rule : r));
-    const deleteRule = (id: string) => setFormRules((prev) => prev.filter((r) => r.id !== id));
-
-    // Workflow management handlers
-    const addWorkflow = (wf: FormWorkflow) => setWorkflows((prev) => [...prev, wf]);
-    const updateWorkflow = (id: string, wf: FormWorkflow) => setWorkflows((prev) => prev.map((w) => w.id === id ? wf : w));
-    const deleteWorkflow = (id: string) => setWorkflows((prev) => prev.filter((w) => w.id !== id));
-
-    // ── Autosave to localStorage (debounced) ──────────────────────────────
-    const AUTOSAVE_KEY = `formanywhere_draft_${local.formId ?? 'new'}`;
-    const AUTOSAVE_INTERVAL = 5_000; // 5 seconds
-    let autosaveTimer: ReturnType<typeof setTimeout> | null = null;
-
-    const saveDraft = () => {
-        const s = schema();
-        if (!s) return;
-        try {
-            localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({
-                schema: s,
-                rules: formRules(),
-                workflows: workflows(),
-                settings: formSettings(),
-                savedAt: Date.now(),
-            }));
-        } catch { /* quota exceeded — silently fail */ }
-    };
-
-    createEffect(() => {
-        // Track changes to schema signal
-        const s = schema();
-        if (!s) return;
-        // Debounce autosave
-        if (autosaveTimer) clearTimeout(autosaveTimer);
-        autosaveTimer = setTimeout(saveDraft, AUTOSAVE_INTERVAL);
+    const save = useFormSave({
+        formId: local.formId,
+        schema, setSchema,
+        formRules, setFormRules,
+        workflows, setWorkflows,
+        formSettings, setFormSettings,
+        pages: pm.pages,
+        syncPagesFromSchema: pm.syncPagesFromSchema,
+        clearDraft: draft.clearDraft,
     });
 
-    /** Sync the pages[] signal (used by PageToolbar) from schema.settings.pages.
-     *  Called after loading an existing form or restoring a draft. */
-    const syncPagesFromSchema = (s: FormSchema) => {
-        const schemaPgs = s.settings.pages;
-        if (schemaPgs && schemaPgs.length > 0) {
-            const tabs: PageTab[] = schemaPgs.map((p) => ({ id: p.id, title: p.title }));
-            setPages(tabs);
-            setActivePageId(tabs[0].id);
-        }
-    };
+    // ── Event Handlers ────────────────────────────────────────────────────────
 
-    /** Try to restore a draft from localStorage on mount */
-    const restoreDraft = (): boolean => {
-        try {
-            const raw = localStorage.getItem(AUTOSAVE_KEY);
-            if (!raw) return false;
-            const draft = JSON.parse(raw);
-            // Only restore if less than 24h old
-            if (Date.now() - (draft.savedAt ?? 0) > 86_400_000) {
-                localStorage.removeItem(AUTOSAVE_KEY);
-                return false;
-            }
-            if (draft.schema) {
-                setSchema(draft.schema);
-                // Bug fix: keep pages signal in sync with restored schema pages
-                syncPagesFromSchema(draft.schema);
-            }
-            if (draft.rules) setFormRules(draft.rules);
-            if (draft.workflows) setWorkflows(draft.workflows);
-            if (draft.settings) setFormSettings(draft.settings);
-            return true;
-        } catch { return false; }
-    };
+    const handleFormNameChange = (name: string) => setSchema((prev) => prev ? { ...prev, name } : prev);
 
-    const clearDraft = () => {
-        try { localStorage.removeItem(AUTOSAVE_KEY); } catch { /* noop */ }
-    };
-
-    /** Handle inline form rename from the header */
-    const handleFormNameChange = (name: string) => {
-        setSchema((prev) => prev ? { ...prev, name } : prev);
-    };
-
-    /** Handle layout builder save */
     const handleLayoutSave = (layout: LayoutConfig) => {
         setLayoutConfig(layout);
         setLayoutBuilderOpen(false);
-        // Store layout config in schema settings
-        setSchema((prev) => {
-            if (!prev) return prev;
-            return { ...prev, settings: { ...prev.settings, layout } };
-        });
+        setSchema((prev) => prev ? { ...prev, settings: { ...prev.settings, layout } } : prev);
     };
 
+    const handleSchemaChange = (updated: FormSchema) => setSchema(updated);
+    const handleOverlayResult = (s: FormSchema) => { setSchema(s); setShowOverlay(null); };
+    const handleOverlayCancel = () => { setShowOverlay(null); if (!schema()) go('/dashboard'); };
+
+    // ── Mount ─────────────────────────────────────────────────────────────────
+
     onMount(() => {
-        const firstPage = pages()[0];
-        if (firstPage) setActivePageId(firstPage.id);
-
-        // Ensure schema has pages entry
-        syncPagesToSchema();
-
-        // initialName/initialDescription are now applied synchronously at
-        // signal initialisation (makeInitialSchema) so no onMount patch needed.
+        const firstPage = pm.pages()[0];
+        if (firstPage) pm.setActivePageId(firstPage.id);
+        pm.syncPagesToSchema();
 
         if (mode() === 'ai') {
             setShowOverlay('ai');
@@ -238,224 +159,34 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
         } else if (mode() === 'template' && local.templateSchema) {
             setSchema({ ...local.templateSchema, id: generateId(), updatedAt: new Date() });
         } else if (mode() === 'template' && local.templateId) {
-            // Fetch template from public API (no auth required)
-            loadTemplateById(local.templateId);
+            save.loadTemplateById(local.templateId);
         } else if (local.formId) {
-            loadExistingForm(local.formId);
+            save.loadExistingForm(local.formId);
         } else {
-            // For blank mode, try restoring a draft
-            restoreDraft();
-        }
-    });
-
-    const loadTemplateById = async (templateId: string) => {
-        try {
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-            const res = await fetch(`${API_URL}/api/templates/${templateId}`);
-            if (!res.ok) return;
-            const data = await res.json();
-            if (!data.success || !data.template?.schema) return;
-            const templateSchema = typeof data.template.schema === 'string'
-                ? JSON.parse(data.template.schema)
-                : data.template.schema;
-            // Override ID so each use is a fresh form
-            templateSchema.id = generateId();
-            templateSchema.updatedAt = new Date();
-            if (data.template.name) templateSchema.name = data.template.name;
-            if (data.template.description) templateSchema.description = data.template.description;
-            setSchema(templateSchema);
-            syncPagesFromSchema(templateSchema);
-            if (templateSchema.rules) setFormRules(templateSchema.rules);
-            if (templateSchema.workflows) setWorkflows(templateSchema.workflows);
-        } catch (err) {
-            console.error('Failed to load template:', err);
-        }
-    };
-
-    const loadExistingForm = async (formId: string) => {
-        try {
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-            const res = await fetchWithAuth(`${API_URL}/api/forms/${formId}`);
-            const data = await res.json();
-            if (!data.success || !data.form) return;
-
-            if (data.form.schema) {
-                // Form has saved schema JSON — load it
-                const loadedSchema = typeof data.form.schema === 'string'
-                    ? JSON.parse(data.form.schema)
-                    : data.form.schema;
-                // Merge API-level title/description into schema so the header shows the correct name
-                if (data.form.title) loadedSchema.name = data.form.title;
-                if (data.form.description) loadedSchema.description = data.form.description;
-                setSchema(loadedSchema);
-                // Bug fix: populate PageToolbar from saved schema pages
-                syncPagesFromSchema(loadedSchema);
-                if (loadedSchema.rules) setFormRules(loadedSchema.rules);
-                if (loadedSchema.workflows) setWorkflows(loadedSchema.workflows);
-            } else {
-                // Freshly created form with no schema yet — initialize a blank schema with API title
-                setSchema({
-                    id: formId,
-                    name: data.form.title || 'Untitled Form',
-                    description: data.form.description || '',
-                    elements: [],
-                    settings: {
-                        pages: pages().map((p) => ({ id: p.id, title: p.title, elements: [] })),
-                        submitButtonText: 'Submit',
-                        successMessage: 'Thank you!',
-                    },
-                    version: 1,
-                    createdAt: new Date(data.form.createdAt || Date.now()),
-                    updatedAt: new Date(),
-                } as FormSchema);
+            const restored = draft.restoreDraft();
+            if (restored) {
+                if (restored.schema) {
+                    setSchema(restored.schema);
+                    pm.syncPagesFromSchema(restored.schema);
+                }
+                if (restored.rules) setFormRules(restored.rules);
+                if (restored.workflows) setWorkflows(restored.workflows);
+                if (restored.settings) setFormSettings(restored.settings);
             }
-        } catch (e) {
-            console.error('Failed to load form:', e);
         }
-    };
-
-    const handleSchemaChange = (updated: FormSchema) => setSchema(updated);
-    const handleOverlayResult = (s: FormSchema) => { setSchema(s); setShowOverlay(null); };
-    const handleOverlayCancel = () => { setShowOverlay(null); if (!schema()) go('/dashboard'); };
-
-    /** Keep schema.settings.pages in sync with page tabs */
-    const syncPagesToSchema = () => {
-        setSchema((prev) => {
-            if (!prev) return prev;
-            const formPages = pages().map((p) => {
-                const existing = prev.settings.pages?.find((ep) => ep.id === p.id);
-                return { id: p.id, title: p.title, elements: existing?.elements ?? [] };
-            });
-            return { ...prev, settings: { ...prev.settings, pages: formPages, multiPage: pages().length > 1 } };
-        });
-    };
-
-    // Page management handlers
-    const addPage = () => {
-        const p: PageTab = { id: generateId(), title: `Page ${pages().length + 1}` };
-        setPages((prev) => [...prev, p]);
-        setActivePageId(p.id);
-        syncPagesToSchema();
-    };
-
-    const duplicatePage = (pageId: string) => {
-        const page = pages().find((p) => p.id === pageId);
-        if (!page) return;
-        const dup: PageTab = { id: generateId(), title: `${page.title} (Copy)` };
-        const idx = pages().findIndex((p) => p.id === pageId);
-        setPages((prev) => [...prev.slice(0, idx + 1), dup, ...prev.slice(idx + 1)]);
-        setActivePageId(dup.id);
-        syncPagesToSchema();
-    };
-
-    const deletePage = (pageId: string) => {
-        if (pages().length <= 1) return;
-        const idx = pages().findIndex((p) => p.id === pageId);
-        setPages((prev) => prev.filter((p) => p.id !== pageId));
-        if (activePageId() === pageId) {
-            const remaining = pages().filter((p) => p.id !== pageId);
-            setActivePageId(remaining[Math.min(idx, remaining.length - 1)]?.id ?? '');
-        }
-        syncPagesToSchema();
-    };
-
-    const editPage = (pageId: string) => {
-        // Legacy fallback — handled by PageToolbar's onRenamePage dialog now
-        const page = pages().find((p) => p.id === pageId);
-        if (!page) return;
-    };
-
-    const renamePage = (pageId: string, newTitle: string) => {
-        if (newTitle.trim()) {
-            setPages((prev) => prev.map((p) => p.id === pageId ? { ...p, title: newTitle.trim() } : p));
-            // Bug fix: propagate title change into schema.settings.pages
-            syncPagesToSchema();
-        }
-    };
-
-    const handleSave = async () => {
-        const currentSchema = schema();
-        if (!currentSchema) return;
-
-        // Merge rules and form settings into schema before saving
-        const schemaToSave: FormSchema = {
-            ...currentSchema,
-            name: currentSchema.name || 'Untitled Form',
-            rules: formRules(),
-            workflows: workflows(),
-            settings: {
-                ...currentSchema.settings,
-                ...buildSettingsFromFormSettings(formSettings()),
-                pages: currentSchema.settings.pages,
-                multiPage: (currentSchema.settings.pages?.length ?? 0) > 1,
-            },
-        };
-
-        // Validate schema before publishing
-        const validation = validateSchema(schemaToSave);
-        if (!validation.valid) {
-            setValidationErrors(validation.errors);
-            return;
-        }
-        setValidationErrors([]);
-
-        setSaving(true);
-        try {
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-            const endpoint = local.formId
-                ? `${API_URL}/api/forms/${local.formId}`
-                : `${API_URL}/api/forms`;
-            await fetchWithAuth(endpoint, {
-                method: local.formId ? 'PUT' : 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: schemaToSave.name,
-                    description: schemaToSave.description,
-                    schema: JSON.stringify(schemaToSave),
-                }),
-            });
-            clearDraft();
-            go('/dashboard');
-        } catch (e) {
-            console.error('Failed to save form:', e);
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    /** Map FormSettings dialog values into schema-level settings */
-    const buildSettingsFromFormSettings = (fs: FormSettings) => ({
-        theme: {
-            primaryColor: fs.primaryColor,
-            secondaryColor: fs.secondaryColor,
-            backgroundColor: fs.backgroundColor,
-            surfaceColor: fs.surfaceColor,
-            borderRadius: fs.borderRadius,
-            fontFamily: fs.fontFamily,
-        },
-        customCSS: fs.customCSS,
-        googleFontUrl: fs.googleFontUrl,
-        customHeadTags: fs.customHeadTags,
-        externalCSS: fs.externalCSS,
-        externalJS: fs.externalJS,
-        successHeading: fs.successHeading,
-        successMessage: fs.successMessage,
-        successShowData: fs.successShowData,
-        successButtonText: fs.successButtonText,
-        successButtonUrl: fs.successButtonUrl,
-        redirectUrl: fs.redirectUrl,
-        redirectDelay: fs.redirectDelay,
     });
+
+    // ── JSX ───────────────────────────────────────────────────────────────────
 
     return (
         <div class="form-builder-page">
             <BuilderHeader
                 formName={schema()?.name ?? 'New Form'}
                 previewing={previewing()}
-                saving={saving()}
+                saving={save.saving()}
                 hasSchema={!!schema()}
                 onTogglePreview={() => setPreviewing(!previewing())}
-                onSave={handleSave}
+                onSave={save.handleSave}
                 onBack={() => go('/dashboard')}
                 onDashboard={() => go('/dashboard')}
                 onViewSchema={() => setSchemaDialogOpen(true)}
@@ -466,17 +197,17 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
             />
 
             {/* Validation errors banner */}
-            <Show when={validationErrors().length > 0}>
+            <Show when={save.validationErrors().length > 0}>
                 <div class="form-builder-page__validation-banner">
                     <div class="form-builder-page__validation-content">
                         <strong>Cannot publish — please fix these issues:</strong>
                         <ul>
-                            <For each={validationErrors()}>
+                            <For each={save.validationErrors()}>
                                 {(err) => <li>{err}</li>}
                             </For>
                         </ul>
                     </div>
-                    <button class="form-builder-page__validation-dismiss" onClick={() => setValidationErrors([])}>
+                    <button class="form-builder-page__validation-dismiss" onClick={() => save.setValidationErrors([])}>
                         &times;
                     </button>
                 </div>
@@ -484,14 +215,14 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
 
             <Show when={!showOverlay() && !previewing()}>
                 <PageToolbar
-                    pages={pages()}
-                    activePageId={activePageId()}
-                    onSetActivePage={setActivePageId}
-                    onAddPage={addPage}
-                    onEditPage={editPage}
-                    onRenamePage={renamePage}
-                    onDuplicatePage={duplicatePage}
-                    onDeletePage={deletePage}
+                    pages={pm.pages()}
+                    activePageId={pm.activePageId()}
+                    onSetActivePage={pm.setActivePageId}
+                    onAddPage={pm.addPage}
+                    onEditPage={pm.editPage}
+                    onRenamePage={pm.renamePage}
+                    onDuplicatePage={pm.duplicatePage}
+                    onDeletePage={pm.deletePage}
                     onLogic={() => setLogicOpen(true)}
                     onWorkflow={() => setWorkflowOpen(true)}
                     onDebug={() => setDebuggerOpen(true)}
@@ -522,11 +253,8 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
                         </Show>
                     }
                 >
-                    {/* For edit mode (formId present) delay mounting FormEditor until the
-                         async loadExistingForm resolves — otherwise FormEditor creates its
-                         own default schema and the loaded data is never applied. */}
                     <Show when={!local.formId || schema()}>
-                        <FormEditor initialSchema={schema() ?? undefined} onChange={handleSchemaChange} activePageId={activePageId()} pages={pages()}>
+                        <FormEditor initialSchema={schema() ?? undefined} onChange={handleSchemaChange} activePageId={pm.activePageId()} pages={pm.pages()}>
                             <FormEditorLayout />
                         </FormEditor>
                     </Show>
@@ -535,54 +263,32 @@ export const FormBuilderPage: Component<FormBuilderPageProps> = (props) => {
 
             {/* Dialogs */}
             <LogicDialog
-                open={logicOpen()}
-                onClose={() => setLogicOpen(false)}
-                rules={formRules()}
-                onAddRule={addRule}
-                onUpdateRule={updateRule}
-                onDeleteRule={deleteRule}
-                pages={pages()}
+                open={logicOpen()} onClose={() => setLogicOpen(false)}
+                rules={formRules()} onAddRule={addRule} onUpdateRule={updateRule} onDeleteRule={deleteRule}
+                pages={pm.pages()}
             />
             <WorkflowDialog
-                open={workflowOpen()}
-                onClose={() => setWorkflowOpen(false)}
-                workflows={workflows()}
-                pages={pages()}
-                elements={schema()?.elements ?? []}
-                onAddWorkflow={addWorkflow}
-                onUpdateWorkflow={updateWorkflow}
-                onDeleteWorkflow={deleteWorkflow}
+                open={workflowOpen()} onClose={() => setWorkflowOpen(false)}
+                workflows={workflows()} pages={pm.pages()} elements={schema()?.elements ?? []}
+                onAddWorkflow={addWorkflow} onUpdateWorkflow={updateWorkflow} onDeleteWorkflow={deleteWorkflow}
             />
-            <SchemaDialog
-                open={schemaDialogOpen()}
-                onClose={() => setSchemaDialogOpen(false)}
-                schema={schema()}
-            />
-            <IntegrationsDialog
-                open={integrationsOpen()}
-                onClose={() => setIntegrationsOpen(false)}
-            />
+            <SchemaDialog open={schemaDialogOpen()} onClose={() => setSchemaDialogOpen(false)} schema={schema()} />
+            <IntegrationsDialog open={integrationsOpen()} onClose={() => setIntegrationsOpen(false)} />
             <FormSettingsDialog
-                open={formSettingsOpen()}
-                onClose={() => setFormSettingsOpen(false)}
-                settings={formSettings()}
-                onSave={setFormSettings}
+                open={formSettingsOpen()} onClose={() => setFormSettingsOpen(false)}
+                settings={formSettings()} onSave={setFormSettings}
             />
             <LogicDebuggerDialog
-                open={debuggerOpen()}
-                onClose={() => setDebuggerOpen(false)}
-                rules={formRules()}
-                elements={schema()?.elements ?? []}
+                open={debuggerOpen()} onClose={() => setDebuggerOpen(false)}
+                rules={formRules()} elements={schema()?.elements ?? []}
             />
 
             {/* Layout Builder overlay */}
             <LayoutBuilder
-                open={layoutBuilderOpen()}
-                onClose={() => setLayoutBuilderOpen(false)}
-                onSave={handleLayoutSave}
-                editingLayout={layoutConfig()}
-                totalPages={pages().length}
-                pages={pages().map((p) => ({ id: p.id, name: p.title, description: '' }))}
+                open={layoutBuilderOpen()} onClose={() => setLayoutBuilderOpen(false)}
+                onSave={handleLayoutSave} editingLayout={layoutConfig()}
+                totalPages={pm.pages().length}
+                pages={pm.pages().map((p) => ({ id: p.id, name: p.title, description: '' }))}
             />
         </div>
     );

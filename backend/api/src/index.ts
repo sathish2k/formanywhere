@@ -17,9 +17,13 @@ import { sql } from 'drizzle-orm';
 import { captureException } from './lib/error-tracker';
 import { logger } from './lib/logger';
 
-// Initialize background jobs
-setupCronJobs();
-logger.info('Background jobs initialized');
+// Initialize background jobs (production only — skip during local dev)
+if (process.env.NODE_ENV === 'production') {
+    setupCronJobs();
+    logger.info('Background jobs initialized');
+} else {
+    logger.info('Skipping cron jobs in development mode');
+}
 
 /**
  * Better Auth handler for Elysia.
@@ -27,12 +31,13 @@ logger.info('Background jobs initialized');
  * and routes all /api/auth/* requests to Better Auth.
  */
 const betterAuthView = new Elysia({ prefix: '/api/auth' })
-    .all('/*', async (ctx) => {
+    .all('/*', async ({ request, set }) => {
         const BETTER_AUTH_ACCEPT_METHODS = ['POST', 'GET'];
-        if (BETTER_AUTH_ACCEPT_METHODS.includes(ctx.request.method)) {
-            return auth.handler(ctx.request);
+        if (BETTER_AUTH_ACCEPT_METHODS.includes(request.method)) {
+            return auth.handler(request);
         }
-        ctx.error(405);
+        set.status = 405;
+        return { error: 'Method Not Allowed' };
     });
 
 const isProduction = process.env.NODE_ENV === 'production';

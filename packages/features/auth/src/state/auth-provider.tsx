@@ -42,7 +42,7 @@ export interface AuthContextValue {
     /** Shorthand: true if user is authenticated */
     isAuthenticated: Accessor<boolean>;
     /** Sign in with email and password */
-    signInWithEmail: (email: string, password: string) => Promise<{ error?: string }>;
+    signInWithEmail: (email: string, password: string, rememberMe?: boolean) => Promise<{ error?: string }>;
     /** Sign up with email, password, and name */
     signUpWithEmail: (email: string, password: string, name: string) => Promise<{ error?: string }>;
     /** Sign in with a social provider (google, github) */
@@ -88,11 +88,12 @@ export const AuthProvider: ParentComponent = (props) => {
     };
 
     /** Sign in with email/password */
-    const signInWithEmail = async (email: string, password: string) => {
+    const signInWithEmail = async (email: string, password: string, rememberMe = true) => {
         try {
             const result = await authClient.signIn.email({
                 email,
                 password,
+                rememberMe,
             });
             if (result.error) {
                 return { error: result.error.message || 'Sign in failed' };

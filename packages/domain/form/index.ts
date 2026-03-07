@@ -1,8 +1,9 @@
 /**
- * @formanywhere/domain - Form Business Logic
+ * @formanywhere/domain - Form Business Logic & Shared Field Components
  *
- * Pure business logic for form schema, elements, rules, and validators.
- * This package has NO UI dependencies — it's framework-agnostic.
+ * Pure business logic for form schema, elements, rules, validators, and workflow.
+ * Also contains shared SolidJS field components (TextInputField, SelectField, etc.)
+ * used by both form-editor and form-runtime to avoid duplication.
  */
 
 export * from './elements';

@@ -54,6 +54,7 @@ export function SignInForm(props: SignInFormProps) {
         validate: zodForm(SignInSchema),
     });
     const [error, setError] = createSignal<string | null>(null);
+    const [rememberMe, setRememberMe] = createSignal(true);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
@@ -69,6 +70,7 @@ export function SignInForm(props: SignInFormProps) {
             const result = await authClient.signIn.email({
                 email: values.email,
                 password: values.password,
+                rememberMe: rememberMe(),
             });
 
             if (result.error) {
@@ -175,7 +177,11 @@ export function SignInForm(props: SignInFormProps) {
                     </div>
 
                     {/* Remember Me Checkbox */}
-                    <Checkbox label="Remember me" />
+                    <Checkbox
+                        label="Remember me"
+                        checked={rememberMe()}
+                        onChange={(checked: boolean) => setRememberMe(checked)}
+                    />
 
                     <Button
                         type="submit"

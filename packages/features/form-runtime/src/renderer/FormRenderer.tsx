@@ -1,7 +1,20 @@
-import { splitProps, For, createSignal, Show, createMemo, onMount, createEffect, on } from 'solid-js';
-import type { Component, JSX } from 'solid-js';
-import type { FormSchema, FormElement, FormWorkflow } from '@formanywhere/shared/types';
+/**
+ * FormRenderer — End-user form renderer.
+ *
+ * Composes:
+ *   - useWorkflows (workflow execution, field loading, error/dialog state)
+ *   - usePagination (multi-page navigation)
+ *   - Shared field components from @formanywhere/domain/form
+ *
+ * Renders a form schema as an interactive, validatable form with
+ * conditional visibility, multi-page support, and workflow integration.
+ */
+import { splitProps, For, createSignal, Show } from 'solid-js';
+import type { Component } from 'solid-js';
+import type { FormSchema, FormElement } from '@formanywhere/shared/types';
 import { createForm, zodForm, setValue, getValues } from '@modular-forms/solid';
+import type { FieldElementProps } from '@modular-forms/solid';
+import type { TextFieldProps } from '@formanywhere/ui/textfield';
 import { Button } from '@formanywhere/ui/button';
 import { Icon } from '@formanywhere/ui/icon';
 import { Typography } from '@formanywhere/ui/typography';
@@ -11,29 +24,41 @@ import { LinearProgress } from '@formanywhere/ui/progress';
 import { Stack } from '@formanywhere/ui/stack';
 import { Box } from '@formanywhere/ui/box';
 import { Dialog } from '@formanywhere/ui/dialog';
-import { evaluateCondition } from '@formanywhere/domain/form';
-import { buildZodSchema, buildInitialValues } from '@formanywhere/domain/form';
-import { isLayoutElement } from '@formanywhere/domain/form';
-import {
-    executeWorkflow,
-    findPageLoadWorkflows,
-    findWorkflowsForField,
-    findSubmitWorkflows,
-    interpolate,
-} from '@formanywhere/domain/form';
-import type { ApiCaller, WorkflowApiConfig } from '@formanywhere/domain/form';
-import type { DynamicFormValues } from '../fields/types';
-import { adaptFieldProps } from '../fields/types';
+import { evaluateCondition, buildZodSchema, buildInitialValues, isLayoutElement } from '@formanywhere/domain/form';
 import {
     TextInputField, TextareaField, SelectField, CheckboxField,
     RadioField, SwitchField, FileField, RatingField, SignatureField,
     LayoutField,
 } from '@formanywhere/domain/form';
-/* styles.scss removed — inline styles + @formanywhere/ui only */
+import { useWorkflows } from './use-workflows';
+import { usePagination } from './use-pagination';
+
+// ── Types (inlined from former fields/types.ts) ──────────────────────────────
+
+/** All form values stored as strings — matches native HTML input behaviour. */
+export type DynamicFormValues = Record<string, string>;
+
+/**
+ * Adapts modular-forms FieldElementProps to the plain event handler types
+ * expected by @formanywhere/ui TextField / domain Field components.
+ */
+function adaptFieldProps(
+    fp: FieldElementProps<DynamicFormValues, string>,
+): Pick<TextFieldProps, 'ref' | 'name' | 'onInput' | 'onChange' | 'onBlur'> {
+    return {
+        ref: fp.ref as TextFieldProps['ref'],
+        name: fp.name,
+        onInput: (e: InputEvent) => (fp.onInput as (e: InputEvent) => void)(e),
+        onChange: (e: Event) => (fp.onChange as (e: Event) => void)(e),
+        onBlur: (e: FocusEvent) => (fp.onBlur as (e: FocusEvent) => void)(e),
+    };
+}
+
+// ── Component ────────────────────────────────────────────────────────────────
 
 export interface FormRendererProps {
     schema: FormSchema;
-    formId?: string; // Optional since it might be rendered in preview without an ID
+    formId?: string;
     onSubmit: (data: Record<string, unknown>) => void;
 }
 
@@ -48,280 +73,71 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
     });
 
     const [submitted, setSubmitted] = createSignal(false);
-    const [dynamicOptions, setDynamicOptions] = createSignal<Record<string, Array<{ label: string; value: string }>>>({});
-    const [workflowDialog, setWorkflowDialog] = createSignal<{ title: string; message: string } | null>(null);
 
-    // ── Error / Loading State ────────────────────────────────────────────────
+    // ── Hooks ─────────────────────────────────────────────────────────────────
 
-    const [workflowError, setWorkflowError] = createSignal<string | null>(null);
-    const [loadingFields, setLoadingFields] = createSignal<Set<string>>(new Set());
-    const [isSubmitting, setIsSubmitting] = createSignal(false);
-
-    /** Show error toast — auto-dismisses after 5s */
-    const showError = (msg: string) => {
-        setWorkflowError(msg);
-        setTimeout(() => setWorkflowError(null), 5000);
-    };
-
-    const addLoadingField = (id: string) => {
-        setLoadingFields((s) => { const ns = new Set(s); ns.add(id); return ns; });
-    };
-    const removeLoadingField = (id: string) => {
-        setLoadingFields((s) => { const ns = new Set(s); ns.delete(id); return ns; });
-    };
-
-    // ── Workflow Engine Integration ───────────────────────────────────────
-
-    const apiCaller: ApiCaller = async (api: WorkflowApiConfig, values: Record<string, unknown>) => {
-        const url = interpolate(api.url, values);
-        const body = api.bodyTemplate ? interpolate(api.bodyTemplate, values) : undefined;
-        const API_URL = typeof import.meta !== 'undefined'
-            ? (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001'
-            : 'http://localhost:3001';
-
-        const res = await fetch(`${API_URL}/api/workflow-proxy`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({
-                url,
-                method: api.method,
-                headers: api.headers,
-                body,
-            }),
-        });
-
-        const result = await res.json();
-        if (!result.success) throw new Error(result.error || 'Workflow API call failed');
-        return result.data;
-    };
-
-    /** Send execution logs to the backend analytics endpoint */
-    const sendExecutionLog = async (result: Awaited<ReturnType<typeof executeWorkflow>>, duration: number) => {
-        if (!local.formId) return; // Only log for saved, running forms, not generic previews
-
-        try {
-            const API_URL = typeof import.meta !== 'undefined'
-                ? (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001'
-                : 'http://localhost:3001';
-
-            const hasError = result.results.some(r => r.status === 'error');
-
-            await fetch(`${API_URL}/api/forms/${local.formId}/workflow-logs`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({
-                    trace: result,
-                    duration,
-                    success: !hasError
-                })
-            });
-        } catch (err) {
-            console.error('[workflow] Failed to record execution log:', err);
-        }
-    };
-
-    /** Apply workflow execution result to form state. */
-    const applyWorkflowResult = (result: Awaited<ReturnType<typeof executeWorkflow>>) => {
-        // Apply option updates
-        if (Object.keys(result.optionUpdates).length > 0) {
-            setDynamicOptions((prev) => ({ ...prev, ...result.optionUpdates }));
-        }
-
-        // Apply field updates
-        for (const [fieldId, value] of Object.entries(result.fieldUpdates)) {
-            setValue(formStore, fieldId, value as string);
-        }
-
-        // Handle dialog
-        if (result.dialog) setWorkflowDialog(result.dialog);
-
-        // Handle redirect
-        if (result.redirectUrl) {
-            if (result.redirectNewTab) {
-                window.open(result.redirectUrl, '_blank');
-            } else {
-                window.location.href = result.redirectUrl;
-            }
-        }
-
-        // Report errors
-        const errors = result.results.filter((r) => r.status === 'error');
-        if (errors.length > 0) {
-            showError(`Workflow error: ${errors[0].error ?? 'Unknown'}`);
-        }
-    };
-
-    /** Execute page-load workflows with loading states for fetchOptions fields. */
-    const runPageLoadWorkflows = async () => {
-        const workflows = local.schema.workflows ?? [];
-        const pageLoadWfs = findPageLoadWorkflows(workflows);
-
-        for (const wf of pageLoadWfs) {
-            // Mark target fields as loading
-            const fetchNodes = wf.nodes.filter((n) => n.type === 'fetchOptions' && n.config.targetFieldId);
-            for (const fn of fetchNodes) addLoadingField(fn.config.targetFieldId!);
-
-            try {
-                const values = (getValues(formStore) as Record<string, unknown>) ?? {};
-                const start = performance.now();
-                const result = await executeWorkflow(wf, values, apiCaller);
-                const duration = Math.round(performance.now() - start);
-
-                applyWorkflowResult(result);
-                sendExecutionLog(result, duration);
-            } catch (err) {
-                console.error(`[workflow] Error executing ${wf.name}:`, err);
-                showError(`Failed to load data: ${err instanceof Error ? err.message : 'Unknown error'}`);
-            } finally {
-                for (const fn of fetchNodes) removeLoadingField(fn.config.targetFieldId!);
-            }
-        }
-    };
-
-    /** Execute workflows triggered by a field change. */
-    const runFieldWorkflows = async (fieldId: string) => {
-        const workflows = local.schema.workflows ?? [];
-        const triggered = findWorkflowsForField(workflows, fieldId);
-
-        for (const wf of triggered) {
-            try {
-                const values = (getValues(formStore) as Record<string, unknown>) ?? {};
-                const start = performance.now();
-                const result = await executeWorkflow(wf, values, apiCaller);
-                const duration = Math.round(performance.now() - start);
-
-                applyWorkflowResult(result);
-                sendExecutionLog(result, duration);
-            } catch (err) {
-                console.error(`[workflow] Error executing ${wf.name}:`, err);
-                showError(`Workflow failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
-            }
-        }
-    };
-
-    /** Execute submit workflows before/after form submission. */
-    const runSubmitWorkflows = async (values: Record<string, unknown>): Promise<boolean> => {
-        const workflows = local.schema.workflows ?? [];
-        const submitWfs = findSubmitWorkflows(workflows);
-
-        for (const wf of submitWfs) {
-            try {
-                const start = performance.now();
-                const result = await executeWorkflow(wf, values, apiCaller);
-                const duration = Math.round(performance.now() - start);
-
-                applyWorkflowResult(result);
-                sendExecutionLog(result, duration);
-
-                // If any node errored, don't proceed with submission
-                if (result.results.some((r) => r.status === 'error')) {
-                    return false;
-                }
-            } catch (err) {
-                console.error(`[workflow] Submit workflow error ${wf.name}:`, err);
-                showError(`Submit workflow failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
-                return false;
-            }
-        }
-        return true;
-    };
-
-    onMount(() => {
-        runPageLoadWorkflows();
+    const wf = useWorkflows({
+        schema: () => local.schema,
+        formId: () => local.formId,
+        formStore,
     });
 
-    // Multi-page state
-    const isMultiPage = () => !!local.schema.settings.multiPage && !!local.schema.settings.pages?.length;
-    const pages = () => local.schema.settings.pages ?? [];
-    const [currentPageIndex, setCurrentPageIndex] = createSignal(0);
-    const currentPage = () => pages()[currentPageIndex()];
-    const totalPages = () => pages().length;
-    const isFirstPage = () => currentPageIndex() === 0;
-    const isLastPage = () => currentPageIndex() === totalPages() - 1;
-
-    /** Elements for the current page (multi-page) or all elements (single-page). */
-    const visibleElements = createMemo(() => {
-        if (!isMultiPage()) return local.schema.elements;
-        const page = currentPage();
-        if (!page) return [];
-        const idSet = new Set(page.elements);
-        return local.schema.elements.filter((el) => idSet.has(el.id));
+    const pg = usePagination({
+        schema: () => local.schema,
     });
 
-    const goNext = () => {
-        if (!isLastPage()) setCurrentPageIndex((i) => i + 1);
-    };
-    const goPrev = () => {
-        if (!isFirstPage()) setCurrentPageIndex((i) => i - 1);
-    };
+    // ── Submit Handler ────────────────────────────────────────────────────────
 
     const handleSubmit = async (values: DynamicFormValues) => {
-        setIsSubmitting(true);
+        wf.setIsSubmitting(true);
         try {
-            // Run submit workflows first
-            const ok = await runSubmitWorkflows(values);
+            const ok = await wf.runSubmitWorkflows(values);
             if (!ok) {
-                setIsSubmitting(false);
-                return; // Submit workflow blocked submission
+                wf.setIsSubmitting(false);
+                return;
             }
             setSubmitted(true);
             local.onSubmit(values);
         } finally {
-            setIsSubmitting(false);
+            wf.setIsSubmitting(false);
         }
     };
 
-    /** Check conditional visibility using current form values. */
+    // ── Conditional Visibility ────────────────────────────────────────────────
+
     const isVisible = (element: FormElement): boolean => {
         if (!element.conditionalLogic?.length) return true;
         const values = getValues(formStore) as Record<string, unknown>;
-        return element.conditionalLogic.every((rule) =>
-            evaluateCondition(rule, values),
-        );
+        return element.conditionalLogic.every((rule) => evaluateCondition(rule, values));
     };
 
-    // ── Layout element renderers (non-form-field, just structural) ──────────
+    // ── Element Renderers ─────────────────────────────────────────────────────
 
     const renderLayoutElement = (element: FormElement) => (
         <LayoutField element={element} renderChild={(child) => renderElement(child)} />
     );
 
-    /** Top-level render dispatcher that handles both layout and form-field elements. */
     const renderElement = (element: FormElement) => {
         if (!isVisible(element)) return null;
-        if (isLayoutElement(element.type)) {
-            // Layout elements manage their own display/gap — no extra Stack
-            // wrapper so CSS Grid children (grid-column) remain direct children
-            // of their grid parent.
-            return renderLayoutElement(element);
-        }
-        return (
-            <Stack gap="xs">
-                {renderField(element)}
-            </Stack>
-        );
+        if (isLayoutElement(element.type)) return renderLayoutElement(element);
+        return <Stack gap="xs">{renderField(element)}</Stack>;
     };
-
-    // ── Main Render ───────────────────────────────────────────────────────────
 
     const renderField = (element: FormElement) => {
         const onValue = (v: string) => {
             setValue(formStore, element.id, v);
-            runFieldWorkflows(element.id);
+            wf.runFieldWorkflows(element.id);
         };
 
-        // Merge dynamic options for select fields
         const elementWithDynOpts = () => {
-            const dynOpts = dynamicOptions()[element.id];
+            const dynOpts = wf.dynamicOptions()[element.id];
             if (dynOpts && (element.type === 'select' || element.type === 'radio' || element.type === 'checkbox')) {
                 return { ...element, options: dynOpts };
             }
             return element;
         };
 
-        const isLoading = () => loadingFields().has(element.id);
+        const isLoading = () => wf.loadingFields().has(element.id);
 
         return (
             <Show when={!isLoading()} fallback={
@@ -385,6 +201,8 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
         );
     };
 
+    // ── JSX ───────────────────────────────────────────────────────────────────
+
     return (
         <Show
             when={!submitted()}
@@ -392,15 +210,10 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
                 <Box padding="xl" style={{ 'text-align': 'center', color: 'var(--m3-color-on-surface, #1C1B1F)' }}>
                     <Stack align="center" gap="md">
                         <Box style={{
-                            width: '72px',
-                            height: '72px',
-                            'border-radius': '50%',
+                            width: '72px', height: '72px', 'border-radius': '50%',
                             background: 'color-mix(in srgb, var(--m3-color-primary, #6750A4) 10%, transparent)',
                             color: 'var(--m3-color-primary, #6750A4)',
-                            display: 'flex',
-                            'align-items': 'center',
-                            'justify-content': 'center',
-                            'margin-bottom': '8px',
+                            display: 'flex', 'align-items': 'center', 'justify-content': 'center', 'margin-bottom': '8px',
                         }}>
                             <Icon name="check-circle" size={48} />
                         </Box>
@@ -413,27 +226,22 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
         >
             <Form onSubmit={handleSubmit} style={{ display: 'flex', 'flex-direction': 'column', gap: '24px' }}>
                 {/* Multi-page progress bar */}
-                <Show when={isMultiPage()}>
+                <Show when={pg.isMultiPage()}>
                     <Stack gap="sm" style={{
-                        'margin-bottom': '20px',
-                        'padding-bottom': '16px',
+                        'margin-bottom': '20px', 'padding-bottom': '16px',
                         'border-bottom': '1px solid var(--m3-color-outline-variant, #C4C7C5)',
                     }}>
                         <Stack direction="row" align="center" gap="xs">
-                            <For each={pages()}>
+                            <For each={pg.pages()}>
                                 {(page, i) => {
-                                    const isActive = () => i() === currentPageIndex();
-                                    const isCompleted = () => i() < currentPageIndex();
+                                    const isActive = () => i() === pg.currentPageIndex();
+                                    const isCompleted = () => i() < pg.currentPageIndex();
                                     return (
                                         <button
                                             type="button"
                                             style={{
-                                                display: 'flex',
-                                                'align-items': 'center',
-                                                gap: '6px',
-                                                padding: '4px 10px',
-                                                border: 'none',
-                                                'border-radius': '9999px',
+                                                display: 'flex', 'align-items': 'center', gap: '6px',
+                                                padding: '4px 10px', border: 'none', 'border-radius': '9999px',
                                                 background: isActive()
                                                     ? 'color-mix(in srgb, var(--m3-color-primary, #6750A4) 12%, transparent)'
                                                     : 'transparent',
@@ -444,19 +252,12 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
                                                 'font-weight': isActive() ? '600' : '400',
                                                 cursor: isCompleted() ? 'pointer' : 'default',
                                             }}
-                                            onClick={() => {
-                                                if (isCompleted()) setCurrentPageIndex(i());
-                                            }}
+                                            onClick={() => { if (isCompleted()) pg.setCurrentPageIndex(i()); }}
                                         >
                                             <span style={{
-                                                display: 'flex',
-                                                'align-items': 'center',
-                                                'justify-content': 'center',
-                                                width: '22px',
-                                                height: '22px',
-                                                'border-radius': '50%',
-                                                'font-size': '0.7rem',
-                                                'font-weight': '600',
+                                                display: 'flex', 'align-items': 'center', 'justify-content': 'center',
+                                                width: '22px', height: '22px', 'border-radius': '50%',
+                                                'font-size': '0.7rem', 'font-weight': '600',
                                                 background: isActive() || isCompleted()
                                                     ? 'var(--m3-color-primary, #6750A4)'
                                                     : 'var(--m3-color-surface-container-high, #E6E6E6)',
@@ -474,26 +275,23 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
                             </For>
                         </Stack>
                         <div style={{
-                            height: '4px',
-                            'border-radius': '2px',
-                            background: 'var(--m3-color-surface-container-high, #E6E6E6)',
-                            overflow: 'hidden',
+                            height: '4px', 'border-radius': '2px',
+                            background: 'var(--m3-color-surface-container-high, #E6E6E6)', overflow: 'hidden',
                         }}>
                             <div style={{
-                                height: '100%',
-                                'border-radius': '2px',
+                                height: '100%', 'border-radius': '2px',
                                 background: 'var(--m3-color-primary, #6750A4)',
                                 transition: 'width 0.3s ease',
-                                width: `${((currentPageIndex() + 1) / totalPages()) * 100}%`,
+                                width: `${((pg.currentPageIndex() + 1) / pg.totalPages()) * 100}%`,
                             }} />
                         </div>
                         <Typography variant="body-small" color="on-surface-variant">
-                            Step {currentPageIndex() + 1} of {totalPages()}
+                            Step {pg.currentPageIndex() + 1} of {pg.totalPages()}
                         </Typography>
                     </Stack>
                 </Show>
 
-                <For each={visibleElements()}>
+                <For each={pg.visibleElements()}>
                     {(element) => renderElement(element)}
                 </For>
 
@@ -502,61 +300,51 @@ export const FormRenderer: Component<FormRendererProps> = (props) => {
                     'border-top': '1px solid var(--m3-color-outline-variant, #C4C7C5)',
                     'margin-top': '8px',
                 }}>
-                    {/* Multi-page navigation */}
-                    <Show when={isMultiPage()}>
-                        <Button
-                            variant="outlined"
-                            type="button"
-                            onClick={goPrev}
-                            disabled={isFirstPage()}
-                        >
-                            <Icon name="chevron-left" size={18} />
-                            Previous
+                    <Show when={pg.isMultiPage()}>
+                        <Button variant="outlined" type="button" onClick={pg.goPrev} disabled={pg.isFirstPage()}>
+                            <Icon name="chevron-left" size={18} /> Previous
                         </Button>
                     </Show>
 
                     <Show
-                        when={!isMultiPage() || isLastPage()}
+                        when={!pg.isMultiPage() || pg.isLastPage()}
                         fallback={
-                            <Button variant="filled" type="button" onClick={goNext}>
-                                Next
-                                <Icon name="chevron-right" size={18} />
+                            <Button variant="filled" type="button" onClick={pg.goNext}>
+                                Next <Icon name="chevron-right" size={18} />
                             </Button>
                         }
                     >
-                        <Button variant="filled" type="submit" disabled={formStore.submitting || isSubmitting()}>
-                            <Show when={isSubmitting()} fallback={<Icon name="check" size={18} />}>
+                        <Button variant="filled" type="submit" disabled={formStore.submitting || wf.isSubmitting()}>
+                            <Show when={wf.isSubmitting()} fallback={<Icon name="check" size={18} />}>
                                 <CircularProgress indeterminate size={18} strokeWidth={2} />
                             </Show>
-                            {isSubmitting() ? 'Processing...' : local.schema.settings.submitButtonText}
+                            {wf.isSubmitting() ? 'Processing...' : local.schema.settings.submitButtonText}
                         </Button>
                     </Show>
                 </Stack>
 
-                {/* ── Workflow Error Toast ── */}
+                {/* Workflow Error Toast */}
                 <Snackbar
-                    open={!!workflowError()}
-                    onClose={() => setWorkflowError(null)}
-                    message={workflowError() ?? ''}
+                    open={!!wf.workflowError()}
+                    onClose={wf.clearError}
+                    message={wf.workflowError() ?? ''}
                     duration={5000}
                     position="bottom"
                     glass
                 />
 
-                {/* ── Workflow Dialog (info modal) ── */}
+                {/* Workflow Dialog */}
                 <Dialog
-                    open={!!workflowDialog()}
-                    onClose={() => setWorkflowDialog(null)}
-                    title={workflowDialog()?.title ?? ''}
+                    open={!!wf.workflowDialog()}
+                    onClose={wf.closeDialog}
+                    title={wf.workflowDialog()?.title ?? ''}
                     glass
                     actions={
-                        <Button variant="filled" onClick={() => setWorkflowDialog(null)}>
-                            OK
-                        </Button>
+                        <Button variant="filled" onClick={wf.closeDialog}>OK</Button>
                     }
                 >
                     <Typography variant="body-medium">
-                        {workflowDialog()?.message ?? ''}
+                        {wf.workflowDialog()?.message ?? ''}
                     </Typography>
                 </Dialog>
             </Form>
